@@ -6,7 +6,7 @@ sidebar:
   badge: { text: PUT, variant: note }
 api:
   method: PUT
-  path: /environments/:env_id
+  path: /environments/{env_id}
   baseUrl: https://app.testsigma.com/api/v1
   pathParams:
     - { name: env_id, desc: "The ID of the environment to update." }

@@ -38,8 +38,8 @@ To begin using Testsigma Copilot, explore the following resources:
 - [Record Test Steps](https://testsigma.com/docs/copilot/record-test-steps/)
 - [Copilot Debug Toolbar](https://testsigma.com/docs/copilot/copilot-debug-toolbar/)
 - [Manage Test Steps](https://testsigma.com/docs/copilot/manage-test-steps/)
-- [FAQs on Testsigma Copilot](https://testsigma.com/docs/copilot/faqs-on-copilot/)
-- [Troubleshooting Guide for Copilot](https://testsigma.com/docs/copilot/troubleshooting-for-copilot/unable-to-login-to-testsigma-terminal/)
+- [FAQs on Testsigma Copilot](https://testsigma.com/docs/suite/help/copilot-terminal/faqs-on-copilot/)
+- [Troubleshooting Guide for Copilot](https://testsigma.com/docs/suite/help/copilot-terminal/unable-to-login-to-testsigma-terminal/)
 
 ---
 

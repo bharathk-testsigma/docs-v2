@@ -6,7 +6,7 @@ sidebar:
   badge: { text: PUT, variant: note }
 api:
   method: PUT
-  path: /ui_identifiers/:element_id
+  path: /ui_identifiers/{element_id}
   baseUrl: https://app.testsigma.com/api/v1
   pathParams:
     - { name: element_id, desc: "The ID of the element to update." }

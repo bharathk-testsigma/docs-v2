@@ -6,7 +6,7 @@ sidebar:
   badge: { text: GET, variant: tip }
 api:
   method: GET
-  path: /projects/:project_id/test_cases
+  path: /projects/{project_id}/test_cases
   baseUrl: https://test-management.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project whose test cases are being requested." }

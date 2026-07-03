@@ -6,7 +6,7 @@ sidebar:
   badge: { text: DELETE, variant: danger }
 api:
   method: DELETE
-  path: /projects/:project_id
+  path: /projects/{project_id}
   baseUrl: https://test-management.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project to delete." }
