@@ -82,6 +82,6 @@ Ensure that none of the checkboxes in the API section are selected.
 
 <br>
 
-> Refer to the [documentation on Salesforce troubleshooting](https://testsigma.com/docs/troubleshooting/salesforce-testing/most-common-issues/) guide for the most common issues while creating a connected app.
+> Refer to the [documentation on Salesforce troubleshooting](https://testsigma.com/docs/suite/help/execution-apis/most-common-issues/) guide for the most common issues while creating a connected app.
 
 ---

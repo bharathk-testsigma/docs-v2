@@ -6,7 +6,7 @@ sidebar:
   badge: { text: PUT, variant: note }
 api:
   method: PUT
-  path: /projects/:project_id/test_runs/:test_run_id/assign_user
+  path: /projects/{project_id}/test_runs/{test_run_id}/assign_user
   baseUrl: https://test-management.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project the test run belongs to." }
@@ -20,15 +20,7 @@ api:
   status: 200
   statusText: OK
   responseAttributes:
-    - { name: "message", desc: "Confirmation message for the assignment; may be empty." }
-    - { name: "data.test_run_case.test_case_id", desc: "Unique identifier of the test case." }
-    - { name: "data.test_run_case.user_id", desc: "Unique identifier of the assigned user." }
-    - { name: "data.test_run_case.updated_at", desc: "Unix timestamp of when the assignment was applied." }
+    - { name: "message", desc: "Confirmation message indicating the user was assigned; may be empty." }
   response:
-    message: "User assigned successfully."
-    data:
-      test_run_case:
-        test_case_id: "9ac271b6-4e89-4c93-8c75-2d625efa0b2d"
-        user_id: "cbbc40a5-26e9-4b88-8c27-3626c9fbdaa4"
-        updated_at: 1710761600
+    message: ""
 ---

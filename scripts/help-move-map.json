@@ -1,0 +1,438 @@
+[
+  {
+    "from": "addons/faqs/connect-mongodb-and-postgresql-via-addon",
+    "to": "help/general-howtos/connect-mongodb-and-postgresql-via-addon"
+  },
+  {
+    "from": "agent/faqs",
+    "to": "help/agent-setup/agent-faqs"
+  },
+  {
+    "from": "agent/troubleshooting/how-to-add-max-sessions-for-agents",
+    "to": "help/agent-setup/how-to-add-max-sessions-for-agents"
+  },
+  {
+    "from": "agent/troubleshooting/how-to-configure-agent-logs",
+    "to": "help/agent-setup/how-to-configure-agent-logs"
+  },
+  {
+    "from": "agent/troubleshooting/how-to-configure-proxy-settings-in-testsigma-agent",
+    "to": "help/agent-setup/how-to-configure-proxy-settings-in-testsigma-agent"
+  },
+  {
+    "from": "agent/troubleshooting/how-to-fix-setup-issues",
+    "to": "help/agent-setup/how-to-fix-setup-issues"
+  },
+  {
+    "from": "agent/troubleshooting/how-to-resolve-access-blocked-errors-when-downloading-the-agent",
+    "to": "help/agent-setup/how-to-resolve-access-blocked-errors-when-downloading-the-agent"
+  },
+  {
+    "from": "agent/troubleshooting/how-to-upgrade-agent-automatically",
+    "to": "help/agent-setup/how-to-upgrade-agent-automatically"
+  },
+  {
+    "from": "agent/troubleshooting/why-is-testsigma-agent-not-detecting-my-installed-browsers",
+    "to": "help/agent-setup/why-is-testsigma-agent-not-detecting-my-installed-browsers"
+  },
+  {
+    "from": "copilot/faqs-on-copilot",
+    "to": "help/copilot-terminal/faqs-on-copilot"
+  },
+  {
+    "from": "copilot/troubleshooting-for-copilot/unable-to-auto-register-your-device-using-testsigma-terminal",
+    "to": "help/copilot-terminal/unable-to-auto-register-your-device-using-testsigma-terminal"
+  },
+  {
+    "from": "copilot/troubleshooting-for-copilot/unable-to-download-the-packages-required-to-start-the-agent",
+    "to": "help/copilot-terminal/unable-to-download-the-packages-required-to-start-the-agent"
+  },
+  {
+    "from": "copilot/troubleshooting-for-copilot/unable-to-download-the-terminal-files",
+    "to": "help/copilot-terminal/unable-to-download-the-terminal-files"
+  },
+  {
+    "from": "copilot/troubleshooting-for-copilot/unable-to-extract-the-terminal-files",
+    "to": "help/copilot-terminal/unable-to-extract-the-terminal-files"
+  },
+  {
+    "from": "copilot/troubleshooting-for-copilot/unable-to-login-to-testsigma-terminal",
+    "to": "help/copilot-terminal/unable-to-login-to-testsigma-terminal"
+  },
+  {
+    "from": "copilot/troubleshooting-for-copilot/unable-to-reestablish-connection-to-agent",
+    "to": "help/copilot-terminal/unable-to-reestablish-connection-to-agent"
+  },
+  {
+    "from": "copilot/troubleshooting-for-copilot/unable-to-start-the-agent",
+    "to": "help/copilot-terminal/unable-to-start-the-agent"
+  },
+  {
+    "from": "copilot/troubleshooting-for-copilot/unable-to-start-the-terminal-due-to-port-unavailability",
+    "to": "help/copilot-terminal/unable-to-start-the-terminal-due-to-port-unavailability"
+  },
+  {
+    "from": "copilot/troubleshooting-for-copilot/unable-to-update-the-packages-required-to-start-the-agent",
+    "to": "help/copilot-terminal/unable-to-update-the-packages-required-to-start-the-agent"
+  },
+  {
+    "from": "faqs/general/how-can-i-set-up-authenticator-based-authentication-in-testsigma",
+    "to": "help/general-howtos/how-can-i-set-up-authenticator-based-authentication-in-testsigma"
+  },
+  {
+    "from": "faqs/general/how-do-i-retrieve-the-otp-when-its-embedded-within-html-tags",
+    "to": "help/general-howtos/how-do-i-retrieve-the-otp-when-its-embedded-within-html-tags"
+  },
+  {
+    "from": "faqs/general/how-to-add-multiple-runtime-variables-in-data-generator-functions",
+    "to": "help/general-howtos/how-to-add-multiple-runtime-variables-in-data-generator-functions"
+  },
+  {
+    "from": "faqs/general/how-to-configure-the-oracledb-add-on-in-testsigma",
+    "to": "help/general-howtos/how-to-configure-the-oracledb-add-on-in-testsigma"
+  },
+  {
+    "from": "faqs/general/how-to-handle-browser-related-pop-up-issues",
+    "to": "help/general-howtos/how-to-handle-browser-related-pop-up-issues"
+  },
+  {
+    "from": "faqs/general/how-to-handle-text-based-captcha-in-testsigma",
+    "to": "help/general-howtos/how-to-handle-text-based-captcha-in-testsigma"
+  },
+  {
+    "from": "faqs/general/how-to-insert-test-data-in-raw-body-post-api-request",
+    "to": "help/general-howtos/how-to-insert-test-data-in-raw-body-post-api-request"
+  },
+  {
+    "from": "faqs/general/how-to-test-flutter-apps-using-accessibility-mode",
+    "to": "help/general-howtos/how-to-test-flutter-apps-using-accessibility-mode"
+  },
+  {
+    "from": "faqs/general/how-to-update-an-excel-file-in-testsigma-uploads",
+    "to": "help/general-howtos/how-to-update-an-excel-file-in-testsigma-uploads"
+  },
+  {
+    "from": "faqs/general/what-causes-longer-automation-test-execution-times-in-a-test-plan",
+    "to": "help/execution-apis/what-causes-longer-automation-test-execution-times-in-a-test-plan"
+  },
+  {
+    "from": "faqs/general/what-is-chrome-for-testing-and-how-does-it-work",
+    "to": "help/general-howtos/what-is-chrome-for-testing-and-how-does-it-work"
+  },
+  {
+    "from": "faqs/general/why-am-i-unable-to-download-the-xls-file-from-the-edge-browser",
+    "to": "help/execution-apis/why-am-i-unable-to-download-the-xls-file-from-the-edge-browser"
+  },
+  {
+    "from": "faqs/general/why-do-errors-occur-when-i-try-to-download-files-from-the-exports-page",
+    "to": "help/execution-apis/why-do-errors-occur-when-i-try-to-download-files-from-the-exports-page"
+  },
+  {
+    "from": "faqs/general/why-does-test-execution-fail-with-the-error-no-route-to-host",
+    "to": "help/execution-apis/why-does-test-execution-fail-with-the-error-no-route-to-host"
+  },
+  {
+    "from": "faqs/mobile-apps/apple-pay-automation",
+    "to": "help/mobile-testing/apple-pay-automation"
+  },
+  {
+    "from": "faqs/mobile-apps/how-do-i-enhance-the-execution-speed-for-mobile-native-appsmd",
+    "to": "help/mobile-testing/how-do-i-enhance-the-execution-speed-for-mobile-native-appsmd"
+  },
+  {
+    "from": "faqs/mobile-apps/how-to-execute-tests-in-emulators-simulators",
+    "to": "help/mobile-testing/how-to-execute-tests-in-emulators-simulators"
+  },
+  {
+    "from": "faqs/mobile-apps/how-to-resolve-app-launch-issues",
+    "to": "help/mobile-testing/how-to-resolve-app-launch-issues"
+  },
+  {
+    "from": "faqs/mobile-apps/why-am-i-facing-permission-error-during-local-test-execution",
+    "to": "help/mobile-testing/why-am-i-facing-permission-error-during-local-test-execution"
+  },
+  {
+    "from": "faqs/mobile-apps/why-does-scroll-to-element-fail-in-mobile-native-apps-and-how-do-i-fix-it",
+    "to": "help/mobile-testing/why-does-scroll-to-element-fail-in-mobile-native-apps-and-how-do-i-fix-it"
+  },
+  {
+    "from": "faqs/mobile-apps/why-does-the-ios-app-close-right-after-opening-in-testsigma",
+    "to": "help/mobile-testing/why-does-the-ios-app-close-right-after-opening-in-testsigma"
+  },
+  {
+    "from": "faqs/web-apps/automating-captcha",
+    "to": "help/web-testing/automating-captcha"
+  },
+  {
+    "from": "faqs/web-apps/basic-authentication",
+    "to": "help/web-testing/basic-authentication"
+  },
+  {
+    "from": "faqs/web-apps/failure-to-link-text-capture",
+    "to": "help/web-testing/failure-to-link-text-capture"
+  },
+  {
+    "from": "faqs/web-apps/how-to-enable-ie-mode-in-microsoft-edge",
+    "to": "help/web-testing/how-to-enable-ie-mode-in-microsoft-edge"
+  },
+  {
+    "from": "faqs/web-apps/how-to-enter-non-text-keys-in-test-cases",
+    "to": "help/web-testing/how-to-enter-non-text-keys-in-test-cases"
+  },
+  {
+    "from": "faqs/web-apps/how-to-handle-browser-related-permission-issues",
+    "to": "help/web-testing/how-to-handle-browser-related-permission-issues"
+  },
+  {
+    "from": "faqs/web-apps/how-to-turnoff-onboarding-tutorial",
+    "to": "help/web-testing/how-to-turnoff-onboarding-tutorial"
+  },
+  {
+    "from": "faqs/web-apps/viewing-full-testplan-execution-video",
+    "to": "help/web-testing/viewing-full-testplan-execution-video"
+  },
+  {
+    "from": "faqs/web-apps/what-should-i-do-if-my-browser-blocks-local-network-access",
+    "to": "help/web-testing/what-should-i-do-if-my-browser-blocks-local-network-access"
+  },
+  {
+    "from": "faqs/web-apps/why-am-i-getting-an-error-while-registering-the-agent",
+    "to": "help/agent-setup/why-am-i-getting-an-error-while-registering-the-agent"
+  },
+  {
+    "from": "faqs/web-apps/why-cant-selenium-chromedriver-interact-with-3ds-authentication-pages",
+    "to": "help/web-testing/why-cant-selenium-chromedriver-interact-with-3ds-authentication-pages"
+  },
+  {
+    "from": "faqs/web-apps/why-chrome-extension",
+    "to": "help/web-testing/why-chrome-extension"
+  },
+  {
+    "from": "faqs/web-apps/why-cloud-devices-cannot-access-local-apps",
+    "to": "help/web-testing/why-cloud-devices-cannot-access-local-apps"
+  },
+  {
+    "from": "faqs/web-apps/why-does-the-try-again-error-appear-while-installing-the-testsigma-agent-in-a-proxy-environment",
+    "to": "help/web-testing/why-does-the-try-again-error-appear-while-installing-the-testsigma-agent-in-a-proxy-environment"
+  },
+  {
+    "from": "on-premise-setup/post-installation/faqs",
+    "to": "help/agent-setup/on-premise-post-installation-faqs"
+  },
+  {
+    "from": "on-premise-setup/post-installation/troubleshooting",
+    "to": "help/agent-setup/on-premise-post-installation-troubleshooting"
+  },
+  {
+    "from": "troubleshooting/agent/agent-cleanup",
+    "to": "help/agent-setup/agent-cleanup"
+  },
+  {
+    "from": "troubleshooting/agent/agent-failures-due-to-used-ports",
+    "to": "help/agent-setup/agent-failures-due-to-used-ports"
+  },
+  {
+    "from": "troubleshooting/agent/fix-agent-registration-failures",
+    "to": "help/agent-setup/fix-agent-registration-failures"
+  },
+  {
+    "from": "troubleshooting/agent/local-tests-queued",
+    "to": "help/agent-setup/local-tests-queued"
+  },
+  {
+    "from": "troubleshooting/agent/mobile-device-not-displayed-recorder",
+    "to": "help/agent-setup/mobile-device-not-displayed-recorder"
+  },
+  {
+    "from": "troubleshooting/agent/need-of-apache-tomcat-agent",
+    "to": "help/agent-setup/need-of-apache-tomcat-agent"
+  },
+  {
+    "from": "troubleshooting/agent/unable-to-create-new-testsession",
+    "to": "help/agent-setup/unable-to-create-new-testsession"
+  },
+  {
+    "from": "troubleshooting/desktop-windows/recorder-failed",
+    "to": "help/desktop-windows/recorder-failed"
+  },
+  {
+    "from": "troubleshooting/general/automating-chrome-extension",
+    "to": "help/general-howtos/automating-chrome-extension"
+  },
+  {
+    "from": "troubleshooting/general/enable-disable-elements",
+    "to": "help/general-howtos/enable-disable-elements"
+  },
+  {
+    "from": "troubleshooting/general/jenkins-xml-to-html",
+    "to": "help/execution-apis/jenkins-xml-to-html"
+  },
+  {
+    "from": "troubleshooting/general/ui-elements-for-ios-apps",
+    "to": "help/general-howtos/ui-elements-for-ios-apps"
+  },
+  {
+    "from": "troubleshooting/general/verify-file-download",
+    "to": "help/general-howtos/verify-file-download"
+  },
+  {
+    "from": "troubleshooting/general/view-test-execution-video",
+    "to": "help/execution-apis/view-test-execution-video"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/app-package-and-activity",
+    "to": "help/mobile-testing/app-package-and-activity"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/capture-network-logs-in-android-app",
+    "to": "help/mobile-testing/capture-network-logs-in-android-app"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/click-tap-failure",
+    "to": "help/mobile-testing/click-tap-failure"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/common-android-issues",
+    "to": "help/mobile-testing/common-android-issues"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/compatible-id-locators",
+    "to": "help/mobile-testing/compatible-id-locators"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/developer-mode-for-ios",
+    "to": "help/mobile-testing/developer-mode-for-ios"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/disable-play-protect-for-sms-forwarder-installation",
+    "to": "help/mobile-testing/disable-play-protect-for-sms-forwarder-installation"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/failed-to-launch-test-recorder",
+    "to": "help/mobile-testing/failed-to-launch-test-recorder"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/failed-to-launch-ui",
+    "to": "help/mobile-testing/failed-to-launch-ui"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/finding-app-bundle-id-ios",
+    "to": "help/mobile-testing/finding-app-bundle-id-ios"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/handling-ios-app-compatibility-issues",
+    "to": "help/mobile-testing/handling-ios-app-compatibility-issues"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/mobile-recorder-actions-failures",
+    "to": "help/mobile-testing/mobile-recorder-actions-failures"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/more-prerequisite-settings",
+    "to": "help/mobile-testing/more-prerequisite-settings"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/test-execution-queued-for-a-long-time",
+    "to": "help/mobile-testing/test-execution-queued-for-a-long-time"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/unable-to-start-wda-process",
+    "to": "help/mobile-testing/unable-to-start-wda-process"
+  },
+  {
+    "from": "troubleshooting/mobile-apps/why-accessibility-ids-over-others",
+    "to": "help/mobile-testing/why-accessibility-ids-over-others"
+  },
+  {
+    "from": "troubleshooting/nlps/drag-and-drop",
+    "to": "help/steps-elements/drag-and-drop"
+  },
+  {
+    "from": "troubleshooting/nlps/mysql-db-test-cases",
+    "to": "help/steps-elements/mysql-db-test-cases"
+  },
+  {
+    "from": "troubleshooting/nlps/need-for-clearing-cookies",
+    "to": "help/steps-elements/need-for-clearing-cookies"
+  },
+  {
+    "from": "troubleshooting/nlps/ui-identifier",
+    "to": "help/steps-elements/ui-identifier"
+  },
+  {
+    "from": "troubleshooting/nlps/unable-to-capture-dropdown-element",
+    "to": "help/steps-elements/unable-to-capture-dropdown-element"
+  },
+  {
+    "from": "troubleshooting/nlps/unable-to-click-checkbox",
+    "to": "help/steps-elements/unable-to-click-checkbox"
+  },
+  {
+    "from": "troubleshooting/nlps/unable-to-retrieve-value",
+    "to": "help/steps-elements/unable-to-retrieve-value"
+  },
+  {
+    "from": "troubleshooting/nlps/unable-to-select-radiobutton",
+    "to": "help/steps-elements/unable-to-select-radiobutton"
+  },
+  {
+    "from": "troubleshooting/nlps/upload-files",
+    "to": "help/steps-elements/upload-files"
+  },
+  {
+    "from": "troubleshooting/on-prem/general-issues",
+    "to": "help/agent-setup/general-issues"
+  },
+  {
+    "from": "troubleshooting/on-prem/restart-docker",
+    "to": "help/agent-setup/restart-docker"
+  },
+  {
+    "from": "troubleshooting/rest-api/troubleshooting-api-testcase-failure",
+    "to": "help/execution-apis/troubleshooting-api-testcase-failure"
+  },
+  {
+    "from": "troubleshooting/salesforce-testing/most-common-issues",
+    "to": "help/execution-apis/most-common-issues"
+  },
+  {
+    "from": "troubleshooting/setup/secured-business-application-support",
+    "to": "help/desktop-windows/secured-business-application-support"
+  },
+  {
+    "from": "troubleshooting/setup/server-docker-deployment-errors",
+    "to": "help/agent-setup/server-docker-deployment-errors"
+  },
+  {
+    "from": "troubleshooting/setup/troubleshooting-restricted-access",
+    "to": "help/agent-setup/troubleshooting-restricted-access"
+  },
+  {
+    "from": "troubleshooting/web-apps/chrome-settings",
+    "to": "help/web-testing/chrome-settings"
+  },
+  {
+    "from": "troubleshooting/web-apps/collecting-har-file",
+    "to": "help/web-testing/collecting-har-file"
+  },
+  {
+    "from": "troubleshooting/web-apps/issues-with-browser-sessions",
+    "to": "help/web-testing/issues-with-browser-sessions"
+  },
+  {
+    "from": "troubleshooting/web-apps/issues-with-ui-identifiers",
+    "to": "help/web-testing/issues-with-ui-identifiers"
+  },
+  {
+    "from": "troubleshooting/web-apps/page-loading-issues",
+    "to": "help/web-testing/page-loading-issues"
+  },
+  {
+    "from": "troubleshooting/web-apps/test-execution-queued-for-a-long-time",
+    "to": "help/web-testing/test-execution-queued-for-a-long-time"
+  },
+  {
+    "from": "troubleshooting/web-apps/url-not-accessible",
+    "to": "help/web-testing/url-not-accessible"
+  }
+]

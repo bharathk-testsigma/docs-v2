@@ -179,7 +179,7 @@ The activity log tab on the connection details page displays the information abo
 
 <br>
 
-> Refer to the [documentation on Salesforce troubleshooting](https://testsigma.com/docs/troubleshooting/salesforce-testing/most-common-issues/) guide for the most common issues while creating the metadata connection.
+> Refer to the [documentation on Salesforce troubleshooting](https://testsigma.com/docs/suite/help/execution-apis/most-common-issues/) guide for the most common issues while creating the metadata connection.
 
 
 ---

@@ -18,6 +18,9 @@ const filters = filtersForProduct(isArcus ? 'arcus' : 'suite');
 // True when the current page lives in the API reference section
 const isApiPage = pathname.includes('/arcus/api-reference/') || pathname.includes('/suite/api/');
 
+// True when the current page lives in the Help section
+const isHelpPage = pathname.includes('/suite/help/') || pathname.includes('/arcus/help/');
+
 function extractProductSections(entries: any[]): any[] {
   const group = entries.find(
     (e: any) => e.type === 'group' && e.label.toLowerCase() === productLabel.toLowerCase()
@@ -28,7 +31,8 @@ function extractProductSections(entries: any[]): any[] {
 const allSections = extractProductSections(sidebar);
 
 // On API pages: show only the API Reference section.
-// On doc pages: hide API Reference (it lives under the API tab).
+// On Help pages: show only the Help section.
+// On doc pages: hide both API Reference and Help (they live under their own tabs).
 // (The Changelog tab uses a splash layout with no sidebar.)
 const sections = isApiPage
   ? (() => {
@@ -37,12 +41,22 @@ const sections = isApiPage
       );
       return apiEntry ? [apiEntry] : allSections;
     })()
+  : isHelpPage
+  ? (() => {
+      // Unwrap the Help group so each category (Agent & Setup, Web Testing, …)
+      // renders as its own top-level section — same flat look as the Docs nav,
+      // not a single "Help" group with collapsible sub-folders.
+      const helpEntry = allSections.find(
+        (e: any) => e.type === 'group' && e.label === 'Help'
+      );
+      return helpEntry ? helpEntry.entries : allSections;
+    })()
   : allSections.filter(
-      (e: any) => !(e.type === 'group' && e.label === 'API Reference')
+      (e: any) => !(e.type === 'group' && (e.label === 'API Reference' || e.label === 'Help'))
     );
 ---
 
-{!isApiPage && (
+{!isApiPage && !isHelpPage && (
   <div class="ts-app-filter" data-app-filter-root>
     <p class="ts-app-filter-label">{isArcus ? 'Filter by area' : 'Filter by app type'}</p>
     <div class="ts-app-filter-chips" role="group" aria-label="Filter docs by app type">
@@ -94,7 +108,9 @@ const sections = isApiPage
   // (including general/universal docs) is hidden, and any sub-group / section
   // left empty is collapsed away. Matching sub-groups are auto-expanded so
   // their docs are visible. "All" restores everything.
-  // Selection persists in localStorage and re-applies after navigation.
+  // Selection persists in localStorage and re-applies after navigation — but
+  // only while you stay within docs that belong to it; landing on a page the
+  // filter doesn't cover falls back to "All" (see currentFilter).
   const STORAGE_KEY = 'ts-app-filter';
   const ALL = 'all';
 
@@ -171,7 +187,17 @@ const sections = isApiPage
   function currentFilter() {
     const ids = new Set(FILTERS.map((t) => t.id));
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored && (stored === ALL || ids.has(stored)) ? stored : ALL;
+    const valid = stored && (stored === ALL || ids.has(stored)) ? stored : ALL;
+    if (valid === ALL) return ALL;
+    // Only keep a specific filter if the page we're actually on belongs to it.
+    // Otherwise a persisted filter (e.g. "Web application") would stay active on
+    // a general page like Introduction — hiding that page's own nav section and
+    // showing a chip that doesn't apply. Fall back to All and clear the stale value.
+    if (!appTypesForHref(location.pathname).includes(valid)) {
+      localStorage.removeItem(STORAGE_KEY);
+      return ALL;
+    }
+    return valid;
   }
 
   function init() {

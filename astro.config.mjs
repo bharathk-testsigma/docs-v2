@@ -1,6 +1,23 @@
 // @ts-check
+import { readFileSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+
+// Help-tab migration redirects (old troubleshooting/FAQ URLs → /help/).
+// Generated from scripts/help-move-map.json — the same source of truth used by
+// the migration script and public/_redirects, so the three can never drift.
+// NOTE on `base: '/docs'`: Astro applies the base to the redirect's *source*
+// (the emitted page lands under dist/docs/…), but NOT to the *destination*
+// string — so the destination must include the `/docs` prefix explicitly.
+const helpMoves = JSON.parse(
+  readFileSync(new URL('./scripts/help-move-map.json', import.meta.url), 'utf8')
+);
+const helpRedirects = Object.fromEntries(
+  helpMoves.map(({ from, to }) => [
+    `/suite/${from}/`,
+    { status: 301, destination: `/docs/suite/${to}/` },
+  ])
+);
 
 // ────────────────────────────────────────────────────────────────────────────
 //  Testsigma Docs — Astro + Starlight config
@@ -31,6 +48,9 @@ export default defineConfig({
   // NOTE: the old site also auto-redirected underscore URLs to hyphen URLs
   // (e.g. /manage_projects/ → /manage-projects/). See public/_redirects and
   // the README "URL parity" section for how that is handled at the host.
+  // The Help-tab moves are generated above from scripts/help-move-map.json.
+  redirects: helpRedirects,
+
   integrations: [
     starlight({
       title: 'Testsigma Docs',
@@ -182,9 +202,7 @@ export default defineConfig({
             { label: 'Testsigma Terminal',  autogenerate: { directory: 'suite/testsigma-terminal' } },
             { label: 'Testsigma Tunnel',    autogenerate: { directory: 'suite/testsigma-tunnel' } },
             { label: 'Debugging',           autogenerate: { directory: 'suite/debugging' } },
-            { label: 'Troubleshooting',     autogenerate: { directory: 'suite/troubleshooting' } },
             { label: 'Best Practices',      autogenerate: { directory: 'suite/best-practices' } },
-            { label: 'FAQs',                autogenerate: { directory: 'suite/faqs' } },
             { label: 'API Reference', items: [
                 { label: 'Overview',      slug: 'suite/api/overview' },
                 { label: 'Projects',      items: [
@@ -197,14 +215,19 @@ export default defineConfig({
                     { label: 'Get test case priorities', slug: 'suite/api/test-cases/get-priorities' },
                     { label: 'Get test case labels',     slug: 'suite/api/test-cases/get-labels' },
                     { label: 'Get requirements',         slug: 'suite/api/test-cases/get-requirements' },
-                    { label: 'Get test steps',           slug: 'suite/api/test-cases/get-test-steps' },
-                    { label: 'Create test step',         slug: 'suite/api/test-cases/create-test-step' },
-                    { label: 'Update test step',         slug: 'suite/api/test-cases/update-test-step' },
-                    { label: 'Delete test step',         slug: 'suite/api/test-cases/delete-test-step' },
                     { label: 'Update results',           slug: 'suite/api/test-cases/update-results' },
                     { label: 'Trigger a rerun',          slug: 'suite/api/test-cases/trigger-rerun' },
                     { label: 'Stop a rerun',             slug: 'suite/api/test-cases/stop-rerun' },
                     { label: 'Get execution details',    slug: 'suite/api/test-cases/get-test-case-execution-details' },
+                  ]},
+                { label: 'Test Steps',    items: [
+                    { label: 'Create a test step',         slug: 'suite/api/test-steps/create-test-step' },
+                    { label: 'Create multiple test steps', slug: 'suite/api/test-steps/create-multiple-test-steps' },
+                    { label: 'Retrieve a test step',       slug: 'suite/api/test-steps/retrieve-test-step' },
+                    { label: 'List test case steps',       slug: 'suite/api/test-steps/list-test-case-steps' },
+                    { label: 'Search NLP templates',       slug: 'suite/api/test-steps/search-nlp-templates' },
+                    { label: 'Update a test step',         slug: 'suite/api/test-steps/update-test-step' },
+                    { label: 'Delete a test step',         slug: 'suite/api/test-steps/delete-test-step' },
                   ]},
                 { label: 'Elements',      items: [
                     { label: 'Get elements',     slug: 'suite/api/elements/get-elements' },
@@ -254,6 +277,16 @@ export default defineConfig({
                     { label: 'Refresh Salesforce metadata', slug: 'suite/api/integrations/refresh-salesforce-metadata' },
                     { label: 'Get refresh status',          slug: 'suite/api/integrations/get-refresh-status' },
                   ]},
+              ]},
+            { label: 'Help', items: [
+                { label: 'Agent & Setup',      autogenerate: { directory: 'suite/help/agent-setup' } },
+                { label: 'Web Testing',        autogenerate: { directory: 'suite/help/web-testing' } },
+                { label: 'Mobile Testing',     autogenerate: { directory: 'suite/help/mobile-testing' } },
+                { label: 'Steps & Elements',   autogenerate: { directory: 'suite/help/steps-elements' } },
+                { label: 'Copilot & Terminal', autogenerate: { directory: 'suite/help/copilot-terminal' } },
+                { label: 'Execution & APIs',   autogenerate: { directory: 'suite/help/execution-apis' } },
+                { label: 'Desktop & Windows',  autogenerate: { directory: 'suite/help/desktop-windows' } },
+                { label: 'General How-Tos',    autogenerate: { directory: 'suite/help/general-howtos' } },
               ]},
           ],
         },
@@ -340,6 +373,9 @@ export default defineConfig({
                     { label: 'Get test run statuses',    slug: 'arcus/api-reference/settings/get-test-run-statuses' },
                     { label: 'Get users',                slug: 'arcus/api-reference/settings/get-users' },
                   ]},
+              ]},
+            { label: 'Help', items: [
+                { label: 'Getting Started', autogenerate: { directory: 'arcus/help' } },
               ]},
           ],
         },

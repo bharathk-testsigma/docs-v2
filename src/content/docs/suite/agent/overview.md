@@ -12,15 +12,15 @@ Testsigma allows you to run tests on your local machines/devices and Testsigma C
 ---
 
 ## **Important Items on Testsigma Agent**
-- For more information on frequently asked questions regarding Testsigma Agent, refer to the [documentation on Testsigma Agent FAQ](https://testsigma.com/docs/agent/faqs/)
+- For more information on frequently asked questions regarding Testsigma Agent, refer to the [documentation on Testsigma Agent FAQ](https://testsigma.com/docs/suite/help/agent-setup/agent-faqs/)
 
 
-- To know the reasons why Testsigma Agent is required for Local Test Plan/Ad-hoc Runs in Testsigma, refer to the [documentatio on why do we need Testsigma Agent?](https://testsigma.com/docs/agent/faqs/)
+- To know the reasons why Testsigma Agent is required for Local Test Plan/Ad-hoc Runs in Testsigma, refer to the [documentatio on why do we need Testsigma Agent?](https://testsigma.com/docs/suite/help/agent-setup/agent-faqs/)
 
 - For more information on configuring system requirements for Testsigma Agent, refer to the [documentation on minimum system requirements for Testsigma Agent](https://testsigma.com/docs/agent/pre-requisite/)
 
-- Your security team might have some questions regarding the working of Testsigma Agent and how the data communication works. For more information on the functions of Testsigma Agent, refer to the [documentation on how does Testsigma Agent work](https://testsigma.com/docs/agent/faqs/)
+- Your security team might have some questions regarding the working of Testsigma Agent and how the data communication works. For more information on the functions of Testsigma Agent, refer to the [documentation on how does Testsigma Agent work](https://testsigma.com/docs/suite/help/agent-setup/agent-faqs/)
 
-- If you face any issues during the installation, starting or registering the Testsigma Agent, refer to the [documentation on Agent - Startup and Registration Errors](https://testsigma.com/docs/agent/troubleshooting/how-to-fix-setup-issues/)
+- If you face any issues during the installation, starting or registering the Testsigma Agent, refer to the [documentation on Agent - Startup and Registration Errors](https://testsigma.com/docs/suite/help/agent-setup/how-to-fix-setup-issues/)
 
 ---
