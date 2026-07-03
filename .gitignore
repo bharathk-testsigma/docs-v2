@@ -19,3 +19,6 @@ public/ask-index.partial.json
 
 .claude
 
+playwright-report
+test-results
+crawl-report.json

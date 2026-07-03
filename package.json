@@ -7,7 +7,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "build:ask-index": "node --env-file=.env scripts/build-ask-index.mjs",
-    "dev:ask": "node --import tsx --env-file=.env scripts/dev-server.mjs"
+    "dev:ask": "node --import tsx --env-file=.env scripts/dev-server.mjs",
+    "test:crawl": "node scripts/crawl-sitemap.mjs",
+    "test:e2e": "playwright test",
+    "test:all": "npm run test:crawl && npm run test:e2e",
+    "test:report": "playwright show-report"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.56.0",
@@ -16,6 +20,7 @@
     "sharp": "^0.34.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.48.0",
     "js-yaml": "^4.1.0",
     "tsx": "^4.22.4"
   }
