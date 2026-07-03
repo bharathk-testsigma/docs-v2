@@ -6,7 +6,7 @@ sidebar:
   badge: { text: PUT, variant: note }
 api:
   method: PUT
-  path: /projects/:project_id/step_groups/:step_group_id
+  path: /projects/{project_id}/step_groups/{step_group_id}
   baseUrl: https://test-management.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project the step group belongs to." }

@@ -6,7 +6,7 @@ sidebar:
   badge: { text: GET, variant: tip }
 api:
   method: GET
-  path: /execution_results/:run_id
+  path: /execution_results/{run_id}
   baseUrl: https://app.testsigma.com/api/v1
   pathParams:
     - { name: run_id, desc: "The execution result ID returned when you triggered the test plan." }

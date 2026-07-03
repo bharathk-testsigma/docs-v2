@@ -52,6 +52,6 @@ The Copilot in Testsigma helps you debug, execute, and modify test cases in real
 12. Click **Add to test case** to add the generated steps into the current test case.
 
 
-> For troubleshooting details and frequently asked questions, refer to the [documentation on Copilot FAQs](https://testsigma.com/docs/copilot/faqs-on-copilot/).
+> For troubleshooting details and frequently asked questions, refer to the [documentation on Copilot FAQs](https://testsigma.com/docs/suite/help/copilot-terminal/faqs-on-copilot/).
 
 ---

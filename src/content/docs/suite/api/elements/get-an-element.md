@@ -6,7 +6,7 @@ sidebar:
   badge: { text: GET, variant: tip }
 api:
   method: GET
-  path: /ui_identifiers/:element_id
+  path: /ui_identifiers/{element_id}
   baseUrl: https://app.testsigma.com/api/v1
   pathParams:
     - { name: element_id, desc: "The ID of the element to retrieve." }
