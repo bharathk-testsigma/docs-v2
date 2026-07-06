@@ -13,6 +13,10 @@ npm-debug.log*
 # macOS
 .DS_Store
 
+# Playwright test output
+test-results/
+playwright-report/
+
 # Ask index resumable build checkpoint (transient; final files are committed)
 public/ask-index.partial.bin
 public/ask-index.partial.json
