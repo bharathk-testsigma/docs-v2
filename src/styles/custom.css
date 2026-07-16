@@ -144,8 +144,11 @@
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
-/* Remove bottom padding from the title panel so there's no gap before article content */
-main > .content-panel:first-child {
+/* Remove bottom padding from the title panel so there's no gap before article content.
+   Targeted via :has() rather than :first-child — in production, Astro hoists
+   ApiMarkdownContent's <script> as main's literal first child, which breaks a
+   positional :first-child match even though the title panel is still visually first. */
+.content-panel:has(.ts-page-title-wrap) {
   padding-bottom: 0 !important;
 }
 /* First <hr> = title divider, keep it with tight spacing */
