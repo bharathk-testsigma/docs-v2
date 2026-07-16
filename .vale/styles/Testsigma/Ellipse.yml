@@ -1,0 +1,9 @@
+extends: substitution
+message: "Use '%s' instead of '%s' — the UI's three-dot menu icon is an ellipsis (⋮), not an ellipse."
+ignorecase: true
+level: warning
+action:
+  name: replace
+swap:
+  ellipses: ellipsis (⋮)
+  ellipse: ellipsis (⋮)
