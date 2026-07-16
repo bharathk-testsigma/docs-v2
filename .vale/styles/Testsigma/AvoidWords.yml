@@ -1,0 +1,9 @@
+extends: existence
+message: "Avoid '%s' — address the reader as 'you' instead of 'the user', drop 'currently' unless contrasting a past or future state, and skip 'please' in instructions."
+link: https://learn.microsoft.com/en-us/style-guide/grammar/person
+ignorecase: true
+level: warning
+tokens:
+  - the users?
+  - currently
+  - please

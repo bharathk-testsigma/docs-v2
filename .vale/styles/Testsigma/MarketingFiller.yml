@@ -1,0 +1,9 @@
+extends: existence
+message: "Avoid marketing filler like '%s' — state the concrete behavior instead."
+ignorecase: true
+level: error
+tokens:
+  - round[- ]trip
+  - without manual intervention
+  - on successful execution
+  

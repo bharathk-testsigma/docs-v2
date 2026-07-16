@@ -21,6 +21,10 @@ playwright-report/
 public/ask-index.partial.bin
 public/ask-index.partial.json
 
+# Vale: Microsoft style is fetched via `vale sync` (Packages in .vale.ini),
+# so don't vendor it. Our own Testsigma style and vocab are committed.
+.vale/styles/Microsoft/
+
 .claude
 
 playwright-report

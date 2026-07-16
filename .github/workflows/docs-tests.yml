@@ -16,6 +16,27 @@ on:
         type: string
 
 jobs:
+  vale-lint:
+    name: Vale prose lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Run Vale
+        uses: errata-ai/vale-action@v2
+        with:
+          files: '["src/content/docs"]'
+          fail_on_error: false
+          reporter: github-pr-check
+          filter_mode: added
+
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 20
