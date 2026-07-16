@@ -1,0 +1,10 @@
+extends: substitution
+message: "Use '%s' instead of '%s' — MSTP drops 'on' after 'Click'."
+link: https://learn.microsoft.com/en-us/style-guide/procedures-instructions/step-by-step-instructions
+ignorecase: true
+level: warning
+action:
+  name: replace
+swap:
+  "[Cc]lick on the": Click the
+  "[Cc]lick on": Click

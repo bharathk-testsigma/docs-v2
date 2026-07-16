@@ -1,0 +1,9 @@
+extends: existence
+message: "Match the verb to the control: 'Select' for dropdowns/options, 'Enter' for text fields, 'Click' for buttons — don't mix these. Found: '%s'."
+link: https://learn.microsoft.com/en-us/style-guide/procedures-instructions/step-by-step-instructions
+ignorecase: true
+level: warning
+tokens:
+  - \b(?:Click|Enter)\b[^\n.]{0,40}\b(?:drop-?down|dropdown|options?)\b
+  - \b(?:Click|Select)\b[^\n.]{0,40}\b(?:text ?box|text ?field|input ?field)\b
+  - \b(?:Select|Enter)\b[^\n.]{0,40}\bbutton\b

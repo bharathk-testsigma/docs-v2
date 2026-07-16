@@ -1,0 +1,22 @@
+Atto
+Arcus
+Testsigma
+BYOK
+Copilot
+NLP
+NLPs
+Testsigma Terminal
+Testsigma Tunnel
+Testsigma Agent
+Testsigma Recorder
+Testsigma Connect
+Testsigma Labs
+Testsigma Cloud
+Testsigma Private Grid
+Testsigma SMS Forwarder
+Testsigma Chrome Extension
+Testsigma Mantis
+Agentic
+TSRx
+AfterTest
+BeforeTest
