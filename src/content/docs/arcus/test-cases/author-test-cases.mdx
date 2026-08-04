@@ -1,0 +1,63 @@
+---
+title: Author test cases
+description: Create a test case, set its properties, and choose between the Documentation and Steps templates.
+pageType: task
+verified: 2026-07
+covers:
+  - Create a test case
+  - Test case properties
+  - Choose a template
+sidebar:
+  order: 10
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+A test case defines one scenario: its steps, preconditions, and expected results. You create it in a folder, classify it with properties, and write its content in one of two templates. QI Home can also [generate test cases](/arcus/qi-home/generate/ad-hoc/) for you.
+
+## Before you begin
+
+- A [project](/arcus/get-started/projects/) and [folders](/arcus/test-cases/organize-test-cases/) exist.
+
+## Create a test case
+
+<Steps>
+
+1. **Open the dialog** — Go to **Test Cases** and click **+ Create**. Or click the kebab menu next to a folder and select **Create Testcase**.
+
+2. **Describe it** — Enter a title and an optional description, and choose a template type.
+
+3. **Place it** — Click **Folder**, choose a location, and click **Select Folder**. Set any other properties.
+
+4. **Create** — Click **Create**, then add your test steps on the details page. Everything auto-saves.
+
+</Steps>
+
+## Test case properties
+
+Properties classify a test case; set them at creation or later in the **Test Case Properties** section:
+
+| Property            | What it sets                                                                        |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| **Location**        | The folder that stores the test case                                                |
+| **Priority**        | Urgency and execution order                                                         |
+| **Owner**           | The team member responsible                                                         |
+| **Reviewer**        | The team member who reviews it                                                      |
+| **Automation Type** | Automated · Not Automated · Automation Not Required · Can't Be Automated · Obsolete |
+| **Status**          | Lifecycle state, such as Draft or In Progress                                       |
+| **Test Case Type**  | Functional, Regression, Smoke, and similar                                          |
+| **Requirements**    | Linked Jira stories                                                                 |
+| **Labels**          | Tags from the label list                                                            |
+| **Attachments**     | Supporting files                                                                    |
+
+<Aside type="note">
+  The available values are editable under **Settings → Manage Properties**.
+</Aside>
+
+## Choose a template
+
+Two templates shape the test case content. Both accept attachments up to 25 MB — screenshots, logs, or documents.
+
+**Documentation Template** — one block each for preconditions, test steps, and expected results. Use it for simple tests. For example: title "Login Functionality", precondition "a valid username and password", steps to the login page, expected result "the user is redirected to the dashboard".
+
+**Steps Template** — every step carries its own expected result. Use it when granularity matters. For example, a registration flow where entering credentials, submitting, and verifying the confirmation each assert their own outcome.

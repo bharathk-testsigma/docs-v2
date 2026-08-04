@@ -1,0 +1,29 @@
+---
+title: Gearset
+description: Fire a Testsigma test plan from a Gearset CI job using an outgoing webhook on deployment.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 85
+  label: Gearset
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Gearset CI jobs send outgoing webhooks when a deployment runs. Pointing one webhook at the trigger endpoint runs the test plan on every Salesforce deployment. The configuration is four fields on the job — URL, payload, authorisation, and headers.
+
+<Prerequisites>
+
+- The test plan and an API key exist. The endpoint URL is under **Test Plans → CI/CD Integrations → REST API call to start Test Plan**.
+
+</Prerequisites>
+
+## Configure the webhook
+
+In the CI job's **Outgoing webhooks** section:
+
+- **Outgoing webhook url** — the trigger endpoint from the cURL.
+- **Payload** — **Custom**, with the body `{"executionId": "<id>"}`.
+- **Authentication** — **Authorization**. Credentials are `Bearer <API-KEY>`.
+- **Headers** — `Accept: application/json`; **Content-Type** `application/json`.

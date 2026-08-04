@@ -1,0 +1,81 @@
+---
+title: Desktop test data types
+description: The nine test data types a step can read, the sigil that selects each one, and when to reach for it.
+pageType: reference
+verified: 2026-07
+covers:
+  - Choose a type in a step
+  - The nine types
+  - Plain text
+  - Parameter
+  - Runtime
+  - Environment
+  - Random
+sidebar:
+  label: Test Data Types
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Every value a Desktop (Beta) test step consumes has a type, and the type decides where the value comes from: typed in, read from a profile, captured mid-run, or generated. This page lists all nine and the prefix character that selects each one.
+
+## Choose a type in a step
+
+Write a step with a test data placeholder, then click the placeholder. The **Test Data Types** dropdown opens with the nine types below.
+
+## The nine types
+
+Each type has a sigil that identifies it in a step, which is faster than the dropdown once you know them.
+
+| Type | Sigil | Value comes from |
+| --- | --- | --- |
+| Plain Text | none | What you type, fixed for every run |
+| Parameter | `@` | A column in the linked test data profile |
+| Runtime | `$` | A value stored earlier in the same run |
+| Environment | `*` | The selected environment's variables |
+| Random | `~` | A generated alphanumeric string |
+| Data Generator | `!` | A generator function, for realistic values |
+| Phone Number | — | A Testsigma-provisioned number that can receive SMS |
+| Mailbox | — | A Testsigma-provisioned mailbox that can receive email |
+| Upload | — | A file in the project's uploads |
+
+## Plain text
+
+A fixed value, used for anything that does not change between runs: a file path, a label, a constant.
+
+To enter a deliberately empty value, use the string `key_blank`. That submits a blank rather than skipping the field, which is what you need to test a required-field validation.
+
+## Parameter
+
+Reads a named column from the test data profile linked to the test case. Write `@Email` for a column called `Email`.
+
+<Aside type="note">
+A parameter only resolves if the test case is linked to the profile that holds it. Link the profile first, then the step repeats once per data set. An unlinked parameter fails at run time, not at authoring time.
+</Aside>
+
+## Runtime
+
+Holds a value captured during the run. A step using the **Store** keyword writes it, and later steps read it with `$`.
+
+This is how you assert on something the application generated: store a value one screen produces, then verify it where it appears next. Runtime values live for the run, not beyond it.
+
+## Environment
+
+Reads from the environment selected for the run, so one test case works against development, staging, UAT, and production without edits. Write `*` followed by the variable name.
+
+Server names, file paths, and connection details belong here. Environment variables are scoped to the project.
+
+<Aside type="note">
+Renaming an environment variable changes it across every environment in the project, not just the one you are editing. The product warns you about this on the environment page.
+</Aside>
+
+## Random
+
+Generates an alphanumeric string of the length you specify. `~|25|` produces 25 characters, and the length can be 1 to 256.
+
+Use it where the value must be unique per run but its content does not matter, such as a new username during a signup test.
+
+## Related
+
+- [Desktop test data profiles](/suite/windows-beta/test-data/test-data-profiles/) — what the `@` parameter reads
+- [Desktop data generators](/suite/windows-beta/test-data/data-generators/) — the `!` type in full

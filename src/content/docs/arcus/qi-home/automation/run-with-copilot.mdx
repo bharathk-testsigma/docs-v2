@@ -1,0 +1,82 @@
+---
+title: Run a test case with Copilot
+description: Execute automated steps in a live browser with the Copilot panel, on Testsigma Lab or your local devices.
+pageType: task
+verified: 2026-07
+covers:
+  - Start a cloud session
+  - Start a local session
+  - Complete the session
+sidebar:
+  order: 30
+  label: Run with Copilot
+---
+
+import { Aside, Steps, TabItem, Tabs } from "@astrojs/starlight/components";
+
+Copilot executes a test case's automated steps in a live browser, with a panel showing each step as it runs. Run it on **Testsigma Lab** with no local setup, or on **Local Devices** for private apps, local builds, and physical mobile devices.
+
+## Before you begin
+
+- A test case with automated steps is saved in your library — see [Agentic Learning](/arcus/qi-home/automation/agentic-learning/).
+- For cloud: your application is reachable from a cloud environment.
+- For local: **Testsigma Terminal** is running on your desktop. Copilot cannot start a local session without it.
+
+## Start a cloud session
+
+<Steps>
+
+1. **Pick the run mode** — Open the test case and hover over **Run**. Click **Run with Copilot**.
+
+2. **Configure** — In the dialog, keep **Testsigma Lab** as the **Test Lab**. Set the **Environment**, an optional **Debug Point** step, and the **Run till failed step** toggle.
+
+3. **Launch** — Click **Launch**. The cloud machine takes 10 to 20 seconds to provision.
+
+</Steps>
+
+The **Run** dropdown offers two other modes. **Run with AI** re-runs the learning flow with AI browser control. **Run Automated Steps** executes the saved steps with no live browser.
+
+When the browser is ready, the Copilot panel opens beside it. Steps execute in sequence, each marked with a green checkmark — the [execution controls](/arcus/qi-home/automation/copilot-controls/) are on their own page.
+
+## Start a local session
+
+<Tabs>
+
+<TabItem label="Web">
+
+In the **Run with Copilot** dialog, set **Test Lab** to **Local Devices**. Pick the **Environment**, optional **Debug Point**, and **Run till failed step**, then click **Launch**.
+
+</TabItem>
+
+<TabItem label="Android">
+
+Set **Test Lab** to **Local Devices**. Pick the **Test Machine**, the **Device**, and the app under **App Source** — an **External link**, an APK from **Uploaded apps**, or **Add Manually**. Set the **Environment** and click **Launch**.
+
+</TabItem>
+
+<TabItem label="iOS">
+
+Same dialog as Android: pick the **Test Machine**, your iPhone, iPad, or simulator, and the .ipa under **App Source**. Set the **Environment** and click **Launch**.
+
+</TabItem>
+
+</Tabs>
+
+<Aside type="note">
+  If Terminal is not running, a prompt appears. Start Terminal and launch again.
+</Aside>
+
+## Complete the session
+
+<Steps>
+
+1. **Save the results** — When the confirmation dialog appears, click **Save Test Case**, pick the folder, and click **Save**.
+
+2. **End the session** — Click **Save and End**, or **Reject and End** to discard. **Dismiss** keeps the browser open.
+
+</Steps>
+
+<Aside type="note">
+  On cloud runs, the machine is released only when you end the session.
+  Dismissing the dialog keeps it running and consuming resources.
+</Aside>

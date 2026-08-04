@@ -1,0 +1,244 @@
+---
+/**
+ * CopyPage -- the split "Copy page" control from the reference.
+ *
+ * Two segments in one bordered shell, divided by a hairline:
+ *   - the main button copies the page's Markdown source
+ *   - the chevron opens a small menu (view the Markdown, copy the link)
+ *
+ * The Markdown comes from the `<page>.md` endpoint in src/pages/[...slug].md.ts,
+ * so the copied text is the real source rather than scraped DOM. The URL is
+ * computed at build time from the current route -- no client-side guessing.
+ */
+const path = Astro.url.pathname.replace(/\/$/, '');
+const mdUrl = (path === '' ? '/index' : path) + '.md';
+---
+
+{/* `data-pagefind-ignore`: this control sits inside the indexed content region,
+    so without it every search excerpt on the site opened with the button's own
+    labels -- "Copy page View as MarkdownCopy link" -- before the actual page
+    text. Pagefind indexes rendered DOM, so chrome has to opt out explicitly. */}
+<div class="ts-copy" data-pagefind-ignore data-ts-copy data-md={mdUrl}>
+	<button type="button" class="ts-copy-main" data-copy aria-live="polite">
+		<svg
+			class="ts-copy-icon"
+			width="14"
+			height="14"
+			viewBox="0 0 16 16"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="1.4"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			aria-hidden="true"
+		>
+			<rect x="5.5" y="5.5" width="8" height="8" rx="1.6"></rect>
+			<path d="M10.5 2.5h-7a1 1 0 0 0-1 1v7"></path>
+		</svg>
+		<span data-copy-label>Copy page</span>
+	</button>
+
+	<button
+		type="button"
+		class="ts-copy-caret"
+		data-menu-toggle
+		aria-expanded="false"
+		aria-haspopup="menu"
+		aria-label="More page actions"
+	>
+		<svg
+			width="12"
+			height="12"
+			viewBox="0 0 16 16"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="1.6"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			aria-hidden="true"
+		>
+			<path d="M4 6.5 8 10.5l4-4"></path>
+		</svg>
+	</button>
+
+	<div class="ts-copy-menu" data-menu role="menu" hidden>
+		<a class="ts-copy-menu-item" role="menuitem" href={mdUrl}>View as Markdown</a>
+		<button type="button" class="ts-copy-menu-item" role="menuitem" data-copy-link>
+			Copy link
+		</button>
+	</div>
+</div>
+
+<style>
+	.ts-copy {
+		position: relative;
+		display: flex;
+		align-items: stretch;
+		height: 32px;
+		border: 1px solid var(--ts-bd);
+		border-radius: 8px;
+		background: var(--ts-bg);
+	}
+
+	.ts-copy-main,
+	.ts-copy-caret {
+		display: inline-flex;
+		align-items: center;
+		gap: 7px;
+		border: none;
+		background: transparent;
+		color: var(--ts-tx2);
+		font: inherit;
+		font-size: 12.5px;
+		font-weight: 500;
+		cursor: pointer;
+		white-space: nowrap;
+	}
+
+	.ts-copy-main {
+		padding: 0 11px;
+		border-radius: 7px 0 0 7px;
+	}
+	.ts-copy-main:hover {
+		background: var(--ts-hover);
+		color: var(--ts-tx);
+	}
+
+	.ts-copy-caret {
+		padding: 0 8px;
+		border-radius: 0 7px 7px 0;
+		/* The hairline divider between the two segments. */
+		border-inline-start: 1px solid var(--ts-bd);
+		color: var(--ts-tx3);
+	}
+	.ts-copy-caret:hover {
+		background: var(--ts-hover);
+		color: var(--ts-tx);
+	}
+	.ts-copy-caret[aria-expanded='true'] svg {
+		transform: rotate(180deg);
+	}
+	.ts-copy-caret svg {
+		transition: transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+
+	.ts-copy-main:focus-visible,
+	.ts-copy-caret:focus-visible {
+		outline: 2px solid var(--ts-ac);
+		outline-offset: -2px;
+	}
+
+	/* ---- menu ---- */
+	.ts-copy-menu {
+		position: absolute;
+		top: calc(100% + 6px);
+		inset-inline-end: 0;
+		min-width: 168px;
+		display: flex;
+		flex-direction: column;
+		padding: 4px;
+		border: 1px solid var(--ts-bd);
+		border-radius: 8px;
+		background: var(--ts-bg);
+		box-shadow: 0 8px 24px rgb(0 0 0 / 10%);
+		z-index: 40;
+	}
+	.ts-copy-menu[hidden] {
+		display: none;
+	}
+	.ts-copy-menu-item {
+		text-align: start;
+		padding: 7px 9px;
+		border: none;
+		border-radius: 6px;
+		background: transparent;
+		color: var(--ts-tx2);
+		font: inherit;
+		font-size: 12.5px;
+		font-weight: 450;
+		cursor: pointer;
+		text-decoration: none;
+		white-space: nowrap;
+	}
+	.ts-copy-menu-item:hover {
+		background: var(--ts-hover);
+		color: var(--ts-tx);
+		text-decoration: none;
+	}
+
+	/* The label is the widest part; below the section-link breakpoint the icon
+	   alone carries it. */
+	@media (max-width: 62rem) {
+		.ts-copy-main span {
+			display: none;
+		}
+		.ts-copy-main {
+			padding: 0 9px;
+		}
+	}
+</style>
+
+<script>
+	document.querySelectorAll<HTMLElement>('[data-ts-copy]').forEach((root) => {
+		const mdUrl = root.dataset.md!;
+		const mainBtn = root.querySelector<HTMLButtonElement>('[data-copy]')!;
+		const label = root.querySelector<HTMLElement>('[data-copy-label]')!;
+		const toggle = root.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+		const menu = root.querySelector<HTMLElement>('[data-menu]')!;
+		const linkBtn = root.querySelector<HTMLButtonElement>('[data-copy-link]')!;
+
+		const original = label.textContent;
+		let resetTimer: number | undefined;
+
+		function flash(text: string) {
+			label.textContent = text;
+			window.clearTimeout(resetTimer);
+			resetTimer = window.setTimeout(() => {
+				label.textContent = original;
+			}, 1600);
+		}
+
+		async function write(text: string, ok: string) {
+			try {
+				await navigator.clipboard.writeText(text);
+				flash(ok);
+			} catch {
+				// Clipboard is unavailable on insecure origins and when permission
+				// is denied. Say so rather than silently appearing to succeed.
+				flash('Copy failed');
+			}
+		}
+
+		mainBtn.addEventListener('click', async () => {
+			try {
+				const res = await fetch(mdUrl);
+				if (!res.ok) throw new Error(String(res.status));
+				await write(await res.text(), 'Copied');
+			} catch {
+				flash('Copy failed');
+			}
+		});
+
+		linkBtn.addEventListener('click', () => {
+			write(window.location.href, 'Copied');
+			setOpen(false);
+		});
+
+		function setOpen(open: boolean) {
+			menu.hidden = !open;
+			toggle.setAttribute('aria-expanded', String(open));
+		}
+
+		toggle.addEventListener('click', () => setOpen(menu.hidden));
+
+		document.addEventListener('click', (e) => {
+			if (!root.contains(e.target as Node)) setOpen(false);
+		});
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && !menu.hidden) {
+				setOpen(false);
+				toggle.focus();
+			}
+		});
+	});
+</script>

@@ -1,0 +1,104 @@
+---
+title: Work with generated test plans
+description: QI Home generates Smoke, Feature, Regression, and Deep Regression plans. Review, accept, and link them to automation.
+pageType: task
+verified: 2026-07
+covers:
+  - Review a test plan
+  - Accept or reject the plans
+  - Link an automated test plan
+  - Track the test runs
+sidebar:
+  order: 70
+  label: Test Plans
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+QI Home generates four test plans for every session as soon as test cases exist — you never create or configure them. Each plan type is a superset of the one before it, so the set nests from Smoke out to Deep Regression.
+
+## The four plan types
+
+Each plan draws a different boundary around the session's test cases:
+
+| Plan type           | Scope                                                     |
+| ------------------- | --------------------------------------------------------- |
+| **Smoke**           | The smallest set of cases covering critical user paths    |
+| **Feature**         | All of Smoke, plus cases for individual feature behaviors |
+| **Regression**      | All of Feature, plus integration points and edge cases    |
+| **Deep Regression** | All of Regression, plus extended and non-functional cases |
+
+<Aside type="note">
+  The topmost generated plan type sets the scope for the **Confidence** metric.
+  The topmost type you actually execute supplies the pass rate. Run only Smoke
+  and Confidence reflects that narrow validation — see [QI
+  metrics](/arcus/qi-home/qi-metrics/).
+</Aside>
+
+## Before you begin
+
+- Test cases are generated and [accepted](/arcus/qi-home/generate/review-and-accept/) for the session.
+
+## Review a test plan
+
+<Steps>
+
+1. **Go to QI Home** — Select a session from the sidebar, then click the **Test Plan** tab.
+
+2. **Open a plan** — Click a plan type tab: **Smoke**, **Feature**, **Regression**, or **Deep Regression**.
+
+</Steps>
+
+The plan header shows its name, an **Auto Generated Plan** badge, a one-line scope description, the plan status, the case count, and a pass/fail progress bar. Below it, the breakdown splits cases into **Passed**, **Failed**, and **Others**.
+
+QI Home also detects the application type — Web, Android, or iOS — from your test cases. It suggests a machine configuration per plan, and mixed sessions can get separate configurations.
+
+## Accept or reject the plans
+
+Accepting is one global action: **Accept Plan** accepts all four types at once.
+
+<Steps>
+
+1. **Review all four tabs** — Check the scope of each plan type.
+
+2. **Decide** — Click **Accept Plan**, or **Reject** to dismiss the set.
+
+</Steps>
+
+On acceptance, QI Home creates in your project:
+
+- all four plans, named **[Session Name] | [Plan Type] Testing**, each with a generated description
+- one test run per feature area under each plan
+- entries in the global [Test Runs](/arcus/test-runs/manage-test-runs/) list, where runs can be filtered and assigned
+
+## Link an automated test plan
+
+Linking connects a generated plan to a Suite test plan, so automated results flow back into QI Home. Link each plan type separately.
+
+<Steps>
+
+1. **Open the plan** — On the **Test Plan** tab, open the plan type to link.
+
+2. **Start linking** — Click **Link plan** next to **Automated Test Plan**. The **Link Testsigma Automated Test Plan** modal opens.
+
+3. **Pick the target** — Select the **Project**, **Application**, **Version**, and **Test Plan**.
+
+4. **Link** — Click **Link**. The linked plan in Suite shows the Arcus reference in its **Test Plan Details** panel.
+
+</Steps>
+
+## Track the test runs
+
+Each run groups the cases of one feature area within a plan. A run shows its ID, name, test count, scheduled date range, and progress bar, and tracks cases across seven statuses:
+
+| Status          | Meaning                                   |
+| --------------- | ----------------------------------------- |
+| **Untested**    | Not executed yet                          |
+| **Passed**      | Executed and passed                       |
+| **Failed**      | Executed and failed                       |
+| **Blocked**     | Cannot run due to a dependency or blocker |
+| **Retest**      | Needs re-execution                        |
+| **Skipped**     | Intentionally skipped                     |
+| **In Progress** | Execution is ongoing                      |
+
+Switch between **Active Runs** and **Closed Runs**, and narrow the list with the filter bar: **Created at**, **Assignee**, **Label**, **Test Machine**, **Test Plan**.

@@ -1,0 +1,36 @@
+---
+title: Installation
+description: Install the three local applications that extend Suite onto your own machines, devices, and private networks.
+pageType: overview
+verified: 2026-07
+tableOfContents: false
+sidebar:
+  order: 0
+  label: Overview
+---
+
+import { CardGrid } from '@astrojs/starlight/components';
+import DocCard from '~/components/DocCard.astro';
+
+Suite runs in your browser. Three local applications extend it onto hardware and networks it cannot reach on its own. Install Testsigma Terminal to record and debug. Testsigma Agent orchestrates local runs, and Testsigma Tunnel reaches a private application.
+
+<CardGrid>
+	<DocCard
+		icon="terminal"
+		title="Testsigma Terminal"
+		href="/suite/installation/testsigma-terminal/"
+		description="The desktop application Copilot recording and local device testing require."
+	/>
+	<DocCard
+		icon="box"
+		title="Testsigma Agent"
+		href="/suite/installation/testsigma-agent/"
+		description="The local utility that queues runs, executes them, and returns results."
+	/>
+	<DocCard
+		icon="tunnel"
+		title="Testsigma Tunnel"
+		href="/suite/installation/testsigma-tunnel/"
+		description="Reach a locally hosted or private application from a cloud run."
+	/>
+</CardGrid>

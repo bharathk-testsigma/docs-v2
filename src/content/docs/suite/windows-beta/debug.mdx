@@ -1,0 +1,69 @@
+---
+title: Debug desktop test failures
+description: Work a Desktop (Beta) failure from the result to its root cause, from step evidence to the machine that ran it.
+pageType: task
+verified: 2026-07
+covers:
+  - Narrow down why it failed
+  - Check the machine side
+sidebar:
+  label: Debug
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Debugging a Desktop (Beta) failure is a move from symptom to cause. The result marks the step that stopped the run and holds its screenshot. The machine-side story lives on the local Windows machine that ran the test.
+
+<Prerequisites>
+
+- A run has failed, and you can open its result.
+- You can reach the Windows machine that ran the test.
+
+</Prerequisites>
+
+## Narrow down why it failed
+
+Most failures come from a short list of causes. Reading the evidence in order tells you which one you have.
+
+<Steps>
+
+1. **Find the failing step** — Open the result. Suite marks the step that failed and stopped execution.
+
+2. **Look at the evidence** — Check the screenshot taken at that moment against what the step expected.
+
+3. **Compare against the element** — Open the step's element information. An object the application no longer exposes looks different from an application that never opened.
+
+</Steps>
+
+These are the usual causes, roughly in order of how often they turn up:
+
+- The application changed, so a learned object no longer matches. Re-learn it — see [Elements](/suite/windows-beta/elements/).
+- The application was not open on the machine, or a different version was.
+- The machine was locked, or its screen state differed from when the objects were learned.
+- The agent on the machine was offline, so the run never started.
+- A real bug in the application under test.
+
+<Aside type="note">
+Desktop (Beta) runs execute only on your own Windows machines, so the machine's state — logged-in session, open application, application version — is part of every failure investigation.
+</Aside>
+
+## Check the machine side
+
+When the result's evidence is not enough, the agent's own logs carry what happened on the machine: whether the application responded, and what the automation session did.
+
+<Steps>
+
+1. **Confirm the agent is active** — On the **Agents** page, check the machine's **Status** and **Last Successful Ping**.
+
+2. **Pull the logs** — Collect the Agent logs from the machine. [Set the log level and send logs](/suite/installation/testsigma-agent/#set-the-log-level-and-send-logs) covers raising the level to `DEBUG` and sharing them with support.
+
+3. **Re-run** — Fix what you found, then re-run the test case on the same machine from the result or the test case editor.
+
+</Steps>
+
+## Related
+
+- [Desktop run results](/suite/windows-beta/results/) — the evidence a run leaves behind
+- [Desktop elements](/suite/windows-beta/elements/) — re-learning what the application changed
+- [Testsigma Agent](/suite/installation/testsigma-agent/) — logs, registration, and troubleshooting

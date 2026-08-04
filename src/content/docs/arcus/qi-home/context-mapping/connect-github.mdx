@@ -1,0 +1,68 @@
+---
+title: Connect GitHub
+description: Install the Arcus GitHub App so every pull request in your repositories flows into QI Home.
+pageType: task
+verified: 2026-07
+covers:
+  - Install the Arcus GitHub App
+  - Connect Jira for auto-mapping
+  - Verify the connection
+sidebar:
+  order: 20
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+The Arcus GitHub App feeds pull requests into QI Home. Once it is connected to a project, every PR in the connected repositories surfaces in the **Unmapped Context** view. QA maps each one and QI Home generates test cases from the changes.
+
+## Before you begin
+
+- You have an active [project](/arcus/get-started/projects/).
+- You have admin access to the GitHub organization.
+
+## Install the Arcus GitHub App
+
+<Steps>
+
+1. **Install the app** — Go to [github.com/apps/arcus-by-testsigma](https://github.com/apps/arcus-by-testsigma) and click **Install**.
+
+2. **Scope it** — Select the organization, then **All repositories** or specific ones under **Repository access**.
+
+3. **Authorize** — Click **Install & Authorize**. GitHub redirects you to Arcus.
+
+4. **Link the project** — In the **Connect GitHub** dialog, select the **Workspace** and **Project**, then click **Connect**.
+
+</Steps>
+
+From now on, pull requests in the connected repositories appear in **Unmapped Context**.
+
+## Connect Jira for auto-mapping
+
+With Jira connected too, a PR whose title or description carries a ticket ID like **PROJ-123** routes straight to the sprint holding that story — it skips **Unmapped Context** entirely.
+
+<Steps>
+
+1. **Open integrations** — In Arcus, go to **Settings → Integrations**.
+
+2. **Connect Jira** — Under **Jira**, click **Connect** and complete the flow.
+
+</Steps>
+
+<Aside type="note">
+  A PR without a ticket ID lands in **Unmapped Context** regardless, and QA
+  [maps it manually](/arcus/qi-home/context-mapping/map-context/).
+</Aside>
+
+## Verify the connection
+
+<Steps>
+
+1. **Check the status** — Go to **Settings → Integrations**. Under **GitHub**, the organization and repositories show **Connected**.
+
+2. **Raise a test PR** — Open a pull request in a connected repository.
+
+3. **Watch it arrive** — In QI Home, click **View** next to **Unmapped Context**. The PR appears within a few seconds.
+
+</Steps>
+
+If your developers also use a CLI tool, their captured context [unifies with the PR](/arcus/qi-home/context-mapping/overview/) automatically when it is raised.

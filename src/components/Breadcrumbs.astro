@@ -1,0 +1,92 @@
+---
+/**
+ * Breadcrumbs -- the trail shown in the content top bar.
+ *
+ * Derived from the sidebar tree for the current route rather than from URL
+ * segments: walk to the entry marked isCurrent and collect the group labels on
+ * the way. A page whose nav position differs from its file path still gets the
+ * right trail that way.
+ *
+ * The final crumb is the page itself and is not a link.
+ */
+import type { SidebarEntry } from '@astrojs/starlight/schema';
+import { isApiReferencePath, isArcusPath } from '../starlightRouteData';
+
+const { entry, sidebar } = Astro.locals.starlightRoute;
+
+function trailTo(entries: SidebarEntry[], acc: string[] = []): string[] | null {
+	for (const item of entries) {
+		if (item.type === 'link') {
+			if (item.isCurrent) return acc;
+		} else if (item.type === 'group') {
+			const found = trailTo(item.entries, [...acc, item.label]);
+			if (found) return found;
+		}
+	}
+	return null;
+}
+
+// Group labels arrive already humanized -- starlightRouteData.ts rewrites the
+// slug-shaped ones that Arcus's `autogenerate` groups produce, so the nav and
+// this trail cannot disagree about what a section is called.
+const ancestors = trailTo(sidebar) ?? [];
+
+// The API nav is that product's API group unwrapped (see starlightRouteData.ts),
+// so walking it yields the entity section but not the section it came from. Put
+// the root crumb back, otherwise an endpoint page reads "Projects / List
+// projects" with nothing saying which reference it belongs to. The label is the
+// product's own -- Arcus calls the section "API Reference", not "REST APIs".
+const apiRoot = isArcusPath(Astro.url.pathname) ? 'API Reference' : 'REST APIs';
+const crumbs = [
+	...(isApiReferencePath(Astro.url.pathname) ? [apiRoot] : []),
+	...ancestors,
+	entry.data.title,
+];
+---
+
+<nav class="ts-crumbs" aria-label="Breadcrumb">
+	{
+		crumbs.map((label, i) => (
+			<span class="ts-crumb-part">
+				<span class:list={['ts-crumb', { current: i === crumbs.length - 1 }]}>{label}</span>
+				{i < crumbs.length - 1 && <span class="ts-crumb-sep">/</span>}
+			</span>
+		))
+	}
+</nav>
+
+<style>
+	.ts-crumbs {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex-wrap: wrap;
+		font-size: 13px;
+		min-width: 0;
+	}
+	.ts-crumb-part {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+	.ts-crumb {
+		color: var(--ts-tx3);
+		font-weight: 400;
+		white-space: nowrap;
+	}
+	.ts-crumb.current {
+		color: var(--ts-tx);
+		font-weight: 500;
+	}
+	.ts-crumb-sep {
+		color: var(--ts-tx3);
+	}
+
+	/* On narrow screens keep only the current page, so the bar does not wrap
+	   under the actions. */
+	@media (max-width: 50rem) {
+		.ts-crumb-part:not(:last-child) {
+			display: none;
+		}
+	}
+</style>

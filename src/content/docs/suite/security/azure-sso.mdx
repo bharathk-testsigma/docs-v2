@@ -1,0 +1,44 @@
+---
+title: Azure SSO
+description: "Configure SAML single sign-on through Microsoft Entra ID: enterprise app, claims, certificate, and the Testsigma side."
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Azure SSO
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Azure SSO signs your team in through Microsoft Entra ID over SAML. You create an enterprise application, assign users, exchange URLs and the signing certificate with Testsigma, and Entra credentials work from then on.
+
+<Prerequisites>
+
+- An Azure account with Entra ID (Active Directory) and admin access.
+- Testsigma's SAML identifier: enable the **SAML** widget under **Organization Settings → Security (SSO)** and copy the `<id>` values it shows.
+
+</Prerequisites>
+
+## Create the enterprise application
+
+In the Azure portal, open **Manage Microsoft Entra ID → + New application → Enterprise Application → + Create your own application**. Name it, select **Integrate any other application (Non-gallery)**, and click **Create**. Then assign users: **Assign users and groups → + Add user/group**, select them, and click **Assign**.
+
+## Configure SAML in Azure
+
+<Steps>
+
+1. **Start the setup** — On the app's overview page, choose **Set up single sign on → SAML**.
+
+2. **Basic configuration** — **Entity ID** `https://id.testsigma.com/saml/<id>/metadata`, **Sign on URL** `https://id.testsigma.com/saml/<id>/callback`, **Relay State** `https://id.testsigma.com/`, logout URL empty — with `<id>` replaced by your identifier.
+
+3. **Claims** — Edit **User Attributes & Claims**, set the required claim's **Source attribute** to `user.userprincipalname`, and save.
+
+4. **Certificate** — Edit **SAML Signing Certificate**: signing option **SAML response and assertion**, algorithm **SHA-256**. Then download the **Federation Metadata XML** and copy the value between the first `<X509Certificate>` tags.
+
+5. **Note Azure's values** — From **Set Up Testsigma App**: the **Azure AD Identifier** and the **Login URL**.
+
+</Steps>
+
+## Configure Testsigma
+
+Under **Settings → Security**, click **Proceed** under **SAML**: **Entity ID** takes the Microsoft Entra Identifier, **SSO URL** takes the Login URL, and the certificate field takes the X509 value. Confirm to finish.

@@ -1,0 +1,44 @@
+---
+title: GitHub Actions
+description: Trigger Testsigma test plans from a GitHub Actions workflow that runs on every commit to the repository.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 15
+  label: GitHub Actions
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+GitHub Actions runs workflows from `.github/workflows/`. One workflow step calls the [shell script](/suite/integrations/ci-cd/shell-script/) committed to the repository. Every push then triggers the test plan and waits on the result, failing the workflow when tests fail.
+
+<Prerequisites>
+
+- The trigger script (here `run_smoke_tests.sh`) is committed, with `TESTSIGMA_API_KEY` and `TESTSIGMA_TEST_PLAN_ID` set. Inject the key from a repository secret.
+
+</Prerequisites>
+
+## Configure the workflow
+
+Create `.github/workflows/` if it does not exist, then add a workflow file per pipeline. The build step invokes the script:
+
+```yaml title=".github/workflows/testsigma-cicd.yml"
+name: Testsigma tests
+on: [push]
+jobs:
+  run-test-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trigger Testsigma test plan
+        env:
+          TESTSIGMA_API_KEY: ${{ secrets.TESTSIGMA_API_KEY }}
+        run: |
+          chmod +x ./run_smoke_tests.sh
+          ./run_smoke_tests.sh
+```
+
+<Aside type="note">
+Testsigma's reference workflow and script live in the [testsigmahq/Github-actions](https://github.com/testsigmahq/Github-actions) repository.
+</Aside>

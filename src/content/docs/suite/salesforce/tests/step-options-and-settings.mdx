@@ -1,0 +1,81 @@
+---
+title: Step options and settings
+description: The per-step actions on the Salesforce step toolbar, every Step Settings value, and the global timeout override.
+pageType: reference
+verified: 2026-07
+covers:
+  - Step actions
+  - Step Settings
+  - Global step timeout
+  - Update several steps at once
+sidebar:
+  label: Step Options & Settings
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Each Salesforce test step carries its own actions and its own settings. The actions sit on the step toolbar and change the step itself. The settings decide how the step behaves at run time, and they override the test case defaults.
+
+## Step actions
+
+Click a step to reveal its toolbar. The ellipsis icon opens the rest.
+
+| Action | Where | What it does |
+| --- | --- | --- |
+| Clear Step | Eraser icon | Removes the action and data from the step, leaving it empty |
+| Clone Step | Toolbar | Creates an identical copy, for a run of near-identical steps |
+| Delete Step | Toolbar | Removes the step permanently |
+| Disable Step | Toolbar | Leaves the step in place but skips it at run time |
+| Ignore Step Result | Ellipsis menu | Excludes this step's outcome from the test case result |
+| Enable Visual Testing | Ellipsis menu | Captures and compares the interface at this step |
+| Step Settings | Ellipsis menu | Opens the settings in the table below |
+| Step Above, Step Below | Toolbar | Inserts a new step on either side of this one |
+
+To reorder steps, drag the `⋮⋮` handle beside a step to its new position, then click **Save New Order** in the top right corner. The order is not saved until you do.
+
+## Step Settings
+
+Open these from the ellipsis menu on any step. Each one overrides the test case default for that step alone.
+
+| Setting | What it controls |
+| --- | --- |
+| Max. wait time | How long the step may take before it fails. Capped at 120 seconds |
+| Retries on step failure | How many times to re-attempt a failed step. Capped at 10 |
+| Screenshot capture | `Always`, `Only on step failure`, `No screenshot required`, or `Use step level settings` |
+| Pre-Requisite | Another step in the same test case that must pass before this one runs |
+| Stop Test Case execution on Test Step | Ends the test case when this step fails. On by default |
+| Ignore this step result in Test Case Result | Keeps a failure here out of the overall result |
+| Disable Step | Skips the step at run time. Off by default |
+| Enable Visual Testing for the Step | Compares the interface against the baseline at this step |
+| Enable Accessibility Testing for the step | Validates this step against accessibility standards |
+| Highlight element in screenshot | Outlines the acted-on element in the screenshot |
+
+<Aside type="note">
+`Use step level settings` appears only during execution, where it means "leave each step on whatever it was saved with". Highlight element in screenshot has to be enabled for your account by Testsigma support before the option does anything.
+</Aside>
+
+## Global step timeout
+
+A test plan can set one timeout for every step, and a toggle decides whether it wins against per-step values. The toggle lives under **Additional Settings** on the run form.
+
+| Test step timeout | Global step timeout | Toggle | Outcome |
+| --- | --- | --- | --- |
+| 30s (default) | 30s (default) | Off | Global applies, because it matches the default |
+| 30s (default) | 60s | Off | Global applies, overriding the default |
+| Some steps customised | Updated value | Off | Customised steps keep their own value; the rest take the global |
+| Some steps customised | Any value | On | Global applies to every step, overriding customised values |
+
+The pattern is worth stating plainly: with the toggle off the global is a default, and with it on the global is a rule.
+
+## Update several steps at once
+
+Select the checkboxes beside the steps you want to change, then click **Update Settings** in the menu bar.
+
+<Aside type="note">
+Bulk update cannot set **Pre-Requisite** or **Retries on step failure**. Those two have to be set on each step individually, and a bulk update leaves them untouched rather than warning you.
+</Aside>
+
+## Related
+
+- [Salesforce step types](/suite/salesforce/tests/step-types/) — the steps these settings attach to
+- [Author tests](/suite/salesforce/tests/author-tests/) — building the test case around them

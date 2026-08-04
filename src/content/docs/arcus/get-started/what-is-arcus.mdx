@@ -1,0 +1,37 @@
+---
+title: What is Arcus?
+description: One place for test cases, runs, plans, and reports, with QI Home generating and automating tests.
+pageType: concept
+verified: 2026-07
+sidebar:
+  order: 10
+---
+
+Arcus is the test management product in Testsigma. It stores test cases and organizes them into runs, plans, and reports. QI Home works inside it. It generates test cases from your requirements and automates those you accept.
+
+## Core objects
+
+Everything in Arcus lives inside a [project](/arcus/get-started/projects/). Within a project, you work with a small set of objects.
+
+| Object     | What it is                                                               |
+| ---------- | ------------------------------------------------------------------------ |
+| test case  | The steps, preconditions, and expected results for one scenario          |
+| step group | A reusable sequence of steps shared across test cases                    |
+| data set   | Input values a test case reads, for running one case against many values |
+| test run   | A selection of test cases executed and recorded as one cycle             |
+| test plan  | A named collection of test runs tracked toward a milestone               |
+| report     | A view of results across runs, plans, and requirements                   |
+
+Test cases sit in a folder tree and carry [versions](/arcus/test-cases/versions/). A [review workflow](/arcus/test-cases/review-management/) can gate them before they count as ready.
+
+## QI Home
+
+[QI Home](/arcus/qi-home/overview/) is the AI workspace. You attach context: user stories, PRDs, designs, files, or recordings. QI Home reads it and generates test cases mapped to your features. You review the results and accept the accurate ones. Coverage, test plans, and quality metrics update as you go. QI Home then automates accepted test cases through [Agentic Learning (Beta)](/arcus/qi-home/automation/agentic-learning/). [Copilot](/arcus/qi-home/automation/run-with-copilot/) executes the automated steps — no code involved.
+
+## Arcus and Suite
+
+Arcus manages tests; [Suite](/suite/get-started/introduction/) automates and executes them. The [two-way sync](/arcus/integrations/suite/connect-suite/) links the two products. Test cases and test plans created in Arcus appear in Suite. Execution results flow back. A manual test case in Arcus can become automated in Suite.
+
+## Integrations and imports
+
+Arcus connects to [Jira](/arcus/integrations/jira/set-up/), [Azure DevOps](/arcus/integrations/azure-devops/set-up/), [Linear](/arcus/integrations/linear/), [ClickUp](/arcus/integrations/clickup/), [Confluence](/arcus/integrations/confluence/), and [Figma](/arcus/integrations/figma/). Those bring in requirements and designs; CI/CD tools trigger runs. An existing manual suite moves in through [Import Cases](/arcus/imports-and-exports/zephyr/). The sources are Zephyr, TestRail, BrowserStack, and CSV files.

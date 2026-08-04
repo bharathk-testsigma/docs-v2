@@ -1,0 +1,103 @@
+---
+title: Web test plans
+description: Create a test plan across three tabs, link suites to machine profiles, configure recovery, and schedule the run.
+pageType: task
+verified: 2026-07
+covers:
+  - Create a test plan
+  - Link suites to machine profiles
+  - Configure notifications
+  - Configure additional settings
+  - Configure Recovery Actions
+  - Schedule a test plan
+  - Run a partial plan
+sidebar:
+  order: 50
+  label: Test Plans
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+A test plan links test suites to the machines they run on, plus the settings and schedule for the run. It is the object you execute, and the only one that can be triggered from CI. Creating one moves through three tabs.
+
+<Prerequisites>
+
+- You have at least one test suite.
+- You know which operating systems and browsers the run has to cover.
+
+</Prerequisites>
+
+## Create a test plan
+
+Go to **Test Plans** and click **Create Test Plan**. The **Basic Details** tab comes first.
+
+<Steps>
+
+1. **Name it** — Enter a **Name**. Turn on **Description** to record the plan's scope, and add **Labels** to group it with related plans.
+
+2. **Choose the type** — Select **Cross Browser Testing** to run every suite against one or more browsers, or **Custom Test Plan** to attach machine profiles per suite manually.
+
+3. **Continue** — Click **Continue**.
+
+</Steps>
+
+## Link suites to machine profiles
+
+On the **Add Test Suites & Link Machine Profiles** tab, click **Add Test Suites** to pick the suites. Then click the **Test Machine** icon on a suite row, select an existing profile or create one, and click **Save Selection**.
+
+A machine profile carries the test lab, the connected machine or browser, resolution, headless setting, session reset behaviour, and desired capabilities. **View Prerequisites** shows the execution sequence when one suite depends on another.
+
+<Aside type="note">
+The difference between the two plan types is where machines attach. Cross Browser Testing applies one browser set to everything. Custom Test Plan lets one suite run on Chrome and another on a local device in the same plan.
+</Aside>
+
+## Configure notifications
+
+On the **Test Plan Settings** tab, turn on **Send Notification** and pick the results that should trigger one: **Passed**, **Failed**, **Not Executed**, **Queued**, **Stopped**, or **Running**.
+
+Enter email addresses, or tick **Add my email**. Messages can also go to Google Chat, Slack, or MS Teams.
+
+## Configure additional settings
+
+| Setting | What it controls |
+| --- | --- |
+| **Environment** | The environment whose variables the run reads |
+| **Screenshot Capture** | **None**, **All Steps**, or **Failed Steps alone** |
+| **Page Timeout** | How long to wait for a page to load. Default 30 seconds |
+| **Element Timeout** | How long to wait for an element. Default 30 seconds |
+| **Accessibility Testing** | Turns on the WCAG scan, with a version and conformance level |
+
+<Aside type="note">
+**All Steps** on a large plan produces a lot of storage and slows each step. **Failed Steps alone** is the setting most teams want once they are past the first few runs.
+</Aside>
+
+## Configure Recovery Actions
+
+Recovery Actions decide what happens when something fails, per failure type: major step, prerequisite, test case, suite, and machine. Each takes either abort or report-and-continue.
+
+The same section sets rerun behaviour: **None**, **All Test Cases**, or **Only Failed Test Cases**.
+
+**Post Plan Hook** runs an addon after the plan finishes. Click **Create** to save the plan.
+
+## Schedule a test plan
+
+<Steps>
+
+1. **Open the scheduler** — On **Test Plans**, click the arrow beside **Schedule** and select **Schedule Run**. The same control sits on the plan's detail page.
+
+2. **Name the schedule** — Enter a **Name**, and a description if the team needs one.
+
+3. **Set date and time** — Use the calendar and clock icons. Both default to now.
+
+4. **Set the frequency** — Click **Repeat** and choose **Don't Repeat**, **Hourly**, **Daily**, **Weekly on** a weekday, or **Monthly on** a day.
+
+5. **Save** — Click **Schedule**.
+
+</Steps>
+
+Scheduling regression outside office hours is the usual reason to do this: it keeps the lab free during the day.
+
+## Run a partial plan
+
+**Schedule Partial Run** takes the same options but runs a subset rather than the whole plan. The **Run Now** split button offers **Run** and **Partial Run** for an immediate equivalent.

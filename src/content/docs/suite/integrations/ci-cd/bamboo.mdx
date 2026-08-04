@@ -1,0 +1,38 @@
+---
+title: Bamboo
+description: Trigger Testsigma test plans from Bamboo with the Testsigma Test Plan Run plugin — no script needed.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 45
+  label: Bamboo
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Bamboo is the one tool with a dedicated plugin. **Testsigma Test Plan Run** wraps the trigger, the wait, and the JUnit report into a single task. There is no script to manage — the plugin's form takes the key and plan ID.
+
+<Prerequisites>
+
+- Install the plugin: **Bamboo administration settings → Manage apps → Find new apps**, search **Testsigma Test Plan Runner** — or from the Atlassian Marketplace.
+
+</Prerequisites>
+
+## Configure the plan
+
+<Steps>
+
+1. **Create the plan** — From the **Build Dashboard**, click **Create → Create Plan**. Name the project and plan. Configure the repository and click **Configure Plan**.
+
+2. **Add the task** — Click **Add Task**. Search **Testsigma Test Plan Run** and select it.
+
+3. **Fill it in** — Task description, **Testsigma API Key**, and **Testsigma Test Plan ID**. Add the **Maximum wait time** in minutes and the **Report File Path** for the JUnit XML.
+
+4. **Save and run** — **Save**, then **Save and Create**, then **Run Now**. The Testsigma run starts when the pipeline reaches the task. Confirm under **Test Plans** in Suite.
+
+</Steps>
+
+<Aside type="note">
+Past the maximum wait time the Bamboo task times out. The Testsigma run continues — check its result in Suite.
+</Aside>

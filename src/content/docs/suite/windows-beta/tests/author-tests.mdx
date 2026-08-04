@@ -1,0 +1,55 @@
+---
+title: Author desktop tests
+description: Create a Desktop project, build test cases from captured elements with type-aware suggested actions, and run them locally.
+pageType: task
+verified: 2026-07
+covers:
+  - Create the project and application
+  - Build a test case
+sidebar:
+  order: 10
+  label: Author Tests
+searchTerms:
+  - create test case
+  - create tests
+  - write test case
+  - add test steps
+  - new test case
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Desktop (Beta) tests Windows applications built on UIA and SAP technologies. It runs through Testsigma Terminal. Capture the app's controls first. Each element you then pick in a step brings suggested actions matched to its type.
+
+<Prerequisites>
+
+- [Testsigma Terminal](/suite/installation/testsigma-terminal/) is installed on the Windows machine.
+- The **WinTest Automation** folder is present in the Testsigma Agent directory.
+- The application under test is open on the machine.
+
+</Prerequisites>
+
+## Create the project and application
+
+Go to **Project → New Project** and choose **Desktop** as the **Application type**. Name the application, set a version, and click **Create**. Existing projects take one under **Project Settings → Applications**. Enable **Allow Multiple Applications** first.
+
+## Build a test case
+
+<Steps>
+
+1. **Create it** — In **Create Tests → Test Cases**, expand the feature and scenario, click **+**, name the test case, and click **Create**.
+
+2. **Pick actions** — On the **Test Case Details** page, open the **Actions** dropdown. Choose from the overlay.
+
+3. **Bind elements** — Select [captured desktop elements](/suite/windows-beta/elements/). Suite suggests the built-in actions that fit each element's type.
+
+4. **Run** — Execute on the local machine through the agent.
+
+</Steps>
+
+## FAQs
+
+**The recorder fails to start.**
+
+Enable Developer Mode under **Settings → Privacy & security → For developers**. Then re-check the application's `.exe` path.

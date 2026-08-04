@@ -1,0 +1,385 @@
+---
+// ─────────────────────────────────────────────────────────────────────────────
+//  <ChangelogFeed /> — full-width changelog feed (used on a `splash` page).
+//  Renders releases (newest first) grouped under month dividers, each as a card
+//  with a version pill, release date, headline, and change-type sections.
+//  Release content lives as markdown in the `changelog` collection
+//  (src/content/changelog/**); each product is filtered via the `product` prop.
+// ─────────────────────────────────────────────────────────────────────────────
+import { getCollection } from 'astro:content';
+
+// Which product's releases to show. Suite is the default; pass product="arcus"
+// on the Arcus changelog page. Drives both filtering and the header copy.
+interface Props {
+	product?: 'suite' | 'arcus';
+}
+const { product = 'suite' } = Astro.props;
+const PRODUCT_COPY: Record<string, { sub: string }> = {
+	suite: { sub: "What's new in Suite — features, improvements, and fixes in every release." },
+	arcus: {
+		sub: "What's new in Arcus by Testsigma — features, improvements, and fixes in every release.",
+	},
+};
+const copy = PRODUCT_COPY[product] ?? PRODUCT_COPY.suite;
+
+type Item = { title: string; desc: string };
+type Section = { type: string; items: Item[] };
+type Release = {
+	version: string;
+	latest?: boolean;
+	month: string;
+	date: string;
+	headline: string;
+	sections: Section[];
+};
+
+// Parse a release's markdown body into change-type sections + items.
+//   ## New features            → section
+//   **Item title** — text      → item (also accepts a "- " bullet prefix)
+function parseBody(md: string): Section[] {
+	const sections: Section[] = [];
+	let cur: Section | null = null;
+	for (const raw of (md ?? '').split('\n')) {
+		const line = raw.trim();
+		if (!line) continue;
+		if (line.startsWith('## ')) {
+			cur = { type: line.slice(3).trim(), items: [] };
+			sections.push(cur);
+			continue;
+		}
+		if (!cur) continue;
+		const body = line.replace(/^[-*]\s+/, '');
+		const m = body.match(/^\*\*(.+?)\*\*\s*(?:[—–:-]\s*)?(.*)$/);
+		if (m) cur.items.push({ title: m[1].trim(), desc: m[2].trim() });
+	}
+	return sections;
+}
+
+// "June 16, 2026" → "June 2026" for the month divider.
+function monthOf(date: string): string {
+	const m = date.match(/^([A-Za-z]+)\s+\d+,?\s*(\d{4})$/);
+	return m ? `${m[1]} ${m[2]}` : date;
+}
+
+// Load this product's releases, newest first, and shape them for rendering.
+const entries = (await getCollection('changelog')).filter((e) => e.data.product === product);
+const releases: Release[] = entries
+	.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+	.map((e) => ({
+		version: e.data.version,
+		latest: e.data.latest,
+		date: e.data.date,
+		headline: e.data.headline,
+		month: monthOf(e.data.date),
+		sections: parseBody((e as any).body),
+	}));
+
+// Group consecutive releases by month for the month dividers.
+const groups: { month: string; releases: Release[] }[] = [];
+for (const r of releases) {
+	const last = groups[groups.length - 1];
+	if (last && last.month === r.month) last.releases.push(r);
+	else groups.push({ month: r.month, releases: [r] });
+}
+
+// Per change-type: badge style + icon (Lucide paths, stroked).
+const CAT: Record<string, { cls: string; icon: string }> = {
+	'New features': {
+		cls: 'new',
+		icon: 'M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3z',
+	},
+	Improvements: {
+		cls: 'imp',
+		icon: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4||M17 8l-5-5-5 5||M12 3v12',
+	},
+	Fixes: {
+		cls: 'fix',
+		icon: 'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z',
+	},
+};
+const catMeta = (type: string) => CAT[type] ?? { cls: 'new', icon: CAT['New features'].icon };
+const iconSvg = (paths: string) =>
+	paths
+		.split('||')
+		.map((d) => `<path d="${d}"/>`)
+		.join('');
+---
+
+{/* pagefind-weight 0.1: release notes mention every feature by name, so they
+    outranked the actual docs pages in search. Demoted, not excluded — a query
+    that strongly matches changelog content (a version, "changelog") still
+    surfaces it; generic feature queries no longer do. */}
+<div class="ts-cl-feed not-content" data-pagefind-weight="0.1">
+	<header class="ts-cl-header">
+		<h1 class="ts-cl-title">Changelog</h1>
+		<p class="ts-cl-sub">{copy.sub}</p>
+	</header>
+
+	{
+		groups.map((g) => (
+			<section class="ts-cl-group">
+				<div class="ts-cl-month">
+					<span class="ts-cl-month-label">{g.month}</span>
+				</div>
+
+				{g.releases.map((r) => (
+					<article class="ts-cl-card">
+						<header class="ts-cl-card-head">
+							<div class="ts-cl-badges">
+								<span class="ts-cl-version">{r.version}</span>
+								{r.latest && <span class="ts-cl-latest">Latest</span>}
+							</div>
+							<span class="ts-cl-date">Released {r.date}</span>
+						</header>
+
+						<h2 class="ts-cl-headline" id={r.version.replace(/[^\w.]+/g, '-')}>
+							{r.headline}
+						</h2>
+						<hr class="ts-cl-hr" />
+
+						{r.sections.map((s) => {
+							const m = catMeta(s.type);
+							return (
+								<div class="ts-cl-section">
+									<span class:list={['ts-cl-cat', `ts-cl-cat--${m.cls}`]}>
+										<svg
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											aria-hidden="true"
+											set:html={iconSvg(m.icon)}
+										/>
+										{s.type}
+									</span>
+									<div class="ts-cl-items">
+										{s.items.map((it) => (
+											<div class="ts-cl-item">
+												<svg
+													class="ts-cl-chevron"
+													viewBox="0 0 24 24"
+													fill="none"
+													stroke="currentColor"
+													stroke-width="2.4"
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													aria-hidden="true"
+												>
+													<polyline points="9 18 15 12 9 6" />
+												</svg>
+												<div class="ts-cl-item-body">
+													<div class="ts-cl-item-title">{it.title}</div>
+													<div class="ts-cl-item-desc">{it.desc}</div>
+												</div>
+											</div>
+										))}
+									</div>
+								</div>
+							);
+						})}
+					</article>
+				))}
+			</section>
+		))
+	}
+</div>
+
+<style>
+	.ts-cl-feed {
+		max-width: 720px;
+		margin: 0 auto;
+		padding: 8px 0 80px;
+	}
+
+	/* Page header */
+	.ts-cl-header {
+		padding: 8px 0 8px;
+	}
+	.ts-cl-title {
+		font-size: 34px;
+		font-weight: 700;
+		color: var(--ts-tx);
+		letter-spacing: -0.025em;
+		margin: 0 0 10px;
+		line-height: 1.15;
+	}
+	.ts-cl-sub {
+		font-size: 16px;
+		line-height: 1.6;
+		color: var(--ts-tx2);
+		margin: 0;
+	}
+
+	/* Month divider */
+	.ts-cl-month {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		margin: 44px 0 20px;
+	}
+	.ts-cl-group:first-child .ts-cl-month {
+		margin-top: 8px;
+	}
+	.ts-cl-month-label {
+		font-size: 12px;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ts-tx3);
+		white-space: nowrap;
+	}
+	.ts-cl-month::after {
+		content: '';
+		flex: 1;
+		height: 1px;
+		background: var(--ts-bd);
+	}
+
+	/* Release card */
+	.ts-cl-card {
+		border: 1px solid var(--ts-bd);
+		border-radius: 14px;
+		background: var(--ts-panel);
+		padding: 26px 30px 30px;
+		margin-bottom: 28px;
+	}
+	.ts-cl-card-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		margin-bottom: 14px;
+	}
+	.ts-cl-badges {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+	.ts-cl-version {
+		font-family: var(--sl-font-mono);
+		font-size: 12.5px;
+		font-weight: 600;
+		color: var(--ts-ac);
+		background: var(--ts-ac-soft);
+		padding: 3px 9px;
+		border-radius: 6px;
+		letter-spacing: 0.02em;
+	}
+	.ts-cl-latest {
+		font-size: 11px;
+		font-weight: 700;
+		color: var(--ts-tx2);
+		background: var(--ts-hover);
+		border: 1px solid var(--ts-bd);
+		padding: 3px 9px;
+		border-radius: 6px;
+	}
+	.ts-cl-date {
+		font-size: 13px;
+		color: var(--ts-tx3);
+		white-space: nowrap;
+	}
+	.ts-cl-headline {
+		font-size: 20px;
+		font-weight: 700;
+		color: var(--ts-tx);
+		letter-spacing: -0.015em;
+		line-height: 1.3;
+		margin: 4px 0 18px;
+		border: none;
+		padding: 0;
+	}
+	.ts-cl-hr {
+		border: 0;
+		border-top: 1px solid var(--ts-bd);
+		margin: 0 0 22px;
+	}
+
+	/* Change-type section */
+	.ts-cl-section {
+		margin-top: 26px;
+	}
+	.ts-cl-section:first-of-type {
+		margin-top: 0;
+	}
+	.ts-cl-cat {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		font-size: 12.5px;
+		font-weight: 700;
+		padding: 4px 12px;
+		border-radius: 999px;
+		border: 1px solid transparent;
+		margin-bottom: 16px;
+	}
+	.ts-cl-cat svg {
+		width: 13px;
+		height: 13px;
+	}
+	/* Badge colors ride the theme-aware callout tokens so dark mode holds. */
+	.ts-cl-cat--new {
+		color: var(--ts-tip);
+		background: var(--ts-tip-bg);
+		border-color: var(--ts-tip-bd);
+	}
+	.ts-cl-cat--imp {
+		color: var(--ts-note);
+		background: var(--ts-note-bg);
+		border-color: var(--ts-note-bd);
+	}
+	.ts-cl-cat--fix {
+		color: var(--ts-warn);
+		background: var(--ts-warn-bg);
+		border-color: var(--ts-warn-bd);
+	}
+
+	/* Items */
+	.ts-cl-items {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+	.ts-cl-item {
+		display: flex;
+		gap: 10px;
+		align-items: flex-start;
+	}
+	.ts-cl-chevron {
+		width: 15px;
+		/* Height = one title line (14.5px × 1.4 ≈ 20px) so the glyph (which is
+		   centered in its viewBox) sits on the title's text line, not above it. */
+		height: 20px;
+		flex-shrink: 0;
+		color: var(--ts-ac);
+	}
+	.ts-cl-item-body {
+		min-width: 0;
+	}
+	.ts-cl-item-title {
+		font-size: 14.5px;
+		font-weight: 700;
+		color: var(--ts-tx);
+		margin: 0 0 3px;
+		line-height: 1.4;
+	}
+	.ts-cl-item-desc {
+		font-size: 13.5px;
+		line-height: 1.55;
+		color: var(--ts-tx2);
+		margin: 0;
+	}
+
+	@media (max-width: 50rem) {
+		.ts-cl-card {
+			padding: 22px 18px 24px;
+		}
+		.ts-cl-card-head {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 6px;
+		}
+	}
+</style>

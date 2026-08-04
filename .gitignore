@@ -1,0 +1,28 @@
+# build output
+dist/
+# the Pagefind index, copied out of dist/ by `postbuild` so that search works
+# under `astro dev` (which serves public/, not dist/). Generated, never authored.
+public/pagefind/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# Ask index resumable build checkpoint (transient; final index files are committed)
+public/ask-index.partial.bin
+public/ask-index.partial.json

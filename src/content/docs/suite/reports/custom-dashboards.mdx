@@ -1,0 +1,101 @@
+---
+title: Custom dashboards
+description: Build a dashboard from the widget library, filter every widget at once, and share it with stakeholders read-only.
+pageType: task
+verified: 2026-07
+covers:
+  - Create a dashboard
+  - Filter every widget at once
+  - Edit a dashboard
+  - Share a dashboard
+sidebar:
+  order: 20
+  label: Custom Dashboards
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+A custom dashboard shows test data through widgets you choose. You build as many as you need, point each at the projects and dates that matter, and the widgets refresh themselves as runs complete. A dashboard of five to seven widgets takes minutes.
+
+<Prerequisites>
+
+- Dashboard access is enabled on your account — ask Testsigma support if it is not.
+- At least one [project](/suite/reports/view-and-export/) exists, with an application added.
+- At least one run has completed, so the widgets have data to show.
+
+</Prerequisites>
+
+## Create a dashboard
+
+<Steps>
+
+1. **Switch to Advanced** — On the **Dashboard**, click **Advanced** next to **Legacy**. Existing dashboards appear as tabs.
+
+2. **Start a new one** — Click **Create Dashboard**. You can also click **Create New +** in the top-right corner and select **Dashboard**.
+
+3. **Name it** — Enter a name that says who it is for, such as `Release Readiness - Q2 2026`. Keep it searchable but short enough for a navigation menu.
+
+4. **Pick widgets** — Select from the library, which is grouped into six categories. Click the eye icon beside a widget to preview it first.
+
+5. **Build it** — Click **Create Dashboard**.
+
+</Steps>
+
+The dashboard goes live immediately, and its widgets update in real time as executions finish.
+
+The six categories are Executive Insights & Release Readiness, Reliability & Stability, Test Design & Team Productivity, AI Intelligence & Agentic ROI, Infrastructure & Performance, and Accessibility. You can mix widgets from any of them. [Widgets reference](/suite/reports/widgets/) describes all 40.
+
+## Filter every widget at once
+
+The filters sit at the top of the dashboard and apply to every widget together, so one change updates the whole view.
+
+| Filter | What it accepts |
+| --- | --- |
+| Project | A specific project, application, and version, or **All Projects** for aggregated data |
+| Date range | Recent hours (3–24), current periods (Today, This Week, This Month, This Quarter), longer ranges (Last 3–60 days), or **Custom Date** |
+| Interval | How data is grouped: Hourly, Daily, Weekly, Monthly, Quarterly, or Yearly |
+
+## Edit a dashboard
+
+<Steps>
+
+1. **Open it** — On the **Advanced** dashboard, click the one you want to change.
+
+2. **Enter edit mode** — Click **Edit** in the top-right corner.
+
+3. **Add widgets** — Click **Add Widgets** to reopen the library. Your current selections are highlighted.
+
+4. **Remove or move one** — Hover a widget, then click the delete icon to remove it, or drag its handle to reposition it.
+
+5. **Commit** — Click **Save Changes**.
+
+</Steps>
+
+<Aside type="note">
+Removing a widget deletes it from the dashboard rather than hiding it. You can add it back from the library afterwards, but its position is not remembered.
+</Aside>
+
+## Share a dashboard
+
+<Steps>
+
+1. **Open the menu** — On the dashboard you want to share, go to **More Options → Share**.
+
+2. **Create the link** — In the **Share Dashboard** dialog, click **Create shareable link**.
+
+3. **Hand it over** — Click **Copy link**.
+
+</Steps>
+
+Anyone holding the link sees the dashboard read-only, which is what makes it safe to send to stakeholders outside the team.
+
+## When to reach for one
+
+| Situation | What to watch |
+| --- | --- |
+| Release decisions | Check the dashboard daily during a release cycle for a go or no-go signal |
+| Quality improvement | Track flaky tests and error patterns to decide what to stabilise first |
+| Team performance | Monitor authoring velocity and see who is growing the suite |
+| Infrastructure planning | Watch utilisation and find bottlenecks before they cause delays |
+| Accessibility compliance | Follow WCAG conformance, open issues by severity, and remediation progress |

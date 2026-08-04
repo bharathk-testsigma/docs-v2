@@ -1,0 +1,69 @@
+---
+title: Windows Advanced (UFT)
+description: The legacy route for Windows applications — learn objects in UFT One, convert TSR to TSRx, import, and build tests on any OS.
+pageType: task
+verified: 2026-07
+covers:
+  - Create the project
+  - Learn objects and convert TSR to TSRx
+  - Import and update TSRx files
+  - Recover from a TSRx update
+  - Build and run test cases
+sidebar:
+  order: 30
+  label: Advanced (UFT)
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Windows (Advanced) is the legacy flow for Windows applications, built on Micro Focus UFT One. UFT learns the app's objects into a TSR file. Converted to TSRx and imported, those objects become elements. You write NLP tests against them — from any operating system.
+
+<Prerequisites>
+
+- You hold a licensed copy of **UFT One**.
+- A Windows machine runs [Testsigma Agent](/suite/installation/testsigma-agent/).
+
+</Prerequisites>
+
+## Create the project
+
+Go to **Project → New Project** and choose **Windows (Advanced)** as the **Application type**. Name the application and click **Create**. Existing projects take one under **Project Settings → Applications**, with **Allow Multiple Applications** on.
+
+Windows (Advanced) supports applications built on Oracle, Java, SAP GUI, and SAP UI5, among others.
+
+## Learn objects and convert TSR to TSRx
+
+<Steps>
+
+1. **Learn in UFT One** — Use UFT's object model and Object Spy to capture the application's objects into an object repository (TSR) file.
+
+2. **Convert** — From the folder holding the TSR, run UFT's `OR2AppModelConverter.exe` in a command prompt. Give it the TSR file name, confirm, append `x`, and press **Enter**. The TSRx lands in the same folder.
+
+</Steps>
+
+## Import and update TSRx files
+
+<Steps>
+
+1. **Import** — In **Create Tests → Elements**, click **Import**, browse to the TSRx file.
+
+2. **Decide on duplicates** — Under **How should we handle duplicates?**, pick **Overwrite** to replace existing elements or **Ignore** to skip them.
+
+3. **Finish** — Click **Import**. The objects appear as elements.
+
+</Steps>
+
+When the application changes, re-learn in UFT, reconvert, and bring the new file in through **Update Elements** — same dialog, same duplicate handling.
+
+## Recover from a TSRx update
+
+An updated TSRx flags whatever the app's structural changes broke. Impacted elements show a red underline on the **Elements** page. Impacted test cases carry a warning, and **View All** filters to just them. Open a flagged test case and hover the highlighted step. Click **View/Edit element**, then replace the element or disable the step. Step groups flag the same way.
+
+## Build and run test cases
+
+Authoring works from any OS. In **Create Tests → Test Cases**, compose NLP steps against the imported elements. Execution is Windows-and-local only. Click **Run**, pick the local **Test Machine**, and **Run Now**.
+
+<Aside type="note">
+Only local executions through the agent are possible for Windows application tests.
+</Aside>

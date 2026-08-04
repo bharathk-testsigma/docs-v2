@@ -1,0 +1,94 @@
+---
+title: Jenkins
+description: Trigger Testsigma test plans from a Jenkins job so testing runs inside your existing CI/CD pipeline.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 10
+  label: Jenkins
+---
+
+import PlatformTabs from '../../../../../components/PlatformTabs.astro';
+import Prerequisites from '../../../../../components/Prerequisites.astro';
+
+Jenkins is an open-source automation server for CI/CD and build automation. Trigger Testsigma test plans directly from a Jenkins job to keep testing inside your pipeline.
+
+<Prerequisites>
+- An API key and your test plan ID.
+- A working Jenkins server with administrative access.
+</Prerequisites>
+
+## Trigger test plans from Jenkins
+
+1. Log in to Jenkins and click **+ New Item**.
+2. Enter a name, select **Freestyle Project**, and click **OK**.
+3. On the configuration page, scroll to **Build Steps** and click **Add build step**.
+4. Select **Execute Shell** and paste the script below.
+
+<PlatformTabs tabs={['Shell', 'PowerShell', 'Jenkinsfile']} sync="lang">
+<Fragment slot="tab-0">
+
+```bash
+TESTSIGMA_API_KEY="<your-api-key>"
+TESTSIGMA_TEST_PLAN_ID="<your-test-plan-id>"
+
+curl -X POST "https://app.testsigma.com/api/v1/execution_results" \
+  -H "Authorization: Bearer $TESTSIGMA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{\"executionId\": $TESTSIGMA_TEST_PLAN_ID}"
+```
+
+</Fragment>
+<Fragment slot="tab-1">
+
+```powershell
+$TESTSIGMA_API_KEY = "<your-api-key>"
+$TESTSIGMA_TEST_PLAN_ID = "<your-test-plan-id>"
+
+Invoke-RestMethod -Method Post `
+  -Uri "https://app.testsigma.com/api/v1/execution_results" `
+  -Headers @{ Authorization = "Bearer $TESTSIGMA_API_KEY" } `
+  -ContentType "application/json" `
+  -Body "{`"executionId`": $TESTSIGMA_TEST_PLAN_ID}"
+```
+
+</Fragment>
+<Fragment slot="tab-2">
+
+```groovy
+pipeline {
+  agent any
+  environment {
+    TESTSIGMA_API_KEY = credentials('testsigma-api-key')
+  }
+  stages {
+    stage('Testsigma') {
+      steps {
+        sh './run-testsigma.sh 4821'
+      }
+    }
+  }
+}
+```
+
+</Fragment>
+</PlatformTabs>
+
+:::note[NOTE]
+Do not paste the API key inline in the shell step. Store it as a Jenkins credential and reference it, or it will appear in the build console log.
+:::
+
+5. Click **Save**, then **Build Now** to trigger the test plan.
+6. In Testsigma, open **Test Plans** to confirm the run has started.
+7. In Jenkins, open the build and select **Console Log** to follow execution.
+8. Open **Run Results** in Testsigma for the detailed report.
+
+## Reading the results
+
+The shell step exits non-zero when the test plan fails, so the Jenkins build fails with it. Detailed step-level output, screenshots, and logs stay in Testsigma under Run Results.
+
+## FAQs
+
+**How do I turn the JUnit XML report into HTML?**
+
+Get the XML one of three ways: the Testsigma Test Plan plugin writes it into the Jenkins workspace automatically, the **Test Results** page offers it as a download, or fetch it by API — `GET https://app.testsigma.com/api/v1/reports/junit/$RUN_ID` with your bearer key and `Accept: application/xml`. Then transform it with an XSLT stylesheet: `xsltproc junit-report.xml stylesheet.xslt > report.html` on macOS/Linux, or PowerShell's XSL transform on Windows. Any stylesheet targeting the JUnit schema works and controls the layout entirely.

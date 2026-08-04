@@ -1,0 +1,43 @@
+---
+title: Codemagic
+description: Run the Testsigma trigger script from a codemagic.yaml workflow in Codemagic CI.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 70
+  label: Codemagic
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Codemagic runs workflows from a `codemagic.yaml` at the repository root. One step calls the [shell script](/suite/integrations/ci-cd/shell-script/), so each build triggers the test plan and waits. Failed tests fail the build before anything ships to a store.
+
+<Prerequisites>
+
+- A Codemagic account and a repository on a supported provider, with the trigger script committed.
+
+</Prerequisites>
+
+## Configure the workflow
+
+<Steps>
+
+1. **Connect the repository** — Sign in with your provider and click **Authorize Codemagic CI/CD**. Pick the repository and project path. **Set Type Manually** if the scan misses it.
+
+2. **Switch to YAML** — On the workflow screen, click **Switch to YAML configuration**. Confirm `codemagic.yaml`.
+
+3. **Commit the file** — At the repository root:
+
+</Steps>
+
+```yaml title="codemagic.yaml"
+workflows:
+  run-testsigma:
+    name: Run Testsigma Shell Script
+    scripts:
+      - name: Trigger Testsigma
+        script: |
+          chmod +x ./magictrigger.sh
+          ./magictrigger.sh
+```

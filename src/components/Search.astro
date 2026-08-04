@@ -1,0 +1,1657 @@
+---
+/**
+ * Fork of Starlight's Search.astro (@astrojs/starlight 0.41) with exactly one
+ * change: the two `import.meta.env.DEV` gates are removed, so the Pagefind
+ * dialog also works under `astro dev`. Stock Starlight refuses to search in
+ * dev ("Search is only available in production builds"), but this repo's
+ * `postbuild` copies the Pagefind index into public/ precisely so dev search
+ * works — see the "//search" note in package.json. Before the first build the
+ * dialog simply finds no index and shows no results; run `npm run build` once.
+ *
+ * On Starlight upgrades, if this breaks: re-copy
+ * node_modules/@astrojs/starlight/components/Search.astro over this file,
+ * re-point the Icon import at { Icon } from '@astrojs/starlight/components',
+ * and delete the two DEV gates again.
+ */
+import { Icon } from '@astrojs/starlight/components';
+import project from 'virtual:starlight/project-context';
+
+const pagefindTranslations = {
+	placeholder: Astro.locals.t('search.label'),
+	...Object.fromEntries(
+		Object.entries(Astro.locals.t.all())
+			.filter(([key]) => key.startsWith('pagefind.'))
+			.map(([key, value]) => [key.replace('pagefind.', ''), value])
+	),
+};
+
+const dataAttributes: DOMStringMap = { 'data-translations': JSON.stringify(pagefindTranslations) };
+if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash'] = '';
+---
+
+<site-search class={Astro.props.class} {...dataAttributes}>
+	<button
+		data-open-modal
+		disabled
+		aria-label={Astro.locals.t('search.label')}
+		aria-keyshortcuts="Control+K"
+	>
+		<Icon name="magnifier" />
+		<span class="sl-hidden md:sl-block" aria-hidden="true">{Astro.locals.t('search.label')}</span>
+		<kbd class="sl-hidden md:sl-flex" style="display: none;">
+			<kbd>{Astro.locals.t('search.ctrlKey')}</kbd><kbd>K</kbd>
+		</kbd>
+	</button>
+
+	<dialog style="padding:0" aria-label={Astro.locals.t('search.label')}>
+		<div class="dialog-frame sl-flex">
+			{
+				/* TODO: Make the layout of this button flexible to accommodate different word lengths. Currently hard-coded for English: “Cancel” */
+			}
+			<button data-close-modal class="sl-flex md:sl-hidden">
+				{Astro.locals.t('search.cancelLabel')}
+			</button>
+			<div class="ts-sa-toggle" role="tablist" aria-label="Search mode">
+				<button type="button" class="ts-sa-tab" data-sa-mode="search" role="tab" aria-selected="true">
+					<Icon name="magnifier" size="0.85rem" />
+					Search
+				</button>
+				<button type="button" class="ts-sa-tab" data-sa-mode="ask" role="tab" aria-selected="false">
+					<svg class="ts-sa-spark" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>
+					Ask Assistant
+				</button>
+			</div>
+			<div class="search-container">
+				<div id="starlight__search" />
+			</div>
+			{/* Empty state: shown in Search mode while no query is typed. */}
+			<div class="ts-sa-empty" id="ts-sa-empty">
+				<div class="ts-sa-eyebrow">Popular questions</div>
+				<div id="ts-sa-sugs"></div>
+			</div>
+			{/* Moved into Pagefind's form once it renders — sits between input and results. */}
+			<button type="button" class="ts-sa-row" id="ts-sa-row" hidden>
+				<svg class="ts-sa-spark ts-sa-row-spark" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>
+				<span class="ts-sa-row-label">Ask Assistant</span>
+				<span class="ts-sa-row-q" id="ts-sa-row-q"></span>
+				<span class="ts-sa-row-cta">Start conversation <kbd>↵</kbd></span>
+			</button>
+			<div class="ts-sa-view" id="ts-sa-view" hidden>
+				<div class="ts-sa-label">Ask Assistant</div>
+				<div class="ts-sa-thread" id="ts-sa-thread">
+					<div class="ts-sa-msg" id="ts-sa-greeting">
+						<span class="ts-sa-avatar ts-sa-spark" aria-hidden="true">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>
+						</span>
+						<div class="ts-sa-msg-body">
+							<p><strong>Hey.</strong></p>
+							<p>Ask anything.</p>
+							<p>I'll find the answer across Testsigma's product knowledge.</p>
+						</div>
+					</div>
+				</div>
+				<div class="ts-sa-foot">
+					<form class="ts-sa-form" id="ts-sa-form">
+						<input
+							class="ts-sa-input"
+							id="ts-sa-input"
+							placeholder="How do I get started?"
+							autocomplete="off"
+						/>
+						<button type="submit" class="ts-sa-send" aria-label="Send">
+							<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>
+						</button>
+					</form>
+				</div>
+			</div>
+			<div class="ts-sa-dialogfoot">
+				<span class="ts-sa-hints" id="ts-sa-hints">
+					<span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span>
+					<span><kbd>↵</kbd> to select</span>
+					<span><kbd>esc</kbd> to close</span>
+				</span>
+				<button type="button" class="ts-sa-clear" id="ts-sa-clear" hidden>Clear</button>
+			</div>
+		</div>
+	</dialog>
+</site-search>
+
+{
+	/**
+	 * This is intentionally inlined to avoid briefly showing an invalid shortcut.
+	 * Purposely using the deprecated `navigator.platform` property to detect Apple devices, as the
+	 * user agent is spoofed by some browsers when opening the devtools.
+	 */
+}
+<script is:inline>
+	(() => {
+		const openBtn = document.querySelector('button[data-open-modal]');
+		const shortcut = openBtn?.querySelector('kbd');
+		if (!openBtn || !(shortcut instanceof HTMLElement)) return;
+		const platformKey = shortcut.querySelector('kbd');
+		if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+			platformKey.textContent = '⌘';
+			openBtn.setAttribute('aria-keyshortcuts', 'Meta+K');
+		}
+		shortcut.style.display = '';
+	})();
+</script>
+
+<script>
+	import { pagefindUserConfig } from 'virtual:starlight/pagefind-config';
+	import { streamAsk, sendFeedback, renderMarkdown, escapeHtml, bindCopyHandlers, product, IC_COPY, IC_CHECK } from '../scripts/ask-shared';
+
+	// Suggested questions for the empty state, per product (first 4 are shown).
+	const SUGGESTIONS: Record<string, string[]> = {
+		suite: [
+			'How do I create a test case?',
+			'What is Auto-Healing and how does it work?',
+			'How do I trigger a Test Plan via API?',
+			'How do I set up test data profiles?',
+		],
+		arcus: [
+			'How do I create a test case?',
+			'How do I create a test run?',
+			'How do I invite users and assign roles?',
+			'How do I set up custom fields?',
+		],
+	};
+
+	class SiteSearch extends HTMLElement {
+		constructor() {
+			super();
+			const openBtn = this.querySelector<HTMLButtonElement>('button[data-open-modal]')!;
+			const closeBtn = this.querySelector<HTMLButtonElement>('button[data-close-modal]')!;
+			const dialog = this.querySelector('dialog')!;
+			const dialogFrame = this.querySelector('.dialog-frame')!;
+
+			// ── Ask Assistant mode ─────────────────────────────────────────────
+			const searchContainer = this.querySelector<HTMLElement>('.search-container')!;
+			const askRow = this.querySelector<HTMLButtonElement>('#ts-sa-row')!;
+			const askRowQ = this.querySelector<HTMLElement>('#ts-sa-row-q')!;
+			const askView = this.querySelector<HTMLElement>('#ts-sa-view')!;
+			const askThread = this.querySelector<HTMLElement>('#ts-sa-thread')!;
+			const askForm = this.querySelector<HTMLFormElement>('#ts-sa-form')!;
+			const askInput = this.querySelector<HTMLInputElement>('#ts-sa-input')!;
+			const emptyState = this.querySelector<HTMLElement>('#ts-sa-empty')!;
+			const sugsWrap = this.querySelector<HTMLElement>('#ts-sa-sugs')!;
+			const hintsEl = this.querySelector<HTMLElement>('#ts-sa-hints')!;
+			const footBtn = this.querySelector<HTMLButtonElement>('#ts-sa-clear')!;
+			const tabs = [...this.querySelectorAll<HTMLButtonElement>('.ts-sa-tab')];
+
+			// In-flight stream state: the footer button is Stop while streaming,
+			// Clear otherwise.
+			let controller: AbortController | null = null;
+			let streaming = false;
+			const setFootBtn = () => {
+				footBtn.textContent = streaming ? 'Stop' : 'Clear';
+			};
+
+			const pfQuery = () =>
+				this.querySelector<HTMLInputElement>('.pagefind-ui__search-input')?.value.trim() ?? '';
+			const syncEmptyState = () => {
+				emptyState.hidden = !(searchContainer.hidden === false && !pfQuery());
+			};
+
+			let mode: 'search' | 'ask' = 'search';
+			const setMode = (m: 'search' | 'ask') => {
+				mode = m;
+				searchContainer.hidden = m === 'ask';
+				askView.hidden = m !== 'ask';
+				hintsEl.hidden = m !== 'search';
+				footBtn.hidden = m !== 'ask';
+				syncEmptyState();
+				for (const t of tabs) t.setAttribute('aria-selected', String(t.dataset.saMode === m));
+				setTimeout(() => {
+					(m === 'ask' ? askInput : this.querySelector<HTMLInputElement>('.pagefind-ui__search-input'))?.focus();
+				}, 0);
+			};
+			for (const t of tabs)
+				t.addEventListener('click', () => {
+					if (t.dataset.saMode === 'ask' && mode !== 'ask') {
+						const q = pfQuery();
+						if (q) askInput.value = q;
+					}
+					setMode(t.dataset.saMode as 'search' | 'ask');
+				});
+
+			const startAsk = (q: string) => {
+				setMode('ask');
+				if (q) ask(q);
+			};
+
+			// Empty-state suggestion rows: click switches to Ask Assistant and
+			// submits the question immediately.
+			const SPARK_SM =
+				'<svg class="ts-sa-spark" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>';
+			for (const q of (SUGGESTIONS[product()] ?? SUGGESTIONS.suite).slice(0, 4)) {
+				const b = document.createElement('button');
+				b.type = 'button';
+				b.className = 'ts-sa-sug';
+				b.innerHTML = `${SPARK_SM}<span></span>`;
+				b.querySelector('span')!.textContent = q;
+				b.addEventListener('click', () => startAsk(q));
+				sugsWrap.appendChild(b);
+			}
+
+			const syncSend = () => askForm.classList.toggle('ts-sa-hastext', !!askInput.value.trim());
+			askInput.addEventListener('input', syncSend);
+
+			askForm.addEventListener('submit', (e) => {
+				e.preventDefault();
+				const q = askInput.value.trim();
+				if (!q) return;
+				askInput.value = '';
+				syncSend();
+				ask(q);
+			});
+
+			bindCopyHandlers(askThread);
+
+			footBtn.addEventListener('click', () => {
+				if (streaming && controller) {
+					// Stop: abort mid-stream, keep the partial answer.
+					controller.abort();
+					return;
+				}
+				// Clear: reset the thread to the greeting, and forget the history.
+				for (const m of askThread.querySelectorAll('.ts-sa-msg:not(#ts-sa-greeting)')) m.remove();
+				turns = [];
+				askInput.placeholder = 'How do I get started?';
+				askInput.focus();
+			});
+
+			const SPARK =
+				'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>';
+			const USER =
+				'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="10" r="3"/><path d="M6.2 19a6.5 6.5 0 0 1 11.6 0"/></svg>';
+			const BOOK =
+				'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2zM22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg>';
+
+			// "Docs › Suite › Web" style breadcrumb from a docs URL.
+			const crumbs = (url: string) => {
+				const cap = (s: string) => s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+				return ['Docs', ...url.split('/').filter(Boolean).slice(0, -1).map(cap)]
+					.slice(0, 3)
+					.join(' <span class="ts-sa-sep">›</span> ');
+			};
+
+			// Conversation so far, sent with each question so follow-ups resolve.
+			// Reset by Clear (below), same as the visible thread.
+			let turns: { role: 'user' | 'assistant'; content: string }[] = [];
+
+			async function ask(query: string) {
+				const priorTurns = [...turns];
+				// Retrieved sources for THIS answer, attached to any vote on it.
+				let lastSources: { url: string; title: string }[] = [];
+				const userMsg = document.createElement('div');
+				userMsg.className = 'ts-sa-msg';
+				userMsg.innerHTML = `
+					<span class="ts-sa-avatar" aria-hidden="true">${USER}</span>
+					<div class="ts-sa-msg-body ts-sa-q">${escapeHtml(query)}</div>
+				`;
+				const aiMsg = document.createElement('div');
+				aiMsg.className = 'ts-sa-msg';
+				aiMsg.innerHTML = `
+					<span class="ts-sa-avatar ts-sa-spark" aria-hidden="true">${SPARK}</span>
+					<div class="ts-sa-msg-body">
+						<div class="ts-sa-think">
+							<span data-sa-status>Thinking</span>
+							<span class="ts-sa-dots"><i></i><i></i><i></i></span>
+						</div>
+						<div class="ts-ask-answer"></div>
+						<div class="ts-sa-actions" hidden>
+							<button type="button" class="ts-sa-act" data-sa-copy title="Copy answer">${IC_COPY}</button>
+							<button type="button" class="ts-sa-act" data-sa-vote="up" title="Good answer" aria-pressed="false">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v12M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>
+							</button>
+							<button type="button" class="ts-sa-act" data-sa-vote="down" title="Bad answer" aria-pressed="false">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 14V2M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>
+							</button>
+						</div>
+						<div class="ts-sa-sources" hidden></div>
+					</div>
+				`;
+				askThread.append(userMsg, aiMsg);
+				const thinkingEl = aiMsg.querySelector<HTMLElement>('.ts-sa-think')!;
+				const statusEl = aiMsg.querySelector<HTMLElement>('[data-sa-status]')!;
+				const answerEl = aiMsg.querySelector<HTMLElement>('.ts-ask-answer')!;
+				const actionsEl = aiMsg.querySelector<HTMLElement>('.ts-sa-actions')!;
+				const sourcesEl = aiMsg.querySelector<HTMLElement>('.ts-sa-sources')!;
+
+				const copyBtn = aiMsg.querySelector<HTMLButtonElement>('[data-sa-copy]')!;
+				copyBtn.addEventListener('click', () => {
+					navigator.clipboard?.writeText(answerEl.innerText);
+					copyBtn.innerHTML = IC_CHECK;
+					setTimeout(() => { copyBtn.innerHTML = IC_COPY; }, 1300);
+				});
+
+				// Votes POST to /api/ask-feedback with the retrieved sources, so a
+				// thumbs-down is diagnosable later. Fire-and-forget: a failed log
+				// must never surface to the reader.
+				const votes = aiMsg.querySelectorAll<HTMLButtonElement>('[data-sa-vote]');
+				for (const v of votes)
+					v.addEventListener('click', () => {
+						for (const o of votes) o.setAttribute('aria-pressed', String(o === v));
+						sendFeedback({
+							question: query,
+							vote: v.dataset.saVote === 'down' ? 'down' : 'up',
+							sources: lastSources,
+							answerPreview: answerEl.innerText.slice(0, 400),
+						});
+					});
+
+				// Follow the stream, but stop auto-scrolling if the reader scrolls up.
+				const scroll = () => {
+					const stick = askThread.scrollHeight - askThread.scrollTop - askThread.clientHeight < 90;
+					if (stick) askThread.scrollTop = askThread.scrollHeight;
+				};
+				askThread.scrollTop = askThread.scrollHeight;
+
+				controller = new AbortController();
+				streaming = true;
+				setFootBtn();
+				let answerMd = '';
+				try {
+					await streamAsk(query, {
+						status: (text) => { statusEl.textContent = text.replace(/…$/, ''); },
+						delta: (md) => {
+							thinkingEl.hidden = true;
+							answerMd = md;
+							answerEl.innerHTML = renderMarkdown(md);
+							scroll();
+						},
+						sources: (srcs) => {
+							lastSources = srcs;
+							if (!srcs.length) return;
+							sourcesEl.innerHTML =
+								'<div class="ts-sa-sources-head">Sources</div>' +
+								srcs.map(s =>
+									`<a class="ts-sa-source" href="${escapeHtml(s.url)}">
+										<div class="ts-sa-source-crumb">${crumbs(s.url)}</div>
+										<div class="ts-sa-source-title">${BOOK}<span>${escapeHtml(s.title || s.url)}</span></div>
+									</a>`
+								).join('');
+							sourcesEl.hidden = false;
+							scroll();
+						},
+					}, controller.signal, priorTurns);
+					thinkingEl.hidden = true;
+					actionsEl.hidden = false;
+					// Record the completed exchange for the next follow-up.
+					if (answerMd) turns = [...priorTurns, { role: 'user', content: query }, { role: 'assistant', content: answerMd }];
+					askInput.placeholder = 'Ask a follow-up question…';
+					askInput.focus();
+				} catch {
+					thinkingEl.hidden = true;
+					if (controller.signal.aborted) {
+						// Stopped by the reader: keep the partial answer as-is.
+						if (answerEl.innerHTML) actionsEl.hidden = false;
+					} else {
+						// Inline error line + retry, plus the keyword-search fallback.
+						const err = document.createElement('div');
+						err.className = 'ts-sa-error';
+						err.textContent = 'The assistant is unavailable right now.';
+						const retry = document.createElement('button');
+						retry.type = 'button';
+						retry.className = 'ts-sa-retry';
+						retry.textContent = 'Retry';
+						retry.addEventListener('click', () => {
+							userMsg.remove();
+							aiMsg.remove();
+							ask(query);
+						});
+						err.appendChild(retry);
+						const back = document.createElement('button');
+						back.type = 'button';
+						back.className = 'ts-sa-fallback';
+						back.textContent = 'Search the docs instead';
+						back.addEventListener('click', () => {
+							setMode('search');
+							const pfInput = document.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
+							if (pfInput) {
+								pfInput.value = query;
+								pfInput.dispatchEvent(new Event('input', { bubbles: true }));
+							}
+						});
+						answerEl.append(err, back);
+					}
+				} finally {
+					streaming = false;
+					controller = null;
+					setFootBtn();
+				}
+			}
+
+			/** Close the modal if a user clicks on a link or outside of the modal. */
+			const onClick = (event: MouseEvent) => {
+				const isLink = 'href' in (event.target || {});
+				if (
+					isLink ||
+					(document.body.contains(event.target as Node) &&
+						!dialogFrame.contains(event.target as Node))
+				) {
+					closeModal();
+				}
+			};
+
+			// Always opens in Search mode, regardless of the last used tab; the
+			// Ask button in the header opens straight into Ask Assistant.
+			let lastTrigger: HTMLElement | null = null;
+			const openModal = (event?: MouseEvent, m: 'search' | 'ask' = 'search') => {
+				lastTrigger = document.activeElement as HTMLElement;
+				dialog.showModal();
+				document.body.toggleAttribute('data-search-modal-open', true);
+				setMode(m);
+				event?.stopPropagation();
+				window.addEventListener('click', onClick);
+			};
+
+			const closeModal = () => dialog.close();
+
+			openBtn.addEventListener('click', (e) => openModal(e, 'search'));
+			openBtn.disabled = false;
+			closeBtn.addEventListener('click', closeModal);
+
+			dialog.addEventListener('close', () => {
+				document.body.toggleAttribute('data-search-modal-open', false);
+				window.removeEventListener('click', onClick);
+				lastTrigger?.focus?.();
+				lastTrigger = null;
+			});
+
+			// Listen for `ctrl + k` and `cmd + k` keyboard shortcuts.
+			window.addEventListener('keydown', (e) => {
+				if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'k') {
+					dialog.open ? closeModal() : openModal();
+					e.preventDefault();
+				}
+			});
+
+			let translations = {};
+			try {
+				translations = JSON.parse(this.dataset.translations || '{}');
+			} catch {}
+
+			const shouldStrip = this.dataset.stripTrailingSlash !== undefined;
+			const stripTrailingSlash = (path: string) => path.replace(/(.)\/(#.*)?$/, '$1$2');
+			const formatURL = shouldStrip ? stripTrailingSlash : (path: string) => path;
+
+			window.addEventListener('DOMContentLoaded', () => {
+				const onIdle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
+				onIdle(async () => {
+					// @ts-expect-error — Missing types for @pagefind/default-ui package.
+					const { PagefindUI } = await import('@pagefind/default-ui');
+					new PagefindUI({
+						...pagefindUserConfig,
+						element: '#starlight__search',
+						baseUrl: import.meta.env.BASE_URL,
+						bundlePath: import.meta.env.BASE_URL.replace(/\/$/, '') + '/pagefind/',
+						showImages: false,
+						translations,
+						showSubResults: true,
+						processResult: (result: { url: string; sub_results: Array<{ url: string }> }) => {
+							result.url = formatURL(result.url);
+							result.sub_results = result.sub_results.map((sub_result) => {
+								sub_result.url = formatURL(sub_result.url);
+								return sub_result;
+							});
+						},
+					});
+
+					// Slot the "Ask Assistant" row between Pagefind's input and its
+					// results, mirror the query into it, and make Enter start a
+					// conversation. A chip row (All/Docs counts) sits above the cards.
+					const pfForm = this.querySelector('.pagefind-ui__form');
+					const pfDrawer = pfForm?.querySelector('.pagefind-ui__drawer') ?? null;
+					const pfInput = this.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
+
+					// Product chips: All / Suite / Arcus. They drive Pagefind UI's own
+					// (visually hidden) filter checkboxes, fed by each page's
+					// data-pagefind-filter="product" meta — so both the filtering and
+					// the counts are Pagefind's real numbers.
+					const chipRow = document.createElement('div');
+					chipRow.className = 'ts-sa-chiprow';
+					chipRow.hidden = true;
+					chipRow.setAttribute('role', 'group');
+					chipRow.setAttribute('aria-label', 'Filter results by product');
+					chipRow.innerHTML =
+						'<button type="button" class="ts-sa-chip" data-product="" aria-pressed="true">All</button>' +
+						'<button type="button" class="ts-sa-chip" data-product="Suite" aria-pressed="false">Suite</button>' +
+						'<button type="button" class="ts-sa-chip" data-product="Arcus" aria-pressed="false">Arcus</button>';
+					const chips = [...chipRow.querySelectorAll<HTMLButtonElement>('.ts-sa-chip')];
+
+					// Pagefind renders one checkbox per filter value once results exist.
+					const filterCheckbox = (value: string) =>
+						[...this.querySelectorAll<HTMLInputElement>('.pagefind-ui__form input[type="checkbox"]')].find(
+							(c) => (c.value || c.id || '').includes(value)
+						);
+
+					const applyProduct = (product: string) => {
+						for (const value of ['Suite', 'Arcus']) {
+							const box = filterCheckbox(value);
+							if (box && box.checked !== (value === product)) box.click();
+						}
+						for (const c of chips)
+							c.setAttribute('aria-pressed', String((c.dataset.product || '') === product));
+					};
+					chipRow.addEventListener('click', (e) => {
+						const chip = (e.target as HTMLElement).closest<HTMLButtonElement>('.ts-sa-chip');
+						if (chip) applyProduct(chip.dataset.product || '');
+					});
+
+					if (pfForm) {
+						pfForm.insertBefore(askRow, pfDrawer);
+						pfForm.insertBefore(chipRow, pfDrawer);
+					}
+
+					const syncSearchUi = () => {
+						const q = pfQuery();
+						askRow.hidden = !q;
+						if (!q) chipRow.hidden = true;
+						syncEmptyState();
+					};
+
+					pfInput?.addEventListener('input', () => {
+						askRowQ.textContent = pfInput.value.trim();
+						syncSearchUi();
+					});
+					syncSearchUi();
+
+					pfInput?.addEventListener('keydown', (e) => {
+						if (e.key === 'Enter') {
+							e.preventDefault();
+							startAsk(pfInput.value.trim());
+						}
+					});
+					askRow.addEventListener('click', () => {
+						startAsk(pfQuery());
+					});
+
+					// Decorate Pagefind's results into cards: breadcrumb line per
+					// result, <mark> → <strong> in excerpts, and result counts in the
+					// chip row (read off Pagefind's own "N results" message).
+					if (pfDrawer) {
+						const decorate = () => {
+							for (const inner of pfDrawer.querySelectorAll('.pagefind-ui__result-inner')) {
+								if (inner.querySelector('.ts-sa-crumb')) continue;
+								const href = inner.querySelector<HTMLAnchorElement>('.pagefind-ui__result-link')?.getAttribute('href') || '';
+								const crumb = document.createElement('div');
+								crumb.className = 'ts-sa-crumb';
+								crumb.innerHTML = crumbs(href);
+								inner.prepend(crumb);
+							}
+							for (const mark of pfDrawer.querySelectorAll('.pagefind-ui__result-excerpt mark')) {
+								const strong = document.createElement('strong');
+								strong.textContent = mark.textContent;
+								mark.replaceWith(strong);
+							}
+							const msg = pfDrawer.querySelector('.pagefind-ui__message')?.textContent || '';
+							const total = msg.match(/\d+/)?.[0];
+							if (total !== undefined && pfQuery()) {
+								// "All" shows the unfiltered total, so only refresh it while no
+								// product filter is active (the message reflects the filter).
+								const active =
+									chips.find((c) => c.getAttribute('aria-pressed') === 'true')?.dataset.product || '';
+								if (active === '') chips[0].textContent = `All (${total})`;
+								// Pagefind's filter-value labels carry per-product counts
+								// ("Suite (123)") — mirror them onto the chips.
+								for (const label of this.querySelectorAll('.pagefind-ui__filter-value')) {
+									const text = (label.textContent || '').trim();
+									for (const c of chips) {
+										if (c.dataset.product && text.startsWith(c.dataset.product)) c.textContent = text;
+									}
+								}
+								chipRow.hidden = false;
+							}
+						};
+						new MutationObserver(decorate).observe(pfDrawer, { childList: true, subtree: true });
+						decorate();
+					}
+				});
+			});
+		}
+	}
+	customElements.define('site-search', SiteSearch);
+</script>
+
+<style>
+	@layer starlight.core {
+		site-search {
+			display: contents;
+		}
+		button[data-open-modal] {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			border: 0;
+			background-color: transparent;
+			color: var(--sl-color-gray-1);
+			cursor: pointer;
+			height: 2.5rem;
+			font-size: var(--sl-text-xl);
+		}
+
+		@media (min-width: 50rem) {
+			button[data-open-modal] {
+				border: 1px solid var(--sl-color-gray-5);
+				border-radius: 0.5rem;
+				padding-inline-start: 0.75rem;
+				padding-inline-end: 0.5rem;
+				background-color: var(--sl-color-black);
+				color: var(--sl-color-gray-2);
+				font-size: var(--sl-text-sm);
+				width: 100%;
+				max-width: 22rem;
+			}
+			button[data-open-modal]:hover {
+				border-color: var(--sl-color-gray-2);
+				color: var(--sl-color-white);
+			}
+
+			button[data-open-modal] > :last-child {
+				margin-inline-start: auto;
+			}
+		}
+
+		button > kbd {
+			border-radius: 0.25rem;
+			font-size: var(--sl-text-2xs);
+			gap: 0.25em;
+			padding-inline: 0.375rem;
+			background-color: var(--sl-color-gray-6);
+		}
+
+		kbd {
+			font-family: var(--__sl-font);
+		}
+
+		dialog {
+			margin: 0;
+			background-color: var(--sl-color-gray-6);
+			border: 1px solid var(--sl-color-gray-5);
+			width: 100%;
+			max-width: 100%;
+			height: 100%;
+			max-height: 100%;
+			box-shadow: var(--sl-shadow-lg);
+		}
+		dialog[open] {
+			display: flex;
+		}
+
+		dialog::backdrop {
+			background-color: var(--sl-color-backdrop-overlay);
+			-webkit-backdrop-filter: blur(0.25rem);
+			backdrop-filter: blur(0.25rem);
+		}
+
+		.dialog-frame {
+			position: relative;
+			overflow: auto;
+			flex-direction: column;
+			flex-grow: 1;
+			gap: 1rem;
+			padding: 1rem;
+		}
+
+		button[data-close-modal] {
+			position: absolute;
+			z-index: 1;
+			align-items: center;
+			align-self: flex-end;
+			height: calc(64px * var(--pagefind-ui-scale));
+			padding: 0.25rem;
+			border: 0;
+			background: transparent;
+			cursor: pointer;
+			color: var(--sl-color-text-accent);
+		}
+
+		#starlight__search {
+			--pagefind-ui-primary: var(--sl-color-text);
+			--pagefind-ui-text: var(--sl-color-gray-2);
+			--pagefind-ui-font: var(--__sl-font);
+			--pagefind-ui-background: var(--sl-color-black);
+			--pagefind-ui-border: var(--sl-color-gray-5);
+			--pagefind-ui-border-width: 1px;
+			--pagefind-ui-tag: var(--sl-color-gray-5);
+			--sl-search-cancel-space: 5rem;
+		}
+
+		:root[data-theme='light'] #starlight__search {
+			--pagefind-ui-tag: var(--sl-color-gray-6);
+		}
+
+		@media (min-width: 50rem) {
+			#starlight__search {
+				--sl-search-cancel-space: 0px;
+			}
+
+			dialog {
+				margin: 4rem auto auto;
+				border-radius: 0.5rem;
+				width: 90%;
+				max-width: 40rem;
+				height: max-content;
+				min-height: 15rem;
+				max-height: calc(100% - 8rem);
+			}
+
+			.dialog-frame {
+				padding: 1.5rem;
+			}
+		}
+	}
+</style>
+
+<style is:global>
+	@import url('@pagefind/default-ui/css/ui.css') layer(starlight.core);
+
+	@layer starlight.core {
+		[data-search-modal-open] {
+			overflow: hidden;
+		}
+
+		#starlight__search {
+			--sl-search-result-spacing: calc(1.25rem * var(--pagefind-ui-scale));
+			--sl-search-result-pad-inline-start: calc(3.75rem * var(--pagefind-ui-scale));
+			--sl-search-result-pad-inline-end: calc(1.25rem * var(--pagefind-ui-scale));
+			--sl-search-result-pad-block: calc(0.9375rem * var(--pagefind-ui-scale));
+			--sl-search-result-nested-pad-block: calc(0.625rem * var(--pagefind-ui-scale));
+			--sl-search-corners: calc(0.3125rem * var(--pagefind-ui-scale));
+			--sl-search-page-icon-size: calc(1.875rem * var(--pagefind-ui-scale));
+			--sl-search-page-icon-inline-start: calc(
+				(var(--sl-search-result-pad-inline-start) - var(--sl-search-page-icon-size)) / 2
+			);
+			--sl-search-tree-diagram-size: calc(2.5rem * var(--pagefind-ui-scale));
+			--sl-search-tree-diagram-inline-start: calc(
+				(var(--sl-search-result-pad-inline-start) - var(--sl-search-tree-diagram-size)) / 2
+			);
+		}
+
+		#starlight__search .pagefind-ui__form::before {
+			--pagefind-ui-text: var(--sl-color-gray-1);
+			opacity: 1;
+		}
+
+		#starlight__search .pagefind-ui__search-input {
+			color: var(--sl-color-white);
+			font-weight: 400;
+			width: calc(100% - var(--sl-search-cancel-space));
+		}
+
+		#starlight__search input:focus {
+			--pagefind-ui-border: var(--sl-color-accent);
+		}
+
+		#starlight__search .pagefind-ui__search-clear {
+			inset-inline-end: var(--sl-search-cancel-space);
+			width: calc(60px * var(--pagefind-ui-scale));
+			padding: 0;
+			background-color: transparent;
+			overflow: hidden;
+		}
+		#starlight__search .pagefind-ui__search-clear:focus {
+			outline: 1px solid var(--sl-color-accent);
+		}
+		#starlight__search .pagefind-ui__search-clear::before {
+			content: '';
+			-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m13.41 12 6.3-6.29a1 1 0 1 0-1.42-1.42L12 10.59l-6.29-6.3a1 1 0 0 0-1.42 1.42l6.3 6.29-6.3 6.29a1 1 0 0 0 .33 1.64 1 1 0 0 0 1.09-.22l6.29-6.3 6.29 6.3a1 1 0 0 0 1.64-.33 1 1 0 0 0-.22-1.09L13.41 12Z'/%3E%3C/svg%3E")
+				center / 50% no-repeat;
+			mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m13.41 12 6.3-6.29a1 1 0 1 0-1.42-1.42L12 10.59l-6.29-6.3a1 1 0 0 0-1.42 1.42l6.3 6.29-6.3 6.29a1 1 0 0 0 .33 1.64 1 1 0 0 0 1.09-.22l6.29-6.3 6.29 6.3a1 1 0 0 0 1.64-.33 1 1 0 0 0-.22-1.09L13.41 12Z'/%3E%3C/svg%3E")
+				center / 50% no-repeat;
+			background-color: var(--sl-color-text-accent);
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+
+		/* ── Results as cards ──
+		   Breadcrumb (injected by the decorate() observer) › title with a doc
+		   icon › excerpt with bolded matches (<mark> is swapped for <strong> by
+		   the same observer). Pagefind's own "N results" message is replaced by
+		   the All/Docs chip row. */
+		#starlight__search .pagefind-ui__message {
+			display: none;
+		}
+		#starlight__search .pagefind-ui__results > * + * {
+			margin-top: 8px;
+		}
+		#starlight__search .pagefind-ui__result {
+			position: relative;
+			border: 1px solid var(--ts-bd);
+			border-radius: 9px;
+			padding: 12px 14px;
+			transition: background 0.12s, border-color 0.12s;
+		}
+		#starlight__search .pagefind-ui__result:hover,
+		#starlight__search .pagefind-ui__result:focus-within {
+			background: var(--ts-panel);
+			border-color: var(--ts-tx3);
+		}
+		#starlight__search .ts-sa-crumb {
+			font-size: 11.5px;
+			color: var(--ts-tx3);
+			margin-bottom: 4px;
+		}
+		#starlight__search .ts-sa-crumb .ts-sa-sep {
+			margin-inline: 0.3rem;
+			opacity: 0.7;
+		}
+
+		#starlight__search .pagefind-ui__result-thumb,
+		#starlight__search .pagefind-ui__result-inner {
+			margin-top: 0;
+		}
+		#starlight__search .pagefind-ui__result-inner {
+			align-items: stretch;
+			gap: 2px;
+		}
+		#starlight__search .pagefind-ui__result-title {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		#starlight__search .pagefind-ui__result-title::before {
+			content: '';
+			width: 14px;
+			height: 14px;
+			flex: none;
+			background: var(--ts-tx2);
+			-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 24 24'%3E%3Cpath d='M9 10h1a1 1 0 1 0 0-2H9a1 1 0 0 0 0 2Zm0 2a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2H9Zm11-3V8l-6-6a1 1 0 0 0-1 0H7a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V9Zm-6-4 3 3h-2a1 1 0 0 1-1-1V5Zm4 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5v3a3 3 0 0 0 3 3h3v9Zm-3-3H9a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2Z'/%3E%3C/svg%3E")
+				center / contain no-repeat;
+			mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 24 24'%3E%3Cpath d='M9 10h1a1 1 0 1 0 0-2H9a1 1 0 0 0 0 2Zm0 2a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2H9Zm11-3V8l-6-6a1 1 0 0 0-1 0H7a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V9Zm-6-4 3 3h-2a1 1 0 0 1-1-1V5Zm4 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5v3a3 3 0 0 0 3 3h3v9Zm-3-3H9a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2Z'/%3E%3C/svg%3E")
+				center / contain no-repeat;
+		}
+		#starlight__search .pagefind-ui__result-link {
+			position: unset;
+			--pagefind-ui-text: var(--ts-tx);
+			font-size: 14px;
+			font-weight: 600;
+		}
+		#starlight__search .pagefind-ui__result-link:hover {
+			text-decoration: none;
+		}
+		/* The main title link's hit area covers the whole card; nested rows sit
+		   above it with their own targets. */
+		#starlight__search .pagefind-ui__result-title .pagefind-ui__result-link::after {
+			content: '';
+			position: absolute;
+			inset: 0;
+		}
+		#starlight__search .pagefind-ui__result-nested {
+			position: relative;
+			padding: 4px 0 2px 22px;
+		}
+		#starlight__search .pagefind-ui__result-nested .pagefind-ui__result-link {
+			font-size: 13px;
+			font-weight: 500;
+			--pagefind-ui-text: var(--ts-tx2);
+		}
+		#starlight__search .pagefind-ui__result-nested .pagefind-ui__result-link:hover {
+			--pagefind-ui-text: var(--ts-tx);
+		}
+		#starlight__search .pagefind-ui__result-nested .pagefind-ui__result-link::before {
+			content: unset;
+		}
+
+		#starlight__search .pagefind-ui__result-excerpt {
+			font-size: 12.5px;
+			line-height: 1.6;
+			color: var(--ts-tx2);
+			overflow-wrap: anywhere;
+		}
+		#starlight__search .pagefind-ui__result-excerpt strong,
+		#starlight__search mark {
+			color: var(--ts-tx);
+			background-color: transparent;
+			font-weight: 600;
+			padding: 0;
+		}
+
+		#starlight__search .pagefind-ui__filter-value::before {
+			border-color: var(--sl-color-text-invert);
+		}
+
+		#starlight__search .pagefind-ui__result-tags {
+			margin-top: 0;
+			padding: 4px 0;
+		}
+	}
+
+
+	/* ── Ask Assistant inside the search modal ──────────────────────────────── */
+	/* Global (not scoped): the Ask row is moved inside Pagefind's form and the
+	   conversation is injected via innerHTML, so they don't carry Astro's scope
+	   class. Everything is uniquely `ts-sa-` prefixed. The AI surface (and only
+	   the AI surface) carries the pink→purple --ts-ai-* treatment; search chrome
+	   stays on the neutral/teal tokens. */
+
+	site-search dialog {
+		background: var(--ts-bg);
+	}
+
+	@media (min-width: 50rem) {
+		site-search dialog {
+			max-width: 46rem;
+			border-radius: 0.75rem;
+		}
+		/* Make room for the mode toggle inside the search input. */
+		#starlight__search .pagefind-ui__search-input {
+			padding-inline-end: 11.5rem;
+		}
+		#starlight__search .pagefind-ui__search-clear {
+			display: none;
+		}
+	}
+
+	/* Mode toggle (Search | Ask Assistant) */
+	.ts-sa-toggle {
+		position: absolute;
+		top: calc(1.5rem + 8px);
+		inset-inline-end: 2rem;
+		z-index: 2;
+		display: none;
+		gap: 4px;
+		padding: 3px;
+		border-radius: 0.5rem;
+		background: var(--sl-color-gray-6);
+	}
+	@media (min-width: 50rem) {
+		.ts-sa-toggle {
+			display: flex;
+		}
+	}
+	.ts-sa-tab {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		border: 1px solid transparent;
+		background: transparent;
+		font: inherit;
+		font-size: var(--sl-text-xs);
+		font-weight: 500;
+		color: var(--sl-color-gray-2);
+		border-radius: 0.4rem;
+		padding: 4px 11px;
+		cursor: pointer;
+	}
+	.ts-sa-tab:hover {
+		color: var(--sl-color-white);
+	}
+	.ts-sa-tab[aria-selected='true'] {
+		background: var(--sl-color-black);
+		border-color: var(--sl-color-gray-5);
+		color: var(--sl-color-white);
+		font-weight: 600;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+	}
+
+	/* "Ask Assistant <query> — Start conversation" row between input and results.
+	   This is the AI surface's front door, so it carries the gradient wash. */
+	.ts-sa-row {
+		display: flex;
+		align-items: center;
+		gap: 0.65rem;
+		width: 100%;
+		margin-top: 0.9rem;
+		padding: 0.85rem 1rem;
+		border: 1px solid var(--ts-ai-bd);
+		border-radius: 9px;
+		background: var(--ts-ai-wash);
+		font: inherit;
+		font-size: var(--sl-text-sm);
+		color: var(--ts-tx);
+		cursor: pointer;
+		text-align: start;
+		transition: border-color 0.12s, filter 0.12s;
+	}
+	.ts-sa-row[hidden] {
+		display: none;
+	}
+	.ts-sa-row:hover {
+		border-color: var(--ts-ai);
+	}
+	.ts-sa-spark {
+		color: var(--ts-ai);
+		flex-shrink: 0;
+	}
+	.ts-sa-row-label {
+		font-weight: 600;
+		color: var(--ts-tx);
+		flex-shrink: 0;
+	}
+	.ts-sa-row-q {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		color: var(--ts-ai);
+		font-weight: 500;
+	}
+	.ts-sa-row-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		flex-shrink: 0;
+		font-size: var(--sl-text-xs);
+		color: var(--ts-tx3);
+	}
+	.ts-sa-row-cta kbd {
+		font-family: var(--__sl-font);
+		border: 1px solid var(--ts-ai-bd);
+		border-radius: 0.25rem;
+		padding: 0 0.3rem;
+		background: transparent;
+	}
+
+	/* Chip row above the result cards: All / Suite / Arcus product filters.
+	   The pressed chip carries the AI wash; the rest are plain outline chips. */
+	.ts-sa-chiprow {
+		display: flex;
+		gap: 8px;
+		margin-top: 0.9rem;
+	}
+	.ts-sa-chiprow[hidden] {
+		display: none;
+	}
+	.ts-sa-chip {
+		font-size: 12px;
+		font-weight: 500;
+		padding: 3px 10px;
+		border-radius: 999px;
+		background: transparent;
+		border: 1px solid var(--ts-bd);
+		color: var(--ts-tx2);
+		font-family: inherit;
+		cursor: pointer;
+	}
+	.ts-sa-chip:hover {
+		color: var(--ts-tx);
+	}
+	.ts-sa-chip[aria-pressed='true'] {
+		background: var(--ts-ai-wash);
+		border-color: var(--ts-ai-bd);
+		color: var(--ts-ai);
+		font-weight: 600;
+	}
+
+	/* Pagefind's native filter panel is driven by the chip row instead. */
+	#starlight__search .pagefind-ui__filter-panel,
+	#starlight__search .pagefind-ui__filter-block {
+		display: none;
+	}
+
+	/* Empty state: POPULAR QUESTIONS + suggestion rows (search mode, no query) */
+	.ts-sa-empty[hidden] {
+		display: none;
+	}
+	.ts-sa-eyebrow {
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--ts-tx3);
+		margin-bottom: 4px;
+	}
+	.ts-sa-sug {
+		display: flex;
+		align-items: center;
+		gap: 9px;
+		width: 100%;
+		padding: 9px 10px;
+		border: none;
+		border-radius: 7px;
+		background: transparent;
+		font: inherit;
+		font-size: 13.5px;
+		color: var(--ts-tx);
+		cursor: pointer;
+		text-align: start;
+	}
+	.ts-sa-sug:hover {
+		background: var(--ts-hover);
+	}
+
+	/* Conversation view */
+	.ts-sa-view {
+		display: flex;
+		flex-direction: column;
+		min-height: 24rem;
+	}
+	.ts-sa-view[hidden] {
+		display: none;
+	}
+	.ts-sa-label {
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+		padding-block: 4px 12px;
+	}
+	.ts-sa-thread {
+		flex: 1;
+		overflow-y: auto;
+		max-height: min(58vh, 33rem);
+		scrollbar-width: thin;
+	}
+	.ts-sa-msg {
+		display: flex;
+		gap: 1rem;
+		padding-block: 1.15rem;
+	}
+	.ts-sa-thread > .ts-sa-msg + .ts-sa-msg {
+		border-top: 1px solid var(--sl-color-gray-6);
+	}
+	.ts-sa-avatar {
+		display: inline-flex;
+		align-items: flex-start;
+		justify-content: center;
+		width: 1.6rem;
+		flex-shrink: 0;
+		color: var(--sl-color-gray-3);
+		padding-top: 2px;
+	}
+	/* Assistant sparkle avatars (.ts-sa-spark) pick up the brand accent;
+	   the user icon stays gray. */
+	.ts-sa-msg-body {
+		flex: 1;
+		min-width: 0;
+		font-size: var(--sl-text-sm);
+		line-height: 1.65;
+		color: var(--sl-color-white);
+	}
+	.ts-sa-msg-body > p {
+		margin: 0 0 0.4rem;
+	}
+	.ts-sa-msg-body > p:last-child {
+		margin-bottom: 0;
+	}
+	.ts-sa-q {
+		overflow-wrap: anywhere;
+	}
+
+	/* Thinking indicator */
+	.ts-sa-think {
+		display: flex;
+		align-items: center;
+		gap: 2px;
+		color: var(--sl-color-gray-2);
+		font-size: var(--sl-text-sm);
+	}
+	.ts-sa-think[hidden] {
+		display: none;
+	}
+	.ts-sa-dots i {
+		display: inline-block;
+		width: 3px;
+		height: 3px;
+		border-radius: 50%;
+		background: currentColor;
+		margin-inline-start: 4px;
+		animation: ts-sa-blink 1.2s infinite;
+	}
+	.ts-sa-dots i:nth-child(2) {
+		animation-delay: 0.2s;
+	}
+	.ts-sa-dots i:nth-child(3) {
+		animation-delay: 0.4s;
+	}
+	@keyframes ts-sa-blink {
+		0%, 80%, 100% { opacity: 0.25; }
+		40% { opacity: 1; }
+	}
+
+	/* Answer content: keep it monotone inside the modal */
+	.ts-sa-msg .ts-ask-answer {
+		font-size: var(--sl-text-sm);
+	}
+
+	/* Answer actions (copy) */
+	.ts-sa-actions {
+		display: flex;
+		justify-content: flex-end;
+		margin-top: 0.6rem;
+	}
+	.ts-sa-actions[hidden] {
+		display: none;
+	}
+	.ts-sa-act {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.7rem;
+		height: 1.7rem;
+		border: none;
+		border-radius: 0.35rem;
+		background: transparent;
+		color: var(--sl-color-gray-3);
+		cursor: pointer;
+	}
+	.ts-sa-act:hover {
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-white);
+	}
+	.ts-sa-act[aria-pressed='true'] {
+		color: var(--ts-ac);
+		background: var(--ts-ac-soft);
+	}
+
+	/* Sources */
+	.ts-sa-sources {
+		margin-top: 1.1rem;
+	}
+	.ts-sa-sources[hidden] {
+		display: none;
+	}
+	.ts-sa-sources-head {
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+		margin-bottom: 0.6rem;
+	}
+	.ts-sa-source {
+		display: block;
+		padding: 0.7rem 0.9rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.6rem;
+		margin-bottom: 0.6rem;
+		text-decoration: none;
+		background: var(--sl-color-black);
+		transition: border-color 0.12s, background 0.12s;
+	}
+	.ts-sa-source:hover {
+		border-color: var(--ts-ac);
+		background: var(--sl-color-gray-6);
+	}
+	.ts-sa-source:hover .ts-sa-source-title {
+		color: var(--ts-ac);
+	}
+	.ts-sa-source-crumb {
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+		margin-bottom: 0.25rem;
+	}
+	.ts-sa-source-crumb .ts-sa-sep {
+		margin-inline: 0.3rem;
+		opacity: 0.7;
+	}
+	.ts-sa-source-title {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: var(--sl-text-sm);
+		font-weight: 600;
+		color: var(--sl-color-white);
+	}
+	.ts-sa-source-title svg {
+		color: var(--sl-color-gray-3);
+		flex-shrink: 0;
+	}
+
+	/* Footer: ask input, then the shared dialog footer row */
+	.ts-sa-foot {
+		margin-top: 1rem;
+		flex-shrink: 0;
+	}
+	.ts-sa-form {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		border: 1px solid var(--ts-bd);
+		border-radius: 0.75rem;
+		padding: 0.35rem 0.55rem 0.35rem 1rem;
+		background: var(--ts-panel);
+		transition: border-color 0.12s;
+	}
+	.ts-sa-form:focus-within {
+		border-color: var(--ts-ai-bd);
+	}
+	.ts-sa-input {
+		flex: 1;
+		min-width: 0;
+		border: none;
+		outline: none;
+		background: transparent;
+		color: var(--ts-tx);
+		font: inherit;
+		font-size: var(--sl-text-sm);
+		padding: 0.55rem 0;
+	}
+	.ts-sa-input::placeholder {
+		color: var(--ts-tx3);
+	}
+	/* Send: transparent with a muted glyph while empty; the brand gradient with
+	   a white glyph once the input has content. */
+	.ts-sa-send {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.1rem;
+		height: 2.1rem;
+		border: none;
+		border-radius: 0.5rem;
+		background: transparent;
+		color: var(--ts-tx3);
+		cursor: pointer;
+	}
+	.ts-sa-form.ts-sa-hastext .ts-sa-send {
+		background: var(--ts-ai-grad);
+		color: #fff;
+	}
+	.ts-sa-form.ts-sa-hastext .ts-sa-send:hover {
+		filter: brightness(1.1);
+	}
+
+	/* Shared dialog footer: hints in Search mode, Stop/Clear in Ask mode.
+	   Sticky against the scrolling dialog frame (long result lists scroll the
+	   frame, and the footer must stay visible), bleeding over the frame's own
+	   padding so nothing shows beneath it. */
+	.ts-sa-dialogfoot {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		min-height: 1.5rem;
+		flex-shrink: 0;
+		position: sticky;
+		z-index: 1;
+		bottom: -1rem;
+		margin: auto -1rem -1rem;
+		padding: 0.7rem 1rem;
+		background: var(--ts-bg);
+		border-top: 1px solid var(--ts-bd);
+	}
+	@media (min-width: 50rem) {
+		.ts-sa-dialogfoot {
+			bottom: -1.5rem;
+			margin: auto -1.5rem -1.5rem;
+			padding: 0.7rem 1.5rem;
+		}
+	}
+	.ts-sa-hints {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.9rem;
+		font-size: 11.5px;
+		color: var(--ts-tx3);
+	}
+	.ts-sa-hints[hidden] {
+		display: none;
+	}
+	.ts-sa-hints kbd {
+		font-family: var(--__sl-font);
+		font-size: 10.5px;
+		border: 1px solid var(--ts-bd);
+		border-radius: 0.25rem;
+		padding: 0 0.3rem;
+		margin-inline-end: 2px;
+		background: transparent;
+	}
+	.ts-sa-clear {
+		margin-inline-start: auto;
+		border: 1px solid var(--ts-bd);
+		border-radius: 0.4rem;
+		background: transparent;
+		color: var(--ts-tx2);
+		font: inherit;
+		font-size: var(--sl-text-xs);
+		font-weight: 500;
+		padding: 0.2rem 0.7rem;
+		cursor: pointer;
+	}
+	.ts-sa-clear[hidden] {
+		display: none;
+	}
+	.ts-sa-clear:hover {
+		background: var(--ts-hover);
+		color: var(--ts-tx);
+	}
+
+	/* Inline stream error + retry (never a blank thread) */
+	.ts-sa-error {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		color: var(--ts-dang);
+		font-size: var(--sl-text-sm);
+	}
+	.ts-sa-retry {
+		border: 1px solid var(--ts-dang-bd);
+		border-radius: 0.4rem;
+		background: var(--ts-dang-bg);
+		color: var(--ts-dang);
+		font: inherit;
+		font-size: var(--sl-text-xs);
+		font-weight: 600;
+		padding: 0.15rem 0.7rem;
+		cursor: pointer;
+	}
+	.ts-sa-retry:hover {
+		border-color: var(--ts-dang);
+	}
+
+	/* API-unavailable fallback */
+	.ts-sa-fallback {
+		display: block;
+		margin-top: 0.5rem;
+		border: 1px dashed var(--ts-bd);
+		border-radius: 0.5rem;
+		background: transparent;
+		color: var(--ts-tx2);
+		font: inherit;
+		font-size: var(--sl-text-sm);
+		padding: 0.5rem 0.9rem;
+		cursor: pointer;
+	}
+	.ts-sa-fallback:hover {
+		border-color: var(--ts-tx3);
+		color: var(--ts-tx);
+	}
+
+	/* ── Markdown answer styles ──
+	   Moved here from the deleted AskOverlay drawer: renderMarkdown() in
+	   ask-shared.ts emits `ts-ask-*` classes, and the search modal thread is now
+	   the only place they render. Scoped under .ts-sa-thread. Inline code chips
+	   and [N] citation superscripts carry the AI treatment. */
+	.ts-sa-thread .ts-ask-answer p {
+		margin: 0 0 0.9em;
+	}
+	.ts-sa-thread .ts-ask-answer p:last-child {
+		margin-bottom: 0;
+	}
+	.ts-sa-thread .ts-ask-answer :first-child {
+		margin-top: 0;
+	}
+	.ts-sa-thread .ts-ask-answer :is(h1, h2, h3, h4, h5, h6) {
+		font-weight: 700;
+		line-height: 1.3;
+		letter-spacing: -0.01em;
+		color: var(--ts-tx);
+		margin: 1.15em 0 0.5em;
+	}
+	.ts-sa-thread .ts-ask-answer h1 { font-size: 16px; }
+	.ts-sa-thread .ts-ask-answer h2 { font-size: 15px; }
+	.ts-sa-thread .ts-ask-answer :is(h3, h4, h5, h6) { font-size: 14px; }
+	.ts-sa-thread .ts-ask-answer :is(ul, ol) {
+		margin: 0 0 0.9em;
+		padding-left: 1.45em;
+	}
+	.ts-sa-thread .ts-ask-answer li { margin: 0.3em 0; }
+	.ts-sa-thread .ts-ask-answer li::marker { color: var(--ts-tx3); }
+	.ts-sa-thread .ts-ask-answer a {
+		color: var(--ts-ac);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+	.ts-sa-thread .ts-ask-answer a:hover { text-decoration: none; }
+	.ts-sa-thread .ts-ask-answer blockquote {
+		margin: 0 0 0.9em;
+		padding: 6px 0 6px 12px;
+		border-left: 3px solid var(--ts-bd);
+		color: var(--ts-tx2);
+	}
+	.ts-sa-thread .ts-ask-answer hr {
+		border: none;
+		border-top: 1px solid var(--ts-bd);
+		margin: 1.1em 0;
+	}
+
+	/* Inline code chips + [N] citations: the AI treatment. The greeting's
+	   product chip gets the same look. */
+	.ts-sa-thread .ts-ask-answer code,
+	.ts-sa-msg-body > p > code {
+		font-size: 12px;
+		font-family: var(--sl-font-mono);
+		background: var(--ts-ai-wash);
+		border: 1px solid var(--ts-ai-bd);
+		color: var(--ts-ai);
+		padding: 1px 6px;
+		border-radius: 5px;
+		overflow-wrap: anywhere;
+	}
+	.ts-sa-thread .ts-ask-cite {
+		font-size: 10px;
+		font-weight: 700;
+		vertical-align: super;
+		line-height: 1;
+		background: var(--ts-ai-wash);
+		border: 1px solid var(--ts-ai-bd);
+		color: var(--ts-ai);
+		border-radius: 4px;
+		padding: 0 3px;
+		margin-inline-start: 1px;
+	}
+
+	/* Inline endpoint/URL chips — click to copy */
+	.ts-sa-thread .ts-ask-answer code.ts-ask-inline-copy {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		cursor: pointer;
+		padding-right: 5px;
+		transition: border-color 0.12s;
+	}
+	.ts-sa-thread .ts-ask-answer code.ts-ask-inline-copy .ts-ask-ic-txt {
+		overflow-wrap: anywhere;
+	}
+	.ts-sa-thread .ts-ask-answer code.ts-ask-inline-copy .ts-ask-ic-btn {
+		display: inline-flex;
+		align-items: center;
+		opacity: 0.55;
+		transition: opacity 0.12s;
+	}
+	.ts-sa-thread .ts-ask-answer code.ts-ask-inline-copy:hover {
+		border-color: var(--ts-ai);
+	}
+	.ts-sa-thread .ts-ask-answer code.ts-ask-inline-copy:hover .ts-ask-ic-btn {
+		opacity: 1;
+	}
+	.ts-sa-thread .ts-ask-answer code.ts-ask-inline-copy:focus-visible {
+		outline: 2px solid var(--ts-ai);
+		outline-offset: 1px;
+	}
+	.ts-sa-thread .ts-ask-answer code.ts-ask-inline-copy.is-copied {
+		border-color: var(--ts-tip);
+		color: var(--ts-tip);
+	}
+	.ts-sa-thread .ts-ask-answer code.ts-ask-inline-copy.is-copied .ts-ask-ic-btn {
+		opacity: 1;
+	}
+
+	/* Tables (GFM) */
+	.ts-sa-thread .ts-ask-tablewrap {
+		margin: 0 0 1em;
+		overflow-x: auto;
+		border: 1px solid var(--ts-bd);
+		border-radius: 9px;
+	}
+	.ts-sa-thread .ts-ask-table {
+		border-collapse: collapse;
+		width: 100%;
+		font-size: 13px;
+	}
+	.ts-sa-thread .ts-ask-table :is(th, td) {
+		text-align: left;
+		padding: 9px 14px;
+		vertical-align: top;
+		border-bottom: 1px solid var(--ts-bd);
+	}
+	.ts-sa-thread .ts-ask-table thead th {
+		font-weight: 700;
+		color: var(--ts-tx);
+		background: var(--ts-panel);
+		white-space: nowrap;
+	}
+	.ts-sa-thread .ts-ask-table td { color: var(--ts-tx2); }
+	.ts-sa-thread .ts-ask-table tbody tr:last-child td { border-bottom: none; }
+
+	/* Code block — header (language + copy) over the snippet */
+	.ts-sa-thread .ts-ask-codeblock {
+		margin: 0 0 1em;
+		border: 1px solid var(--ts-bd);
+		border-radius: 9px;
+		overflow: hidden;
+		background: var(--ts-code-bg);
+	}
+	.ts-sa-thread .ts-ask-code-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 6px 8px 6px 12px;
+		background: var(--ts-panel);
+		border-bottom: 1px solid var(--ts-bd);
+	}
+	.ts-sa-thread .ts-ask-code-lang {
+		font-size: 11px;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--ts-tx3);
+	}
+	.ts-sa-thread .ts-ask-copy {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		border: none;
+		background: transparent;
+		cursor: pointer;
+		font-family: inherit;
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--ts-tx3);
+		padding: 3px 7px;
+		border-radius: 6px;
+		transition: background 0.12s, color 0.12s;
+	}
+	.ts-sa-thread .ts-ask-copy:hover {
+		background: var(--ts-hover);
+		color: var(--ts-tx);
+	}
+	.ts-sa-thread .ts-ask-pre {
+		margin: 0;
+		padding: 12px 14px;
+		overflow-x: auto;
+		background: var(--ts-code-bg);
+	}
+	.ts-sa-thread .ts-ask-pre code {
+		display: block;
+		padding: 0;
+		background: none;
+		border: none;
+		border-radius: 0;
+		font-size: 12.5px;
+		line-height: 1.6;
+		white-space: pre;
+		font-family: var(--sl-font-mono);
+		color: var(--ts-tx);
+	}
+	/* Syntax-highlight tokens (hues, not greys — shared across themes) */
+	.ts-sa-thread .ts-ask-pre .hl-comment { color: var(--ts-tx3); font-style: italic; }
+	.ts-sa-thread .ts-ask-pre .hl-string  { color: var(--ts-tip); }
+	.ts-sa-thread .ts-ask-pre .hl-url     { color: var(--ts-ac); }
+	.ts-sa-thread .ts-ask-pre .hl-flag    { color: var(--ts-ai); }
+	.ts-sa-thread .ts-ask-pre .hl-oper    { color: var(--ts-tx3); }
+	.ts-sa-thread .ts-ask-pre .hl-num     { color: var(--ts-warn); }
+	.ts-sa-thread .ts-ask-pre .hl-key     { color: var(--ts-ai); }
+	.ts-sa-thread .ts-ask-pre .hl-kw      { color: var(--ts-dang); font-weight: 600; }
+</style>

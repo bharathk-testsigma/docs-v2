@@ -1,0 +1,33 @@
+---
+title: Trello
+description: Connect Trello so bugs flow from a Testsigma run result onto your board, with video and screenshots attached.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Trello
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Trello integration pushes bugs from a run result onto your board. Cards arrive with annotations, the execution video, and step screenshots. Connecting takes the Trello API key together with a user token.
+
+<Prerequisites>
+
+- The **API Key** and **User Token** from your Trello account.
+
+</Prerequisites>
+
+## Connect
+
+<Steps>
+
+1. **Open integrations** — Go to **Settings → Integrations** and enable the **Trello** toggle.
+
+2. **Enter the details** — **API Key** and **Token**.
+
+3. **Save** — Click **Save & Enable**.
+
+</Steps>
+
+Then report from any **Test Case Result**: click **Report Bug**, choose **Trello**, fill the bug details (or **Link to Issue** for an existing card), and click **Create Ticket**. Only tools enabled on the integrations page appear in the chooser.

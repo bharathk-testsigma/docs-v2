@@ -1,0 +1,27 @@
+---
+title: Audit logs
+description: The immutable record of every user action in the account — what each entry holds and the filters that narrow it.
+pageType: reference
+verified: 2026-07
+sidebar:
+  order: 90
+---
+
+Audit logs record every key activity in the account — changes to test assets and access events alike — as immutable entries. Administrators use them to monitor usage, investigate incidents, and keep the organization accountable. They live under **Settings → Audit Logs**.
+
+## Log entry fields
+
+Each entry carries six fields:
+
+| Field          | What it holds                         |
+| -------------- | ------------------------------------- |
+| **Time**       | When the action occurred              |
+| **Event Type** | The entity the action touched         |
+| **Action**     | The type of activity                  |
+| **Project**    | Where the change was made             |
+| **User**       | Who performed it                      |
+| **Details**    | The changed fields, with their values |
+
+## Filters
+
+Five filters narrow the list: **Event Type**, **Action**, **Date Range**, **User**, and **Project**. Combine them to trace one person's changes to one project over a period.

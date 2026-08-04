@@ -1,0 +1,81 @@
+---
+title: Integrate Jenkins
+description: Upload JUnit results from a Jenkins pipeline so test runs in Arcus update automatically after every build.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 10
+  label: Jenkins
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+A Jenkins pipeline can push its JUnit results into an Arcus test run after every build. The pipeline runs your tests, then uploads the XML report through the Arcus API.
+
+## Before you begin
+
+- A project with test runs exists, and you have an [API token](/arcus/settings/api-keys/).
+- You have a Jenkins account.
+
+## Store the token in Jenkins
+
+<Steps>
+
+1. **Open credentials** — On the Jenkins dashboard, go to **Manage Jenkins → Credentials**, click **(global)** under **Stores scoped to Jenkins**, then **Add Credentials**.
+
+2. **Add the secret** — Select **Secret text** as the **Kind**, paste the Arcus API token as the **Secret**, set the **ID** to `TESTSIGMA_API_TOKEN`, and click **Create**.
+
+</Steps>
+
+## Configure the pipeline
+
+<Steps>
+
+1. **Create the pipeline** — Click **New Item**, name it, select **Pipeline**, and click **OK**.
+
+2. **Add the script** — In the **Pipeline** section, select **Pipeline script** and paste:
+
+   ```groovy
+   pipeline {
+       agent any
+       environment {
+           TESTSIGMA_API_TOKEN = credentials('TESTSIGMA_API_TOKEN')
+       }
+       stages {
+           stage('Run Tests') {
+               steps {
+                   // Run your test script here
+                   sh './run-tests.sh'
+               }
+           }
+           stage('Upload to Testsigma TMS') {
+               steps {
+                   // Ensure the test result file exists at the specified path
+                   sh '''
+                   curl --location 'https://test-management.testsigma.com/api/v1/projects/{Project_ID}/junit-import/test-run/{Run_ID}' \
+                   --header "Authorization: Bearer $TESTSIGMA_API_TOKEN" \
+                   --form "junit_xml=@target/test-results/test-report.xml"
+                   '''
+               }
+           }
+       }
+   }
+   ```
+
+3. **Save** — Click **Apply**, then **Save**.
+
+</Steps>
+
+<Aside type="note">
+  Replace `{Project_ID}` with your project ID from the [Arcus
+  API](/arcus/api-reference/overview/), and `{Run_ID}` with the ID from the test
+  run URL: `.../ui/test_runs/{Run_ID}/`.
+</Aside>
+
+## Trigger a build
+
+<Steps>
+
+1. **Run it** — Open the pipeline and click **Build Now**. When the build completes, the test case statuses update in the Arcus test run.
+
+</Steps>

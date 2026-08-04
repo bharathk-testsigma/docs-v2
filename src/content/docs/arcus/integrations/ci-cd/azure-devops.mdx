@@ -1,0 +1,79 @@
+---
+title: Integrate Azure Pipelines
+description: Upload JUnit results from an Azure DevOps pipeline so test runs in Arcus update automatically after every build.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 40
+  label: Azure DevOps
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+An Azure DevOps pipeline can push its JUnit results into an Arcus test run after every build. The pipeline builds with Maven, then uploads the XML report through the Arcus API.
+
+## Before you begin
+
+- A project with test runs exists, and you have an [API token](/arcus/settings/api-keys/) available to the pipeline as the `TESTSIGMA_API_TOKEN` variable.
+- You have an Azure DevOps account.
+
+## Configure the pipeline
+
+<Steps>
+
+1. **Edit the pipeline** — In Azure DevOps, open your pipeline and click **Edit**.
+
+2. **Replace the YAML** — Set the contents of `azure-pipelines.yml` to:
+
+   ```yaml
+   trigger:
+   - master
+
+   pool:
+   vmImage: ubuntu-latest
+
+   variables:
+   TESTSIGMA_API_TOKEN: $(TESTSIGMA_API_TOKEN)
+
+   steps:
+   # Step 1: Build Using Maven and Generate Test Report
+   - task: Maven@3
+   inputs:
+       mavenPomFile: 'pom.xml'
+       mavenOptions: '-Xmx3072m'
+       javaHomeOption: 'JDKVersion'
+       jdkVersionOption: '1.8'
+       jdkArchitectureOption: 'x64'
+       publishJUnitResults: true
+       testResultsFiles: '**/surefire-reports/TEST-*.xml'
+       goals: 'package'
+   continueOnError: true
+   displayName: 'Build and Test with Maven'
+
+   # Step 2: Upload JUnit Result to Testsigma Using CURL
+   - bash: |
+       echo "Uploading JUnit results to Testsigma..."
+       curl --location 'https://test-management.testsigma.com/api/v1/projects/{Project_ID}/junit-import/test-run/{Run_ID}' \
+       --header "Authorization: Bearer $TESTSIGMA_API_TOKEN" \
+       --form "junit_xml=@target/report.xml"
+   env:
+       TESTSIGMA_API_TOKEN: $(TESTSIGMA_API_TOKEN)
+   displayName: 'Upload Test Results to Testsigma'
+   ```
+
+</Steps>
+
+<Aside type="note">
+  Replace `{Project_ID}` with your project ID from the [Arcus
+  API](/arcus/api-reference/overview/), `{Run_ID}` with the ID from the test run
+  URL (`.../ui/test_runs/{Run_ID}/`), and the report path with your actual
+  surefire-reports file.
+</Aside>
+
+## Trigger a build
+
+<Steps>
+
+1. **Run it** — Click **Run pipeline**. When the build completes, the Arcus test run updates with the results.
+
+</Steps>

@@ -1,0 +1,125 @@
+---
+title: Attach context sources
+description: Add stories, documents, designs, files, and recordings to a session so QI Home generates accurate test cases.
+pageType: task
+verified: 2026-07
+covers:
+  - Attach Jira requirements
+  - Attach Azure DevOps, Linear, or ClickUp items
+  - Attach Confluence pages
+  - Attach Figma designs
+  - Attach files and documents
+  - Attach a video recording
+  - Manage attached context
+sidebar:
+  order: 20
+  label: Attach Context
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+Context sources are the inputs QI Home reads before generating test cases. The more relevant the context, the more accurate the output. You attach sources in the Playground before triggering generation, and you can mix sources in one session.
+
+## Before you begin
+
+- The Playground is open from an [Ad-Hoc session](/arcus/qi-home/generate/ad-hoc/).
+- The [integrations](/arcus/integrations/jira/set-up/) for your external sources are connected to the project.
+
+Every source starts from the **Add Context** bar under the prompt input. It shows buttons for **Jira**, **Azure DevOps**, **Linear**, **ClickUp**, and **Confluence**, plus **+** for **Figma**, **Files and Documents**, and **Video Recording**.
+
+## Attach Jira requirements
+
+<Steps>
+
+1. **Open the Jira panel** — In the **Add Context** bar, click **Jira**. The **Add Context** dialog opens.
+
+2. **Pick the project** — The **Project** field shows your connected Jira project.
+
+3. **Pick the issue type** — **Issue Type** defaults to **Story**. Change it for **Epics** or other types.
+
+4. **Select stories** — Tick the stories QI Home should read. Use the **Search** icon to find one by title or ID.
+
+5. **Save** — Click **Save**.
+
+</Steps>
+
+## Attach Azure DevOps, Linear, or ClickUp items
+
+<Steps>
+
+1. **Open the panel** — Click **Azure DevOps**, **Linear**, or **ClickUp** in the **Add Context** bar.
+
+2. **Select items** — Pick your **Project** and **Work Item Type**, then select the items.
+
+3. **Save** — Click **Save**.
+
+</Steps>
+
+## Attach Confluence pages
+
+<Steps>
+
+1. **Open the panel** — Click **Confluence** in the **Add Context** bar.
+
+2. **Select pages** — Pick the **Space**, then the **Pages** QI Home should read.
+
+3. **Save** — Click **Save**.
+
+</Steps>
+
+<Aside type="tip">
+  Confluence pages work best for PRDs, feature specifications, and release
+  notes.
+</Aside>
+
+## Attach Figma designs
+
+<Steps>
+
+1. **Open the panel** — Click **+** and select **Figma**.
+
+2. **Find the page** — Select the **Team**, **Project**, design file, and **Page**.
+
+3. **Pick frames** — Click **+ Select Frames**, choose the frames, and click **Save**.
+
+</Steps>
+
+<Aside type="note">
+  A session takes at most 20 frames. If the page has no sections defined, only
+  the first 20 frames are shown.
+</Aside>
+
+## Attach files and documents
+
+<Steps>
+
+1. **Open the panel** — Click **+** and select **Files and Documents**.
+
+2. **Upload** — Drag files into the upload area, or click **Browse**. Click **x** next to a file to remove it.
+
+3. **Save** — Click **Save**. A badge on the prompt input shows the file count.
+
+</Steps>
+
+Supported types are **.jpeg**, **.png**, **.docx**, **.pdf**, **.xls**, and **.ppt**, up to 500 MB in total. To add more later, click **+ Add Files** in the panel's top right.
+
+## Attach a video recording
+
+<Steps>
+
+1. **Open the panel** — Click **+** and select **Video Recording**.
+
+2. **Upload and save** — Drag the video in, or click **Browse**, then click **Save**.
+
+</Steps>
+
+## Manage attached context
+
+Each saved source shows as a badge above the prompt input, with its item count.
+
+- Click a badge to reopen its dialog and edit the selection.
+- Deselect everything in a source's dialog and save to remove its badge.
+
+<Aside type="note">
+  Context is not saved between sessions. Each new Ad-Hoc session starts empty.
+</Aside>

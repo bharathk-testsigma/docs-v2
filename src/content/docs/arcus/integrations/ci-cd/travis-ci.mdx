@@ -1,0 +1,77 @@
+---
+title: Integrate Travis CI
+description: Upload JUnit results from a Travis CI build so test runs in Arcus update automatically on every push.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 60
+  label: Travis CI
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+A Travis CI build can push its JUnit results into an Arcus test run on every push. The build runs Maven, then uploads the XML report through the Arcus API after success.
+
+## Before you begin
+
+- A project with test runs exists, and you have an [API token](/arcus/settings/api-keys/).
+- You have a Travis CI account.
+
+## Set the environment variable
+
+<Steps>
+
+1. **Open the settings** — In your Travis CI project, open **Settings**.
+
+2. **Add the token** — Under **Environment Variables**, create `TESTSIGMA_API_TOKEN` with the Arcus API token as its value.
+
+</Steps>
+
+<Aside type="note">
+  Keep **Display value in build log** disabled for the token.
+</Aside>
+
+## Configure the pipeline
+
+<Steps>
+
+1. **Edit the config** — In the repository root, open or create `.travis.yml` and add:
+
+   ```yaml
+   language: java
+   jdk:
+   - openjdk8
+
+   env:
+   global:
+       - TESTSIGMA_API_TOKEN=${TESTSIGMA_API_TOKEN}
+
+   script:
+   # Build and test using Maven
+   - echo "Running Maven build and tests..."
+   - mvn clean package
+
+   after_success:
+   # Upload JUnit report to Testsigma
+   - echo "Uploading JUnit results to Testsigma..."
+   - curl --location 'https://test-management.testsigma.com/api/v1/projects/{Project_ID}/junit-import/test-run/{Run_ID}' \
+       --header "Authorization: Bearer $TESTSIGMA_API_TOKEN" \
+       --form "junit_xml=@target/surefire-reports/TEST-MyTests.xml"
+   ```
+
+</Steps>
+
+<Aside type="note">
+  Replace `{Project_ID}` with your project ID from the [Arcus
+  API](/arcus/api-reference/overview/), and `{Run_ID}` with the ID from the test
+  run URL: `.../ui/test_runs/{Run_ID}/`. Point the JUnit path at the XML file
+  Maven actually generates.
+</Aside>
+
+## Trigger the pipeline
+
+<Steps>
+
+1. **Push** — Commit to the main (or configured) branch. Travis CI runs the workflow, and the Arcus test run updates when it completes.
+
+</Steps>

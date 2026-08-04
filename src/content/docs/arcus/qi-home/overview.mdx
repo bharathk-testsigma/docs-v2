@@ -1,0 +1,62 @@
+---
+title: QI Home
+description: How QI Home turns requirements into test cases, coverage, test plans, and automated runs in Arcus.
+pageType: concept
+verified: 2026-07
+sidebar:
+  order: 10
+  label: Overview
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+QI Home is the AI workspace in Arcus. You attach requirements and QI Home generates test cases. Coverage, test plans, and quality metrics update as you accept them. It then automates and executes the accepted cases — nothing is written from scratch.
+
+## Ways to start generation
+
+Two starting points share the same workflow after generation.
+
+| Mode                                        | Trigger                                      | Context                              |
+| ------------------------------------------- | -------------------------------------------- | ------------------------------------ |
+| [Ad-Hoc](/arcus/qi-home/generate/ad-hoc/)   | You open a session and click **Generate**    | Sources you attach yourself          |
+| [Sprints](/arcus/qi-home/generate/sprints/) | QI Home detects a sprint start and notifies you | Context linked to the sprint stories |
+
+Use Ad-Hoc outside sprint cycles, or when you want to control the context. Use Sprints when your team works in agile sprints. QI Home then reads your Jira, Linear, ClickUp, or Azure DevOps stories directly.
+
+Ad-Hoc accepts five kinds of context source:
+
+- **Jira, Azure DevOps, Linear, or ClickUp** — user stories and requirements (integration required)
+- **Confluence** — PRDs and specification documents (integration required)
+- **Figma** — UI designs and flows (integration required)
+- **Files and Documents** — PDFs, Word docs, or text files
+- **Video Recording** — walkthroughs or recorded user flows
+
+<Aside type="note">
+  QI Home needs an active [project](/arcus/get-started/projects/). External
+  context sources need their integration connected; files and recordings need
+  nothing.
+</Aside>
+
+## After generation
+
+The next steps are the same in both modes.
+
+[Review and accept test cases](/arcus/qi-home/generate/review-and-accept/) groups the output by scenario. You accept or reject cases individually or in bulk. Accepted cases go into your library.
+
+[Coverage and gaps](/arcus/qi-home/coverage-and-gaps/) shows the coverage percentage per module. Coverage is accepted cases divided by accepted plus pending; rejected cases are excluded. Pending cases are your gaps.
+
+[Test plans](/arcus/qi-home/test-plans/) are generated in four types: Smoke, Feature, Regression, and Deep Regression. Each type is a superset of the previous one. Plans are ready to run as soon as you have accepted cases.
+
+[QI metrics](/arcus/qi-home/qi-metrics/) are five numbers in the session header: Coverage, Pass Rate, Confidence, Release Readiness, and Release Gate. They update as cases are accepted and runs are executed.
+
+## Automation
+
+QI Home automates test cases from your library without code.
+
+[Agentic Learning (Beta)](/arcus/qi-home/automation/agentic-learning/) walks through the steps on your live application. It runs on Testsigma Lab in the cloud or on your local device. QI Home observes each step, learns the interactions, and generates automated steps. A manual test case becomes automated in minutes.
+
+[Copilot](/arcus/qi-home/automation/run-with-copilot/) executes those steps in a browser with a live panel. You can pause, add steps mid-run, and save the results. It also runs any test case interactively, for quick sanity checks.
+
+## Developer context mapping
+
+QI Home detects developer activity from Claude Code, Cursor, GitHub Copilot, and Codex. GitHub pull requests are detected too. Each entry lands in the **Unmapped Context** view with a suggested module and sprint. You confirm the mapping. QI Home then generates or updates test cases from the captured changes. See the [context mapping overview](/arcus/qi-home/context-mapping/overview/) for how the model works.

@@ -1,0 +1,55 @@
+---
+title: Azure DevOps
+description: Run the Testsigma trigger script from an Azure Pipelines job and publish the JUnit results.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 30
+  label: Azure DevOps
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Azure Pipelines runs the [shell script](/suite/integrations/ci-cd/shell-script/) through a `Bash@3` task. A `PublishTestResults@2` task can then publish the JUnit report. Testsigma results show up in Azure's own test tab, beside everything else the pipeline produces.
+
+<Prerequisites>
+
+- The script (here `cd-api.sh`) is committed to the repository, keys set.
+
+</Prerequisites>
+
+## Configure the pipeline
+
+<Steps>
+
+1. **Create the pipeline** — In your Azure DevOps project, go to **Pipelines → New Pipeline** and pick your version control system.
+
+2. **Point at the YAML** — Choose the repository, then **Existing Azure Pipelines YAML file**. **Starter Pipeline** has Azure commit a sample instead. Select the branch and path.
+
+3. **Review and run** — The pipeline needs two tasks: run the script, publish the report.
+
+</Steps>
+
+```yaml title="azure-pipelines.yml"
+# Azure Pipelines YAML file
+trigger: master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: echo Hello, world!
+  displayName: Run a one-line script
+
+- task: Bash@3
+  displayName: Run Shell Script (./cd-api.sh)
+  inputs:
+    filePath: ./cd-api.sh
+
+- task: PublishTestResults@2
+  displayName: publish test-results
+  inputs:
+    testResultFormat: JUnit
+    testResultsFiles: '**/*junit-report.xml'
+```

@@ -1,0 +1,79 @@
+---
+title: Capture evidence with Test Capture
+description: Install the Test Capture Chrome extension, record execution evidence during manual runs, and review the logs.
+pageType: task
+verified: 2026-07
+covers:
+  - What gets captured
+  - Install the extension
+  - Authorize and configure
+  - Capture logs during execution
+  - Review captured logs
+sidebar:
+  order: 10
+  label: Test Capture
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+Test Capture runs alongside manual test execution. It records screen video, screenshots, and network logs as you test, and attaches everything to the test run automatically — no separate recording tools, no re-running a test just to collect proof.
+
+## What gets captured
+
+A log can be captured during execution or after a failure, with no advance setup. Each one bundles three layers:
+
+| Layer              | Contents                                                                            |
+| ------------------ | ----------------------------------------------------------------------------------- |
+| Visual             | Instant Replay or a video recording of the execution                                |
+| Execution metadata | Application URL, browser and version, OS, resolution, viewport, timezone, timestamp |
+| Technical          | Network requests and responses                                                      |
+
+Logs attach to the test case execution inside the run and appear in the case's **Activity** section, alongside status changes and tester comments.
+
+## Install the extension
+
+<Steps>
+
+1. **Start from a run** — In **Test Runs**, open a run and click **Execute & Capture**.
+
+2. **Get the extension** — In the **Extension Not Installed** dialog, click **Download Extension**. The Chrome extension page opens.
+
+3. **Add it** — Click **Add to Chrome** and confirm.
+
+</Steps>
+
+<Aside type="note">
+  The [Test Capture
+  extension](https://chromewebstore.google.com/detail/test-capture/okbaemnjkbljcicegpnbcoocfhcmoopn)
+  can also be installed directly from the Chrome Web Store.
+</Aside>
+
+## Authorize and configure
+
+<Steps>
+
+1. **Authorize** — Open a run, click **Execute & Capture**, then **Login to Test Capture** in the dialog. On the authorization page, click **Authorize Extension**.
+
+2. **Enable capture options** — Open **Test Capture** from the Chrome **Extensions** icon and enable **Instant Replay**, **Take Screenshot**, and **Record Current Tab**.
+
+3. **Register your app** — In the extension's **Settings**, enter the application URL used for testing and click **Add**.
+
+</Steps>
+
+The same settings page edits keyboard shortcuts — activate, Instant Replay, record screen or tab, screenshot — and **Reset** restores the defaults.
+
+## Capture logs during execution
+
+<Steps>
+
+1. **Open the panel** — In a test run, click **Execute & Capture**. The **Test Capture** panel opens with the run's test cases. Bulk-select cases to capture several.
+
+2. **Test** — Open a case and execute it manually.
+
+3. **Record what you see** — On a bug or error: set the execution status, add a comment, select **Attach Instant Replay** to attach the last 2 minutes of video and logs, and click **Save Logs**.
+
+</Steps>
+
+## Review captured logs
+
+Open the executed run in **Test Runs**, open the test case, and scroll to **Activity**. Every log shows its execution timestamps, status changes, and tester comments.

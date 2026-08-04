@@ -1,0 +1,62 @@
+---
+title: Developer context mapping
+description: How pull requests and CLI coding context flow into QI Home and become test generation triggers.
+pageType: concept
+verified: 2026-07
+sidebar:
+  order: 10
+  label: Overview
+---
+
+Developer context mapping connects the tools your developers already use to the Quality Intelligence loop. QI Home captures pull requests and finished CLI sessions and surfaces them in QI Home. Developers keep their workflow; QA maps what arrives.
+
+## What gets captured
+
+Two types of developer activity flow in.
+
+**Pull requests** come from GitHub. With the Arcus GitHub App connected to a repository, every pull request in it flows into QI Home automatically.
+
+**Coding context** comes from CLI tools. Developers working in Claude Code, Cursor, GitHub Copilot, or Codex with the Arcus plugin have their activity captured in the background. The developer pushes the context to QI Home when done.
+
+Both land in the **Unmapped Context** view. Nothing is generated until the context is mapped.
+
+## The mapping model
+
+Every entry sits in one of three states.
+
+**Unmapped** — all context lands here first. QI Home suggests the sprint and story it belongs to. You map it or dismiss it.
+
+**Sprint** — mapped context feeds test generation for that sprint, and its metrics update accordingly. Context routes to a sprint automatically in two cases: a pull request title or description contains a Jira ticket ID, or a developer ran `/arcus:map <ticket-key>` before pushing CLI context.
+
+**Ad-Hoc** — for work not tied to a sprint, such as hotfixes, experiments, or cross-sprint refactors. Ad-Hoc mapping is always manual.
+
+## What QI Home generates after mapping
+
+Mapping is the trigger. QI Home then produces:
+
+- **test cases** from the pull request diff or captured context, for you to accept, edit, or reject
+- **coverage gaps** naming areas of the change with no tests
+- **a test plan** organized into Smoke, Feature, Regression, and Deep Regression
+
+Execution results feed the [QI metrics](/arcus/qi-home/qi-metrics/).
+
+## When CLI context and a pull request overlap
+
+Developers often raise a PR for work already captured as CLI context. QI Home resolves it:
+
+- **Context still unmapped when the PR arrives** — the two unify into one entry. Prompt history and code changes are analyzed together with the PR diff.
+- **Context already mapped** — the PR auto-maps to the same sprint or session. Nothing to do.
+
+A developer who ran `/arcus:map` early needs no action at PR time; the mapping carries forward.
+
+## Supported tools
+
+Connect any combination. Most teams connect GitHub plus at least one CLI tool.
+
+| Tool           | What it captures                          | Setup                                                                            |
+| -------------- | ----------------------------------------- | -------------------------------------------------------------------------------- |
+| GitHub         | Pull requests from connected repositories | [Connect GitHub](/arcus/qi-home/context-mapping/connect-github/)                 |
+| Claude Code    | Prompts, tool calls, file changes         | [Connect Claude Code](/arcus/qi-home/context-mapping/connect-claude-code/)       |
+| Cursor         | Prompts, tool calls, file changes         | [Connect Cursor](/arcus/qi-home/context-mapping/connect-cursor/)                 |
+| GitHub Copilot | Prompts, tool calls, file changes         | [Connect GitHub Copilot](/arcus/qi-home/context-mapping/connect-github-copilot/) |
+| Codex          | Prompts, tool calls, file changes         | [Connect Codex](/arcus/qi-home/context-mapping/connect-codex/)                   |

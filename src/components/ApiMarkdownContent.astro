@@ -1,0 +1,940 @@
+---
+import '@astrojs/starlight/style/markdown.css';
+import CopyPage from './CopyPage.astro';
+/**
+ * MarkdownContent override -- API reference layout.
+ *
+ * Ported from the previous docs site (docs-v2). Any page carrying an `api:`
+ * block in its frontmatter (see src/content.config.ts) renders as a
+ * two-column endpoint reference: description + parameter tables on the left,
+ * request/response code panels on the right. Every other page falls through
+ * to normal markdown rendering, unchanged.
+ *
+ * The cURL / JavaScript / Python samples are GENERATED from method + path +
+ * body, so frontmatter stays the single source of truth and the samples can
+ * never drift from the spec they document.
+ *
+ * The code panels stay dark in both themes -- the API-reference convention,
+ * and deliberately unlike the Expressive Code frames used elsewhere, which
+ * follow the site theme.
+ *
+ * Note: PageTitle.astro renders nothing on these pages, so the `#_top` anchor
+ * the table of contents links to lives on this component's <h1> instead.
+ */
+import { isArcusPath } from '../starlightRouteData';
+import { regionsForHost } from '../data/regions';
+
+const { entry } = Astro.locals.starlightRoute;
+
+// Both products have an API overview with an #authentication section, and each
+// documents its OWN key. Hardcoding Suite's sent every Arcus endpoint page to
+// the wrong product's page.
+const authHref = isArcusPath(Astro.url.pathname)
+	? '/arcus/api-reference/overview/#authentication'
+	: '/suite/api/overview/#authentication';
+const api = (entry.data as any).api as
+	| {
+			method: string;
+			path: string;
+			baseUrl: string;
+			pathParams: { name: string; desc: string }[];
+			query: { name: string; desc: string }[];
+			bodyFields: { name: string; desc: string }[];
+			requestBody?: Record<string, unknown> | unknown[];
+			formData?: Record<string, unknown>;
+			response: unknown;
+			status: number;
+			statusText: string;
+			responseAttributes: { name: string; desc: string }[];
+	  }
+	| undefined;
+
+const METHOD_COLOR: Record<string, string> = {
+	GET: '#00a96e',
+	POST: '#e67e22',
+	PUT: '#2980b9',
+	PATCH: '#8e44ad',
+	DELETE: '#e74c3c',
+};
+const color = api ? (METHOD_COLOR[api.method] ?? '#444') : '';
+const fullUrl = api ? api.baseUrl + api.path : '';
+
+// ---- regional hosts ----
+// Frontmatter carries the canonical (US) host; the reader picks their region and
+// the picker rewrites every [data-ts-host] span below. `hostParts` splits a
+// generated string so the host inside it becomes one of those spans instead of
+// flat text -- without this the chip would follow the picker while the cURL a
+// reader actually copies stayed on the US host.
+let apiHost = '';
+try {
+	apiHost = api ? new URL(api.baseUrl).host : '';
+} catch {
+	apiHost = '';
+}
+const regions = apiHost ? regionsForHost(apiHost) : [];
+
+function hostParts(s: string, host: string): { isHost: boolean; v: string }[] {
+	if (!host || !s.includes(host)) return [{ isHost: false, v: s }];
+	const out: { isHost: boolean; v: string }[] = [];
+	const segs = s.split(host);
+	segs.forEach((seg, i) => {
+		if (seg) out.push({ isHost: false, v: seg });
+		if (i < segs.length - 1) out.push({ isHost: true, v: host });
+	});
+	return out;
+}
+
+// A form-data value of the form "@filename" denotes a file field.
+const isFile = (v: unknown): v is string => typeof v === 'string' && v.startsWith('@');
+
+function buildCurl(
+	method: string,
+	url: string,
+	body?: Record<string, unknown> | unknown[],
+	form?: Record<string, unknown>
+): string {
+	// multipart/form-data: one `-F` per field; curl sets the Content-Type + boundary.
+	if (form) {
+		const fields = Object.entries(form)
+			.map(([k, v]) => `  -F '${k}=${v}'`)
+			.join(' \\\n');
+		return `curl -X ${method} \\\n  '${url}' \\\n  -H 'Authorization: Bearer <API_KEY>' \\\n${fields}`;
+	}
+	let s = `curl -X ${method} \\\n  '${url}' \\\n  -H 'Authorization: Bearer <API_KEY>' \\\n  -H 'Content-Type: application/json'`;
+	if (body) s += ` \\\n  -d '${JSON.stringify(body, null, 2).replace(/\n/g, '\n  ')}'`;
+	return s;
+}
+
+function buildJs(
+	method: string,
+	url: string,
+	body?: Record<string, unknown> | unknown[],
+	form?: Record<string, unknown>
+): string {
+	if (form) {
+		const appends = Object.entries(form)
+			.map(([k, v]) =>
+				isFile(v) ? `form.append('${k}', fileInput.files[0]);` : `form.append('${k}', '${v}');`
+			)
+			.join('\n');
+		return `const form = new FormData();\n${appends}\n\nconst response = await fetch('${url}', {\n  method: '${method}',\n  headers: { 'Authorization': 'Bearer <API_KEY>' },\n  body: form\n});\nconst data = await response.json();`;
+	}
+	let opts = `  method: '${method}',\n  headers: {\n    'Authorization': 'Bearer <API_KEY>',\n    'Content-Type': 'application/json'\n  }`;
+	if (body) opts += `,\n  body: JSON.stringify(${JSON.stringify(body, null, 4).split('\n').join('\n  ')})`;
+	return `const response = await fetch('${url}', {\n${opts}\n});\nconst data = await response.json();`;
+}
+
+function buildPython(
+	method: string,
+	url: string,
+	body?: Record<string, unknown> | unknown[],
+	form?: Record<string, unknown>
+): string {
+	const m = method.toLowerCase();
+	if (form) {
+		const data = Object.entries(form).filter(([, v]) => !isFile(v));
+		const files = Object.entries(form).filter(([, v]) => isFile(v));
+		const dataStr = data.length
+			? `,\n  data={\n${data.map(([k, v]) => `    '${k}': '${v}'`).join(',\n')}\n  }`
+			: '';
+		const filesStr = files.length
+			? `,\n  files={\n${files.map(([k, v]) => `    '${k}': open('${String(v).slice(1)}', 'rb')`).join(',\n')}\n  }`
+			: '';
+		return `import requests\n\nresponse = requests.${m}(\n  '${url}',\n  headers={ 'Authorization': 'Bearer <API_KEY>' }${dataStr}${filesStr}\n)\ndata = response.json()`;
+	}
+	let s = `import requests\n\nresponse = requests.${m}(\n  '${url}',\n  headers={\n    'Authorization': 'Bearer <API_KEY>',\n    'Content-Type': 'application/json'\n  }`;
+	if (body) s += `,\n  json=${JSON.stringify(body, null, 4).split('\n').join('\n  ')}`;
+	s += `\n)\ndata = response.json()`;
+	return s;
+}
+
+const curlCode = api ? buildCurl(api.method, fullUrl, api.requestBody, api.formData) : '';
+const jsCode = api ? buildJs(api.method, fullUrl, api.requestBody, api.formData) : '';
+const pythonCode = api ? buildPython(api.method, fullUrl, api.requestBody, api.formData) : '';
+const responseJson = api ? JSON.stringify(api.response, null, 2) : '';
+const statusColor = api && api.status < 300 ? '#00a96e' : '#e74c3c';
+---
+
+{/* Pagefind product filter: every page declares which product it documents,
+    so the search dialog's All/Suite/Arcus chips can filter with true counts.
+    Rendered inside the indexed region (data-pagefind-body); invisible. */}
+<meta
+	data-pagefind-filter="product[content]"
+	content={isArcusPath(Astro.url.pathname) ? 'Arcus' : 'Suite'}
+/>
+
+{/* Frontmatter `searchTerms` → searchable text, WITHOUT putting keywords in the
+    rendered page. Pagefind indexes attribute values named in
+    data-pagefind-index-attrs, so the terms live in an attribute rather than as
+    hidden text (hidden keyword text on a public page reads as cloaking to
+    crawlers; an attribute does not). Weighted like an h3: enough to compete
+    with a heading match on another page, not enough to beat a real title hit --
+    weights are quadratic, so 5 ≈ 25x body text. */}
+{
+	entry.data.searchTerms?.length ? (
+		<meta
+			data-pagefind-index-attrs="content"
+			data-pagefind-weight="5"
+			content={entry.data.searchTerms.join('. ')}
+		/>
+	) : null
+}
+
+{
+	api ? (
+		<div class="ts-api-page">
+			{/* ---- left column: spec ---- */}
+			<div class="ts-api-left">
+				<div class="ts-api-title-row">
+					<h1 id="_top" class="ts-api-title">
+						{entry.data.title}
+					</h1>
+					<CopyPage />
+				</div>
+
+				<div class="ts-api-endpoint-row">
+					<span class="ts-method-badge" style={`background:${color}`}>
+						{api.method}
+					</span>
+					<code class="ts-endpoint-path">{api.path}</code>
+				</div>
+				{/* A div, not a <p>: the region menu below is a <ul>, which a <p> may
+				    not contain -- the browser would close the paragraph early and
+				    break this row's layout. */}
+				<div class="ts-api-base-url">
+					Base URL&nbsp;
+					<code class="ts-base-url-code">
+						{
+							hostParts(api.baseUrl, apiHost).map((p) =>
+								p.isHost ? <span data-ts-host>{p.v}</span> : p.v
+							)
+						}
+					</code>
+					{
+						/* Only offered where the host family actually has variants -- see
+						   src/data/regions.ts.
+
+						   A custom menu rather than a <select>: the native popup is drawn by
+						   the OS, so it opens ON TOP of its own control (covering the
+						   "Region" label) and paints the selected row in the system accent
+						   blue. Neither is reachable from CSS. This one opens below the
+						   button and takes the left nav's highlight treatment. */
+						regions.length > 1 && (
+							<span class="ts-region" data-ts-region>
+								<span class="ts-region-label" id="ts-region-label">
+									Region
+								</span>
+								<span class="ts-region-pop">
+									<button
+										type="button"
+										class="ts-region-btn"
+										data-ts-region-btn
+										aria-labelledby="ts-region-label"
+										aria-haspopup="listbox"
+										aria-expanded="false"
+									>
+										<span data-ts-region-current>{regions[0].label}</span>
+										<svg
+											class="ts-region-caret"
+											width="9"
+											height="9"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="3"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											aria-hidden="true"
+										>
+											<path d="m6 9 6 6 6-6" />
+										</svg>
+									</button>
+									<ul class="ts-region-menu" role="listbox" aria-labelledby="ts-region-label" hidden>
+										{regions.map((r, i) => (
+											<li
+												class="ts-region-opt"
+												role="option"
+												tabindex="-1"
+												data-region-id={r.id}
+												data-host={r.host}
+												data-label={r.label}
+												aria-selected={i === 0 ? 'true' : 'false'}
+											>
+												<span class="ts-region-check" aria-hidden="true">✓</span>
+												{r.label}
+											</li>
+										))}
+									</ul>
+								</span>
+							</span>
+						)
+					}
+				</div>
+
+				{entry.data.description && <p class="ts-api-description">{entry.data.description}</p>}
+
+				<div class="ts-api-auth-note">
+					<svg
+						width="15"
+						height="15"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+						<path d="M7 11V7a5 5 0 0 1 10 0v4" />
+					</svg>
+					<span>
+						Authenticate with your API key as a <code>Bearer</code> token in the{' '}
+						<code>Authorization</code> header.{' '}
+						<a href={authHref} class="ts-api-auth-link">
+							How to authenticate →
+						</a>
+					</span>
+				</div>
+
+				{api.pathParams.length > 0 && (
+					<div class="ts-api-params-block">
+						<p class="ts-api-section-label">Path parameters</p>
+						<table class="ts-api-params-table">
+							<tbody>
+								{api.pathParams.map((p) => (
+									<tr>
+										<td class="ts-param-name">
+											<code>{p.name}</code>
+										</td>
+										<td class="ts-param-desc">{p.desc}</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				)}
+
+				{api.query.length > 0 && (
+					<div class="ts-api-params-block">
+						<p class="ts-api-section-label">Query parameters</p>
+						<table class="ts-api-params-table">
+							<tbody>
+								{api.query.map((p) => (
+									<tr>
+										<td class="ts-param-name">
+											<code>{p.name}</code>
+										</td>
+										<td class="ts-param-desc">{p.desc}</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				)}
+
+				{api.bodyFields.length > 0 && (
+					<div class="ts-api-params-block">
+						<p class="ts-api-section-label">Request body</p>
+						<table class="ts-api-params-table">
+							<tbody>
+								{api.bodyFields.map((p) => (
+									<tr>
+										<td class="ts-param-name">
+											<code>{p.name}</code>
+										</td>
+										<td class="ts-param-desc">{p.desc}</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				)}
+
+				{api.responseAttributes.length > 0 && (
+					<div class="ts-api-params-block">
+						<p class="ts-api-section-label">Response attributes</p>
+						<table class="ts-api-params-table">
+							<tbody>
+								{api.responseAttributes.map((p) => (
+									<tr>
+										<td class="ts-param-name">
+											<code>{p.name}</code>
+										</td>
+										<td class="ts-param-desc">{p.desc}</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				)}
+			</div>
+
+			{/* ---- right column: generated samples ---- */}
+			<div class="ts-api-right">
+				<div class="ts-code-panel">
+					<div class="ts-code-panel-header">
+						<span class="ts-panel-label">Request</span>
+						<div class="ts-tab-group" role="tablist">
+							<button class="ts-tab-btn ts-tab-btn--active" data-tab="curl" role="tab">
+								cURL
+							</button>
+							<button class="ts-tab-btn" data-tab="js" role="tab">
+								JavaScript
+							</button>
+							<button class="ts-tab-btn" data-tab="python" role="tab">
+								Python
+							</button>
+						</div>
+					</div>
+					<div class="ts-code-body">
+						<pre class="ts-code-pre" data-lang="curl"><code>{hostParts(curlCode, apiHost).map((p) => (p.isHost ? <span data-ts-host>{p.v}</span> : p.v))}</code></pre>
+						<pre class="ts-code-pre ts-hidden" data-lang="js"><code>{hostParts(jsCode, apiHost).map((p) => (p.isHost ? <span data-ts-host>{p.v}</span> : p.v))}</code></pre>
+						<pre class="ts-code-pre ts-hidden" data-lang="python"><code>{hostParts(pythonCode, apiHost).map((p) => (p.isHost ? <span data-ts-host>{p.v}</span> : p.v))}</code></pre>
+						<button class="ts-copy-btn" aria-label="Copy code">
+							Copy
+						</button>
+					</div>
+				</div>
+
+				<div class="ts-response-panel">
+					<div class="ts-code-panel-header">
+						<span class="ts-panel-label">Response</span>
+						<span class="ts-status-badge" style={`color:${statusColor}`}>
+							<span class="ts-status-dot" style={`background:${statusColor}`} />
+							{api.status} {api.statusText}
+						</span>
+					</div>
+					<div class="ts-code-body">
+						<pre class="ts-code-pre ts-response-pre"><code>{responseJson}</code></pre>
+						<button class="ts-copy-btn" aria-label="Copy response">
+							Copy
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	) : (
+		<div class="sl-markdown-content">
+			<slot />
+		</div>
+	)
+}
+
+<script>
+	// Language tabs
+	document.querySelectorAll<HTMLElement>('.ts-code-panel').forEach((panel) => {
+		const btns = panel.querySelectorAll<HTMLButtonElement>('.ts-tab-btn');
+		const pres = panel.querySelectorAll<HTMLElement>('.ts-code-pre');
+
+		btns.forEach((btn) => {
+			btn.addEventListener('click', () => {
+				btns.forEach((b) => b.classList.remove('ts-tab-btn--active'));
+				btn.classList.add('ts-tab-btn--active');
+				const lang = btn.dataset.tab!;
+				pres.forEach((pre) => {
+					pre.classList.toggle('ts-hidden', pre.dataset.lang !== lang);
+				});
+			});
+		});
+	});
+
+	// Region picker -- rewrites the host in the base-URL chip and in every
+	// generated sample, so the cURL a reader copies matches the region they
+	// picked (the copy button reads textContent, so it follows automatically).
+	// The choice is remembered for the whole API reference, not per page.
+	{
+		const KEY = 'ts-api-region';
+		const root = document.querySelector<HTMLElement>('[data-ts-region]');
+		const btn = root?.querySelector<HTMLButtonElement>('[data-ts-region-btn]');
+		const menu = root?.querySelector<HTMLElement>('.ts-region-menu');
+		if (root && btn && menu) {
+			const opts = [...menu.querySelectorAll<HTMLElement>('.ts-region-opt')];
+			const current = btn.querySelector<HTMLElement>('[data-ts-region-current]')!;
+
+			const apply = (id: string) => {
+				const opt = opts.find((o) => o.dataset.regionId === id);
+				if (!opt) return; // a region this page's host family does not offer
+				for (const o of opts) o.setAttribute('aria-selected', String(o === opt));
+				current.textContent = opt.dataset.label!;
+				const host = opt.dataset.host!;
+				document.querySelectorAll<HTMLElement>('[data-ts-host]').forEach((el) => {
+					el.textContent = host;
+				});
+			};
+
+			const setOpen = (open: boolean) => {
+				menu.hidden = !open;
+				btn.setAttribute('aria-expanded', String(open));
+				if (open) {
+					(opts.find((o) => o.getAttribute('aria-selected') === 'true') ?? opts[0])?.focus();
+				}
+			};
+
+			let saved: string | null = null;
+			try {
+				saved = localStorage.getItem(KEY);
+			} catch {
+				/* private mode -- fall back to the authored default */
+			}
+			if (saved) apply(saved);
+
+			const pick = (opt: HTMLElement) => {
+				const id = opt.dataset.regionId!;
+				try {
+					localStorage.setItem(KEY, id);
+				} catch {
+					/* ignore */
+				}
+				apply(id);
+				setOpen(false);
+				btn.focus();
+			};
+
+			btn.addEventListener('click', () => setOpen(menu.hidden));
+			for (const o of opts) {
+				o.addEventListener('click', () => pick(o));
+				o.addEventListener('keydown', (e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						pick(o);
+					}
+				});
+			}
+			// Arrow keys move within the menu; Esc closes it; a click anywhere else
+			// dismisses it -- the behaviours the native popup gave us for free.
+			menu.addEventListener('keydown', (e) => {
+				const i = opts.indexOf(document.activeElement as HTMLElement);
+				if (e.key === 'ArrowDown') {
+					e.preventDefault();
+					opts[Math.min(i + 1, opts.length - 1)]?.focus();
+				} else if (e.key === 'ArrowUp') {
+					e.preventDefault();
+					opts[Math.max(i - 1, 0)]?.focus();
+				}
+			});
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape' && !menu.hidden) {
+					setOpen(false);
+					btn.focus();
+				}
+			});
+			document.addEventListener('click', (e) => {
+				if (!menu.hidden && !root.contains(e.target as Node)) setOpen(false);
+			});
+		}
+	}
+
+	// Copy buttons -- copy whichever sample is currently visible
+	document.querySelectorAll<HTMLButtonElement>('.ts-copy-btn').forEach((btn) => {
+		btn.addEventListener('click', () => {
+			const body = btn.closest('.ts-code-body');
+			const pre = body?.querySelector<HTMLElement>('.ts-code-pre:not(.ts-hidden)');
+			navigator.clipboard.writeText(pre?.textContent ?? '').then(() => {
+				btn.textContent = 'Copied!';
+				setTimeout(() => (btn.textContent = 'Copy'), 1800);
+			});
+		});
+	});
+</script>
+
+<style>
+	/* ---- two-column wrapper ---- */
+	.ts-api-page {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+		gap: 48px;
+		align-items: start;
+		max-width: 100%;
+		padding: 8px 0 64px;
+	}
+
+	@media (max-width: 72rem) {
+		.ts-api-page {
+			grid-template-columns: 1fr;
+		}
+		.ts-api-right {
+			position: static;
+		}
+	}
+
+	/* ---- left column ---- */
+	.ts-api-left {
+		min-width: 0;
+	}
+
+	/* Same title/"Copy page" row as PageTitle.astro; the margin lives on the row
+	   so the button rides the title line rather than sitting above the gap. */
+	.ts-api-title-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		margin-bottom: 20px;
+	}
+	.ts-api-title-row :global(.ts-copy) {
+		flex: none;
+	}
+
+	.ts-api-title {
+		font-size: 2.125rem; /* matches PageTitle.astro, which sits this out */
+		font-weight: 600;
+		color: var(--ts-tx);
+		margin: 0;
+		letter-spacing: -0.023em;
+		line-height: 1.2;
+		border: none;
+	}
+
+	.ts-api-endpoint-row {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 8px;
+	}
+
+	.ts-method-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 11px;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		color: #fff;
+		border-radius: 5px;
+		padding: 3px 8px;
+		flex-shrink: 0;
+	}
+
+	.ts-endpoint-path {
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--ts-tx);
+		background: transparent;
+		padding: 0;
+		font-family: var(--sl-font-mono);
+	}
+
+	.ts-api-base-url {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 4px 10px;
+		font-size: 12px;
+		color: var(--ts-tx3);
+		margin: 0 0 20px;
+	}
+	.ts-base-url-code {
+		color: var(--ts-tx2);
+		font-size: 12px;
+		background: transparent;
+		padding: 0;
+	}
+
+	/* Region picker. Sits with the base URL because that is the only thing on the
+	   page it changes -- the path, params, and response are region-independent. */
+	.ts-region {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+	}
+	.ts-region-label {
+		font-size: 11px;
+		color: var(--ts-tx3);
+	}
+	.ts-region-pop {
+		position: relative;
+		display: inline-flex;
+	}
+	.ts-region-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		font-family: inherit;
+		font-size: 11.5px;
+		color: var(--ts-tx2);
+		background: var(--ts-bg);
+		border: 1px solid var(--ts-bd);
+		border-radius: 5px;
+		padding: 1px 5px;
+		cursor: pointer;
+	}
+	.ts-region-btn:hover {
+		color: var(--ts-tx);
+		border-color: var(--ts-tx3);
+	}
+	.ts-region-caret {
+		flex: none;
+		opacity: 0.75;
+	}
+
+	/* Opens BELOW the button, aligned to its left edge, so it never covers the
+	   "Region" label -- which is what the native select popup did. */
+	.ts-region-menu {
+		position: absolute;
+		top: calc(100% + 4px);
+		left: 0;
+		z-index: 30;
+		margin: 0;
+		padding: 4px;
+		list-style: none;
+		background: var(--ts-bg);
+		border: 1px solid var(--ts-bd);
+		border-radius: 7px;
+		box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+	}
+	.ts-region-menu[hidden] {
+		display: none;
+	}
+	.ts-region-opt {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 8px;
+		border-radius: 6px;
+		font-size: 12.5px;
+		line-height: 1.45;
+		white-space: nowrap;
+		cursor: pointer;
+		/* Same resting colour as a left-nav row. */
+		color: color-mix(in srgb, var(--ts-tx) 45%, var(--ts-tx2));
+	}
+	/* The left nav's convention exactly (theme.css, #starlight__sidebar a):
+	   hover gets the fill, the CURRENT item gets colour + weight and no fill.
+	   The check mark carries selection instead, since there is no highlight bar. */
+	.ts-region-opt:hover,
+	.ts-region-opt:focus-visible {
+		background: var(--ts-hover);
+		color: var(--ts-tx);
+		outline: none;
+	}
+	.ts-region-opt[aria-selected='true'] {
+		background: transparent;
+		color: var(--ts-tx);
+		font-weight: 550;
+	}
+	.ts-region-opt[aria-selected='true']:hover {
+		background: var(--ts-hover);
+	}
+	.ts-region-check {
+		visibility: hidden;
+		font-size: 10px;
+		color: var(--ts-tx);
+	}
+	.ts-region-opt[aria-selected='true'] .ts-region-check {
+		visibility: visible;
+	}
+
+	.ts-api-description {
+		font-size: 0.906rem;
+		line-height: 1.7;
+		color: var(--ts-tx2);
+		margin: 0 0 24px;
+	}
+
+	.ts-api-auth-note {
+		display: flex;
+		align-items: flex-start;
+		gap: 10px;
+		background: var(--ts-hover);
+		border: 1px solid var(--ts-bd);
+		border-radius: 8px;
+		padding: 12px 14px;
+		font-size: 13px;
+		color: var(--ts-tx2);
+		margin-bottom: 28px;
+		line-height: 1.5;
+	}
+	.ts-api-auth-note svg {
+		flex-shrink: 0;
+		margin-top: 1px;
+	}
+	.ts-api-auth-note code {
+		background: var(--ts-code-bg);
+		padding: 1px 5px;
+		border-radius: 4px;
+		font-size: 12px;
+	}
+	.ts-api-auth-link {
+		color: var(--ts-ac);
+		text-decoration: none;
+		font-weight: 500;
+	}
+	.ts-api-auth-link:hover {
+		text-decoration: underline;
+	}
+
+	/* ---- parameter tables ---- */
+	.ts-api-params-block {
+		margin-bottom: 28px;
+	}
+
+	.ts-api-section-label {
+		font-size: 11px;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		color: var(--ts-tx3);
+		text-transform: uppercase;
+		margin: 0 0 10px;
+	}
+
+	.ts-api-params-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.844rem;
+	}
+	.ts-api-params-table tr {
+		border-top: 1px solid var(--ts-bd);
+	}
+	.ts-api-params-table tr:last-child {
+		border-bottom: 1px solid var(--ts-bd);
+	}
+	/* No `nowrap` here, and a max rather than a fixed width: Arcus documents
+	   nested attributes like `data.test_cases[].id`, and an unbreakable 26-char
+	   name pushed this column past its 38% share until the description opposite
+	   it wrapped one word per line. Long names now wrap instead of the prose. */
+	.ts-param-name {
+		padding: 12px 16px 12px 0;
+		vertical-align: top;
+		width: 38%;
+		max-width: 15rem;
+	}
+	.ts-param-name code {
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--ts-tx);
+		background: transparent;
+		padding: 0;
+		font-family: var(--sl-font-mono);
+		overflow-wrap: anywhere;
+	}
+	.ts-param-desc {
+		padding: 12px 0;
+		color: var(--ts-tx2);
+		line-height: 1.5;
+		vertical-align: top;
+	}
+
+	/* ---- right column ---- */
+	.ts-api-right {
+		position: sticky;
+		top: calc(var(--sl-nav-height) + 16px);
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	/* Panels stay dark in light mode too -- see the note at the top. */
+	.ts-code-panel,
+	.ts-response-panel {
+		background: #1e2330;
+		border-radius: 10px;
+		overflow: hidden;
+	}
+
+	.ts-code-panel-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px 14px;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	}
+
+	.ts-panel-label {
+		font-size: 10.5px;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		color: rgba(255, 255, 255, 0.4);
+		text-transform: uppercase;
+	}
+
+	.ts-status-badge {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		font-size: 12px;
+		font-weight: 600;
+	}
+	.ts-status-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+	}
+
+	/* Tabs */
+	.ts-tab-group {
+		display: flex;
+		gap: 4px;
+	}
+	.ts-tab-btn {
+		padding: 4px 10px;
+		border-radius: 5px;
+		border: none;
+		background: transparent;
+		font-size: 12px;
+		font-weight: 500;
+		color: rgba(255, 255, 255, 0.5);
+		cursor: pointer;
+		transition:
+			background 0.12s,
+			color 0.12s;
+		font-family: var(--sl-font);
+	}
+	.ts-tab-btn:hover {
+		color: rgba(255, 255, 255, 0.8);
+	}
+	.ts-tab-btn--active {
+		background: rgba(255, 255, 255, 0.12);
+		color: #fff;
+	}
+
+	/* Code body */
+	.ts-code-body {
+		position: relative;
+	}
+
+	.ts-code-pre {
+		margin: 0;
+		padding: 16px;
+		overflow-x: auto;
+		background: transparent;
+		border: none;
+		font-size: 0.781rem; /* matches the Expressive Code size elsewhere */
+		line-height: 1.6;
+		color: #cdd6f4;
+		font-family: var(--sl-font-mono);
+		white-space: pre;
+		border-radius: 0;
+		max-height: 520px;
+		overflow-y: auto;
+	}
+	.ts-response-pre {
+		max-height: 400px;
+	}
+
+	.ts-hidden {
+		display: none !important;
+	}
+
+	.ts-copy-btn {
+		position: absolute;
+		top: 10px;
+		right: 12px;
+		padding: 4px 10px;
+		border-radius: 5px;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		background: rgba(255, 255, 255, 0.08);
+		color: rgba(255, 255, 255, 0.6);
+		font-size: 11.5px;
+		font-weight: 500;
+		cursor: pointer;
+		font-family: var(--sl-font);
+		transition:
+			background 0.12s,
+			color 0.12s;
+	}
+	.ts-copy-btn:hover {
+		background: rgba(255, 255, 255, 0.16);
+		color: #fff;
+	}
+</style>

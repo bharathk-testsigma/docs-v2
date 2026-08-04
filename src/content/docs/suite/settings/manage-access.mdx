@@ -1,0 +1,35 @@
+---
+title: Manage access
+description: Grant Testsigma support temporary, logged, revocable access to your account for troubleshooting.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Manage Access
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Manage Access lets an admin grant the Testsigma support team temporary account access for troubleshooting. Every support action is logged. The scope stays limited to the issue. You can revoke the access at any time.
+
+<Prerequisites>
+
+- You hold **Admin** access.
+
+</Prerequisites>
+
+## Grant access
+
+<Steps>
+
+1. **Open the page** — Go to **Settings → Admin Settings → Manage Access**. Click **Allow Access**.
+
+2. **Scope it** — Select the **Access Type** and describe the issue. Tick the consent checkbox and click **Submit**.
+
+3. **Watch it** — The same page shows **Current Status** and **Access Expiry**. **Manage** updates or revokes the access.
+
+</Steps>
+
+## What the audit trail shows
+
+Support actions log under the user `guest@testsigma.com`, stored for 3 years. **Activity** in the **Utility Panel** lists them. Each touched test case, element, suite, or plan also shows the **Testsigma Guest** actions in its own history.

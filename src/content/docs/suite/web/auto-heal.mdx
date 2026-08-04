@@ -1,0 +1,104 @@
+---
+title: Auto-Healing for web tests
+description: Turn on Auto-Healing, understand what it corrects during a run, and promote a healed locator permanently.
+pageType: task
+verified: 2026-07
+covers:
+  - Turn on Auto-Healing
+  - What Auto-Healing corrects
+  - What a heal looks like
+  - Review Auto-Heal insights
+  - Make a healed locator permanent
+sidebar:
+  order: 80
+  label: Auto Heal
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Broken locators are the usual reason a healthy suite decays. Auto-Healing detects that your application changed, compares the current UI against the stored locators, and corrects invalid ones during the run. It reports every change, so healing is visible rather than silent.
+
+<Prerequisites>
+
+- You are an administrator, or someone who can change project preferences.
+- For deeper locator analysis, generative AI features are enabled.
+
+</Prerequisites>
+
+## Turn on Auto-Healing
+
+<Steps>
+
+1. **Open preferences** — Go to **Settings → Preferences**.
+
+2. **Enable it** — Turn on the toggle on the **Auto Healing** widget.
+
+</Steps>
+
+Runs from that point on correct locators without anyone intervening.
+
+<Aside type="note">
+Auto-Healing works on its own, and the generative AI feature makes it broader: deeper locator analysis and better coverage. If your account has no access to it, Testsigma support can enable it.
+</Aside>
+
+## What Auto-Healing corrects
+
+It applies to more than one surface of a web project, and the mechanism differs slightly on each.
+
+| Where | What it does |
+| --- | --- |
+| Web tests | Compares the current UI to stored locators and replaces the invalid ones mid-run |
+| AI-generated test cases | Replaces the dummy locators Atto writes when it automates a case without learning the live application |
+| Copilot sessions | Validates locators while you debug in a live session, rather than only during a plan run |
+
+Auto-Healing fixes how an element is *found*. It does not fix a step whose logic is wrong, and it does not invent an element that no longer exists.
+
+### What a heal looks like
+
+The pattern is always the same: a locator that no longer matches is replaced with one that does, and the step carries on.
+
+| Case | Locator before | Locator after |
+| --- | --- | --- |
+| Web | `input["email"]` | `input[id="email"]` |
+| Atto-generated | A dummy locator | `//input[@id='email']` |
+
+<Aside type="note">
+Dummy locators are specific to Atto. If you generate a test case and automate it without learning the live application, the elements carry placeholders — **Gen AI Auto-Healing** is the part that resolves those into real locators at run time.
+</Aside>
+
+## Review Auto-Heal insights
+
+A healed run tells you what it did. An auto-heal badge beside the test case name in **Run Results** reports how many steps were healed.
+
+<Steps>
+
+1. **Open the step** — Click the test step where the element was healed.
+
+2. **Open the detail** — In **Step Result**, click **Auto-Heal Details**.
+
+3. **Read the insight** — The overlay shows which element was healed and how its locator changed.
+
+</Steps>
+
+## Make a healed locator permanent
+
+A heal applies to that run. The stored element keeps its old locator until you promote the new one, so every subsequent run heals again.
+
+<Steps>
+
+1. **Open the insight** — From **Auto-Heal Details**, click **Update**.
+
+2. **Confirm** — In the **Update Element** dialog, click **Update** again.
+
+</Steps>
+
+<Aside type="note">
+Promoting a healed locator rewrites the element for every test case that uses it. Check the insight first: healing onto the wrong element is silent, and the test still passes.
+</Aside>
+
+## Related
+
+- [Web elements](/suite/web/elements/) — the locators Auto-Healing repairs
+- [Web run results](/suite/web/results/) — where the auto-heal badge appears
+- [Preferences](/suite/settings/preferences/) — the Auto Healing toggle

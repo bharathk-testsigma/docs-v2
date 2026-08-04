@@ -1,0 +1,100 @@
+---
+title: Run Salesforce tests
+description: Run one test case ad hoc against your org, save a run configuration, execute a full plan, or run part of one.
+pageType: task
+verified: 2026-07
+covers:
+  - Run a single test case
+  - Save and reuse a run configuration
+  - Execute a test plan
+  - Run part of a test plan
+sidebar:
+  label: Run Tests
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Suite runs Salesforce tests two ways. An ad-hoc run executes one test case against your org and stays out of reporting. A test plan run is the real thing, and it is what schedules and pipelines trigger. Both run in a browser, cloud or local.
+
+<Prerequisites>
+
+- A [user connection](/suite/salesforce/setup/connections/) exists for the org profile the test logs in as.
+- You have a test case with steps, and a test suite and plan for the plan-level runs.
+- For a local run, Testsigma Agent is running on the target machine.
+
+</Prerequisites>
+
+## Run a single test case
+
+<Steps>
+
+1. **Open the run panel** — On the **Test Case Details** page, click **Run**. The **Ad-Hoc Run** panel opens.
+
+2. **Pick a test lab** — Choose **Testsigma Lab**, **Local Devices**, or **BrowserStack**. Testsigma Lab takes an **OS & Version**, **Browser**, and **Resolution**, plus an optional **Headless Test**.
+
+3. **Set the environment** — Select an **Environment**, and use **Manage Variables** if a value needs changing.
+
+4. **Adjust the run** — Under **Additional settings**, set the timeouts, screenshot capture, and a mock server if needed.
+
+5. **Start it** — Click **Run Now**.
+
+</Steps>
+
+Page and step timeouts default to 30 seconds and cap at 120.
+
+<Aside type="note">
+An ad-hoc run produces a dry run result, kept out of your reporting. Run a half-finished test case as often as you like.
+</Aside>
+
+## Save and reuse a run configuration
+
+Re-selecting a lab, browser, and resolution every run gets old fast.
+
+<Steps>
+
+1. **Configure the run** — Set up the **Ad-Hoc Run** panel the way you want it.
+
+2. **Save it** — Click **Save configuration** at the bottom right, enter a **Name**, and click **Save**.
+
+3. **Reuse it** — Click **Saved Configs** at the top of the panel and pick it from the dropdown.
+
+</Steps>
+
+With a saved config loaded, the footer offers **Update configuration** as well, so you can amend it in place.
+
+## Execute a test plan
+
+Open the plan and click **Run Now**. Suites and their test cases execute in the order the plan defines. Serial or parallel depends on its configuration.
+
+<Aside type="note">
+A run that passes locally but fails on lab machines is usually Salesforce session validation, not the test — see the [quickstart FAQs](/suite/get-started/quickstart-salesforce/#faqs).
+</Aside>
+
+## Run part of a test plan
+
+A partial run executes a subset without editing the plan. That is what you want after fixing one failing area.
+
+<Steps>
+
+1. **Open the option** — On the test plan, open the **Run Now** dropdown and click **Partial Run**.
+
+2. **Choose suites** — In the **Partial Test Plan Run** overlay, select **Include** or **Exclude**, then name the suites in **Test Suites to Include**.
+
+3. **Narrow the cases** — Apply **Test Case Filters**, such as **Labels**.
+
+4. **Start it** — Run the selection.
+
+</Steps>
+
+## Related
+
+- [Salesforce run results](/suite/salesforce/results/) — reading what a run produced
+- [Connect Salesforce to Suite](/suite/salesforce/setup/connections/) — the connections runs log in with
+- [Salesforce test plans](/suite/salesforce/test-plans/) — what **Run Now** executes
+
+## FAQs
+
+**My tests sit in Queued for a long time.**
+
+Usually every parallel your licence allows is already in use. Click **Usage details** on the **Dashboard**: `Parallel Tests 2/2` means both slots are busy, and queued runs wait until one frees. Wait, stop something, or ask support about more parallels. On a local run, check the agent first — see [Testsigma Agent](/suite/installation/testsigma-agent/#faqs).

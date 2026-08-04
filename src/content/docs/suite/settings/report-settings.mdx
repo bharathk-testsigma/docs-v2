@@ -1,0 +1,74 @@
+---
+title: Add company branding to reports
+description: Put your company logo and copyright line on PDF, Excel, and VPAT report exports, and preview each format before saving.
+pageType: task
+verified: 2026-07
+covers:
+  - Add company branding
+  - Preview the branded reports
+  - Configure the VPAT report
+sidebar:
+  label: Report Settings
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Report Settings adds your company logo and copyright line to reports exported from Suite. The branding applies to PDF, Excel, and VPAT (Voluntary Product Accessibility Template) exports, and a preview panel shows each format before you save.
+
+<Prerequisites>
+
+- A logo file in JPG, JPEG, or PNG format is available.
+- Report export is enabled for your organisation. It is an Enterprise feature — see [View and export reports](/suite/reports/view-and-export/).
+
+</Prerequisites>
+
+## Add company branding
+
+<Steps>
+
+1. **Open Report Settings** — Go to **Settings → Admin Settings → Report Settings**.
+
+2. **Turn on customisation** — Enable the **Customise Reports** toggle.
+
+3. **Enter your company name** — Type it in the **Company Name** field. Suite builds the copyright line from this value and displays it below the field as *Copyright@ [Company Name]. All rights reserved.*
+
+4. **Upload your logo** — In the **Files** field, upload the logo file. The uploaded logo appears in the preview area below the field.
+
+5. **Save** — Click **Save Preferences**.
+
+</Steps>
+
+{/* SCREENSHOT NEEDED: Report Settings page with Customise Reports enabled, Company Name filled, and a logo uploaded */}
+
+<Aside type="note">
+To replace the logo, click the delete icon (✕) next to the file name and upload a new file.
+</Aside>
+
+## Preview the branded reports
+
+The **Report Preview** panel shows how your branding appears in each export format. Select the **PDF**, **Excel**, or **VPAT** tab to preview that format.
+
+The VPAT preview is titled *[Company Name] Accessibility Conformance Report [Year]* and is based on VPAT Version 2.5. Your logo appears in the top-right corner of the report.
+
+## Configure the VPAT report
+
+Enable the **VPAT Report Configuration** toggle to add the header details that appear in the VPAT report. Each field shows **None** in the preview until you provide a value.
+
+The header includes six fields.
+
+| Field | What it holds |
+| --- | --- |
+| **Name of Product / Version** | The product name and version the report covers |
+| **Date** | The date the report is generated |
+| **Product Description** | A description of the product being evaluated |
+| **Contact Information** | The contact details for accessibility queries |
+| **Evaluation Methods Used** | The methods used to evaluate conformance |
+| **Notes** | Any additional information about the evaluation |
+
+{/* SCREENSHOT NEEDED: VPAT Report Configuration fields with the VPAT tab of the Report Preview panel visible */}
+
+## Related
+
+- [View and export reports](/suite/reports/view-and-export/) — export a run result as PDF, Excel, or JUnit XML
+- [Accessibility testing](/suite/web/tests/accessibility-testing/) — the runs a VPAT report is built from

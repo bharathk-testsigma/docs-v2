@@ -1,0 +1,33 @@
+---
+title: ClickUp
+description: Connect ClickUp so bugs flow from a Testsigma run result into your ClickUp project in one click.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: ClickUp
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+ClickUp integration pushes bugs from a run result into a ClickUp project. Screenshots and annotations travel with each issue. Connecting takes one API key; reporting happens from any test case result.
+
+<Prerequisites>
+
+- You have an **API token** from ClickUp — its help centre documents generating a personal API key.
+
+</Prerequisites>
+
+## Connect
+
+<Steps>
+
+1. **Open integrations** — Go to **Settings → Integrations** and enable the **ClickUp** toggle.
+
+2. **Enter the key** — In the **ClickUp details** dialog, enter the **Personal Token**.
+
+3. **Save** — Click **Save & Enable**.
+
+</Steps>
+
+Then report from any run: open the failing **Test Case Result**, click **Report Bug**, pick the **ClickUp** icon, review, and click **Report Bug**. **Link to Issue** attaches an existing ticket instead. Testsigma adds the execution video and step screenshots to the created issue automatically.

@@ -1,0 +1,50 @@
+---
+title: AWS Lambda
+description: Trigger a Testsigma test plan from an AWS Lambda function, fired by CodeCommit or any Lambda trigger.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 60
+  label: AWS Lambda
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+A Lambda function can fire the test plan trigger, with CodeCommit events as the usual source. The function's handler wraps a script that carries the plan's details. Any event a Lambda can subscribe to becomes a way to start testing.
+
+<Prerequisites>
+
+- The trigger script (here `aws-testsigma.sh`) is packaged with the function.
+
+</Prerequisites>
+
+## Configure the function
+
+<Steps>
+
+1. **Create it** — Under **AWS Lambda → Functions**, click **Create Function**. Fill in the basics.
+
+2. **Check the handler** — **Basic Settings** names the handler file and the timeout. The handler — `hello.handler`, say — invokes the script.
+
+3. **Set the inputs** — The script carries the plan's trigger details:
+
+</Steps>
+
+```shell title="aws-testsigma.sh inputs"
+#********START USER_INPUTS ********
+
+    TESTSIGMA_USER_NAME=<Username>
+    TESTSIGMA_PASSWORD=<Password>
+    TESTSIGMA_TEST_PLAN_RUN_URL=<Test Plan URL containing the unique Test Plan id>
+    MAX_WAIT_TIME_FOR_SCRIPT_TO_EXIT=180
+    JSON_OUTPUT_REPORTS_DIR=.
+
+    #********END USER_INPUTS***********
+```
+
+<Aside type="note">
+The legacy source configures username/password authentication. Current API calls use a bearer API key — see the [shell script](/suite/integrations/ci-cd/shell-script/) — so prefer its inputs over the ones above. {/* UNVERIFIED: the legacy Lambda page predates API keys; reconfirm the packaged script against the current API */}
+</Aside>
+
+4. Click **TEST** in the top-right to fire the function and confirm the plan starts.

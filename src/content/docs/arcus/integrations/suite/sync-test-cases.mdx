@@ -1,0 +1,77 @@
+---
+title: Sync test cases
+description: Link manual and automated test cases across Arcus and Suite, in either direction, and automate manual cases with AI.
+pageType: task
+verified: 2026-07
+covers:
+  - Link from Arcus
+  - Link from Suite
+  - Sync generated cases from Atto's Home
+  - Automate a manual test case
+sidebar:
+  order: 20
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+Linking makes one test case the shared truth of both products. A manual case in Arcus can push to Suite for automation. An automated case in Suite can link back as a manual case with steps. Either direction removes duplicate upkeep.
+
+## Before you begin
+
+- The [Suite integration](/arcus/integrations/suite/connect-suite/) is enabled, and test cases exist on both sides.
+
+## Link from Arcus
+
+<Steps>
+
+1. **Open the case** — In **Test Cases**, open the case and click **Link a Test Case** in the right panel.
+
+2. **Pick the automated case** — In the **Link Testsigma Automated Test Case** dialog, select the Suite **Project**, **Application**, and **Version**, tick the cases, and click **Link**.
+
+</Steps>
+
+The link shows under **Testsigma Automated Test Case** in the right panel. On the Suite side it appears under **Test Management Tool** in **Manage Test Case**.
+
+## Link from Suite
+
+<Steps>
+
+1. **Open the case** — In Suite, go to **Create Tests → Test Cases**, open the case, and select **Manage Test Case** from the utility panel.
+
+2. **Pick the manual case** — Click **+ Link New Tests**. Select **Testsigma Test Management** as the tool, pick the project and the case, and click **Link Test Case**.
+
+</Steps>
+
+<Aside type="tip">
+  Turn on the **Link Multiple** toggle to link several cases in one pass.
+</Aside>
+
+## Sync generated cases from Atto's Home
+
+Cases generated in Suite's Atto's Home can land in Arcus at the moment you accept them.
+
+<Steps>
+
+1. **Generate the steps** — In a session, select a test case and click **Generate Automated Steps** on the **Manual Steps** tab. The NLP steps appear under **Automated Steps**.
+
+2. **Accept into Suite** — Click **Accept**, choose the folder and scenario, and click **Confirm**.
+
+3. **Sync to Arcus** — Open the dropdown next to **Accept** and select **Accept & Sync with Testsigma TMS**. Pick the Arcus project and folder, then click **Continue**.
+
+</Steps>
+
+Arcus creates the manual case and links it to the Suite case automatically.
+
+## Automate a manual test case
+
+The reverse trip: an Arcus manual case becomes a Suite automation session.
+
+<Steps>
+
+1. **Start from Arcus** — Open the case and click **Automate with AI** on the details overlay. {/* UNVERIFIED: button label after QI Home removal (was "Automate with QI Home's AI") */}
+
+2. **Aim at Suite** — Select the Suite **Project**, **Application**, and **Version**, then click **Continue**. Suite opens Atto's Home with the case loaded.
+
+3. **Automate** — Click **Generate Automated Steps**, then **Agentic Learning** to learn the live application. Or skip straight to **Agentic Learning** from the **Automated Steps** tab, picking the **Environment** from its dropdown.
+
+</Steps>

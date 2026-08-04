@@ -1,0 +1,57 @@
+---
+title: Create a connected app
+description: Enable connected apps in your Salesforce org and create one with the OAuth settings Suite needs to read metadata.
+pageType: task
+verified: 2026-07
+covers:
+  - Enable connected apps
+  - Create the app
+  - Fetch consumer details
+sidebar:
+  order: 10
+  label: Create App
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+A connected app is Salesforce's door for external tools: it is what lets Suite authenticate, read your org's metadata, and drive tests. You create it once per org, then every Suite connection authenticates through its consumer key and secret.
+
+<Prerequisites>
+
+- You have a Salesforce organisation and Setup access.
+- The org's edition has API access — some editions do not, and connections cannot be created in them.
+
+</Prerequisites>
+
+## Enable connected apps
+
+<Steps>
+
+1. **Open the settings** — In Salesforce **Setup**, search **Apps** in the quick finder and click **Settings** under **External Client Apps**.
+
+2. **Allow creation** — Under **Connected Apps**, enable **Allow creation of connected apps** and confirm with **Enable**.
+
+</Steps>
+
+## Create the app
+
+<Steps>
+
+1. **Start it** — On the **External Client App Settings** page, click **New Connected App**.
+
+2. **Name it** — Enter the **Connected App Name** and **Contact Email**; Salesforce fills the **API Name**. Everything else is optional.
+
+3. **Enable OAuth** — In the **API** section, tick **Enable OAuth Settings**. Set the **Callback URL** to `https://salesforce-callback.testsigma.com/authorize/` and select the OAuth scopes — they are mandatory for metadata download.
+
+4. **Save** — Click **Save**.
+
+</Steps>
+
+<Aside type="note">
+Wait 10–15 minutes after creating the app before connecting — Salesforce needs that long to propagate it. And a connected app holds a limited number of approvals, silently revoking the oldest past the limit, so create a separate app for each application connection.
+</Aside>
+
+## Fetch consumer details
+
+Edit the connected app and click **Manage Consumer Details** (with no API-section checkboxes selected). The consumer key and secret it shows are what every [Suite connection](/suite/salesforce/setup/connections/) asks for.

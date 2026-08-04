@@ -1,0 +1,127 @@
+---
+title: Build your own add-on
+description: Generate a template, write the action code, validate it locally, then upload and publish it from Suite.
+pageType: guide
+verified: 2026-07
+sidebar:
+  order: 20
+  label: Build Your Own
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Building an add-on is a round trip. Suite generates a Maven project, you write and test the action in your own IDE, then upload the zipped project back and publish it. The loop is the same for a private add-on and a public one.
+
+<Prerequisites>
+
+- **Core Java**, on OpenJDK 11.
+- A modern IDE — IntelliJ IDEA or Eclipse.
+- A build tool, Maven or Gradle, with Maven set as the project's build tool.
+- **JUnit** or **TestNG** configured as the test runner.
+- Selenium basics, and familiarity with Lombok annotations.
+
+</Prerequisites>
+
+## Generate the template
+
+<Steps>
+
+1. **Open the page** — Click the **Addons** icon in the left navigation bar, then click **Add-ons**.
+
+2. **Start one** — Click **+ New Addon** in the top-right corner.
+
+3. **Name it** — Enter an **Addon Name** and a short **Description** in the **Testsigma Addon** popup, then click **Create**.
+
+</Steps>
+
+A ZIP of the template code downloads automatically. You can also open an existing add-on and click the **Download** icon to get its source.
+
+## Write the action code
+
+Unzip the download and open the folder in your IDE as a Java project, with Maven as the build tool. Inside is a Maven project with a `pom.xml` and sample templates for **Web**, **Mobile Web**, **Android**, and **iOS Application**.
+
+Refactor the sample against what you need.
+
+| What to change | Why |
+| --- | --- |
+| Action text | The wording testers will type in a test step |
+| Selenium or Java code | The behaviour the action performs |
+| Elements and locators | What the action acts on |
+| Test data | The values the test class passes in |
+
+The [SDK reference](/suite/addons/sdk/) covers reading and writing runtime data, and reading the metadata of the run your action is executing inside.
+
+## Validate it locally
+
+Run the test class before you upload anything. Right-click it in your IDE and run it as a JUnit or TestNG test, then confirm the action does what you intended.
+
+<Aside type="tip">
+Validating locally is much faster than validating through Suite. An upload plus a publish plus a security check is a slow way to discover a null pointer.
+</Aside>
+
+## Upload the code
+
+<Steps>
+
+1. **Zip the project** — From the project folder, run the command below.
+
+2. **Open the add-on** — Go to the **Addons** page and select your add-on.
+
+3. **Upload it** — Click **Upload Code**, browse to the ZIP, and click **Update**.
+
+</Steps>
+
+```bash
+zip -r addonName.zip . -x "*"
+```
+
+The same dropdown carries three other options: **Edit Description** to reword it, **Manage Tags** to add labels for categorisation, and **Deprecate** to remove the add-on.
+
+## Publish it
+
+<Steps>
+
+1. **Start publishing** — Click **Publish** in the add-on's dropdown.
+
+2. **Choose the audience** — Select **Public** for the whole Testsigma community, or **Private** for your organisation only.
+
+3. **Publish** — Click **Publish**.
+
+</Steps>
+
+An automatic security check runs on the submitted code. Passing it publishes the add-on. Failing it sends you an email explaining why.
+
+<Aside type="note">
+On a trial account, publishing also goes to the Testsigma support team for review. You get an email once they approve it, so expect a delay that paid accounts do not see.
+</Aside>
+
+## Update an existing add-on
+
+Updating is the same loop without the template step, and it is how you ship a fix rather than a new add-on.
+
+<Steps>
+
+1. **Change the code** — Fix or extend it in your IDE, then zip the project.
+
+2. **Open your add-ons** — Go to **Addons → Add-ons**, then the **My Addons** tab.
+
+3. **Upload** — Click the dropdown on the add-on, select **Upload Code**, choose the ZIP in **Upload Zip File**, and click **Update**.
+
+4. **Republish** — Click **Publish**, choose **Public** or **Private**, and click **Publish**.
+
+</Steps>
+
+The security check runs again on every publish, with the same email on failure.
+
+## Use it in a test case
+
+<Steps>
+
+1. **Open a test case** — Create one or open an existing one, then click **Add New Step**.
+
+2. **Search the action** — Type keywords from your action text. An add-on icon marks it as yours.
+
+3. **Configure it** — Select it, set the test data and element, and click **Create Step**.
+
+</Steps>

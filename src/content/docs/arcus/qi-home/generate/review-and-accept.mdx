@@ -1,0 +1,73 @@
+---
+title: Review and accept test cases
+description: Browse generated test cases by scenario, accept or reject them singly or in bulk, and save them to folders.
+pageType: task
+verified: 2026-07
+covers:
+  - Browse test cases by scenario
+  - Review an individual test case
+  - Accept or reject in bulk
+  - Save to your library
+sidebar:
+  order: 50
+  label: Review & Accept
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+Generated test cases arrive in **Pending** status — they are not in your library yet. You review them, accept the accurate ones, and save them. The flow is identical for sprint and Ad-Hoc sessions. Anything left pending counts against your coverage as a gap.
+
+## Before you begin
+
+- You have at least one sprint or Ad-Hoc session with generated test cases.
+
+## Browse test cases by scenario
+
+<Steps>
+
+1. **Go to QI Home** — Select a session from the sidebar. The **Tests** tab opens by default.
+
+2. **Expand a scenario** — Click the arrow next to a scenario name.
+
+</Steps>
+
+The header shows the session title, case count, the **Accepted** / **Pending** / **Rejected** status bar, and the five [QI metrics](/arcus/qi-home/qi-metrics/). Each expanded scenario shows its **Impact** — the affected modules as tags — and its test cases with priority, name, module, type, and status.
+
+## Review an individual test case
+
+<Steps>
+
+1. **Open the case** — Click a test case name. The detail view shows its tags, description, preconditions, and numbered steps with expected results.
+
+2. **Decide** — Click **Save to Library** if it looks right, or **Reject** if not.
+
+</Steps>
+
+## Accept or reject in bulk
+
+<Steps>
+
+1. **Select cases** — Tick the checkbox next to each test case. A bottom action bar appears with **Select All**, **Reject**, and **Save to Library**.
+
+2. **Act on them** — Click **Save to Library** to accept the selection, or **Reject** to dismiss it.
+
+</Steps>
+
+## Save to your library
+
+<Steps>
+
+1. **Open the dialog** — Click **Save to Library** on a case or on the bulk action bar.
+
+2. **Pick a folder** — Browse the folder hierarchy and select one.
+
+3. **Save** — Click **Save**. The cases move from **Pending** to **Accepted**.
+
+</Steps>
+
+<Aside type="tip">
+  QI Home suggests a folder based on your project's feature taxonomy. Accept it or
+  pick another.
+</Aside>
+
+Rejected cases are dismissed and do not count toward coverage. Pending cases count against your coverage until you decide. The percentage updates in real time as you accept — see [Coverage and gaps](/arcus/qi-home/coverage-and-gaps/).

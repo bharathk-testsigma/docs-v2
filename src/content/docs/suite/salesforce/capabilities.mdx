@@ -1,0 +1,100 @@
+---
+title: Desired capabilities for Salesforce runs
+description: Add key-value capabilities to a Salesforce run or machine profile, with the browser and lab values that apply.
+pageType: reference
+verified: 2026-07
+covers:
+  - Capability format
+  - Add capabilities to a run
+  - Chrome capabilities
+  - Firefox and Edge capabilities
+  - Set a geolocation
+  - Lab and environment capabilities
+sidebar:
+  label: Capabilities
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Desired capabilities customise the machine a Salesforce test runs on: accepting invalid certificates, setting a geolocation or timezone, suppressing notifications. Salesforce runs are browser runs, so browser capabilities apply in full. They attach per run or per machine profile, never to the test case.
+
+## Capability format
+
+Every capability is three fields.
+
+| Field | What it holds |
+| --- | --- |
+| **Key** | The property name, such as `acceptInsecureCerts` |
+| **Data Type** | The type of the value: boolean, String, or Integer |
+| **Value** | The value itself |
+
+## Add capabilities to a run
+
+On the **Test Case Details** page click **Run**, then expand **Desired Capabilities** on the **Ad-Hoc Run** overlay and add your rows. **Delete** removes one.
+
+For a plan, capabilities belong to the machine rather than the run. Open the test plan, go to **Add Test Suites & Link Machine Profiles**, click **Test machine settings** on the machine you want, then expand **Desired Capabilities** on the **Edit test machine/device profile** overlay.
+
+<Aside type="note">
+This is the difference that catches people out. A capability on an ad-hoc run applies once. A capability on a machine profile applies to every run of every plan that uses that profile.
+</Aside>
+
+## Chrome capabilities
+
+Most Chrome options go through one key, `goog:chromeOptions`, as a String.
+
+| To do this | Key | Value |
+| --- | --- | --- |
+| Accept invalid or expired certificates | `acceptInsecureCerts` | `true` (boolean) |
+| Change the user agent | `goog:chromeOptions` | `{"args":["--user-agent=YOUR_STRING"]}` |
+| Disable notifications | `goog:chromeOptions` | `{"args":["--disable-notifications"]}` |
+| Use a custom browser profile | `goog:chromeOptions` | `{"args":["user-data-dir=/path/to/profile"]}` |
+| Allow geolocation | `goog:chromeOptions` | `{"profile.default_content_setting_values.geolocation": 1 }` |
+| Set the coordinates | `geolocation` | `51.50735, -0.12776, 100` |
+| Disable the password-leak pop-up | `goog:chromeOptions` | `{"prefs": {"profile.password_manager_leak_detection": false}}` |
+
+Geolocation needs both rows: one grants the permission, the other supplies the coordinates. The password-leak pop-up is worth knowing about here: Salesforce tests log in with stored credentials, which is exactly what triggers it.
+
+## Firefox and Edge capabilities
+
+| Browser | To do this | Key | Value |
+| --- | --- | --- | --- |
+| Firefox | Accept invalid certificates | `accept_untrusted_certs` | `True` (boolean) |
+| Firefox | Set the geolocation | `firefoxprofile` | A JSON profile with the `geo.*` testing flags |
+| Edge | Accept invalid certificates | `acceptInsecureCerts` | `True` (boolean) |
+| Edge | Run in private browsing | `MsOptions` | `{"args":["--inprivate"]}` |
+
+## Set a geolocation
+
+There are two ways to place a run somewhere, and they answer different questions.
+
+| Approach | Key | Use it for |
+| --- | --- | --- |
+| Country level | `geoLocation` | Localisation testing — content, currency, and language by country |
+| Exact coordinates | `geolocation` (Chrome) or `firefoxprofile` (Firefox) | Anything that reads the browser's location API |
+
+`geoLocation` takes a two-letter country code, such as `AR` for Argentina.
+
+## Lab and environment capabilities
+
+These are properties of the lab, not the browser.
+
+| To do this | Key | Data Type | Value |
+| --- | --- | --- | --- |
+| Cap how long a browser waits for a command | `idleTimeout` | Integer | Default `90`, range 0–1000 |
+| Cap total test duration | `maxDuration` | Integer | Default `3600`, range 0–10800 |
+| Set the machine timezone | `timeZone` | String | A city name, such as `Madrid` |
+| Capture console logs per URL | `extendedDebugging` | Boolean | `True` |
+| Enable BrowserStack visual logs | `browserstack.debug` | Boolean | `true` |
+| Capture BrowserStack browser console logs | `browserstack.console` | String | `warnings` |
+
+<Aside type="note">
+For `timeZone`, use the city alone without the continent, and replace underscores with spaces. `America/New_York` becomes `New York`.
+</Aside>
+
+`idleTimeout` and `maxDuration` exist to stop a broken test running forever: the first caps how long the browser waits for the next command, the second caps the whole test.
+
+## Related
+
+- [Run Salesforce tests](/suite/salesforce/run-tests/) — where the **Ad-Hoc Run** overlay lives
+- [Salesforce test plans](/suite/salesforce/test-plans/) — the machine profiles capabilities attach to
+- [Debug](/suite/salesforce/debug/) — reading the console logs a capability captures

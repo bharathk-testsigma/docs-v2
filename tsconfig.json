@@ -1,0 +1,13 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"],
+  "compilerOptions": {
+    // Content pages sit four levels deep, so a relative import of a component
+    // is `../../../../components/…` and breaks whenever a page moves section.
+    // Astro resolves tsconfig paths in .astro and .mdx imports natively.
+    "paths": {
+      "~/*": ["./src/*"]
+    }
+  }
+}

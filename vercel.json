@@ -1,0 +1,13 @@
+{
+	"$schema": "https://openapi.vercel.sh/vercel.json",
+	"outputDirectory": "dist",
+	"functions": {
+		"api/ask.ts": {
+			"maxDuration": 60,
+			"includeFiles": "public/ask-index.bin,public/ask-index.meta.json"
+		},
+		"api/ask-feedback.ts": {
+			"maxDuration": 10
+		}
+	}
+}

@@ -1,0 +1,56 @@
+---
+title: Salesforce step types
+description: Every test step type available in a Salesforce test case, the slash command that inserts it, and what each is for.
+pageType: reference
+verified: 2026-07
+covers:
+  - Standard step types
+  - Conditional step types
+sidebar:
+  label: Step Types
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+A Salesforce test case is not limited to plain actions. Alongside natural-language steps you can add loops, conditionals, reusable groups, custom functions, and REST API calls. This page lists every step type and the shortcut that inserts it.
+
+## Insert a step type
+
+Click **Create Step**, then type the slash command for the type you want. The panel lists every type too, so commands are optional.
+
+## Standard step types
+
+These seven cover the body of most test cases.
+
+| Step type | Command | What it is for |
+| --- | --- | --- |
+| Natural Language | `/` | A single action or assertion written in Testsigma's readable syntax |
+| Step Group | `/stepgroup` | A reusable sequence of steps, maintained in one place |
+| Create a Block | `/blocks` | A labelled group of steps inside one test case, for structure rather than reuse |
+| For Loop | `/forloop` | Repeat a set of steps a fixed number of times, or once per data row |
+| While Loop | `/whileloop` | Repeat a set of steps until a condition stops being true |
+| Custom Function | `/function` | Call your own code when no natural-language action fits |
+| Rest API | `/api` | Send a REST request as a step, then assert on or store the response |
+
+## Conditional step types
+
+Each of these wraps a standard type in a condition, so the wrapped step runs only when the condition holds.
+
+| Step type | Command | What it wraps |
+| --- | --- | --- |
+| If Natural Language | `/if` | A natural-language step |
+| If Step Group | `/if stepgroup` | A step group |
+| If Custom Function | `/if function` | A custom function |
+| If Rest API | `/if api` | A REST API step |
+
+<Aside type="note">
+REST API steps work in any test case, not only Rest API projects. Setting state through the API and verifying it in the org beats driving both through the UI.
+</Aside>
+
+Salesforce adds its own grammar on top of these types: org-aware NLPs for tables, list views, and Lightning components. [Salesforce NLPs](/suite/salesforce/tests/salesforce-nlps/) lists them.
+
+## Related
+
+- [Salesforce NLPs](/suite/salesforce/tests/salesforce-nlps/) — the org-aware step grammar
+- [Author tests](/suite/salesforce/tests/author-tests/) — writing the steps themselves
+- [Step groups](/suite/salesforce/tests/step-groups/) — the reusable type in detail

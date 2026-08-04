@@ -1,0 +1,27 @@
+---
+title: Zephyr
+description: Link Zephyr Cloud test cases and plans to Testsigma and export run results back to Zephyr.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Zephyr
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Zephyr Cloud integration links Zephyr test cases and test plans to their Testsigma counterparts. Run results export back to Zephyr as plans execute. Connecting takes a Zephyr access token plus your Jira account details.
+
+<Prerequisites>
+
+- A **Personal Access Token** from Zephyr Cloud, and your Jira **Account URL**, **Username**, and **API key**.
+
+</Prerequisites>
+
+## Connect
+
+Go to **Settings → Integrations** and turn on **Zephyr Cloud**. Select the **Region of your Zephyr instance**. Enter the **Personal Access Token** and **Jira details**, then click **Save & Enable**.
+
+## Link artifacts
+
+Test case: copy its ID from Zephyr. Open the Testsigma test case, click **Manage Test Case**, enter the ID, and click **Link**. Test plan: the same flow from the test plan's own page.

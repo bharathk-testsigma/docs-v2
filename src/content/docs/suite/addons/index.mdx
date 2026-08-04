@@ -1,0 +1,65 @@
+---
+title: Add-ons
+description: Extend Suite's built-in actions with your own Java code, for the actions unique to your application.
+pageType: concept
+verified: 2026-07
+sidebar:
+  order: 0
+  label: Overview
+---
+
+import { CardGrid } from '@astrojs/starlight/components';
+import DocCard from '~/components/DocCard.astro';
+
+An add-on extends Suite's built-in action repository with custom actions you write yourself. Suite already automates most user actions in plain English. Some actions are specific to one application, and add-ons cover those without waiting for a product change.
+
+<CardGrid>
+	<DocCard
+		icon="box"
+		title="Marketplace"
+		href="/suite/addons/marketplace/"
+		description="Find, install, and use add-ons the community has published."
+	/>
+	<DocCard
+		icon="code"
+		title="Build your own"
+		href="/suite/addons/build/"
+		description="Template, code, validate, upload, and publish an add-on."
+	/>
+	<DocCard
+		icon="layers"
+		title="SDK reference"
+		href="/suite/addons/sdk/"
+		description="Runtime data and run metadata from inside your action code."
+	/>
+	<DocCard
+		icon="page"
+		title="Post-plan hooks"
+		href="/suite/addons/examples/post-plan-hook/"
+		description="Run an action after a test plan finishes, whatever the result."
+	/>
+</CardGrid>
+
+## Why add-ons exist
+
+End-to-end testing covers a large, varied set of features. Some of them are unique to your application under test. Predicting an action statement for every one is not feasible, so Suite makes the action list extensible instead.
+
+Take `scroll indefinitely till the bottom of the page`. It suits an application that appends items as you scroll, the way Pinterest does. If your test has to reach the footer to verify a copyright notice, an add-on automates it at scale.
+
+## What you can build
+
+| Type | What it does |
+| --- | --- |
+| Custom action | Automates an action Suite's built-in set does not cover |
+| Test data generator | Produces test data the [default generators](/suite/web/test-data/data-generators/) do not |
+| Conditional if | Runs a sequence of steps when your own condition matches |
+| While loop | Repeats a sequence of steps until your own condition matches |
+| Post-plan hook | Runs after a test plan finishes, whatever the result |
+
+Testsigma publishes step-by-step tutorials for each type: [custom actions](https://testsigma.com/tutorials/addons/how-create-addons-actions/), [data generators](https://testsigma.com/tutorials/addons/how-create-addons-test-data-generators/), [conditional if](https://testsigma.com/tutorials/addons/how-create-addons-conditional-if/), and [while loops](https://testsigma.com/tutorials/addons/how-create-addons-while-loops/).
+
+## Public, private, or borrowed
+
+You have three routes to an add-on, and they are not exclusive.
+
+Install one from **Community**, which holds add-ons published by other teams and by Testsigma. Write your own and publish it publicly, sharing it with the wider community. Or keep it private to your organisation. Private is the right choice when the code is specific to your applications, or carries anything proprietary.

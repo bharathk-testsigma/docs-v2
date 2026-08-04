@@ -1,0 +1,43 @@
+---
+title: Dashboard reports
+description: The real-time charts on the Dashboard — summary metrics, run status, defects, and review queues — and their filters.
+pageType: reference
+verified: 2026-07
+sidebar:
+  order: 20
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+The Dashboard shows your test activity in real time — case counts, execution status, automation coverage, run trends, defects, and review queues — without opening a report. Every chart respects the two filters at the top.
+
+## Filters
+
+**Date Range** limits the charts to a period: last 1 day, 7 days, 1 month, 3 months, 6 months, 1 year, or all time. **Assigned To** narrows the data to one person, for tracking individual activity or workload.
+
+<Aside type="tip">
+  Combine both — **Last 1 month** plus one assignee — for targeted insights.
+</Aside>
+
+## Sections
+
+Each section of the Dashboard answers one question:
+
+| Section                           | Chart          | What it shows                                                                           |
+| --------------------------------- | -------------- | --------------------------------------------------------------------------------------- |
+| **Summary metrics**               | Header numbers | Automation Coverage, Automated, Manual, and Total test case counts                      |
+| **Active Runs**                   | Donut          | Status of active runs: Passed, Failed, Blocked, In Progress, Retest, Skipped, Untested  |
+| **Closed Test Runs**              | Line           | Runs closed per date, for cycle completion patterns                                     |
+| **Results from Closed Test Runs** | Stacked bar    | Case results from closed runs, grouped by status                                        |
+| **Types of Test Cases**           | Donut          | Distribution across Functional, Integration, Non-Functional, Unit Test, User Experience |
+| **Defects Logged**                | Bar            | Defects logged over the selected period                                                 |
+
+**Active Runs**, **Closed Test Runs**, and **Types of Test Cases** each link through to their full list view.
+
+## Test case review status
+
+Two tables track the [review workflow](/arcus/test-cases/review-management/). **Awaiting My Review** lists cases assigned to you, with assignee and submitted time. **Submitted for Review** lists your own submissions and their reviewers.
+
+## Export
+
+Click **Export** on the Dashboard with your filters applied, name the file, and click **Download PDF**.

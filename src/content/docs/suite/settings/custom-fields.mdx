@@ -1,0 +1,56 @@
+---
+title: Manage custom fields
+description: Create your own fields under Settings, fill them in on a test case, and filter the list by their values.
+pageType: task
+verified: 2026-07
+covers:
+  - Create a custom field
+  - Fill in custom fields on a test case
+  - Filter by a custom field
+sidebar:
+  label: Custom Fields
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Custom fields put your own attributes on every test case: a sprint, a component owner, a compliance tag. Each field also works as a filter. Anything you record in a field can pull a list of matching test cases.
+
+## Create a custom field
+
+<Steps>
+
+1. **Open the section** — Go to **Settings → Custom Fields**. Click **Add new field**.
+
+2. **Define it** — Enter the **Field Name** and an optional **Description** in the overlay. Choose the **Field Type**.
+
+3. **Save** — Configure the type's options and click **Add**.
+
+</Steps>
+
+The **Projects** tab defines fields for the project form instead. See [Projects & Applications](/suite/settings/projects/).
+
+## Fill in custom fields on a test case
+
+<Steps>
+
+1. **Open the test case** — Go to **Create Tests → Test Cases**. Open the test case.
+
+2. **Set the values** — Click **Manage Test Case** in the right rail. Scroll to **Custom Fields**, enter the values, and click **Close**.
+
+</Steps>
+
+## Filter by a custom field
+
+<Steps>
+
+1. **Open the filters** — In the test case list view, click **Show Filters**.
+
+2. **Add the filter** — Click **Add Filter** and select the custom field. The list narrows to matching test cases.
+
+</Steps>
+
+## Related
+
+- [Manage web test cases](/suite/web/tests/manage-tests/) — the full filter list and the right-rail panels
+- [Projects & Applications](/suite/settings/projects/) — project-level custom fields
+- [Manage labels](/suite/settings/labels/) — tags for grouping, where custom fields hold per-case data

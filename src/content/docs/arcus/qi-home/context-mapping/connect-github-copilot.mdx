@@ -1,0 +1,31 @@
+---
+title: Connect GitHub Copilot
+description: Install the Arcus plugin for GitHub Copilot so your coding context reaches QI Home for test generation.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 50
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+The Arcus plugin for GitHub Copilot captures your prompts, tool calls, and file changes as you work. One command pushes the context to QI Home, where QA maps it and QI Home generates test cases from it.
+
+## Before you begin
+
+- GitHub Copilot is installed.
+- You have an active [project](/arcus/get-started/projects/).
+
+## Install the plugin
+
+<Aside type="note">
+  The install command for the GitHub Copilot Arcus plugin is pending
+  confirmation from the development team. This step is updated before
+  publication.
+</Aside>
+
+## Log in, map, and push
+
+The workflow is identical to Claude Code. Run `/arcus:login`, then `/arcus:project <project-id>`. Map with `/arcus:map <ticket-key>` if you want, then `/arcus:push` when done. The full steps and command table live on [Connect Claude Code](/arcus/qi-home/context-mapping/connect-claude-code/).
+
+If you raise a pull request for the same work, QI Home [unifies the PR with this context](/arcus/qi-home/context-mapping/overview/) automatically.

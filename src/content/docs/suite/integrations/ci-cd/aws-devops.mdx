@@ -1,0 +1,51 @@
+---
+title: AWS DevOps
+description: Trigger Testsigma test plans from AWS CodeBuild directly or as a stage in an AWS CodePipeline.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 55
+  label: AWS DevOps
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Two AWS routes reach the same script. A CodeBuild project runs a `buildspec` directly, or a CodePipeline runs that build as one stage among source and deploy. CodeCommit, CodeBuild, and CodeDeploy split the pipeline's source, build, and deployment work.
+
+<Prerequisites>
+
+- The [shell script](/suite/integrations/ci-cd/shell-script/) is committed to the repository, keys set.
+
+</Prerequisites>
+
+## Route 1: a CodeBuild project
+
+<Steps>
+
+1. **Create the project** — Under **Build → Build projects**, create a project. Pick the source provider and repository, and name the buildspec file.
+
+2. **Write the buildspec** — Commit a YAML that runs the script:
+
+</Steps>
+
+```yaml title="aws_codebuild.yml"
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+  pre_build:
+    commands:
+      - echo Nothing to do in the pre_build phase...
+  build:
+    commands:
+      - bash cicd-api.sh
+  post_build:
+    commands:
+      - echo Build completed on `date`
+```
+
+## Route 2: a CodePipeline
+
+Create a pipeline with source, build, and deploy stages. The build stage uses the same CodeBuild project and buildspec. The tests then gate the deploy stage.
