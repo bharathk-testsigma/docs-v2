@@ -1,0 +1,37 @@
+---
+title: Google Chat
+description: Send test plan status notifications to a Google Chat space through an incoming webhook.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Google Chat
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Google Chat integration posts run outcomes into a Chat space. One webhook on the space, one toggle in Suite, and each test plan chooses which statuses notify. The webhook comes from the space's own settings.
+
+<Prerequisites>
+
+- A **Google Chat incoming webhook URL**.
+
+</Prerequisites>
+
+## Get the webhook
+
+<Steps>
+
+1. **Open the space** — In Google Chat, click the space name and select **Apps & Integrations**.
+
+2. **Add the webhook** — Under **Integrations → Webhooks**, click **Add Webhook**. Name it — avatar optional — and click **Save**, then **Copy link**.
+
+</Steps>
+
+## Connect
+
+Go to **Settings → Integrations** and enable the **Google Chat** toggle. Enter the **Name** and **Connector URL**, then click **Save & Enable**.
+
+## Turn it on per test plan
+
+In **Create/Edit Test Plan → Test Plan Settings**, enable **Send Notification**. Pick the statuses under **Notify On** — pass, fail, abort, any combination. Then select **Google Chat** under **Also send messages to**.

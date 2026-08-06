@@ -1,0 +1,147 @@
+---
+title: Web elements
+description: Create elements manually or from the recorder, pick a locator type, set locator precedence, and handle Shadow DOM.
+pageType: task
+verified: 2026-07
+covers:
+  - Create an element manually
+  - Create an element while adding a step
+  - Supported locator types
+  - Set locator precedence
+  - Verify a locator before you trust it
+  - Locate an element inside Shadow DOM
+sidebar:
+  order: 30
+  label: Elements
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+An element is an item on screen that a step acts on, stored in the project's object repository with the locators used to find it. The recorder creates most of them. This page covers creating them manually, which dynamic pages often force.
+
+<Prerequisites>
+
+- You have a web project.
+- For the recorder routes, the Testsigma Recorder extension is installed on Chrome.
+- For hand-written locators, you are comfortable with XPath and CSS selectors.
+
+</Prerequisites>
+
+## Create an element manually
+
+<Steps>
+
+1. **Open the element list** — Go to **Create Tests → Elements**.
+
+2. **Start a new element** — Click **Create Element**.
+
+3. **Describe it** — Enter a **Name** and the **Screen Name** it appears on.
+
+4. **Choose how to find it** — Select an **Element Type**, then enter the matching value in **Enter Value**.
+
+5. **Save** — Click **Create element**. It joins the element list.
+
+</Steps>
+
+**Record Element** on the same page captures one from the live application instead.
+
+<Aside type="note">
+The **Element Type** dropdown offers a narrower set than the locators Suite supports overall, listing **XPATH**, **ID**, **Name**, **Class Name**, and **Accessibility ID**. {/* UNVERIFIED: three sources disagree on this dropdown's contents -- confirm the current list in the product */}
+</Aside>
+
+## Create an element while adding a step
+
+You do not have to leave the test case. Add a step that needs an element, hover the element placeholder, then select **Create Element** from the dropdown and fill the same fields.
+
+## Supported locator types
+
+Seven locator mechanisms are available. Which one you pick decides how brittle the element is.
+
+| Locator | Notes |
+| --- | --- |
+| XPath | The most flexible. Most other locators can be expressed as one |
+| CSS Selector | Matches on tag, id, class, and attributes. The only locator that reaches inside Shadow DOM |
+| Link Text and Partial Link Text | Simple, but only safe when the text is unique on the page |
+| ID | Stable when the application sets it deliberately |
+| Name | Common on form fields |
+| Class Name | Often shared across many elements |
+| Tag Name | Broadest, and rarely unique on its own |
+
+<Aside type="note">
+With duplicate link text, such as the same link in a header and a footer, the action lands on the first match. That is a test that passes for the wrong reason.
+</Aside>
+
+## Set locator precedence
+
+The recorder tries locator types in an order you control, stopping at the first static and unique one it finds.
+
+<Steps>
+
+1. **Open the recorder** — Go to **Create Tests → Elements** and click **Record**, then enter your URL.
+
+2. **Open the setting** — Click **Locator precedence** in the recorder.
+
+3. **Reorder** — Drag the handles into the priority you want.
+
+4. **Save** — Click **Save**.
+
+</Steps>
+
+<Aside type="note">
+Precedence reverts to the default unless you click **Save**. It is also scoped to one user and one application, so it is a personal setting rather than a project-wide one, and a colleague recording the same app gets their own order.
+</Aside>
+
+## Verify a locator before you trust it
+
+An XPath that matches four elements produces a test that fails intermittently, which costs more to diagnose than to prevent.
+
+<Steps>
+
+1. **Open DevTools** — Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> in Chrome and select the **Elements** tab.
+
+2. **Find the element** — Hover it in the page and watch the highlighted HTML.
+
+3. **Count the matches** — Press <kbd>Ctrl</kbd> + <kbd>F</kbd>, paste your XPath, and check how many elements it matches. You want one.
+
+</Steps>
+
+## Locate an element inside Shadow DOM
+
+Shadow DOM hides markup from the main document, so a shadow element does not exist in the DOM the recorder normally searches.
+
+To check whether a page uses it, right-click and select **Inspect**, expand the `<body>` tag, and look for `#shadow-root`. If it is there, use a CSS selector: it is the only supported locator that crosses the shadow boundary.
+
+## FAQs
+
+**The recorder shows a blank screen.**
+
+Chrome's cookie settings are blocking it. In **Settings → Privacy and security → Third-party cookies**, enable **Block third-party cookies in Incognito mode** (not the blanket block), then record again.
+
+**A step fails because the captured link text differs from what I see.**
+
+The UI may render text in a different case than the HTML carries it (`SUBMIT` on screen, `Submit` in the source). The recorder captures from the HTML. Compare the captured text against the page source and correct the element to match the HTML.
+
+**I cannot capture or select from a dropdown.**
+
+It depends on how the dropdown is built. A real `<select>` tag works with the *Select option...* NLPs — by value, text, or index, single or multiple. A dropdown built from `div`, `a`, or `span` is not a select at all: capture the elements it is made of and drive it with *Click* steps.
+
+**Check/uncheck fails on something that looks like a checkbox.**
+
+The check/uncheck NLPs verify the element's `type` attribute is `checkbox`, and fail when a different tag is doing the visual work. Find the tag actually receiving the click, capture an element for it, and use the *Click* NLP instead. The same applies to radio buttons and the select/unselect NLPs: no `type="radio"`, no select — click it.
+
+**Element not found — what are the usual causes?**
+
+Three: the element is not on the current page (an earlier step passed but did not do what you expected — check its screenshot), the locator has a typo, or the element sits inside a frame — switch first with *Switch to the frame UI identifier* (or by index or name).
+
+**The step passes but acts on the wrong element.**
+
+Your locator matches more than one element, and the first match wins. `//input[@type='password']` on a page with two password fields always hits the first. Make the XPath unique.
+
+**The element is hidden, disabled, or not there yet.**
+
+Dynamically created elements may not exist at the moment the step runs. Add a wait step for the element before acting on it.
+
+**How do applications disable, hide, and check elements?**
+
+Knowing the mechanism tells you what a step can and cannot do. Disabled: the `disabled` attribute (button, input, select, textarea...) makes an element unclickable, and `readonly` (input, textarea) allows focus and copy but not modification. Hidden: `display: none`, the `hidden` attribute, or zero width and height. Checked/selected: the `checked` attribute on checkboxes and radios, `selected` on options — which is what the check/select NLPs verify before acting.

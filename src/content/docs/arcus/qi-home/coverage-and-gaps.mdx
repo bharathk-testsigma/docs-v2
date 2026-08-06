@@ -1,0 +1,55 @@
+---
+title: Coverage and gaps
+description: How the coverage percentage is calculated, where it appears, and how to work through gaps module by module.
+pageType: task
+verified: 2026-07
+covers:
+  - View coverage and gaps
+  - Review gaps by module
+sidebar:
+  order: 60
+  label: Coverage & Gaps
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+Coverage is the percentage of generated test cases you have accepted. Gaps are the cases still pending. Both update in real time as you review, so the **Coverage** tab is where you decide what to work through next.
+
+## How coverage is calculated
+
+**Coverage = Accepted ÷ (Accepted + Pending) × 100**
+
+If QI Home generated 10 cases and you accepted 3, coverage is 30% and the other 7 are gaps. Rejected cases are excluded. Coverage shows at two levels: for the whole session in the header, and per module in the **Coverage** tab.
+
+## View coverage and gaps
+
+<Steps>
+
+1. **Go to QI Home** — Select a sprint or Ad-Hoc session from the sidebar.
+
+2. **Open the tab** — Click **Coverage**.
+
+</Steps>
+
+Test cases are grouped by module. Each module row shows its name, coverage percentage, test case count, and gap count.
+
+## Review gaps by module
+
+<Steps>
+
+1. **Expand a module** — Click the module name. Each gap shows its title, story ID, test type, and **Pending** status.
+
+2. **Decide** — Click a gap to open the detail view, then accept or reject it.
+
+</Steps>
+
+<Aside type="note">
+  Gaps are not failed tests. They are generated cases you have not reviewed yet.
+  Accepting one removes it from the list and raises your coverage.
+</Aside>
+
+## Coverage in the session header
+
+The header shows coverage at a glance, next to the module count. It starts at 0% and climbs as you accept. **Pass Rate**, **Confidence**, and **Release Readiness** show **Awaiting execution** until runs happen. **Release Gate** shows **Not Ready** until its thresholds are met. All five are explained in [QI metrics](/arcus/qi-home/qi-metrics/).
+
+To fill gaps with new test cases, open the [Playground](/arcus/qi-home/use-the-playground/) from the session header.

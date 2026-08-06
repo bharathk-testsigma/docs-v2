@@ -1,0 +1,47 @@
+---
+title: Connect Figma
+description: Get your Figma Team ID and access token, then connect Figma so QI Home can generate test cases from designs.
+pageType: task
+verified: 2026-07
+covers:
+  - Collect the Figma credentials
+  - Connect the integration
+sidebar:
+  order: 80
+  label: Figma
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+The Figma integration lets QI Home read your designs and [generate test cases](/arcus/qi-home/generate/attach-context-sources/) from UI frames. It needs two things from Figma: your Team ID and a personal access token. Both take a minute to collect.
+
+## Before you begin
+
+- You have a [project](/arcus/get-started/projects/) and access to your Figma team.
+
+## Collect the Figma credentials
+
+<Steps>
+
+1. **Find the Team ID** — In Figma, select your team in the left nav. The URL reads `figma.com/files/team/{TEAM_ID}/your-team-name` — the number is your Team ID.
+
+2. **Generate a token** — From your profile icon, open **Settings → Security → Personal access tokens**. Click **Generate new token**, name it, pick an **Expiration**, and click **Generate token**.
+
+3. **Copy the token** — Click **Copy**.
+
+</Steps>
+
+<Aside type="note">
+  Store the token securely — Figma never shows it again. No access to the team
+  page? Ask your Admin for the Team ID.
+</Aside>
+
+## Connect the integration
+
+<Steps>
+
+1. **Open integrations** — On the **Dashboard**, click **Integrations**, then **Setup Integration** next to the **Figma** icon.
+
+2. **Connect** — Enter the **Team ID** and **API Key**, then click **Connect**.
+
+</Steps>

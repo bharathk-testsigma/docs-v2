@@ -1,0 +1,36 @@
+---
+title: SAP actions
+description: Every action available per SAP element type in desktop automation, from Button and Calendar through Table and Window.
+pageType: reference
+verified: 2026-07
+sidebar:
+  order: 40
+  label: SAP Actions
+---
+
+Sixteen SAP element types are supported in desktop automation, each with its own set of actions. Seven of those actions are common to every type. The table below lists only what each type adds beyond the shared seven.
+
+## Common actions
+
+Every SAP element type supports: `SetFocus`, `GetId`, `GetText`, `SetText`, `GetToolTip`, `GetName`, and `IsEnable`.
+
+## Type-specific actions
+
+| Element type | Additional actions |
+| --- | --- |
+| Button | `Click` |
+| Calendar | `GetDate`, `SetDateRange`, `setDate` |
+| CheckBox | `Set`, `IsChecked` |
+| ComboBox | `Select`, `SelectKey` |
+| EditField | `setCursorPosition`, `GetDisplayedText`, `GetMaxLength`, `IsRequired`, `IsNumerical` |
+| Editor | `DoubleClick`, `Select`, `SetUnprotectedTextPart` |
+| Label | `GetMaxLength`, `IsNumerical`, `setCursorPosition` |
+| Menubar | `Select` |
+| OKCode | — common actions only |
+| SAPElement | — common actions only |
+| StatusBar | `GetMessageNumber`, `GetMessageId`, `IsMessageAsPopup` |
+| TabControl | `GetSelectedTab`, `Select` |
+| Table | `IsValidRow`, `PressSettingsButton`, `SelectAllColumns`, `ActivateCell`, `DeselectColumn`, `DeselectRow`, `DeselectRowRange`, `GetTitle`, `SelectCell`, `SelectColumn`, `SelectRow`, `SelectRowRange`, `Click`, `GetLength`, `OpenPossibleEntries` |
+| Toolbar | `PressButton`, `PressContextButton`, `SelectMenuItem`, `SelectMenuItemById` |
+| TreeView | `ActivateNode`, `GetSelectedItem`, `GetSelectedNodePath`, `OpenContextMenu`, `OpenHeaderContextMenu` |
+| Window | `Close`, `Maximize`, `SendVKey`, `TabBackward`, `TabForward`, `Resize`, `Restore` |

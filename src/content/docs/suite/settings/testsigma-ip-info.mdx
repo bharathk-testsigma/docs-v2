@@ -1,0 +1,31 @@
+---
+title: Testsigma IP info
+description: The Settings screen that lists the server and lab IP ranges your firewall must allow for cloud runs.
+pageType: concept
+verified: 2026-07
+sidebar:
+  label: Testsigma IP Info
+---
+
+Cloud test machines reach your application from Testsigma's own IP ranges. When the application sits behind a firewall, those ranges must be allowed through. **Settings → Testsigma IP** info is where Suite publishes them for your account.
+
+## What the screen lists
+
+The screen shows two sets of addresses:
+
+- **Testsigma Server IP** — the address of the Testsigma server, where executions on Testsigma's device cloud run.
+- **Testsigma Lab IPs** — the ranges for Testsigma Labs, where the account's test assets and data are hosted.
+
+## When you need it
+
+A test plan that passes on a local device but fails in Testsigma Lab is the classic symptom. The cloud machines cannot reach an application behind your firewall. Share the listed ranges with your network administrator or infosec team to allow them.
+
+## What it does not do
+
+Allowlisting is one of three routes to a private application, not the only one. [Testsigma Tunnel](/suite/installation/testsigma-tunnel/) opens a secure outbound connection instead. The [Testsigma Agent](/suite/installation/testsigma-agent/) runs tests on your own machines, so traffic never leaves your network.
+
+## Related
+
+- [Run web tests](/suite/web/run-tests/) — the firewall failure in context
+- [Testsigma Tunnel](/suite/installation/testsigma-tunnel/) — reach a private application without firewall changes
+- [Testsigma Agent](/suite/installation/testsigma-agent/) — run on your own machines instead

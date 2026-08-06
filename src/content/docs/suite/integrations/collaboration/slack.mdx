@@ -1,0 +1,37 @@
+---
+title: Slack
+description: Send test plan pass, fail, and abort notifications to a Slack channel in real time.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Slack
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Slack integration posts run outcomes to a channel as they happen. Pass, fail, and abort notifications each toggle separately per test plan. The connection is one incoming webhook URL taken from your own workspace.
+
+<Prerequisites>
+
+- A Slack **incoming webhook URL**.
+
+</Prerequisites>
+
+## Get the webhook
+
+<Steps>
+
+1. **Create an app** — In **Workspace → Tools & Settings → Manage Apps**, click **Build** to open the Slack API. Choose **Create an App → From Scratch**. Name it and pick the workspace.
+
+2. **Activate webhooks** — Under **Incoming Webhooks**, enable **Activate Incoming Webhooks**. Click **Add New Webhook to Workspace**, pick the channel, and copy the URL.
+
+</Steps>
+
+## Connect
+
+Go to **Settings → Integrations** and enable the **Slack** toggle. Enter the name and webhook URL, then click **Save & Enable**.
+
+## Turn it on per test plan
+
+In **Create/Edit Test Plan → Test Plan Settings**, enable **Send Notification**. Pick the statuses under **Notify On** — pass, fail, abort, any combination. Then select **Slack** under **Also send messages to**.

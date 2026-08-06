@@ -1,0 +1,235 @@
+---
+title: Generate reports
+description: Build Allure, JUnit, and custom PDF reports from a run result using the command-line report generator.
+pageType: guide
+verified: 2026-07
+sidebar:
+  order: 40
+  label: Generate Reports
+---
+
+import { Aside, CardGrid, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import DocCard from '~/components/DocCard.astro';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+The in-app **Export** menu covers PDF, Excel, and JUnit. When you need an interactive report, a CI-consumable XML, or a PDF laid out to your own template, a command-line generator builds it from a finished run instead.
+
+<CardGrid>
+	<DocCard
+		icon="page"
+		title="Before you begin"
+		href="#before-you-begin"
+		description="The JAR, a Java runtime, an API key, and a run ID."
+	/>
+	<DocCard
+		icon="browser"
+		title="Allure reports"
+		href="#allure-reports"
+		description="Interactive HTML for stakeholders, or JSON for a pipeline."
+	/>
+	<DocCard
+		icon="code"
+		title="JUnit reports"
+		href="#junit-reports"
+		description="XML that Jenkins, GitHub Actions, and GitLab CI can publish."
+	/>
+	<DocCard
+		icon="layers"
+		title="Custom PDF reports"
+		href="#custom-pdf-reports"
+		description="Your own HTML template, at plan, machine, suite, or case level."
+	/>
+</CardGrid>
+
+## Before you begin
+
+<Prerequisites>
+
+- A [Testsigma API key](/suite/settings/api-keys/).
+- Java installed: **21 or newer** for Allure and JUnit, **17 or newer** for custom PDF.
+- The report generator JAR — ask Testsigma support for it.
+- For JUnit and custom PDF, a template file on your machine.
+
+</Prerequisites>
+
+<Aside type="note">
+The in-app **Export** menu needs no setup, but it is a Testsigma Enterprise feature. Contact support or use **Instant Chat** to have it enabled. See [View and export reports](/suite/reports/view-and-export/).
+</Aside>
+
+### Find the run ID
+
+Open the **Run Result** page for the test plan. The run ID is in the **Execution ID** field, and in the page URL.
+
+For a report below plan level, you need that object's own ID instead.
+
+<Steps>
+
+1. **Open developer tools** — Right-click the page and select **Inspect**, then go to the **Network** tab.
+
+2. **Select the object** — In the Run Result details, click the test case, suite, or machine you want. Its response appears in the network list.
+
+3. **Read the ID** — Click the response, open **Preview**, expand **Content**, and copy the ID.
+
+</Steps>
+
+## Allure reports
+
+Allure output is interactive and browser-viewable, with execution detail, screenshots, and visual analytics.
+
+| Format | What it is for |
+| --- | --- |
+| `ALLURE_HTML` | A self-contained report you can hand to stakeholders |
+| `ALLURE_JSON` | Raw data files for CI/CD integration or further processing |
+
+Run the generator from the folder holding the JAR.
+
+<Tabs syncKey="os">
+<TabItem label="macOS and Linux">
+
+```bash
+java -jar custom-report-0.0.6.jar \
+  --config.plan.runId=YOUR-RUN-ID \
+  --config.apiKey=YOUR-API-KEY \
+  --config.report.type=ALLURE_HTML \
+  --config.report.output.directory=/path/to/output/
+```
+
+</TabItem>
+<TabItem label="Windows">
+
+```bash
+java -jar custom-report-0.0.6.jar --config.plan.runId=YOUR-RUN-ID --config.apiKey=YOUR-API-KEY --config.report.type=ALLURE_HTML --config.report.output.directory=C:\path\to\output\
+```
+
+</TabItem>
+</Tabs>
+
+Swap `ALLURE_HTML` for `ALLURE_JSON` to get the raw data instead.
+
+The report carries execution summaries with pass and fail metrics, suite-level grouping and timing, per-step detail, failure screenshots with categorisation, and visual charts with execution timelines.
+
+## JUnit reports
+
+JUnit XML is the format CI tools already understand, so a pipeline can publish Testsigma results alongside its own.
+
+<Tabs syncKey="os">
+<TabItem label="macOS and Linux">
+
+```bash
+java -jar custom-report-0.0.6.jar \
+  --config.plan.runId=YOUR-RUN-ID \
+  --config.apiKey=YOUR-API-KEY \
+  --config.report.type=JUNIT \
+  --config.template.location=/path/to/junit-template.html \
+  --config.report.output.file=/path/to/output/report.xml
+```
+
+</TabItem>
+<TabItem label="Windows">
+
+```bash
+java -jar custom-report-0.0.6.jar --config.plan.runId=YOUR-RUN-ID --config.apiKey=YOUR-API-KEY --config.report.type=JUNIT --config.template.location=C:\path\to\junit-template.html --config.report.output.file=C:\path\to\output\report.xml
+```
+
+</TabItem>
+</Tabs>
+
+| Parameter | Required | What it takes |
+| --- | --- | --- |
+| `config.plan.runId` | Yes | Run ID of the test plan execution |
+| `config.apiKey` | Yes | Your Testsigma API key |
+| `config.report.type` | Yes | Must be `JUNIT` |
+| `config.template.location` | Yes | Path to the JUnit XML template file |
+| `config.report.output.file` | Yes | Output path for the XML report |
+| `config.baseURL` | No | Testsigma instance URL, defaulting to `https://app.testsigma.com/` |
+
+The XML holds suites with an execution summary, individual cases with status and duration, error detail for failures, and properties carrying metadata such as linked external IDs.
+
+### Publish it from a pipeline
+
+```yaml title="GitHub Actions"
+- name: Generate JUnit Report
+  run: |
+    java -jar custom-report-0.0.6.jar \
+      --config.plan.runId=${{ env.RUN_ID }} \
+      --config.apiKey=${{ secrets.TESTSIGMA_API_KEY }} \
+      --config.report.type=JUNIT \
+      --config.template.location=${{ github.workspace }}/junit-template.html \
+      --config.report.output.file=${{ github.workspace }}/test-results/report.xml
+```
+
+The same command works in Jenkins and GitLab CI. Keep the API key in the pipeline's secret store rather than the command.
+
+## Custom PDF reports
+
+The custom PDF generator renders your own HTML template, at whichever level you point it at, with no restriction on scope.
+
+For a whole test plan:
+
+<Tabs syncKey="os">
+<TabItem label="macOS and Linux">
+
+```bash
+java -jar custom_pdf_generator-0.0.1-SNAPSHOT.jar \
+  --config.apiKey=YOUR-API-KEY \
+  --config.plan.runId=YOUR-PLAN-RUN-ID \
+  --config.template.location=/path/to/your/template.html \
+  --config.pdf.directory=/path/to/save/report.pdf
+```
+
+</TabItem>
+<TabItem label="Windows">
+
+```bash
+java -jar custom_pdf_generator-0.0.1-SNAPSHOT.jar --config.apiKey=YOUR-API-KEY --config.plan.runId=YOUR-PLAN-RUN-ID --config.template.location=C:\path\to\template.html --config.pdf.directory=C:\path\to\save\report.pdf
+```
+
+</TabItem>
+</Tabs>
+
+For a single machine, suite, or case, add the object's ID and say which level it is:
+
+```bash
+java -jar custom_pdf_generator-0.0.1-SNAPSHOT.jar \
+  --config.apiKey=YOUR-API-KEY \
+  --config.plan.runId=YOUR-PLAN-RUN-ID \
+  --config.id=YOUR-ID \
+  --config.preference.resultLevel=CASE \
+  --config.template.location=/path/to/your/template.html \
+  --config.pdf.directory=/path/to/save/report.pdf
+```
+
+### Shape the output
+
+Preferences control what the PDF contains. Add any of them to the command.
+
+| Preference | What it controls | Allowed values | Input |
+| --- | --- | --- | --- |
+| `config.preference.resultLevel` | The level of detail | `PLAN`, `MACHINE`, `SUITE`, `CASE` | Single value |
+| `config.preference.step` | Which steps appear | `PASSED`, `FAILED`, `EXECUTED`, `NOT_EXECUTED`, `ALL`, `NONE` | Single value |
+| `config.preference.screenshot` | Which screenshots appear | `PASSED`, `FAILED`, `ALL`, `NONE` | Single value |
+| `config.preference.visualDifference` | Which visual screenshots appear | `PASSED`, `FAILED`, `ALL`, `NONE` | Single value |
+| `config.preference.summaryFields` | Fields in the report summary | `name`, `executedBy`, `environment`, `testPlanName`, `testDeviceName`, `testSuiteName`, `result`, `buildNo`, `runId`, `screenshotCapturedFor`, `screenshotMode` | Comma-separated |
+| `config.preference.caseListColumns` | Columns in the case list | `ETF`, `testSuite`, `testMachine`, `assignee`, `reviewer` | Comma-separated |
+| `config.preference.caseDetailsHeaders` | Columns in case-detail headers | `testCaseName`, `testSuiteName` | Comma-separated |
+| `config.preference.stepListColumns` | Columns in the step list | `reasonForFailure`, `testDataDetails`, `duration`, `apiResponseUrl` | Comma-separated |
+
+A command using several of them at once:
+
+```bash
+java -jar custom_pdf_generator-0.0.1-SNAPSHOT.jar \
+  --config.apiKey=YOUR-API-KEY \
+  --config.plan.runId=YOUR-PLAN-RUN-ID \
+  --config.id=YOUR-ID \
+  --config.preference.resultLevel=SUITE \
+  --config.preference.step=FAILED \
+  --config.preference.screenshot=FAILED \
+  --config.preference.visualDifference=NONE \
+  --config.preference.summaryFields=name,executedBy,environment,buildNo \
+  --config.template.location=/path/to/your/template.html \
+  --config.pdf.directory=/path/to/save/report.pdf
+```
+
+<Aside type="tip">
+Screenshots dominate PDF size and generation time. Setting `screenshot=FAILED` keeps the evidence that matters and drops the rest.
+</Aside>

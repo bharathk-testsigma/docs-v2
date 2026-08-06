@@ -1,0 +1,89 @@
+---
+title: Custom domains for on-premise
+description: Serve an on-premise deployment from your own domain instead of the default testsigmaprivate.com URLs.
+pageType: task
+verified: 2026-07
+covers:
+  - What Testsigma needs from you
+  - Configure the domains
+sidebar:
+  order: 30
+  label: Custom Domains
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+By default an on-premise deployment answers on `testsigmaprivate.com` subdomains. Pointing it at your own domain takes six URLs and their SSL certificates. Arrange it before Testsigma generates your build, not after.
+
+<Aside type="note">
+Tell Testsigma you want custom domains **before** the on-prem build is generated. The domain names are baked into the images, so retrofitting them means a new build.
+</Aside>
+
+<Prerequisites>
+
+- The six subdomains below exist in your DNS.
+- You hold SSL certificates (`.crt`) for them, either a wildcard or one per subdomain.
+- The certificates are copied onto the server where the installation will run.
+
+</Prerequisites>
+
+## What Testsigma needs from you
+
+URL details are required for six services.
+
+| Service | URL pattern |
+| --- | --- |
+| Identity | `id-testsigma.<customer-test-domain>` |
+| App | `app-testsigma.<customer-test-domain>` |
+| Kibbutz / add-on | `kibbutz-testsigma.<customer-test-domain>` |
+| Visual | `visual-testsigma.<customer-test-domain>` |
+| Audit | `audit-testsigma.<customer-test-domain>` |
+| Mobile recorder | `mobilerecorder-testsigma.<customer-test-domain>` |
+
+For a domain of `lowcode.com`, that means certificates covering the wildcard, or these six individually:
+
+```
+id-testsigma.lowcode.com
+app-testsigma.lowcode.com
+kibbutz-testsigma.lowcode.com
+visual-testsigma.lowcode.com
+audit-testsigma.lowcode.com
+mobilerecorder-testsigma.lowcode.com
+```
+
+<Aside type="note">
+Send the certificate (`.crt`) files only. Never share the private key (`.key`) files with anyone at Testsigma. Nobody there will ask for one, so treat any such request as a red flag.
+</Aside>
+
+## Configure the domains
+
+<Steps>
+
+1. **Request the build** — Ask Testsigma for the Docker image carrying your domain names. It is generated through GitHub Actions.
+
+2. **Place the certificates** — Store the public and private key files on the host.
+
+3. **Mount them** — Add them as volumes on the `testsigma_load_balancer` service. They replace the certificate inside the container.
+
+4. **Apply it** — Run `docker-compose up`. The container's `server.crt` and `server.key` are replaced by the files from the host.
+
+</Steps>
+
+```yaml
+version: '3.9'
+services:
+  testsigma_load_balancer:
+    container_name: testsigma-load-balancer
+    image: testsigmainc/onprem:load-balancer-<CustomDomain>-trial-v120
+    ports:
+      - '443:443'
+    networks:
+      - testsigma-network
+    volumes:
+      - ./data/ts_load_balancer_data:/opt/app/ts_load_balancer_data
+      - /path/to/new/server.crt:/usr/local/apache2/ssl/server.crt
+      - /path/to/new/server.key:/usr/local/apache2/ssl/server.key
+```
+
+Replace `/path/to/new/server.crt` and `/path/to/new/server.key` with the real paths on your host machine.

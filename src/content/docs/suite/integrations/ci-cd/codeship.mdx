@@ -1,0 +1,36 @@
+---
+title: CodeShip
+description: Add a CodeShip pipeline that triggers a Testsigma test plan after a successful build.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 75
+  label: CodeShip
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+CodeShip pipelines run custom commands after a successful build. One pipeline triggers the test plan and waits on it, holding deployment until the tests pass. The setup takes a `jq` install plus the trigger script pasted as the pipeline body.
+
+<Prerequisites>
+
+- A CodeShip account with your organisation and project. Source control is connected — GitHub, Bitbucket, or GitLab.
+
+</Prerequisites>
+
+## Configure the pipeline
+
+<Steps>
+
+1. **Open the project** — From **Projects**, select yours. Open **Project Settings**.
+
+2. **Choose custom commands** — On **Configure your Tests**, select **I want to create my own custom commands**. Add `sudo apt-get install jq` to the setup commands — the script parses JSON with `jq`.
+
+3. **Add the pipeline** — Click **Add Pipeline** and name it — `Testsigma Execution Trigger`, say. Paste the trigger script with your details filled in.
+
+</Steps>
+
+<Aside type="note">
+The legacy CodeShip page authenticates with username/password against retired `/rest/execution` endpoints. Use the current [shell script](/suite/integrations/ci-cd/shell-script/) as the pipeline body instead. It authenticates with a bearer key against `execution_results`.
+</Aside>

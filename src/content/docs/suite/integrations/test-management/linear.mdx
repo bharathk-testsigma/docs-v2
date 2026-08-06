@@ -1,0 +1,33 @@
+---
+title: Linear
+description: Connect Linear so bugs flow from a Testsigma run result into your Linear project in one click.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Linear
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Linear integration pushes bugs from a run result into a Linear project. Screenshots and annotations travel with each issue. Connecting takes one API key; reporting happens from any test case result.
+
+<Prerequisites>
+
+- You have a **Linear API key**, generated under Linear's API settings.
+
+</Prerequisites>
+
+## Connect
+
+<Steps>
+
+1. **Open integrations** — Go to **Settings → Integrations** and enable the **Linear** toggle.
+
+2. **Enter the key** — In the **Linear details** dialog, enter the **API Key**.
+
+3. **Save** — Click **Save & Enable**.
+
+</Steps>
+
+Then report from any run: open the failing **Test Case Result**, click **Report Bug**, pick the **Linear** icon, review, and click **Report Bug**. **Link to Issue** attaches an existing ticket instead. Testsigma adds the execution video and step screenshots to the created issue automatically.

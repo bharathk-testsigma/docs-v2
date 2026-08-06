@@ -1,0 +1,49 @@
+---
+title: Connect Salesforce to Suite
+description: Create the project, the metadata connection that auto-learns your org, and the user connections tests log in with.
+pageType: task
+verified: 2026-07
+covers:
+  - Create a Salesforce project
+  - Create the metadata connection
+  - Add user connections
+  - Test a connection before authorising
+  - Recover from a metadata refresh
+sidebar:
+  order: 20
+  label: Connections
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+Two kinds of connection link Suite to an org. The metadata connection reads the org's structure and auto-learns its components; user connections are the profiles — admin, sales rep — that tests log in as. Both authenticate through the [connected app](/suite/salesforce/setup/connected-app/).
+
+## Create a Salesforce project
+
+From the **Dashboard**, go to **Project → New Project**, name it, choose **Salesforce** as the **Application type**, name the application, set a version, and click **Create**. Suite drops you on the **Salesforce connections** page.
+
+## Create the metadata connection
+
+<Steps>
+
+1. **Open the form** — On the **Salesforce connections** page, click **Create metadata connection**.
+
+2. **Name and target** — Name the connection (the role you connect through, such as `Admin`, is the convention). Under **Connect with**, choose **Production / Developer edition** for production or **Sandbox** for staging.
+
+3. **Authenticate** — Pick the **Authentication type**: **OAuth 2.0** takes the username, consumer key, and consumer secret; **User name & Password** additionally takes the password and security token. The callback URL is `https://salesforce-callback.testsigma.com/authorize/`.
+
+4. **Authorise** — Click through to Salesforce's login, sign in, and the connection lands on the **SF connections** page.
+
+</Steps>
+
+## Add user connections
+
+Under **User connection** on the same page, click **Add Connection**: name it, choose the environment, pick the authentication type (same two options), enter the details, and click **Authorise & Connect** — a Salesforce login window confirms it. One connection can serve several users. Edit or delete from the ellipsis menu beside each connection.
+
+## Test a connection before authorising
+
+Any connection dialog — new or edited — carries a **Test Connection** button: it validates the credentials against Salesforce's login without completing authorisation or saving. Use it before committing changed credentials.
+
+## Recover from a metadata refresh
+
+Refreshing metadata after org changes — a removed field, a renamed object — flags what those changes break. Impacted test cases are highlighted with a warning on the **Test Cases** page; **View All** (or the highlighted filter) isolates them. Open a flagged test case, hover the highlighted step for the error, then **View/Edit element** to repair it. Step groups and the element repository flag the same way.

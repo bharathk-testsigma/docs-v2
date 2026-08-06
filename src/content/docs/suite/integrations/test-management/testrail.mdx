@@ -1,0 +1,44 @@
+---
+title: TestRail
+description: Link TestRail test cases to Testsigma automation and push run results back through a Post Plan Hook.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: TestRail
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+TestRail integration maps TestRail cases onto Testsigma automation and reports results back. Linking works per test case, and the export runs through a Post Plan Hook. Ask support to enable Post Plan Hook first.
+
+<Prerequisites>
+
+- A valid **Host URL**, **Username**, and **Password** from TestRail.
+- **Post Plan Hook** enabled on your account — ask Testsigma support.
+
+</Prerequisites>
+
+## Connect
+
+Go to **Settings → Integrations**, enable the **Testrail** toggle, enter the **Host URL**, **Username**, and **Password**, and click **Save & Enable**.
+
+## Link test cases
+
+Copy the case **ID** from TestRail — numbers only, drop the letter prefix. Open the Testsigma test case, select **Manage Test Case** from the **Utility Panel**, enter the ID, and click the link icon. Matching names on both sides keeps the mapping readable.
+
+## Export results with the Post Plan Hook
+
+<Steps>
+
+1. **Assemble the plan** — Suite of linked cases, suite into a test plan.
+
+2. **Attach the hook** — In **Test Plan Settings**, select **Standard TestRail Addon** under **Post Plan Hook** and enter the `PROJECT_NAME` — it must match TestRail exactly.
+
+3. **Run** — **Run Now**. The run duplicates, executes, and **TestRail Result Link** in the top-right opens the TestRail result with the Testsigma Run ID. Post-plan export lags the run by a few seconds — refresh if it shows in progress.
+
+</Steps>
+
+<Aside type="note">
+**TestRail Custom with Case Match** is the variant addon: it additionally takes an `API_KEY` and a `TEMPLATE_URL` pointing at a JUnit template XML. The template URL must be publicly reachable and expires quickly — copy it from your download history and use it immediately. Reruns update the same result link; a fresh execution creates a new one.
+</Aside>

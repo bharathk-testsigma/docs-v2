@@ -1,0 +1,209 @@
+---
+title: Testsigma Terminal
+description: Install the desktop app behind Copilot and local execution, learn its dashboard, and fix the failures its setup can hit.
+pageType: guide
+verified: 2026-07
+sidebar:
+  order: 30
+---
+
+import { Aside, CardGrid, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import DocCard from '~/components/DocCard.astro';
+
+Testsigma Terminal is the desktop application behind Copilot and local execution. It runs the agent, downloads what each application type needs, and gives you live control of a running test: pause, step forward or back, and edit steps without a re-run.
+
+<CardGrid>
+	<DocCard
+		icon="terminal"
+		title="What it runs"
+		href="#what-it-runs"
+		description="The two execution engines and five utilities on the dashboard."
+	/>
+	<DocCard
+		icon="page"
+		title="Requirements"
+		href="#requirements"
+		description="Memory, disk, ports, and download sizes."
+	/>
+	<DocCard
+		icon="cloud"
+		title="Install the application"
+		href="#install-the-application"
+		description="Download and install the build for macOS, Windows, or Linux."
+	/>
+	<DocCard
+		icon="browser"
+		title="Sign in"
+		href="#sign-in"
+		description="Authorise through the browser and wait for the agent."
+	/>
+	<DocCard
+		icon="layers"
+		title="Settings"
+		href="#settings"
+		description="Updates, certificates, proxy rules, and JVM memory."
+	/>
+	<DocCard
+		icon="book"
+		title="FAQs"
+		href="#faqs"
+		description="Recovery flows for downloads, extraction, login, ports, and the agent."
+	/>
+</CardGrid>
+
+## What it runs
+
+The dashboard's left panel lists two execution engines and five utilities.
+
+| Component | What it does |
+| --- | --- |
+| Copilot | Executes tests for web, Salesforce, and desktop applications. A platform's dot turns from blue to green while a session is active |
+| Agentic | Powers Atto's agentic runs. Enterprise plans only; other plans see **Upgrade to Enterprise** |
+| Active Sessions | Live view of every local run: run ID, test name, execution type, who triggered it, and when. Refreshes itself when a run finishes, and shows API local executions too |
+| Logs | Three tabs — **Terminal Logs** (app setup and agent communication), **Agent Logs** (everything the agent does during a run), **Execution Logs** (the run currently active in Copilot) |
+| Settings | Updates, security, network, and memory — see [Settings](#settings) |
+| Info | Device specs, version, port configuration, and the Terminal directory path |
+| Report Issue | Sends a description plus the relevant logs to support in one step. Include the **App Session ID** and **Debugging ID** |
+
+Testsigma Terminal and [Testsigma Agent](/suite/installation/testsigma-agent/) are not alternatives: Terminal contains and manages an agent. Installing Terminal detects an existing Java agent and upgrades it, and only one agent is ever active on a machine.
+
+## Requirements
+
+- 8 GB of memory dedicated to tests, 20 GB of free disk, a dual-core processor or better.
+- Ports **8383**, **8484**, and **18329** free.
+- The download is about 850 MB and extracts to about 1.5 GB, under `%user_profile%\.testsigma\TestsigmaTerminal\` on Windows or `$HOME/.testsigma/TestsigmaTerminal/` on macOS and Linux.
+
+## Install the application
+
+Go to **Agents** and click **Testsigma Terminal** in the top-right corner, then pick your machine's build. Executables are `.dmg` (macOS, Intel and M-series), `.exe` (Windows), and `.bin` (Linux); each platform also has a `.zip`.
+
+<Tabs syncKey="os">
+<TabItem label="macOS">
+
+Open the DMG and drag Testsigma Terminal into **Applications**. The Intel build is about 160 MB and the Apple Silicon build about 154 MB; installed, it occupies about 490 MB.
+
+</TabItem>
+<TabItem label="Windows">
+
+Run the downloaded installer and let it complete, then open Testsigma Terminal.
+
+</TabItem>
+<TabItem label="Linux">
+
+<Steps>
+
+1. **Make it executable** — In the download folder, open a terminal and run `chmod a+x <fileName>.AppImage`, replacing `<fileName>` with the downloaded file's name.
+
+2. **Launch it** — Open the file. Testsigma Terminal downloads the rest of itself, then opens.
+
+</Steps>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note">
+The downloaded ZIP is deleted automatically once extraction succeeds, so a leftover ZIP means the extraction did not finish.
+</Aside>
+
+## Sign in
+
+<Steps>
+
+1. **Choose your setup** — Click **Configure Settings** to set a proxy, SSL, or memory allocation, or click **Continue** to accept the defaults.
+
+2. **Start the sign-in** — On the **Login to Testsigma** screen, click through to authorise. Your browser opens.
+
+3. **Authorise in the browser** — Sign in, then click **Open the desktop app**. The browser confirms `Logged in as [your email]. The desktop app should have opened.`
+
+4. **Wait for the agent** — Testsigma Terminal downloads the files each platform needs, shows **Preparing agent...**, then opens its dashboard.
+
+</Steps>
+
+A session stays valid for 24 hours. After that, sign in and authorise again before using Copilot.
+
+### Confirm it is ready
+
+The dashboard lists **COPILOT** and **AGENTIC**, each with a status dot per platform. Green means ready. Red means the component is still updating or has errored, and Copilot cannot launch until it turns green.
+
+Hover a ready entry and it states the connection explicitly, for example `Web Copilot is ready to use. The connection to the agent is active.` The bottom navigation carries **Active Sessions**, **Logs**, **Settings**, **Info**, and **Report Issue**; **Logs** is where a failed launch explains itself.
+
+<Aside type="note">
+Copilot cannot start unless Testsigma Terminal is running. Auto-launch from the browser needs version 2.2.2 or later; the current release is 2.5.3 as of July 2026. On an older build, open Testsigma Terminal yourself before you click **Copilot**.
+</Aside>
+
+## Settings
+
+| Group | Options |
+| --- | --- |
+| Updates | **Keep packages and terminal up to date** downloads dependencies and application updates automatically |
+| Security and certificates | **Trust Store Type** (JKS or PKCS12) and **Delegate SSL Validation** for inspected networks |
+| Network and proxy | **Configure Proxy** sets HTTP and HTTPS proxy rules |
+| Runtime | Custom JVM arguments and memory allocation |
+
+## Uninstall
+
+Click **Stop session** to exit Copilot, then remove the Testsigma Terminal application the way your operating system removes any app.
+
+## FAQs
+
+**The Terminal files fail to download.**
+
+Click **Retry Download**. If it fails again, click **Troubleshoot Download → Download ZIP**, save the installer ZIP yourself, then click **Continue**, select **Select downloaded .zip file**, and point it at the ZIP. The usual causes are an unstable network, a firewall, or low disk space.
+
+**The files downloaded but fail to extract.**
+
+Click **Retry**. If extraction still fails, use the same **Troubleshoot Download → Download ZIP** route as above and hand it the ZIP directly. Check free disk space, and whether antivirus software is holding the files.
+
+**I cannot sign in.**
+
+Click **Retry Login**, then **Open the desktop app** in the browser. If it persists, your network or security settings are blocking the redirect — click **Contact Support**.
+
+**"Open the desktop app" does nothing, or Chrome reports local network access blocked.**
+
+Chrome 139+ can revoke the permissions the launch needs after a browser update. Click the **Site Information** icon in the address bar, set **Pop-ups and redirects** and **Local network access** to **Allow** (click **Reset permissions** first if they were denied), refresh, and try again. Still stuck: open DevTools → **Network**, click **Open the desktop app**, and look for a failing `authorizeTestsigmaTerminal` request — if it is there, ask IT to allow `local.testsigmaagent.com` on the local network.
+
+**The Terminal will not start because a port is unavailable.**
+
+Click **Retry** first. If the port is still taken, click **Edit Configuration**, enter free ports, and click **Update Configuration & Retry**. To find what holds a port: `netstat -ano | findstr :8383` (Windows) or `lsof -i :8383` (macOS/Linux), for each of 8383, 8484, and 18329.
+
+Ports held by a previous installation need a cleanup instead: end the leftover processes and clear both Testsigma folders, as described under [Copilot Mode](/suite/atto/copilot/#faqs).
+
+**Testsigma Terminal will not launch on Linux, and the AppImage does nothing.**
+
+The AppImage needs its system dependencies present, and it will not start the installer without them. The error screen names what is missing. Install those packages and open the file again.
+
+**Packages needed to start Copilot fail to download or update.**
+
+Click **Download Packages** (or **Update Package**), then **Retry Download** (or **Retry Update**) if it fails. The flow is the same for every application type. Persistent failures are network, firewall, or disk-space problems.
+
+**My device does not auto-register.**
+
+Click **Retry**. Failing that, click **Register Device Manually**: in the **Add New Agent** dialog, enter a name and maximum sessions, and click **Add Agent**. Deselect **Public** to keep the agent private, or select **Activate Later** to bring it online later.
+
+**The agent will not start, or the connection to it drops.**
+
+Click **Retry** (or **Reestablish Connection**). If the problem survives a second attempt, click **Force Reset and Restart**.
+
+**What does Force Reset and Restart do?**
+
+It is irreversible: it deletes every existing configuration and downloaded package, then re-downloads and reinstalls everything. It is the last resort each recovery flow ends in.
+
+**What installation formats are available?**
+
+`.dmg` for macOS and `.exe` for Windows, `.bin` for Linux, plus archive builds (`.zip`, and `.tar.gz` on Linux) for each platform — though enterprise security policies often block archives.
+
+**I already run the old Java agent. Will installing Testsigma Terminal break it?**
+
+No. During installation the old agent is detected, upgraded, and converted into the Testsigma Terminal Java agent. Only one agent is ever active, so the two do not compete — and Terminal uses that agent for remote executions and ad-hoc runs too.
+
+**My old agent was registered but inactive. Does Testsigma Terminal reuse its name?**
+
+Only if it detects the inactive agent. If it does not, it installs a new agent and that agent registers under a new name.
+
+**Can I start and stop the agent manually?**
+
+You can, but it is not recommended, and stopping it affects Testsigma Terminal. The agent starts automatically when Testsigma Terminal launches. To do it manually, run `sh Start.sh` or `sh Stop.sh` from the agent location. **Restart** on the Copilot home screen is the supported route.
+
+**Where are the logs?**
+
+Click **Logs** on the Testsigma Terminal home screen. On macOS the files are also at `Users > <your user> > Library > Application Support > Testsigma > Testsigma Terminal > Logs`. Press `Command + Shift + .` in Finder to reveal `Library`.

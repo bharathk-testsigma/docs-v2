@@ -1,0 +1,50 @@
+---
+title: Okta SSO
+description: "Configure SAML single sign-on between Okta and Testsigma: the app integration, the exchange of URLs, and the certificate."
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Okta SSO
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Okta SSO connects Testsigma to your Okta identities over SAML. Testsigma provides the service-provider URLs. Okta provides the issuer and the certificate. Each side gets the other's values, and users then sign in through Okta.
+
+<Prerequisites>
+
+- An Okta account, and admin access to its console — check with your IT team first.
+- Only one SSO can be active: turn Google SSO off if it is on.
+
+</Prerequisites>
+
+## Get Testsigma's SAML values
+
+From your profile, go to **Switch Account → Settings → Organization Settings → Security (SSO)**. Enable the **SAML** widget. Hover the **Entity ID**, **Sign On URL**, and **Relay State** to copy each. Every one carries your account's SAML token identifier.
+
+<Aside type="note">
+Testsigma supports SAML through **OneLogin** and **Google Workspace** as well as Okta and [Entra ID](/suite/security/azure-sso/). The exchange below is the same for all of them — only the identity provider's own console differs, so use this page as the SAML reference and read the provider's own documentation for where it keeps these fields.
+</Aside>
+
+## Create the Okta app integration
+
+<Steps>
+
+1. **Create it** — In the Okta Admin Console, click **Applications → Create App Integration**. Choose **SAML 2.0** and name it.
+
+2. **Configure SAML** — Paste Testsigma's callback URL into **Single Sign-On URL**. **Audience URI** takes the metadata URL. **Default RelayState** takes the dashboard URL. Set **Name ID Format** to **EmailAddress** and keep the username defaults.
+
+3. **Finish** — Select "I'm an Okta customer adding an internal app". Click **Finish**, then **View Setup Instructions**.
+
+4. **Copy Okta's side** — Take the **Identity Provider Issuer**, the **Single Sign-On URL**, and the **X.509 Certificate**.
+
+</Steps>
+
+## Configure Testsigma
+
+Back in the SAML settings, enter Okta's values. **Entity ID** takes the Identity Provider Issuer. **SSO URL** takes the sign-on URL. **SAML Certificate** takes the X.509 certificate. Click **Confirm Credentials**.
+
+## Assign users and sign in
+
+In Okta, open the application and click **Assign → Assign to People**. Add each user. Users sign in with **Sign in with SSO** on the Testsigma login page. They use their configured email. First-time authentication needs the Okta mobile app.

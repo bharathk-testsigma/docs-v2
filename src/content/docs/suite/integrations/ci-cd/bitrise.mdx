@@ -1,0 +1,34 @@
+---
+title: Bitrise
+description: Trigger Testsigma mobile test plans from a Bitrise workflow, the CI purpose-built for iOS and Android.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 50
+  label: Bitrise
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Bitrise is CI built for mobile apps, on Linux and macOS build machines. A workflow step runs the [shell script](/suite/integrations/ci-cd/shell-script/) committed to the app's repository, so every build triggers the mobile test plan and waits on it.
+
+<Prerequisites>
+
+- The script (here `bitrise.sh`) is in the repository linked to the app, with `TESTSIGMA_API_KEY`, `TESTSIGMA_TESTPLAN_ID`, and `MAX_WAIT_TIME_FOR_SCRIPT_TO_EXIT` set.
+
+</Prerequisites>
+
+## Configure the project
+
+<Steps>
+
+1. **Create the workspace** — From the workspace dropdown, **+ Create Workspace**, name it.
+
+2. **Add the project** — **Dashboard → + New Project → Start with Bitrise CI**. Set privacy, pick the Git provider, and click **Connect account**.
+
+3. **Authorise** — Authorise Bitrise for the repository holding `bitrise.sh`, via **Install & Authorize**.
+
+4. **Run the script** — Add a script step to the workflow that executes `./bitrise.sh`.
+
+</Steps>

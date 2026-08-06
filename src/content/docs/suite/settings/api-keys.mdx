@@ -1,0 +1,33 @@
+---
+title: API keys
+description: Generate the bearer keys that authenticate REST API calls, CI/CD triggers, and integrations.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: API Keys
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+API keys authenticate everything programmatic: REST API calls, CI/CD pipelines, and third-party integrations. Admins generate them under Settings, name them, and can cap how many parallel executions each key may consume.
+
+<Prerequisites>
+
+- You hold the **Admin** or **Super Admin** role — nobody else can generate keys.
+
+</Prerequisites>
+
+## Generate a key
+
+<Steps>
+
+1. **Open the page** — Go to **Settings → API Keys** and click **Generate new API Key**.
+
+2. **Describe it** — Name the key, and optionally toggle a **parallel test execution** cap for it.
+
+3. **Generate and copy** — Click **Generate Key**, then **Copy API Key**.
+
+</Steps>
+
+The key rides in an `Authorization: Bearer <API_KEY>` header — the [API overview](/suite/api/overview/) covers the calls it unlocks.

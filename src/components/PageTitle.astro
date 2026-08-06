@@ -1,0 +1,57 @@
+---
+/**
+ * PageTitle override -- just the h1.
+ *
+ * Breadcrumbs used to live here; they moved to the content top bar
+ * (Header.astro -> Breadcrumbs.astro) to match Linear's layout, where the trail
+ * sits above the content area rather than above the title.
+ *
+ * Linear's page title is noticeably larger than the design canvas's 27px, so
+ * this is 32px -- see the note in theme.css.
+ */
+import CopyPage from './CopyPage.astro';
+
+const { entry } = Astro.locals.starlightRoute;
+
+// API reference pages render their own title (and the `#_top` anchor) inside
+// ApiMarkdownContent.astro, so that it sits in the left spec column rather
+// than spanning both columns. Splash pages (the changelogs) likewise render
+// their own hero title, and "Copy page" makes no sense on a feed.
+const isApiPage = !!entry.data.api;
+const isSplash = entry.data.template === 'splash';
+---
+
+{
+	!isApiPage && !isSplash && (
+		<div class="ts-title-row">
+			<h1 id="_top">{entry.data.title}</h1>
+			<CopyPage />
+		</div>
+	)
+}
+
+<style>
+	/* "Copy page" sits on the title line, pushed to the right edge of the content
+	   column rather than tucked against the title -- it used to live in the top
+	   bar next to the CTA. */
+	.ts-title-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+	}
+	.ts-title-row :global(.ts-copy) {
+		flex: none;
+	}
+
+	h1 {
+		min-width: 0;
+		font-size: 2rem; /* 32px */
+		font-weight: 600;
+		letter-spacing: -0.023em;
+		line-height: 1.2;
+		color: var(--ts-tx);
+		margin: 0;
+		text-wrap: balance;
+	}
+</style>

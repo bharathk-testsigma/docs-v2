@@ -1,0 +1,108 @@
+---
+title: Widgets reference
+description: Every widget available to a custom dashboard, with what it shows, when to use it, and how to read it.
+pageType: reference
+verified: 2026-07
+sidebar:
+  order: 30
+  label: Widgets Reference
+---
+
+Custom dashboards draw their content from a library of 40 widgets in six categories. This page lists every widget, what it displays, when to use it, and how to read it.
+
+You can mix categories on one dashboard; [Custom dashboards](/suite/reports/custom-dashboards/) has the steps.
+
+## Executive insights and release readiness
+
+These widgets answer whether the build is shippable.
+
+| Widget | What it shows | When to use it | How to read it |
+| --- | --- | --- | --- |
+| **All Statuses Summary** | Summary of test run counts across all result statuses: **Passed**, **Failed**, Error, Stopped, Cancelled | Get an instant overview of test execution health at a glance | High Passed count with low Failed count indicates good health. High Error count suggests infrastructure issues |
+| **Pass Fail Trends** | Historical volume of passed versus failed test runs over time | Track quality trends and detect regressions during release cycles | Rising failed tests indicate quality decline. An upward trend shows improving quality. A flat pattern indicates stability |
+| **Latest Runs** | Most recent executions with build numbers, timestamps, and status, updating in real time | Monitor ongoing execution and verify CI/CD pipeline activity | Frequent recent entries show active automation. Gaps in timestamps may indicate pipeline delays or infrastructure issues |
+| **Consolidated Project Health** | Aggregate pass, fail, error, stopped, and cancelled counts across all projects | Compare test health across your entire product portfolio in one view | A high pass percentage indicates overall portfolio health. Identify which projects have high failure rates for targeted improvement |
+| **Total Test Plan Runs** | Cumulative count of all test plan executions in the date range, as a large KPI tile | Measure testing volume and track execution frequency over time | Higher numbers show greater coverage. Compare across periods to see whether testing intensity is increasing |
+| **Test Plan Execution Analytics** | Per-plan success rate, average duration, last run, and total executions, as a sortable table | Identify slow test plans and understand which plans run reliably | Low success rates indicate flakiness. High durations reveal performance bottlenecks. Sort by duration to find the slowest plans |
+| **Pass Fail Percent Trend** | Success rate percentage over rolling intervals, as (successful runs ÷ total runs) × 100 | Monitor whether suite health is improving, stable, or declining | An upward line shows improvement. A downward line indicates regression. A flat line shows a consistent maturity level |
+| **Project Level Stats** | Pass and fail counts with success rate, aggregated by project | Quickly compare test health across different projects | Each project card shows overall health. Compare across cards to identify problem areas needing attention |
+
+## Reliability and stability
+
+These widgets separate real defects from flaky tests and infrastructure noise.
+
+| Widget | What it shows | When to use it | How to read it |
+| --- | --- | --- | --- |
+| **Test Health Snapshot** | Suite classification as Consistent, Flaky, or Unexecuted from recent run history, as a donut chart | Quickly assess overall suite stability at a glance | A high Consistent percentage, ideally above 80%, shows a healthy suite. A large Flaky share signals stability work. High Unexecuted may indicate coverage gaps |
+| **Flaky Test List** | Tests that flip between pass and fail without code changes, ranked by Flake Score | Target high-impact flaky tests for stabilisation and root cause analysis | Tests at the top are most problematic. High flake scores indicate timing or resource-dependent issues. Start with the highest scores |
+| **Top Failing Tests By User** | Most frequently failing tests, segmented by the user who triggered the run | Identify which tests fail most and spot patterns by execution source | Failures consistent across users indicate real product defects. Failures under one user may indicate environment or data issues |
+| **Top Failing Tests By Day** | Most frequently failing tests, segmented by day of occurrence | Identify day-specific failure patterns | Failures concentrated on certain days may indicate scheduled maintenance, batch jobs, or data refresh cycles affecting tests |
+| **Error Statistics** | Executions counted by error type: Idle Timeout, Network Error, Session Timeout, Device Not Available, and others | Spot systemic infrastructure or environment issues causing failures | High Device Not Available suggests saturation. Network Errors indicate connectivity problems. Coordinate with infrastructure teams |
+| **Top Error Types** | Proportional breakdown of error type distribution | Understand the dominant failure mode and allocate investigation effort | The largest slice shows the most frequent error. If one type dominates, focus there. Similar sizes suggest distributed issues |
+| **Time To Fix Test KPI** | Average duration from a test's first failure to its successful resolution, in seconds | Measure how efficiently your team diagnoses and fixes failures | Lower times indicate fast response. High times suggest slow root cause identification. Track the trend to measure improvement |
+| **Stability Ratios** | Success rate grouped by attempt count (1, 2, 3, 4+), as (successful runs ÷ total runs) × 100 | Understand how often tests pass first time versus needing retries | High first-attempt success is ideal. If success improves on later attempts, tests are flaky. Consistent success shows robust tests |
+
+## Test design and team productivity
+
+These widgets track who is building and maintaining the suite.
+
+| Widget | What it shows | When to use it | How to read it |
+| --- | --- | --- | --- |
+| **Tests Authored Over Time** | New test cases created in each interval, as a column chart | Monitor creation pace and ensure healthy coverage growth | Rising columns show increasing creation. Flat or declining columns may indicate saturation or resource constraints |
+| **New Tests Per User** | New test cases per team member with step count, as a leaderboard or bar chart | Recognise high contributors and identify participation gaps | High contributors drive coverage. Use it to celebrate performance. Low contributors may need support or training |
+| **Fixed Failed Tests Per User** | Previously failing tests successfully fixed by each user | Credit maintenance work and identify quality improvement drivers | High fixers are maintaining test health. If fixes are low team-wide, flaky tests may be accumulating |
+| **Fixed Failed Tests KPI** | Total count of previously failing test cases now fixed | Measure overall stabilisation progress | Rising numbers indicate successful stabilisation. Compare periods to track maintenance effectiveness |
+| **Tests Authored Vs Executed** | Tests created against tests actually run, as a dual-axis bar and line chart | Detect inactive test cases and gaps between authoring and execution | If authored far exceeds executed, inactive tests exist. A narrow gap shows healthy execution. A large gap signals stale tests |
+| **Stale Assets By Category** | Test cases and test plans grouped by how long they have been inactive | Identify orphaned tests and decide whether to maintain or archive | Large stale percentages indicate unused tests. Review why they stopped executing, and delete what you do not need |
+| **Distribution By Priority / Status / Type** | Test cases broken down by priority level, current status, or test type | Understand portfolio composition and ensure balanced coverage | Even distribution shows balanced coverage. Skew may indicate concentration. Adjust composition to match your risk profile |
+| **Authored By App Type** | Test cases authored per application type: Web, Mobile, API, SAP, and others | Verify balanced coverage across your platform portfolio | Similar bar heights show balanced effort. Large imbalances indicate heavy investment in some platforms and gaps in others |
+| **Test Cases Submitted/Assigned For Review** | Cases you created awaiting review, and cases assigned to you pending yours | Track review bottlenecks and manage approval workflows | High pending counts indicate a review backlog. Low counts show smooth approval. Monitor to keep review cycles timely |
+
+## AI intelligence and agentic ROI
+
+These widgets quantify what the AI layer is doing for you.
+
+| Widget | What it shows | When to use it | How to read it |
+| --- | --- | --- | --- |
+| **AI Vs Manual Composition** | Ratio of steps created by AI against manual recording or typing, as a 100% stacked bar | Quantify AI adoption and measure the shift from manual authoring | A growing AI percentage shows adoption momentum. Compare month over month to see adoption velocity |
+| **Auto Healing Trend** | Failed steps against auto-healed steps over time | Show the saving from AI-driven locator and image updates | High healing numbers show significant saving, since each healed test is manual effort avoided. A rising trend justifies continued investment |
+| **NLP Usage Ranked List** | Most frequently used natural language templates in step creation | Understand which capabilities teams lean on and where training is needed | Top prompts show popular features. Low-usage prompts identify underused capabilities worth training on |
+
+## Infrastructure and performance
+
+These widgets show whether your execution capacity fits your demand.
+
+| Widget | What it shows | When to use it | How to read it |
+| --- | --- | --- | --- |
+| **Concurrency Utilization Sessions** | Concurrent parallel sessions in use against the configured limit, as an overlapping area chart | Identify whether concurrency is underused or bottlenecked | The gap between used and limit shows unused capacity. Sitting near the limit suggests saturation. Plan expansion from peak usage |
+| **Execution Duration Trend** | Average, median, and p95 execution duration over time, with trend lines | Detect slow runs and performance regressions | A rising trend indicates slowing execution. Sudden spikes signal a regression. Investigate prolonged runs to find bottlenecks |
+| **Environment Coverage** | Run distribution by browser, OS version, and device model, as a tree map | Ensure balanced testing across supported platforms and find coverage gaps | Balanced boxes show even coverage. Dominance by one environment may leave others undertested. Match coverage to your customers |
+| **App Coverage By Type** | Test runs per application type, as a donut chart | Verify effort is proportional across your app portfolio | Similar slices show balanced effort. A large imbalance means some apps get less testing. Adjust to match risk profiles |
+
+## Accessibility
+
+These widgets track WCAG conformance and the work still outstanding.
+
+| Widget | What it shows | When to use it | How to read it |
+| --- | --- | --- | --- |
+| **Compliance Score** | Overall compliance score for the selected standard, with conformance by level A, AA, and AAA | Get a quick read on how close the application is to full compliance before a release or audit | A high overall score with strong AA coverage indicates good posture. Low A-level scores suggest critical gaps that block basic requirements |
+| **Issues by Severity** | Open issues by severity: Critical, Serious, Moderate, Minor, and Success | Prioritise the remediation backlog by where the severest issues sit | A large Critical or Serious slice needs immediate attention. Moderate and Minor can be planned into sprints. Success items confirm passing checks |
+| **Issues by WCAG Criterion** | The top 10 WCAG criteria ranked by issue count, as a horizontal bar chart | Identify which rules the application fails most, so remediation lands where it counts | The longest bars are the highest-volume failure points. Addressing the top two or three cuts the overall issue count fastest |
+| **Trend Over Time** | Compliance score across test runs or dates, as a line chart | Measure whether accessibility is improving or regressing across releases | An upward trend confirms remediation is working. A flat line means no progress. A downward trend means new issues outpace fixes |
+| **Top Issues** | The most impactful open issues, with WCAG criterion, severity, pages affected, and an AI badge where Atto has a fix | Identify which issues affect the most pages and where AI-assisted remediation exists | Issues affecting many pages come first, since fixing them cuts the count most efficiently. Items with an AI badge resolve faster using Atto's suggestion |
+| **Page-Level Health** | Per-URL accessibility score with a severity badge breakdown for each scanned page | Identify which pages need the most attention and track them over time | Pages with low scores or many Critical badges are the highest priority. Compare across releases to confirm improvement |
+| **VPAT Readiness** | Share of WCAG criteria that have both a rule mapping and test results. Click the widget to open the VPAT export dialog | Understand how much of the criteria surface is covered before a VPAT audit or a customer request | A high percentage means most criteria are tested and documented. Gaps mean no rule coverage or no results — close these before submitting |
+| **Remediation Progress** | Issues found against issues fixed, grouped by week, as a stacked bar chart | Track whether the team resolves issues faster than new ones arrive | Weeks where fixed exceeds found are net progress. The reverse is accumulating debt. A converging trend confirms the backlog is shrinking |
+
+## Starting combinations
+
+Each set below is a working dashboard for one audience. Start from the closest one and adjust.
+
+| Dashboard | Widgets |
+| --- | --- |
+| Release readiness | All Statuses Summary, Pass Fail Trends, Latest Runs, Consolidated Project Health |
+| Quality improvement | Flaky Test List, Top Failing Tests By User, Error Statistics, Time To Fix Test KPI |
+| Team productivity | Tests Authored Over Time, New Tests Per User, Fixed Failed Tests Per User, Stale Assets By Category |
+| AI investment | AI Vs Manual Composition, Auto Healing Trend, NLP Usage Ranked List |
+| Infrastructure planning | Concurrency Utilization Sessions, Execution Duration Trend, Environment Coverage, App Coverage By Type |
+| Accessibility compliance | Compliance Score, Issues by Severity, Trend Over Time, Remediation Progress |

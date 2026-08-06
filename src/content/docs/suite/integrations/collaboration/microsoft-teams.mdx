@@ -1,0 +1,33 @@
+---
+title: Microsoft Teams
+description: Send test plan status notifications to a Microsoft Teams channel through an incoming webhook connector.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Microsoft Teams
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Microsoft Teams integration posts run outcomes to a Teams channel. The setup mirrors Slack and Google Chat: one incoming webhook connector, one toggle in Suite, then per-plan notification settings choose what gets sent.
+
+<Prerequisites>
+
+- A **Microsoft Teams incoming webhook connector** URL for the target channel.
+
+</Prerequisites>
+
+## Connect
+
+<Steps>
+
+1. **Open integrations** — Go to **Settings → Integrations** and enable the **MS Teams** toggle.
+
+2. **Enter the details** — **Name** and **Connector URL**, then **Save & Enable**.
+
+</Steps>
+
+## Turn it on per test plan
+
+In **Create/Edit Test Plan → Test Plan Settings**, enable **Send Notification**. Pick the statuses under **Notify On** — pass, fail, abort, any combination. Then select **MS Teams** under **Also send messages to**.

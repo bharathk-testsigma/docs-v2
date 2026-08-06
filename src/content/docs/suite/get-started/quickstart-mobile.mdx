@@ -1,0 +1,107 @@
+---
+title: 'Quickstart: Mobile'
+description: Upload an Android or iOS build, record a flow against a connected device with Copilot, then run it.
+pageType: task
+verified: 2026-07
+covers:
+  - Create a mobile project
+  - Upload the app build
+  - Create a test case
+  - Record the steps with Copilot
+  - Run the test
+  - Read the result
+sidebar:
+  order: 40
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Your first mobile test starts from an app build rather than a URL. You create a project, upload an APK or IPA, record a short flow against a connected device with Copilot, and read the result. The steps are the same for Android and iOS.
+
+<Prerequisites>
+
+- You have a Testsigma account.
+- **Testsigma Terminal** is running on your desktop. Copilot cannot start without it.
+- A local device is connected and available as a test machine.
+- Your app build is ready: an **APK** for Android, or an **IPA** for iOS.
+
+</Prerequisites>
+
+## Create a mobile project
+
+<Steps>
+
+1. **Open the project form** — From the **Dashboard**, go to **Project** and click **New Project**.
+
+2. **Set the application type** — Enter a **Project name**, then select **Android** or **iOS** from the **Application type** dropdown.
+
+3. **Name the application** — Enter an **Application** name and a **Version**, then click **Create**.
+
+</Steps>
+
+## Upload the app build
+
+<Steps>
+
+1. **Open the upload list** — Go to **Test Data → Uploads**.
+
+2. **Add the build** — Click **Upload** and select your APK or IPA file.
+
+</Steps>
+
+The build becomes an app source that both test runs and Copilot sessions can select. Uploads are versioned, so a later build replaces this one without breaking the test case.
+
+## Create a test case
+
+<Steps>
+
+1. **Open the test case list** — Go to **Create Tests → Test Cases**.
+
+2. **Pick a scenario** — In **Test Case Explorer**, expand a **Feature** and click the **+** icon next to the scenario you want.
+
+3. **Name the test case** — Enter a name in the **Test Case Name** field and click **Create**. The **Test Case Details** page opens.
+
+</Steps>
+
+## Record the steps with Copilot
+
+Copilot mirrors your connected device inside Suite, so you record by interacting with the mirrored screen.
+
+<Steps>
+
+1. **Open Copilot** — On the **Test Case Details** page, click **Copilot**.
+
+2. **Configure the session** — Select the test machine and the app source you uploaded, then click **Launch**. A mirrored session of your application opens.
+
+3. **Start recording** — Click **Rec**, then perform the actions you want to capture.
+
+4. **Stop recording** — Click **Stop Recording**, then click **Exit Copilot**.
+
+5. **Confirm** — In the **Stop & Exit Copilot** dialog, click **Stop Copilot**. The recorded steps are saved to the **Test Case Details** page.
+
+</Steps>
+
+{/* SCREENSHOT NEEDED: the Copilot panel with the mirrored device screen on one side and the captured step list on the other, Rec control visible */}
+
+<Aside type="note">
+To record against a physical device attached to your machine rather than a mirrored session, use **Record** instead of **Copilot**. Both produce the same kind of step.
+</Aside>
+
+## Run the test
+
+<Steps>
+
+1. **Open the run panel** — Click **Run**. The **Ad-Hoc Run** panel opens.
+
+2. **Choose a device** — On the **Local Devices** tab, select the connected machine and the app source.
+
+3. **Start the run** — Click **Run Now**. The run detail page opens as execution begins.
+
+</Steps>
+
+To run on a cloud device instead, select **Testsigma Lab** on the same panel. The test case itself does not change.
+
+## Read the result
+
+Steps update as each one finishes. Open a failed step for the error message, a screenshot taken from the device at the point of failure, and the element the step acted on.

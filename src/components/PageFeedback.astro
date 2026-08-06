@@ -1,0 +1,186 @@
+---
+/**
+ * PageFeedback -- the "Was this page helpful?" row at the bottom of every page.
+ *
+ * No backend is wired. Rather than leave the buttons inert, a click:
+ *   1. swaps the row for an acknowledgement (announced via aria-live),
+ *   2. remembers the answer per page in localStorage so the reader is not asked
+ *      the same question on every visit,
+ *   3. dispatches a `testsigma:page-feedback` CustomEvent on `document`.
+ *
+ * That event is the integration point: an analytics snippet can listen for it
+ * and POST wherever feedback should land, without this component needing to
+ * know the destination. See the note next to the dispatch below.
+ *
+ * The thumbs-down glyph is the thumbs-up path rotated 180deg, so the two icons
+ * are guaranteed to be mirror images rather than two hand-drawn approximations.
+ */
+---
+
+{/* `data-pagefind-ignore`: this row renders inside the indexed region on every
+    page, so "Was this page helpful Yes No" was in the search index 216 times --
+    a search for "helpful" matched the entire site and diluted every ranking. */}
+<section
+	class="ts-feedback"
+	data-pagefind-ignore
+	data-ts-feedback
+	aria-labelledby="ts-feedback-q"
+>
+	<p class="ts-feedback-q" id="ts-feedback-q">Was this page helpful?</p>
+
+	<div class="ts-feedback-actions" data-actions>
+		<button type="button" class="ts-feedback-btn" data-vote="yes">
+			<svg
+				class="ts-feedback-icon"
+				width="15"
+				height="15"
+				viewBox="0 0 16 16"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.3"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				aria-hidden="true"
+			>
+				<path d="M5.6 13.9V6.7l2.9-4.2a.9.9 0 0 1 .9-.3c.6.2 1 .8 1 1.4v2.3h3.1c.7 0 1.2.6 1.1 1.3l-.8 5a1.2 1.2 0 0 1-1.2 1H5.6Z"
+				></path>
+				<path d="M5.6 13.9H3.3a1.2 1.2 0 0 1-1.2-1.2V8a1.2 1.2 0 0 1 1.2-1.2h2.3"></path>
+			</svg>
+			Yes
+		</button>
+
+		<button type="button" class="ts-feedback-btn" data-vote="no">
+			<svg
+				class="ts-feedback-icon"
+				width="15"
+				height="15"
+				viewBox="0 0 16 16"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.3"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				aria-hidden="true"
+			>
+				<g transform="rotate(180 8 8)">
+					<path d="M5.6 13.9V6.7l2.9-4.2a.9.9 0 0 1 .9-.3c.6.2 1 .8 1 1.4v2.3h3.1c.7 0 1.2.6 1.1 1.3l-.8 5a1.2 1.2 0 0 1-1.2 1H5.6Z"
+					></path>
+					<path d="M5.6 13.9H3.3a1.2 1.2 0 0 1-1.2-1.2V8a1.2 1.2 0 0 1 1.2-1.2h2.3"></path>
+				</g>
+			</svg>
+			No
+		</button>
+	</div>
+
+	<p class="ts-feedback-thanks" data-thanks role="status" hidden>Thanks for the feedback.</p>
+</section>
+
+<style>
+	.ts-feedback {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+		margin-top: 2.5rem;
+		padding-top: 1.75rem;
+		border-top: 1px solid var(--ts-bd);
+	}
+
+	.ts-feedback-q {
+		margin: 0;
+		font-size: 0.875rem; /* 14px */
+		color: var(--ts-tx2);
+	}
+
+	.ts-feedback-actions {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+	/* `[hidden]` is a UA rule and loses to the explicit `display: flex` above, so
+	   without this the buttons stay on screen next to the acknowledgement. */
+	.ts-feedback-actions[hidden] {
+		display: none;
+	}
+
+	.ts-feedback-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		height: 34px;
+		padding: 0 15px;
+		border: 1px solid var(--ts-bd);
+		border-radius: 999px;
+		background: transparent;
+		color: var(--ts-tx2);
+		font: inherit;
+		font-size: 0.813rem; /* 13px */
+		font-weight: 500;
+		cursor: pointer;
+	}
+	.ts-feedback-btn:hover {
+		background: var(--ts-hover);
+		color: var(--ts-tx);
+		border-color: var(--ts-bd);
+	}
+	.ts-feedback-btn:focus-visible {
+		outline: 2px solid var(--ts-ac);
+		outline-offset: 2px;
+	}
+
+	.ts-feedback-icon {
+		flex: none;
+	}
+
+	.ts-feedback-thanks {
+		margin: 0;
+		font-size: 0.875rem;
+		color: var(--ts-tx2);
+	}
+	.ts-feedback-thanks[hidden] {
+		display: none;
+	}
+</style>
+
+<script>
+	document.querySelectorAll<HTMLElement>('[data-ts-feedback]').forEach((root) => {
+		const actions = root.querySelector<HTMLElement>('[data-actions]')!;
+		const thanks = root.querySelector<HTMLElement>('[data-thanks]')!;
+		const key = `ts-feedback:${window.location.pathname}`;
+
+		function showThanks() {
+			actions.hidden = true;
+			thanks.hidden = false;
+		}
+
+		// Already answered on a previous visit: do not ask again.
+		try {
+			if (localStorage.getItem(key)) showThanks();
+		} catch {
+			// Storage unavailable (private mode). Asking again is the safe fallback.
+		}
+
+		root.querySelectorAll<HTMLButtonElement>('[data-vote]').forEach((btn) => {
+			btn.addEventListener('click', () => {
+				const helpful = btn.dataset.vote === 'yes';
+
+				try {
+					localStorage.setItem(key, helpful ? 'yes' : 'no');
+				} catch {
+					// Non-fatal: the acknowledgement still shows for this page view.
+				}
+
+				// Integration point. Nothing listens yet -- wire an analytics or API
+				// call to this event rather than editing this component.
+				document.dispatchEvent(
+					new CustomEvent('testsigma:page-feedback', {
+						detail: { helpful, path: window.location.pathname },
+					})
+				);
+
+				showThanks();
+			});
+		});
+	});
+</script>

@@ -1,0 +1,35 @@
+---
+title: BrowserStack
+description: Run Testsigma tests on BrowserStack cloud devices by connecting your existing BrowserStack account.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: BrowserStack
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+BrowserStack integration runs your Testsigma tests on BrowserStack's cloud devices. Web, mobile web, and mobile tests all qualify. Author in Testsigma as usual, then pick BrowserStack as the test lab at run time.
+
+<Prerequisites>
+
+- You have the **username** and **API key** from **Account Settings → Automate** in BrowserStack.
+
+</Prerequisites>
+
+## Connect
+
+<Steps>
+
+1. **Open integrations** — Go to **Settings → Integrations**, open the **Test Lab** tab, and enable the **BrowserStack** toggle.
+
+2. **Enter the details** — Username and API key, with the key confirmed.
+
+3. **Save** — Click **Save & Enable**.
+
+</Steps>
+
+## Use it in a run
+
+On any ad-hoc run or test plan machine profile, select **BrowserStack** as the **Test Lab** instead of Testsigma Lab. **Manage** on the integration widget updates the credentials or removes the lab later.

@@ -1,0 +1,37 @@
+---
+title: Backlog
+description: Connect Backlog so annotated bugs flow from a Testsigma run result into your Backlog project in one click.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Backlog
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Backlog integration pushes annotated issues into a Backlog project mid-session. One click assigns them and attaches screenshots. Connecting takes the account URL and an API key; reporting happens from any test case result.
+
+<Prerequisites>
+
+- The **Account URL** — your organisation's Backlog URL — and an **API key** from your Backlog account.
+
+</Prerequisites>
+
+## Get the API key
+
+In Backlog, open the profile dropdown → **Personal Settings → API**. Enter a name in the **Memo** field and click **Submit**; copy the generated key.
+
+## Connect
+
+<Steps>
+
+1. **Open integrations** — Go to **Settings → Integrations** and enable the **Backlog** toggle.
+
+2. **Enter the details** — In the **Backlog details** dialog: **Account URL** and **API Key**.
+
+3. **Save** — Click **Save & Enable**.
+
+</Steps>
+
+Then report from any run: open the failing **Test Case Result**, click **Report Bug**, pick the **Backlog** icon, review, and click **Report Bug**. **Link to Issue** attaches an existing ticket instead. Testsigma adds the execution video and step screenshots to the created issue automatically.

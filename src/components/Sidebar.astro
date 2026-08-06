@@ -1,0 +1,388 @@
+---
+/**
+ * Sidebar override -- gives the left nav its own header, the way Linear's
+ * docs do.
+ *
+ * Starlight's default layout puts one full-width header across the top, with
+ * the sidebar starting beneath it. Linear instead lets the sidebar own the
+ * full height of the viewport: the wordmark and search sit at the top of the
+ * sidebar and the nav scrolls beneath them. The breadcrumbs, section links, and
+ * page actions live in a top bar inside the content column (see Header.astro).
+ *
+ * The nav list itself is Starlight's own Sidebar, rendered unchanged, so
+ * collapsible groups, the current-page marker, and state persistence across
+ * navigations all keep working.
+ *
+ * Section links are NOT here -- they live in the content top bar
+ * (Header.astro), at the top of the page.
+ */
+import Default from '@astrojs/starlight/components/Sidebar.astro';
+// Forked Search (not Starlight's): identical dialog, but also works in dev.
+import Search from './Search.astro';
+import ProductSwitcher from './ProductSwitcher.astro';
+import { isApiReferencePath } from '../starlightRouteData';
+
+// Search is Starlight's own Pagefind dialog, rendered here instead of in the
+// header (this layout has no full-width header). The same dialog carries the
+// Ask Assistant tab; the top bar's Ask button opens it in that mode.
+
+// On API reference pages the nav holds only the endpoint groups (the route
+// middleware does the swap). The marker below is what theme.css keys the
+// API-nav treatment off: method chip before the label, flat section headings.
+const isApiReference = isApiReferencePath(Astro.url.pathname);
+
+// ---- L1 section icons ----
+// Starlight renders group labels as plain text, so the icon can't go in the
+// sidebar data. Instead: the middleware has already fixed this URL's top-level
+// order, so each section's icon is emitted as an nth-child mask rule against
+// the same tree Starlight is about to render. Keyed by label -- a section with
+// no entry simply gets no icon, which also keeps the API entity groups clean
+// (they're skipped wholesale below anyway, since e.g. "Test Cases" is both an
+// Arcus section and a Suite API entity).
+// Icon shapes are Lucide outlines (24x24 grid, stroke 2).
+const L1_ICONS: Record<string, string> = {
+	// Shared
+	'Get Started':
+		"<path d='M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z'/><path d='m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z'/><path d='M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0'/><path d='M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5'/>",
+	Reports:
+		"<path d='M3 3v16a2 2 0 0 0 2 2h16'/><path d='M13 17V9'/><path d='M18 17V5'/><path d='M8 17v-3'/>",
+	Integrations:
+		"<path d='M12 22v-5'/><path d='M9 8V2'/><path d='M15 8V2'/><path d='M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z'/>",
+	Settings:
+		"<path d='M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z'/><circle cx='12' cy='12' r='3'/>",
+	// Suite
+	// No Installation entry: it moved under Get Started as an L2 group, and this
+	// map only ever renders for top-level sections (the nth-child rules below),
+	// so an entry for it would be dead config.
+	'Atto AI':
+		"<path d='M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z'/><path d='M20 3v4'/><path d='M22 5h-4'/><path d='M4 17v2'/><path d='M5 18H3'/>",
+	Web: "<circle cx='12' cy='12' r='10'/><path d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'/><path d='M2 12h20'/>",
+	Mobile: "<rect width='14' height='20' x='5' y='2' rx='2' ry='2'/><path d='M12 18h.01'/>",
+	Salesforce: "<path d='M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z'/>",
+	'Windows (Lite)':
+		"<rect width='20' height='14' x='2' y='3' rx='2'/><path d='M8 21h8'/><path d='M12 17v4'/>",
+	'Windows (Beta)':
+		"<rect width='20' height='14' x='2' y='3' rx='2'/><path d='M8 21h8'/><path d='M12 17v4'/>",
+	'On-prem':
+		"<rect width='20' height='8' x='2' y='2' rx='2' ry='2'/><rect width='20' height='8' x='2' y='14' rx='2' ry='2'/><path d='M6 6h.01'/><path d='M6 18h.01'/>",
+	Addons:
+		"<path d='M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 1-.837.276c-.47-.07-.802-.48-.968-.925a2.501 2.501 0 1 0-3.214 3.214c.446.166.855.497.925.968a.979.979 0 0 1-.276.837l-1.61 1.61a2.404 2.404 0 0 1-1.705.707 2.402 2.402 0 0 1-1.704-.706l-1.568-1.568a1.026 1.026 0 0 0-.877-.29c-.493.074-.84.504-1.02.968a2.5 2.5 0 1 1-3.237-3.237c.464-.18.894-.527.967-1.02a1.026 1.026 0 0 0-.289-.877l-1.568-1.568A2.402 2.402 0 0 1 1.998 12c0-.617.236-1.234.706-1.704L4.23 8.77c.24-.24.581-.353.917-.303.515.077.877.528 1.073 1.01a2.5 2.5 0 1 0 3.259-3.259c-.482-.196-.933-.558-1.01-1.073-.05-.336.062-.676.303-.917l1.525-1.525A2.402 2.402 0 0 1 12 1.998c.617 0 1.234.236 1.704.706l1.568 1.568c.23.23.556.338.877.29.493-.074.84-.504 1.02-.968a2.5 2.5 0 1 1 3.237 3.237c-.464.18-.894.527-.967 1.02Z'/>",
+	// No Security entry: it moved under Settings as an L2 group, and this map only
+	// renders for top-level sections (the nth-child rules below).
+	// Arcus
+	'QI Home':
+		"<path d='M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8'/><path d='M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/>",
+	'Test Cases':
+		"<rect width='8' height='4' x='8' y='2' rx='1' ry='1'/><path d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'/><path d='M12 11h4'/><path d='M12 16h4'/><path d='M8 11h.01'/><path d='M8 16h.01'/>",
+	'Data Sets':
+		"<ellipse cx='12' cy='5' rx='9' ry='3'/><path d='M3 5V19A9 3 0 0 0 21 19V5'/><path d='M3 12A9 3 0 0 0 21 12'/>",
+	'Test Plans':
+		"<path d='M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z'/><path d='M15 5.764v15'/><path d='M9 3.236v15'/>",
+	'Test Runs': "<circle cx='12' cy='12' r='10'/><path d='m10 8 6 4-6 4Z'/>",
+	'Test Capture':
+		"<path d='M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z'/><circle cx='12' cy='13' r='3'/>",
+	'Imports & Exports':
+		"<path d='m3 16 4 4 4-4'/><path d='M7 20V4'/><path d='m21 8-4-4-4 4'/><path d='M17 4v16'/>",
+};
+
+const maskUrl = (inner: string) =>
+	`url("data:image/svg+xml,${encodeURIComponent(
+		`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>${inner}</svg>`
+	)}")`;
+
+const l1IconCss = isApiReference
+	? ''
+	: Astro.locals.starlightRoute.sidebar
+			.map((entry, i) => {
+				const shape = L1_ICONS[entry.label];
+				if (!shape) return '';
+				const url = maskUrl(shape);
+				// A section is usually a group (details > summary), but a single-page
+				// section is a bare top-level link -- same icon treatment for both.
+				const target =
+					entry.type === 'group' ? '> details > summary .group-label' : '> a.large';
+				return `#starlight__sidebar ul.top-level > li:nth-child(${i + 1}) ${target}::before{content:'';-webkit-mask-image:${url};mask-image:${url};}`;
+			})
+			.join('\n');
+---
+
+<div class="ts-sb">
+	<div class="ts-sb-head">
+		<ProductSwitcher />
+	</div>
+
+	<div class="ts-sb-search"><Search /></div>
+
+	<div class="ts-sb-nav" data-api-nav={isApiReference ? 'true' : undefined}>
+		{
+			isApiReference && (
+				<div class="ts-api-version">
+					<p class="ts-api-version-label">API version</p>
+					<div class="ts-api-version-tabs">
+						<span class="ts-api-version-tab ts-api-version-tab--active">
+							<span>API v1</span>
+							<span class="ts-api-version-chip">Stable</span>
+						</span>
+						<span class="ts-api-version-tab" title="API v2 is coming soon" aria-disabled="true">
+							<span>API v2</span>
+							<span class="ts-api-version-chip ts-api-version-chip--soon">Soon</span>
+						</span>
+					</div>
+				</div>
+			)
+		}
+		<Default><slot /></Default>
+	</div>
+
+	{/*
+	  Keep the nav's scroll position across navigations.
+
+	  Starlight already does this -- but against `#starlight__sidebar`, which in
+	  this layout is `.sidebar-pane` and never scrolls (the head and search are
+	  pinned, so `.ts-sb-nav` owns the overflow instead). It therefore saved and
+	  restored 0 every time, and a reader who opened a group deep in a 4,800px
+	  tree was thrown back to the first fold by the very click that navigated.
+	  Starlight's `<details>` open/closed persistence is unaffected and still
+	  does its job; only the offset is re-pointed here.
+
+	  Inline and placed after the tree so it runs during parsing, before the
+	  first paint -- restoring in a later event would show the jump it prevents.
+	*/}
+	<script is:inline>
+		(() => {
+			try {
+				// Mobile renders the sidebar as an overlay menu that opens at the top,
+				// so there is no offset worth carrying. Same guard Starlight uses.
+				if (!matchMedia('(min-width: 50em)').matches) return;
+				const nav = document.querySelector('.ts-sb-nav');
+				if (!nav) return;
+				const KEY = 'ts-sidebar-scroll';
+				// Reuse Starlight's own tree hash, so an offset saved in one tree is
+				// never applied to another (Suite, Arcus, and the API reference each
+				// render a different nav).
+				const hash = nav.querySelector('sl-sidebar-state-persist')?.dataset.hash || '';
+				// Leaving a page collapses the group that was auto-expanded around it,
+				// so the tree can get shorter above the restored offset and carry the
+				// current page's row off the top. Nudge it back into view -- this also
+				// covers arriving with no saved offset at all (a search hit or an
+				// external link deep in the tree), where the row would sit unseen
+				// below the fold.
+				const showCurrent = () => {
+					const cur = nav.querySelector('a[aria-current="page"]');
+					if (!cur) return;
+					const n = nav.getBoundingClientRect();
+					const r = cur.getBoundingClientRect();
+					const pad = 24;
+					if (r.top < n.top) nav.scrollTop -= n.top - r.top + pad;
+					else if (r.bottom > n.bottom) nav.scrollTop += r.bottom - n.bottom + pad;
+				};
+
+				const saved = JSON.parse(sessionStorage.getItem(KEY) || 'null');
+				const restore = () => {
+					if (saved && saved.hash === hash) nav.scrollTop = saved.top;
+					showCurrent();
+				};
+				restore();
+				// If the tree was not laid out yet, the assignment above clamped to 0;
+				// take a second pass once parsing is done.
+				if (saved && saved.hash === hash && nav.scrollTop === 0 && saved.top !== 0) {
+					addEventListener('DOMContentLoaded', restore);
+				}
+				const save = () => {
+					try {
+						sessionStorage.setItem(KEY, JSON.stringify({ hash, top: nav.scrollTop }));
+					} catch {}
+				};
+				// A click inside the nav IS the navigation, so record the offset then.
+				nav.addEventListener('click', save);
+				// Covers keyboard activation and anything else that leaves the page.
+				// `visibilitychange` rather than `beforeunload`, which breaks bfcache.
+				addEventListener('visibilitychange', () => {
+					if (document.visibilityState === 'hidden') save();
+				});
+			} catch {}
+		})();
+	</script>
+</div>
+
+{l1IconCss && <style is:inline set:html={l1IconCss} />}
+
+<style>
+	.ts-sb {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		min-height: 0;
+		/* Mobile only: .sidebar-content keeps Starlight's 1rem inline padding
+		   there, so the overlay needs it pulled back to sit flush. On desktop
+		   theme.css zeroes that padding, so the same margin would drag the nav
+		   past the sidebar's left edge -- the top-level labels ended up sitting
+		   ~8px from the viewport edge. */
+		margin-inline: calc(-1 * var(--sl-sidebar-pad-x));
+	}
+
+	@media (min-width: 50rem) {
+		.ts-sb {
+			margin-inline: 0;
+		}
+	}
+
+	/* ---- head: wordmark + search, pinned ---- */
+	.ts-sb-head {
+		flex: none;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+		height: 3.5rem; /* aligns with the content top bar */
+		padding: 0 14px 0 18px;
+		border-bottom: 1px solid var(--ts-bd);
+	}
+	.ts-sb-brand {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		text-decoration: none;
+		min-width: 0;
+		overflow: clip;
+	}
+	.ts-sb-brand img {
+		height: 19px;
+		width: auto;
+		display: block;
+		filter: var(--ts-logo-filter);
+	}
+	.ts-sb-chip {
+		font-size: 13px;
+		font-weight: 500;
+		color: var(--ts-tx3);
+		padding-left: 10px;
+		border-left: 1px solid var(--ts-bd);
+		line-height: 1;
+		white-space: nowrap;
+	}
+
+	/* ---- search: its own pinned row, above the nav ----
+	   It sits between the head and the nav rather than inside either: in the head
+	   it was a 30px icon button competing with the product switcher, and inside
+	   .ts-sb-nav it would scroll away with the tree. Pinned here it stays put
+	   above the first section, at full width, so the shortcut hint has room. */
+	.ts-sb-search {
+		flex: none;
+		padding: 12px 12px 4px 16px;
+	}
+	.ts-sb-search :global(button[data-open-modal]) {
+		/* The layout used to come from Starlight's own search stylesheet, which
+		   left with its <Search /> component -- without `display: flex` the gap,
+		   the flex-start alignment and the kbd's auto margin were all inert and
+		   the field collapsed to "Search⌘K". */
+		display: flex;
+		align-items: center;
+		width: 100%;
+		height: 32px;
+		gap: 8px;
+		padding: 0 8px;
+		justify-content: flex-start;
+		border-radius: 7px;
+		border: 1px solid var(--ts-bd);
+		background: var(--ts-bg);
+		color: var(--ts-tx3);
+		font-family: var(--sl-font);
+		font-size: 0.813rem; /* 13px */
+		font-weight: 430;
+	}
+	.ts-sb-search :global(button[data-open-modal]:hover) {
+		color: var(--ts-tx);
+		background: var(--ts-hover);
+	}
+	.ts-sb-search :global(button[data-open-modal] svg) {
+		width: 14px;
+		height: 14px;
+		flex: none;
+	}
+	/* The ⌘K hint sits at the far end. Starlight hides it under its own md
+	   breakpoint; the sidebar is a fixed width on desktop, so it always fits. */
+	.ts-sb-search :global(button[data-open-modal] > kbd) {
+		margin-inline-start: auto;
+		gap: 2px;
+	}
+	.ts-sb-search :global(button[data-open-modal] kbd) {
+		background: transparent;
+		color: var(--ts-tx3);
+		font-family: var(--sl-font);
+		font-size: 0.688rem; /* 11px */
+	}
+
+	/* ---- nav: the only scrolling region ---- */
+	.ts-sb-nav {
+		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
+		padding: 10px 12px 24px 16px;
+	}
+
+	/* ---- API version selector (API reference nav only) ----
+	   Two segments in one control: v1 is what these 50 pages document, v2 is
+	   flagged as coming. Deliberately not links -- there is nothing to switch to
+	   yet, and a control that navigates nowhere is worse than a plain label. */
+	.ts-api-version {
+		padding: 4px 0 18px;
+	}
+	.ts-api-version-label {
+		font-size: 0.688rem; /* 11px, matches the nav's section headings */
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--ts-tx3);
+		margin: 0 0 8px;
+		padding-inline: 8px;
+	}
+	.ts-api-version-tabs {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 4px;
+		padding: 4px;
+		border: 1px solid var(--ts-bd);
+		border-radius: 8px;
+		background: var(--ts-panel);
+	}
+	.ts-api-version-tab {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		padding: 6px 4px;
+		border-radius: 6px;
+		font-size: 0.75rem; /* 12px */
+		font-weight: 500;
+		color: var(--ts-tx3);
+		white-space: nowrap;
+	}
+	.ts-api-version-tab--active {
+		background: var(--ts-bg);
+		border: 1px solid var(--ts-bd);
+		color: var(--ts-tx);
+		font-weight: 600;
+	}
+	.ts-api-version-chip {
+		font-size: 0.625rem; /* 10px */
+		font-weight: 600;
+		line-height: 1.4;
+		padding: 1px 5px;
+		border-radius: 4px;
+		background: var(--ts-ac-soft);
+		color: var(--ts-ac);
+	}
+	.ts-api-version-chip--soon {
+		background: var(--ts-hover);
+		color: var(--ts-tx3);
+	}
+
+	/* On mobile the sidebar is the expanded menu overlay; its own head would
+	   duplicate the top bar, so it is dropped there. */
+	@media (max-width: 50rem) {
+		.ts-sb-head {
+			display: none;
+		}
+	}
+</style>

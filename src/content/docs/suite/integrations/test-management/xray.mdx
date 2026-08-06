@@ -1,0 +1,28 @@
+---
+title: Xray
+description: Link Xray tests, test sets, and test plans to their Testsigma counterparts on top of your Jira connection.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Xray
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Xray integration links test artifacts across the two systems. An Xray test maps to a Testsigma test case, a test set to a suite, a test plan to a test plan. It rides on a working Jira connection.
+
+<Prerequisites>
+
+- A working [Jira integration](/suite/integrations/bug-reporting/jira/).
+- Xray's **Client ID** and **Client Secret**, from Xray's global API key settings, plus the Jira **Account URL**.
+
+</Prerequisites>
+
+## Connect
+
+Go to **Settings → Integrations**, enable the **Xray** toggle, enter the **Jira Account URL**, **Client Id**, and **Client Secret**, and click **Save & Enable**. Tick **Add Attachments to Test** to ship logs, screenshots, and videos with each execution.
+
+## Link artifacts
+
+The Xray ID is the tail of its Jira URL — `PT-10` from `.../browse/PT-10`. Enter it on the matching Testsigma artifact: the test case details page for a test, the suite for a test set, the plan for a test plan.

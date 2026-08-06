@@ -1,0 +1,48 @@
+---
+title: qTest
+description: Link qTest test cases to Testsigma test cases and export run results into qTest releases and cycles.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: qTest
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+qTest integration maps manual qTest test cases onto Testsigma automation. Linked cases report their run results back into qTest releases and cycles. The export itself runs through a Post Plan Hook attached to the test plan.
+
+<Prerequisites>
+
+- The **Host URL** and a **Bearer Token** from qTest's **Download qTest Resources** page — copy the token without the `Bearer` prefix.
+- A qTest project with test runs and test cases already set up.
+
+</Prerequisites>
+
+## Connect
+
+Go to **Settings → Integrations**, enable the **qTest** toggle, enter the **Host URL** and **Bearer Token**, and click **Save & Enable**.
+
+## Link test cases
+
+For each pair: copy the test case **ID** in qTest. Open the Testsigma test case and select **Manage Test Case** from the **Utility Panel**. Pick the **qTest Project**, enter the ID, and click the link icon.
+
+In qTest itself, activate **Automation Integration** and map the automation statuses — PASSED→Passed, FAILED→Failed, INCOMPLETE→Incomplete, BLOCKED→Blocked.
+
+## Export results with the Post Plan Hook
+
+<Steps>
+
+1. **Assemble the plan** — Put the linked test cases in a suite, and the suite in a test plan.
+
+2. **Attach the hook** — In **Test Plan Settings**, select **qTest Addon** under **Post Plan Hook**.
+
+3. **Fill the hook fields** — `API_KEY` is a Testsigma API key. `PROJECT_ID` sits after `/p/` in the project URL; `RELEASE_ID` and `CYCLE_ID` sit after `id=` in theirs. `OVERRIDE_ON_RERUN` set `true` pushes rerun results into the original cycle; `false` creates a `Rerun #n` cycle. `TEMPLATE_URL` is optional, for customised JUnit output, and must be publicly reachable.
+
+4. **Run** — **Run Now** on the plan. When it completes, **qTest Result Link** in the top-right corner opens the qTest run.
+
+</Steps>
+
+<Aside type="note">
+Leave `RELEASE_ID` and `CYCLE_ID` empty and Testsigma generates them in qTest at execution time.
+</Aside>

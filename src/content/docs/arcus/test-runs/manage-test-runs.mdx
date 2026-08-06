@@ -1,0 +1,71 @@
+---
+title: Manage test runs
+description: Edit, clone, close, and delete test runs, and share progress with external stakeholders through a public link.
+pageType: task
+verified: 2026-07
+covers:
+  - Edit a test run
+  - Clone a test run
+  - Close a test run
+  - Delete a test run
+  - Share a test run publicly
+sidebar:
+  order: 20
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+Everything after a run is created happens from its meatballs menu in **Test Runs**: editing details, cloning for reuse, closing to lock it, deleting, and sharing a read-only public link.
+
+## Edit a test run
+
+<Steps>
+
+1. **Open the editor** — Click the run's meatballs menu (···), or the pencil icon on the **Test Run Details** page.
+
+2. **Change it** — Modify the **Title**, **Description**, or **Test Run Properties**. Bulk-select cases to change **Assignees** and **Status**.
+
+3. **Update the selection** — For filter-based runs, click **Update Test Cases** and adjust the filters to re-select dynamically.
+
+</Steps>
+
+## Clone a test run
+
+<Steps>
+
+1. **Clone** — Pick **Clone Run** from the run's kebab menu. The copy lands in **Active Runs**, ready to edit.
+
+</Steps>
+
+## Close a test run
+
+<Steps>
+
+1. **Close** — Pick **Close Run** from the kebab menu. The run moves to **Closed Runs** and locks against changes.
+
+</Steps>
+
+<Aside type="note">Closed runs can still be cloned.</Aside>
+
+## Delete a test run
+
+<Steps>
+
+1. **Delete** — Pick **Delete** from the kebab menu, then confirm in the **Delete Run?** dialog.
+
+</Steps>
+
+## Share a test run publicly
+
+<Steps>
+
+1. **Open sharing** — Open the run and click **Share** in the top-right corner.
+
+2. **Enable the link** — Turn on **Anyone with the link can view**, click **Copy**, and share it.
+
+</Steps>
+
+<Aside type="note">
+  The link is read-only. Viewers can filter to specific test cases but change
+  nothing.
+</Aside>

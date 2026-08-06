@@ -1,0 +1,84 @@
+---
+title: Desktop test data profiles
+description: Create a profile in the Feature and Scenario tree, add parameters and data sets, and mark rows expected to fail.
+pageType: task
+verified: 2026-07
+covers:
+  - Create a test data profile
+  - Add parameters and data sets
+  - Mark a data set expected to fail
+  - Handle sensitive values
+  - Import a profile from a file
+sidebar:
+  label: Test Data Profiles
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+A test data profile holds the input values a Desktop (Beta) test case reads at run time. One profile can carry thousands of credential sets, and a linked test case runs once per set. Profiles live in the same **Feature → Scenario** tree as your test cases.
+
+<Prerequisites>
+
+- You have a project, and permission to manage test data.
+- The **Feature** and **Scenario** you want to file the profile under exist.
+
+</Prerequisites>
+
+## Create a test data profile
+
+Go to **Test Data → Test Data Profiles**. Two routes create one.
+
+<Steps>
+
+1. **From the folder tree** — Expand a **Feature**, hover the **Scenario**, and click the **+** icon that appears. An **Untitled** profile opens, already attached to that scenario.
+
+2. **Or from the + menu** — Click **+** at the top of the left panel and select **New Test Data Profile**. In the **Select Location** dialog, pick the **Feature** and the **Scenario**, then click **Confirm**. **Target Scenario** at the bottom confirms the choice.
+
+3. **Name it** — In the **Test Data Profile Info** panel on the right, enter a **Name**.
+
+</Steps>
+
+<Aside type="tip">
+The folder-tree route cannot misfile the profile, because the scenario is chosen before the profile exists. The **+** menu asks for the location afterwards.
+</Aside>
+
+## Add parameters and data sets
+
+The grid is parameters across and data sets down. A parameter is a column your steps name. A data set is one row, and one run of the test case.
+
+<Steps>
+
+1. **Add a parameter** — Click **+** at the top of the data grid to add a column.
+
+2. **Add a data set** — Click **+** at the bottom to add a row.
+
+3. **Fill it in** — Enter values in the cells.
+
+</Steps>
+
+A new profile starts with three named columns and four empty rows. A small profile needs no structural work.
+
+<Aside type="note">
+Steps name a parameter directly, as `@Email` for a column called `Email`. Renaming that column breaks the steps rather than following the rename.
+</Aside>
+
+## Mark a data set expected to fail
+
+The **ETF** column stands for Expected to Fail. Turn the toggle on for a row and a failure on that data set is the correct outcome rather than a regression.
+
+That keeps negative cases beside positive ones. An invalid password row is meant to fail, and ETF stops it skewing your pass rate.
+
+## Handle sensitive values
+
+A parameter can be marked sensitive. Its values render as dots and the column header carries a lock icon. Passwords and tokens belong there.
+
+## Import a profile from a file
+
+Building thousands of rows manually is not the intent. Import a profile from a spreadsheet instead. You can also export one, edit it, and bring it back. The icons sit at the top right.
+
+## Related
+
+- [Desktop test data types](/suite/windows-beta/test-data/test-data-types/) — the `@` parameter type that reads a profile
+- [Desktop data generators](/suite/windows-beta/test-data/data-generators/) — values generated at run time instead
+- [Author tests](/suite/windows-beta/tests/author-tests/) — linking a profile to a test case

@@ -1,0 +1,65 @@
+---
+title: iOS settings
+description: Create the provisioning profile that lets Testsigma sign and run your app on local iOS devices, and build a WDA when needed.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: iOS Settings
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+iOS testing on your own devices needs Apple's chain of trust: a certificate signing request, a development certificate, and a provisioning profile covering your devices. Suite generates the CSR and holds the resulting profile.
+
+<Prerequisites>
+
+- A valid Apple Developer account.
+- [Testsigma Agent](/suite/installation/testsigma-agent/) installed; on Windows, iTunes from Apple's own installer (not the Microsoft Store build), with the **Apple Mobile Device Service** running.
+
+</Prerequisites>
+
+## Create the provisioning profile
+
+<Steps>
+
+1. **Generate the CSR** — Under **Settings → iOS Settings → Provisional Profile**, click **+ Create new profile**. Name it, click **Generate Request**, then **Download Request**.
+
+2. **Mint the certificate** — In the Apple Developer portal, go to **Certificates, Identifiers & Profiles**. Create a certificate of type **iOS App Development**, upload the CSR, and download the result.
+
+3. **Upload it** — Back in Testsigma, click **Upload Signed file** under **Upload Certificate**.
+
+4. **Register the profile** — In the Apple portal, create a **Provisioning Profile**. Set the type to **iOS App Development**, then pick the App ID. Select the devices it covers, name it, generate, and download.
+
+5. **Finish** — In Testsigma, upload it via **Upload Certificate** next to **Provisioning Profile** and click **Create**.
+
+</Steps>
+
+The profile's details page lets you download the CSR and certificates, check validity, and delete the profile.
+
+## Build a WDA file
+
+WebDriverAgent bridges the automation and the iOS app. Build a custom one on a Mac with Xcode and its command-line tools. Clone WDA from Appium's GitHub and open the Xcode project. Add your Apple account under **Signing & Capabilities**, then build:
+
+```bash
+xcodebuild build-for-testing -project WebDriverAgent.xcodeproj \
+  -scheme WebDriverAgentRunner -destination 'id=<DEVICE_UDID>'
+```
+
+## FAQs
+
+**"Invalid certificate uploaded."**
+
+The certificate is corrupt or was not generated from the CSR that Testsigma produced for this profile.
+
+**"Certificate uploaded is not included in this provisioning profile."**
+
+The profile was built against a different certificate. Recreate it selecting the certificate you uploaded to Testsigma.
+
+**"Upload is not resigned."**
+
+Re-signing is still running. The Provisioning Profile Details dialog tracks it — the upload becomes selectable in a few minutes.
+
+**"Device initializing."**
+
+The agent is still setting the device up. The **Devices** tab on the agent's page shows any setup errors.

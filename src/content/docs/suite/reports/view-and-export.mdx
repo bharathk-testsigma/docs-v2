@@ -1,0 +1,85 @@
+---
+title: View and export reports
+description: Read the built-in dashboard, then export a run result as PDF, Excel, or JUnit XML for people outside Suite.
+pageType: task
+verified: 2026-07
+covers:
+  - The built-in dashboard
+  - Export a run result
+  - Brand the exports
+sidebar:
+  order: 10
+  label: View & Export
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Suite reports in two places. The dashboard summarises the current project as soon as you sign in. A finished run exports as a file, for people who do not use Suite at all. This page covers both, and where each one stops.
+
+<Prerequisites>
+
+- At least one [test plan](/suite/web/test-plans/) has run, so a result exists.
+- Export is a Testsigma Enterprise feature. Contact support or use **Instant Chat** to have it enabled.
+
+</Prerequisites>
+
+## The built-in dashboard
+
+The dashboard is the control panel for the selected project. The **Project Switcher** at the top left selects it, and switches application and version too.
+
+| Section | What it shows |
+| --- | --- |
+| Test Case Overview | Total test cases, with Passed, Failed, and Not Executed counts |
+| Latest Runs | Recent executions for the project, filterable by Today, This week, This month, and This quarter |
+| Test Case Execution Trend | A chart of execution over the last 30 days, with its own filters |
+| Review Management | Cases and elements **Submitted for review**, with reviewer and submission date, and those **Assigned for your review** |
+| Test Case Status | A donut of Draft, Inreview, Ready, Obsolete, and Rework |
+| Test Case Type | A donut of Unit Test, Integration, Functional, Non Functional, and User Experience |
+| Test Case Priority | A donut of Critical, Major, Medium, and Minor |
+
+The left navigation is persistent across every page. It carries Dashboard, Atto's Home, Create Tests, Test Data, Test Suites, Test Plans, Run Results, Settings, and Save Points.
+
+Its bottom corner holds **Add Widget**, the Atto's Home shortcut, and the Command Center. Usage details, help, what's new, and your profile sit there too, with your name and role beneath.
+
+<Aside type="note">
+This is the **Legacy** dashboard. **Advanced** switches to dashboards you build from a widget library — see [Custom dashboards](/suite/reports/custom-dashboards/).
+</Aside>
+
+## Export a run result
+
+<Steps>
+
+1. **Open the result** — Go to **Run Results**, then open the run you want.
+
+2. **Open the menu** — Click the **Export** icon, beside **Rerun**.
+
+3. **Pick a format** — Select **PDF**, **MS Excel Sheet**, or **JUnit Report**.
+
+4. **Choose screenshots** — For PDF, the **Export PDF** dialog asks which to include. Click **Export**.
+
+</Steps>
+
+The three formats behave differently once you choose.
+
+| Format | File | How it arrives |
+| --- | --- | --- |
+| PDF | `<Test Plan Name with build run YYYYMMDD>.pdf` | Generated, then downloaded. An email confirms completion |
+| MS Excel Sheet | `<Test Plan Name>.xlsx` | A download link is emailed to your account address |
+| JUnit Report | `.xml` | Downloaded immediately, with no dialog |
+
+The PDF dialog offers three screenshot options. **Failed Step Screenshots** is the recommended one. The others are **All Screenshots** and **No Screenshots**.
+
+<Aside type="tip">
+Export screenshots at a lower resolution when you can. Nothing else in the dialog affects preparation and delivery time as much.
+</Aside>
+
+Reruns are included. If you rerun cases from a result, the rerun outcome is consolidated into the export rather than kept separate.
+
+## Brand the exports
+
+Exported reports can carry your company logo and copyright line. [Add company branding to reports](/suite/settings/report-settings/) covers the setup and the per-format previews.
+
+## Where these stop
+
+The in-app export gives you three fixed formats. Three other outputs need the command-line generator instead: an interactive Allure report, XML built to your own template, or a PDF laid out from your own HTML. [Generate reports](/suite/reports/generate-reports/) covers all three.

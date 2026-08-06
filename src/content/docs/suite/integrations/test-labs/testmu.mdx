@@ -1,0 +1,39 @@
+---
+title: TestMU
+description: Run Testsigma tests on TestMU cloud devices by connecting your existing TestMU account.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: TestMU
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+TestMU integration runs your Testsigma tests on TestMU's cloud devices. Web, mobile web, and mobile tests all qualify. Author in Testsigma as usual, then pick TestMU as the test lab at run time.
+
+<Prerequisites>
+
+- You have the **username** and **API key** from your TestMU dashboard.
+
+</Prerequisites>
+
+## Connect
+
+<Steps>
+
+1. **Open integrations** — Go to **Settings → Integrations**, open the **Test Lab** tab, and enable the **TestMU** toggle.
+
+2. **Enter the details** — Username and API key, with the key confirmed.
+
+3. **Save** — Click **Save & Enable**.
+
+</Steps>
+
+## Use it in a run
+
+On any ad-hoc run or test plan machine profile, select **TestMU** as the **Test Lab** instead of Testsigma Lab. **Manage** on the integration widget updates the credentials or removes the lab later.
+
+<Aside type="note">
+TestMU keeps granular results on its own platform. The run starts there as soon as Testsigma triggers it — open TestMU's Automation dashboard for step-level detail.
+</Aside>

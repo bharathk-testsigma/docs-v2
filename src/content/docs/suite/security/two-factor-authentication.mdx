@@ -1,0 +1,37 @@
+---
+title: Two-factor authentication
+description: Require an authenticator app code on top of the password, per user, from the profile settings.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Two-Factor Authentication
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Two-factor authentication adds an authenticator-app code to every sign-in. Each user enables it for their own account from the profile menu. The same menu carries the rest of the user settings. It also holds profile details and password changes.
+
+<Prerequisites>
+
+- An authenticator app is installed.
+
+</Prerequisites>
+
+## Enable 2FA
+
+<Steps>
+
+1. **Open the setting** — Click the **User Profile** menu in the bottom-left corner. Select **2FA** under **User Settings**.
+
+2. **Confirm yourself** — Turn on the **Two-Factor Authentication** toggle. Enter your password in the **Confirm Your Password** dialog.
+
+3. **Pair the app** — In **Set Up Authenticator App**, scan the QR code. Enter the setup key instead if you cannot scan, then click **Continue**.
+
+4. **Verify** — Enter the 6-digit code from the app and click **Continue**.
+
+</Steps>
+
+## The rest of the user settings
+
+The same **User Settings** menu holds **Profile** and **Change Password**. **Profile** takes first and last name, saved with **Update**. **Change Password** takes the current password and the new one twice.

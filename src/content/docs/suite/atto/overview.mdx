@@ -1,0 +1,51 @@
+---
+title: Atto
+description: The AI layer across Testsigma that generates test cases, verifies them on your live application, repairs them, and explains failures.
+pageType: concept
+verified: 2026-07
+sidebar:
+  order: 0
+  label: Overview
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Atto is the AI layer across Testsigma. It generates test cases from sources you already have, then drives your live application to verify them. It also repairs tests when your application changes, and explains failures after a run.
+
+## Where Atto appears
+
+Atto belongs to neither Suite nor Arcus alone, and the same agents work in both. You also do not open it as a separate tool. It surfaces at four points, each doing a different job.
+
+| Where | What it does there |
+| --- | --- |
+| **Atto's Home** | The generation workspace. You attach sources, prompt Atto, and review what it produces |
+| The recorder | Copilot suggests steps for the screen in front of you while you record |
+| The test case editor | Copilot executes steps, pauses at debug points, and records new ones live |
+| **Run Results** | The Analyzer explains a failed step, and the Bug Reporter files it |
+
+## Sources Atto reads
+
+Generation starts from context rather than from a blank prompt. Atto reads any combination of these:
+
+- **Requirements and tickets** — Jira, Confluence, Azure DevOps, XRay, and qTest.
+- **Designs** — Figma files.
+- **Files** — JPEG, PNG, GIF, PDF, DOCX, XLSX, and MD, up to five at a time.
+- **Recordings** — up to ten video recordings, or a live recorder session.
+- **API specifications** — OpenAPI and Swagger.
+- **Plain language** — a prompt describing the flow you want covered.
+
+Turn on **Read existing test case library** and Atto updates test cases you already have instead of generating fresh ones. Generated cases land in the **AI Generated Feature** folder with the status **Draft**, so nothing enters your suite unreviewed.
+
+## The agents
+
+Atto is a set of agents, each owning one job in the lifecycle. Five are available and two are marked **Coming Soon**. See [AI agents](/suite/atto/ai-agents/) for what each one does and where it runs.
+
+## What Atto does not do
+
+Atto does not run without being enabled. Generative AI features sit behind an administrator preference, and individual capabilities can be turned off independently under it.
+
+Atto also does not accept your test case as final. Everything it generates arrives as **Pending**, and you accept or reject it. A generated case that nobody reviews stays out of the library.
+
+<Aside type="note">
+By default, AI requests run against Testsigma's model providers. To route them through a model you control instead, see [BYOK](/suite/atto/byok/).
+</Aside>

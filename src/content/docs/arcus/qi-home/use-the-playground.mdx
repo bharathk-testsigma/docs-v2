@@ -1,0 +1,68 @@
+---
+title: Use the Playground
+description: Add missed context, describe flows QI Home should cover, and trigger another round of generation for a session.
+pageType: task
+verified: 2026-07
+covers:
+  - Open the Playground
+  - Add more context
+  - Generate more test cases
+  - Review test cases from the Playground
+sidebar:
+  order: 20
+---
+
+import { Steps } from "@astrojs/starlight/components";
+
+The Playground is the workspace where you work with QI Home after the initial generation. Use it to add context you missed or describe flows to cover. It also fills empty scenario outlines and triggers another round of generation.
+
+## Before you begin
+
+- You have at least one sprint or Ad-Hoc session with generated test cases.
+
+## Open the Playground
+
+<Steps>
+
+1. **Go to QI Home** — Select a sprint or Ad-Hoc session from the sidebar.
+
+2. **Open it** — Click **Open Playground** in the top right of the session detail view.
+
+</Steps>
+
+The Playground opens. The left panel shows the generation log from the most recent run. The right panel shows the session's test cases, filterable by status.
+
+{/* SCREENSHOT NEEDED: the Playground with the generation log on the left and the test case list with status filter tabs on the right */}
+
+## Add more context
+
+<Steps>
+
+1. **Pick a source** — In the **Add Context** bar under the prompt input, click **Jira**, **Azure DevOps**, **Linear**, **ClickUp**, **Confluence**, or **+** for **Figma**, **Files**, and **Video**.
+
+2. **Attach it** — Select the items and click **Save**.
+
+</Steps>
+
+Each source type has its own rules — see [Attach context sources](/arcus/qi-home/generate/ad-hoc/).
+
+## Generate more test cases
+
+<Steps>
+
+1. **Describe the flow** — In the prompt input, describe the feature or flow QI Home should cover.
+
+2. **Generate** — Click **Generate with AI**. QI Home adds the new test cases to the current session.
+
+</Steps>
+
+## Review test cases from the Playground
+
+The right panel lists every test case in the session. The filter tabs split them by status:
+
+- **All Test Cases** — every generated test case
+- **Pending** — not yet reviewed
+- **Accepted** — saved to your library
+- **Rejected** — dismissed
+
+Select test cases and accept or reject them directly here. The full workflow, including saving to your library, is on [Review and accept test cases](/arcus/qi-home/generate/review-and-accept/).

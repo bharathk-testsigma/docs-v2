@@ -1,0 +1,63 @@
+---
+title: Create and link data sets
+description: Store reusable test data as named sets of rows, link them to test cases, and combine sets for broader coverage.
+pageType: task
+verified: 2026-07
+covers:
+  - Create a data set
+  - Create a data set from a test case
+  - Add a data set to a test case
+  - Combine multiple data sets
+sidebar:
+  order: 10
+  label: Data Sets
+---
+
+import { Steps } from "@astrojs/starlight/components";
+
+A data set stores reusable input values as named columns and rows. Link one to a test case and the case runs against every selected row. The same steps yield broader coverage, with less manual entry and fewer errors.
+
+## Create a data set
+
+<Steps>
+
+1. **Start one** — Go to **Data Sets** and click **Create**. Name it and click **Create Dataset**.
+
+2. **Fill the grid** — Name the variables in the column headers and enter their values. **Add Column** and **Add Row** extend the grid.
+
+</Steps>
+
+## Create a data set from a test case
+
+<Steps>
+
+1. **Start from the case** — On the **Test Case details** page, click **Create Dataset** in the **Dataset** section.
+
+2. **Fill and link** — Name it, add variables and values, then click **Link Dataset**.
+
+</Steps>
+
+## Add a data set to a test case
+
+<Steps>
+
+1. **Open the dialog** — On the **Test Case details** page, click **Add Data Set** in the **Data Set** section.
+
+2. **Pick the rows** — Select a data set and click **Next**. Choose the rows and click **Add Data Set**.
+
+</Steps>
+
+## Combine multiple data sets
+
+Repeat the add flow to link more sets to the same case. Arcus generates one scenario per row combination — the Cartesian product across sets.
+
+For example, a two-row set of users and a three-row set of plans produce six scenarios:
+
+| Name  | Country | Plan       | Price  |
+| ----- | ------- | ---------- | ------ |
+| Alice | India   | Pro        | 10 USD |
+| Alice | India   | Free       | 0 INR  |
+| Alice | India   | Enterprise | 50 JPY |
+| Bob   | Japan   | Pro        | 10 USD |
+| Bob   | Japan   | Free       | 0 INR  |
+| Bob   | Japan   | Enterprise | 50 JPY |

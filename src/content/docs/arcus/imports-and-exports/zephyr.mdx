@@ -1,0 +1,41 @@
+---
+title: Import test cases from Zephyr
+description: Export test cases from Zephyr as a spreadsheet, convert to CSV, and import them into your Arcus project.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 10
+  label: Zephyr
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+Moving from Zephyr takes two steps: export the cases from Zephyr, then run them through the Arcus CSV importer. Only test cases created with Zephyr's Plain Text template can be imported.
+
+## Before you begin
+
+- Your Zephyr test cases are exported and converted to **.csv** — Zephyr exports **.xlsx**, which needs converting first.
+
+## Export test cases from Zephyr
+
+<Steps>
+
+1. **Find the cases** — On the Jira dashboard, go to **Projects**, click the **Zephyr** tab, and select the folder to export.
+
+2. **Export** — Select the test cases, click **More**, and select **Export to Excel**. The file downloads as **.xlsx**.
+
+3. **Convert** — Save the file as **.csv**.
+
+</Steps>
+
+## Import into Arcus
+
+<Steps>
+
+1. **Open the importer** — On the **Dashboard**, click **Import Cases**. Or go to **Test Cases** and click **Import**.
+
+2. **Upload** — Click **Import via CSV**, then **Upload File**, and select the file.
+
+</Steps>
+
+The mapping and results steps are the same as any CSV import — follow [Import test cases from a CSV file](/arcus/imports-and-exports/csv-file/) to map the columns and review the log.

@@ -1,0 +1,67 @@
+---
+title: Terminology
+description: Every object, mode, and metric name you meet in Arcus, defined once, with a link to fuller coverage.
+pageType: reference
+verified: 2026-07
+sidebar:
+  order: 40
+---
+
+Arcus names a lot of things, and several names sit close together. Every term below gets one sentence and, where it exists, a link to the page that covers it. Look here first when a label does not match what you expected.
+
+## Test objects
+
+The objects you create and organize. Each is a thing you make, so it is lowercase in prose.
+
+| Term       | Definition                                                                                     |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| project    | The top of the hierarchy; holds every asset for one application                                |
+| test case  | The steps, preconditions, and expected results for one scenario                                |
+| step group | A reusable sequence of steps shared across [test cases](/arcus/test-cases/manage-test-cases/)  |
+| data set   | Input values a test case reads, for data-driven testing                                        |
+| test run   | A selection of test cases executed and recorded as one cycle                                   |
+| test plan  | A named collection of test runs tracked toward a milestone                                     |
+| folder     | A node in the test case tree, used to [organize cases](/arcus/test-cases/organize-test-cases/) |
+| version    | A saved revision of a test case                                                                |
+
+## QI Home
+
+The generation workflow has its own vocabulary — see the [QI Home overview](/arcus/qi-home/overview/).
+
+| Term             | Definition                                                                |
+| ---------------- | ------------------------------------------------------------------------- |
+| QI Home          | Generates test cases, tracks coverage, and automates execution            |
+| Ad-Hoc session   | A generation session whose context you attach manually                    |
+| Sprints mode     | Generation triggered automatically when a sprint starts                   |
+| Playground       | The workspace for adding context and re-generating within a session       |
+| context source   | An input QI Home reads: stories, documents, designs, files, or recordings    |
+| scenario         | A feature-level grouping of generated test cases                          |
+| scenario outline | A stub QI Home created for coverage it has not filled yet                    |
+| gap              | A generated test case still pending review                                |
+| coverage         | Accepted ÷ (accepted + pending) × 100, per module and per session         |
+| Unmapped Context | The view where pull requests and CLI context wait to be mapped            |
+
+The five [QI metrics](/arcus/qi-home/qi-metrics/) — Coverage, Pass Rate, Confidence, Release Readiness, and Release Gate — each have their own definition on the metrics page.
+
+## Automation and AI
+
+Three features involve an agent driving a browser, and they are not interchangeable.
+
+| Term                    | Definition                                                                                                                |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Agentic Learning (Beta) | Walks through a manual case on your live app and [generates automated steps](/arcus/qi-home/automation/agentic-learning/) |
+| Copilot                 | [Executes automated steps](/arcus/qi-home/automation/run-with-copilot/) in a live browser with an interactive panel       |
+| Testsigma Lab           | The cloud execution environment                                                                                           |
+| Local Devices           | Execution on your machine or connected devices, via Testsigma Terminal                                                    |
+| Testsigma Terminal      | The desktop app required for local execution                                                                              |
+| Debug Point             | A step you choose where execution pauses automatically                                                                    |
+| Execution Point         | The marker on the step currently running                                                                                  |
+
+## Products
+
+| Term         | Definition                                                                                                          |
+| ------------ | ------------------------------------------------------------------------------------------------------------------- |
+| Testsigma    | The company and the platform as a whole                                                                             |
+| Suite        | The test automation product, at `app.testsigma.com`                                                                 |
+| Arcus        | The test management product — this documentation                                                                    |
+| two-way sync | The [Suite integration](/arcus/integrations/suite/connect-suite/) that links test cases and results across products |

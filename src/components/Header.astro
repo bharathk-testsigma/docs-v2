@@ -1,0 +1,150 @@
+---
+/**
+ * Header override -- the content-column top bar.
+ *
+ * Not a full-width site header: theme.css insets it to start where the sidebar
+ * ends, matching Linear, where the sidebar runs the full viewport height.
+ *
+ * Layout: breadcrumbs (left) · section links (centre-right) · theme + CTA (right).
+ * The section links sit here rather than in the sidebar footer so they stay at
+ * the top of the page, while keeping Linear's single-bar layout -- a separate
+ * full-width strip above this one would stack two bars, which is the thing
+ * Linear's layout avoids.
+ *
+ * The wordmark and search live in Sidebar.astro. Search is deliberately not
+ * repeated here: two Starlight <Search /> instances would register two search
+ * modals on the same page.
+ */
+import ThemeSelect from './ThemeSelect.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import { isApiReferencePath, isArcusPath } from '../starlightRouteData';
+import { withBase } from '../lib/base';
+
+// The REST API reference is its own destination: this tab lights up on
+// /suite/api/*, and the route middleware swaps the left nav to the endpoint
+// groups alone. Shared predicate so the tab and the nav can't disagree.
+// The remaining sections have no pages yet and stay inert placeholders.
+const isApiReference = isApiReferencePath(Astro.url.pathname);
+const onArcus = isArcusPath(Astro.url.pathname);
+const isChangelog = Astro.url.pathname.includes('/changelog');
+
+// Both destinations are product-scoped: on an Arcus page these must stay inside
+// Arcus, or "Documentation" would silently switch the reader to Suite -- the one
+// thing the product switcher is supposed to be in charge of.
+const sections = [
+	{
+		label: 'Documentation',
+		href: withBase(
+			onArcus ? '/arcus/get-started/what-is-arcus/' : '/suite/get-started/introduction/'
+		),
+		current: !isApiReference && !isChangelog,
+	},
+	{
+		label: 'API reference',
+		href: withBase(onArcus ? '/arcus/api-reference/overview/' : '/suite/api/overview/'),
+		current: isApiReference,
+	},
+	// No 'Arcus' tab: switching product is the sidebar head's job now
+	// (ProductSwitcher.astro). Two entry points for the same destination would
+	// drift, and this one was a dead `href: '#'`.
+	{
+		label: 'Changelog',
+		href: withBase(onArcus ? '/arcus/changelog/' : '/suite/changelog/'),
+		current: isChangelog,
+	},
+];
+---
+
+<div class="ts-topbar">
+	<Breadcrumbs />
+
+	<div class="ts-topbar-right">
+		<nav class="ts-sections" aria-label="Sections">
+			{
+				sections.map((s) => (
+					<a href={s.href} class:list={['ts-section-link', { current: s.current }]}>
+						{s.label}
+					</a>
+				))
+			}
+		</nav>
+
+		<div class="ts-topbar-actions">
+			<ThemeSelect />
+			<a href="https://testsigma.com/request-demo" class="ts-topbar-cta">Book a demo</a>
+		</div>
+	</div>
+</div>
+
+
+<style>
+	.ts-topbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		height: 100%;
+		min-width: 0;
+	}
+
+	.ts-topbar-right {
+		display: flex;
+		align-items: center;
+		gap: 1.375rem;
+		flex: none;
+	}
+
+	.ts-sections {
+		display: flex;
+		align-items: center;
+		gap: 1.375rem;
+	}
+	.ts-section-link {
+		font-size: 13px;
+		font-weight: 450;
+		color: var(--ts-tx2);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+	.ts-section-link:hover {
+		color: var(--ts-tx);
+	}
+	.ts-section-link.current {
+		color: var(--ts-tx);
+		font-weight: 500;
+	}
+
+	.ts-topbar-actions {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	/* Solid pill, per the reference -- fully rounded and heavier than the
+	   surrounding controls, so it reads as the single primary action. */
+	.ts-topbar-cta {
+		height: 32px;
+		display: inline-flex;
+		align-items: center;
+		padding: 0 16px;
+		border-radius: 999px;
+		/* Brand teal gradient, same stops as the mark (testsigma-mark.svg). */
+		background: linear-gradient(135deg, #02b6b6, #0ac0a1);
+		color: #fff;
+		font-size: 12.5px;
+		font-weight: 600;
+		text-decoration: none;
+		white-space: nowrap;
+	}
+	.ts-topbar-cta:hover {
+		opacity: 0.88;
+	}
+
+	/* The full item set does not fit a narrow bar: drop the section nav,
+	   leaving breadcrumbs + theme + CTA. */
+	@media (max-width: 68rem) {
+		.ts-sections {
+			display: none;
+		}
+	}
+</style>

@@ -1,0 +1,69 @@
+---
+title: Sync test plans and runs
+description: Link test plans across Arcus and Suite, trigger execution from Arcus, and read machine-level results where you plan.
+pageType: task
+verified: 2026-07
+covers:
+  - Link from Arcus
+  - Link from Suite
+  - Execute a linked plan
+  - View automated reports
+sidebar:
+  order: 30
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+Linked test plans let you execute in Suite without leaving Arcus. A trigger from Arcus runs the Suite plan. Each machine's execution comes back as its own test run. Logs, screenshots, and result links ride along.
+
+## Before you begin
+
+- The [Suite integration](/arcus/integrations/suite/connect-suite/) is enabled, and test plans exist on both sides.
+
+## Link from Arcus
+
+<Steps>
+
+1. **Open the plan** — Open the plan in **Test Plans**. Click **Link a Test Plan** under **Testsigma Automated Test Plan**.
+
+2. **Pick the Suite plan** — Select the Suite **Project**, **Application**, **Version**, and **Test Plan**, then click **Link**.
+
+</Steps>
+
+On the Suite side, the link shows in the **Test Plan Details** overlay, under **Test Management Tool**.
+
+## Link from Suite
+
+<Steps>
+
+1. **Open the plan** — In Suite's **Test Plans**, open the plan. Click **Test Plan Details** in the utility panel.
+
+2. **Pick the Arcus plan** — Click **+ Link New Plans** and select **Testsigma Test Management**. Pick the project and plan, then click **Link Test Plan**.
+
+</Steps>
+
+In Arcus, the link shows under **Testsigma Automated Test Plan** when editing the plan.
+
+## Execute a linked plan
+
+<Steps>
+
+1. **Trigger it** — On the plan's details page, click the **Play** icon next to the linked plan.
+
+2. **Wait for the runs** — When Suite finishes, Arcus creates one test run per machine. Each holds that machine's executed cases.
+
+</Steps>
+
+<Aside type="note">
+  Every trigger creates a fresh set of runs, one per machine.
+</Aside>
+
+## View automated reports
+
+<Steps>
+
+1. **Open the run** — In **Test Plans**, open the plan and then the test run. The right panel summarizes the execution.
+
+2. **Drill in** — Click a test case to open its overlay, then scroll to **Activity**. The entry links to the Suite results page for the automated execution.
+
+</Steps>

@@ -1,0 +1,60 @@
+---
+title: Set up Azure DevOps
+description: Connect Azure DevOps for defect linking, and install the extension that brings Arcus test management into Boards.
+pageType: task
+verified: 2026-07
+covers:
+  - Connect the integration
+  - Link defects to work items
+  - Install the extension
+sidebar:
+  order: 30
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+The Azure DevOps integration works in two layers. The basic connection links defects in Arcus to work items. The **Test Management by Testsigma** extension goes further: it puts test cases and runs inside Azure DevOps itself.
+
+## Before you begin
+
+- You have an active Azure DevOps account with permission to access projects and create work items.
+
+## Connect the integration
+
+<Steps>
+
+1. **Start the setup** — Go to **Settings → Integrations** and click **Setup Integration** next to **Azure DevOps**.
+
+2. **Authorize** — Complete the OAuth flow. The status shows **Connected** on success.
+
+</Steps>
+
+## Link defects to work items
+
+<Steps>
+
+1. **Open the case** — In **Test Runs**, open a run and click the test case. The **Quick View** overlay opens.
+
+2. **Add the defect** — Click **Add a Defect**. QI Home pre-fills the **Project**, **Work Item Type**, **Title**, and **Description** — edit as needed.
+
+3. **Pick the target** — On the **Link to Existing Work Item** tab, choose the work items. Or select **Create a New Issue** and fill in the work item fields.
+
+4. **Save** — Click **+ Add Defect** (or **Create Work Item** for a new one).
+
+</Steps>
+
+<Aside type="note">One defect can link to multiple existing work items.</Aside>
+
+## Install the extension
+
+The extension extends Azure DevOps with native test management — results on work items, traceability across Boards and Repos.
+
+<Steps>
+
+1. **Install it** — Open the [Azure DevOps Marketplace](https://marketplace.visualstudio.com/items?itemName=testsigma.testsigma-azure-devops) and install **Test Management by Testsigma** in your organization.
+
+2. **Authorize it** — In your Azure DevOps project, go to **Project Settings → Extensions**, click **Testsigma for Azure DevOps**, then **Authorize Azure DevOps Extension**.
+
+3. **Link the project in Arcus** — In **Project Settings**, click **Edit**. Under **Project Management Tool**, click **Link Azure Project**, pick the project, and click **Update Details**.
+
+</Steps>

@@ -1,0 +1,117 @@
+---
+title: Use your own LLM keys (BYOK)
+description: Add your own provider key in Gen AI Keys, then map each AI feature to the key and model it should use.
+pageType: task
+verified: 2026-07
+covers:
+  - Add a key
+  - Map features to models
+  - Supported providers
+  - Provider details
+sidebar:
+  order: 30
+  label: BYOK
+---
+
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+BYOK (Bring Your Own Key) routes Atto's requests through a model you control instead of Testsigma's. You add a provider key, validate it, then map each AI feature to a key and model. Features you leave unmapped keep using Testsigma's providers.
+
+<Prerequisites>
+
+- You have an active account with your chosen provider, and a valid API key.
+- You have the provider details each one needs, listed under [Provider details](#provider-details) below.
+- Generative AI features are enabled for the project.
+
+</Prerequisites>
+
+## Add a key
+
+<Steps>
+
+1. **Open the key list** — Go to **Settings → Gen AI Keys**.
+
+2. **Start a new key** — Click **Create New Key** in the top right corner.
+
+3. **Name it** — In the **Create New Key** overlay, enter a **Key Name** and an optional **Description**.
+
+4. **Choose the provider** — Select an **AI Provider** from the dropdown, then enter the details it asks for.
+
+5. **Validate it** — Click **Validate API Key**. Suite checks the details against the provider before saving anything.
+
+6. **Save it** — Click **Create**. The key appears in the **Keys** section.
+
+</Steps>
+
+{/* SCREENSHOT NEEDED: the Create New Key overlay with an AI Provider selected and its provider-specific detail fields showing */}
+
+<Aside type="note">
+Validation is the step people skip. An unvalidated key saves without error and then fails silently at generation time, which looks like a broken feature rather than a bad key.
+</Aside>
+
+## Map features to models
+
+A saved key does nothing until a feature points at it.
+
+<Steps>
+
+1. **Open the mapping table** — Go to the **Feature Model Configuration** section.
+
+2. **Map each feature** — For every feature you want to move, select a **Key** and a **Model** from the dropdowns.
+
+</Steps>
+
+Mapped features use your model from that point on. Mappable features include Copilot in the web and mobile recorders, test data generation, API testing, Auto Heal, visual analysis, and AI in add-ons.
+
+## Supported providers
+
+Four providers are supported.
+
+| Provider | What you need |
+| --- | --- |
+| OpenAI | An API key |
+| Azure OpenAI | A resource name, deployment name, foundation model, API version, and key |
+| Gemini AI | An API key {/* UNVERIFIED: the exact provider detail fields Gemini AI asks for */} |
+| Vertex AI | An API key {/* UNVERIFIED: the exact provider detail fields Vertex AI asks for */} |
+
+## Provider details
+
+<Tabs syncKey="llm">
+<TabItem label="OpenAI">
+
+<Steps>
+
+1. **Open the key page** — Go to the OpenAI platform and open **API Keys**.
+
+2. **Create a key** — Click **Create New Secret Key** in the top right corner.
+
+3. **Name it** — Enter a **Name**, select a **Project**, then click **Create Secret Key**.
+
+4. **Copy it** — In the **Save Your Key** dialog, click **Copy**. OpenAI shows the key once.
+
+</Steps>
+
+</TabItem>
+<TabItem label="Azure OpenAI">
+
+<Steps>
+
+1. **Request access** — Request access to Azure OpenAI for your subscription.
+
+2. **Create a resource** — Create a resource in the Azure portal. Its name is your **Azure Resource Name**.
+
+3. **Deploy a model** — Deploy a model in Azure OpenAI Studio. The deployment name is your **Deployment Name**.
+
+4. **Note the foundation model** — Select your **Foundation Model** from the dropdown.
+
+5. **Read the version and key** — Open any playground, such as **Chat**, and click **View Code**. It shows the **API Version** and **Key**.
+
+</Steps>
+
+</TabItem>
+</Tabs>
+
+<Aside type="note">
+Azure needs five values to Testsigma's one field set, which is why its detail form is longer than the others. Collect all five before you open the overlay.
+</Aside>

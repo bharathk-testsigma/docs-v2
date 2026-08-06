@@ -1,0 +1,33 @@
+---
+title: Google SSO
+description: Let the whole team sign in to Testsigma with Google instead of passwords, enabled with one toggle.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: Google SSO
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Google single sign-on replaces passwords with your Google Workspace identity. One admin toggle enables it for the account. From the next sign-in, everyone on the team can log in with Google.
+
+<Prerequisites>
+
+- You are logged in to Google Workspace — the toggle stays disabled otherwise.
+
+</Prerequisites>
+
+## Enable it
+
+<Steps>
+
+1. **Open security settings** — From your profile, click **Switch Account**, then **Settings** under **Others**, then **Security (SSO)** under **Organization Settings**.
+
+2. **Toggle Google** — Enable the **Google** widget.
+
+</Steps>
+
+<Aside type="note">
+Only one SSO can be active per account. Enabling SAML (Okta, Azure) later means turning Google off first.
+</Aside>

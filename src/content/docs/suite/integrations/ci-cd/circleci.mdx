@@ -1,0 +1,44 @@
+---
+title: CircleCI
+description: Add a CircleCI job that runs the Testsigma trigger script and gates deployment on the result.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 35
+  label: CircleCI
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+CircleCI runs the [shell script](/suite/integrations/ci-cd/shell-script/) as a job in `.circleci/config.yml`. Code changes on the connected repository trigger the test plan automatically. The job holds the pipeline until the run finishes, so failed tests block the deployment.
+
+<Prerequisites>
+
+- A CircleCI account connected to your source control. A pipeline exists.
+- The script is committed to the repository with the API key and test plan ID set.
+
+</Prerequisites>
+
+## Configure the pipeline
+
+<Steps>
+
+1. **Pick the project** — In CircleCI, create or select the project. Click **Set Up Project**.
+
+2. **Add the job** — In `.circleci/config.yml`, add a job that runs the script and waits for completion:
+
+</Steps>
+
+```yaml title=".circleci/config.yml"
+# Java Maven CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 1.0
+jobs:
+ build:
+   steps:
+     - run: chmod a+x ./trigger_testsigma_tests_and_wait.sh
+     - run: ./trigger_testsigma_tests_and_wait.sh
+```

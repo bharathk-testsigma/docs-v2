@@ -1,0 +1,33 @@
+---
+title: Travis CI
+description: Trigger Testsigma runs from a Travis CI build and block deployment until the tests pass.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 40
+  label: Travis CI
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Travis CI runs the [shell script](/suite/integrations/ci-cd/shell-script/) from the `script:` phase of `.travis.yml`. Each build triggers the test plan and waits for the outcome. Failed tests fail the build, which keeps a broken change away from deployment.
+
+<Prerequisites>
+
+- A Travis CI account connected to your source control, with a pipeline.
+- An API key (**Settings → API Keys → Generate API Key**, then **Copy API Key**) and the test plan ID, set in the script.
+
+</Prerequisites>
+
+## Configure the build
+
+<Steps>
+
+1. **Commit the script** — Save it in the repository as `scripts/trigger_testsigma_tests_and_wait.sh`.
+
+2. **Make it executable** — `chmod +x scripts/trigger_testsigma_tests_and_wait.sh`, committed.
+
+3. **Call it from `.travis.yml`** — Add the script to the build's `script:` phase so the build waits on the result.
+
+</Steps>

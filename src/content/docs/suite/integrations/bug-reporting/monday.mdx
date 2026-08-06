@@ -1,0 +1,33 @@
+---
+title: monday.com
+description: Connect monday.com so bugs flow from a Testsigma run result into your board with one click.
+pageType: task
+verified: 2026-07
+sidebar:
+  label: monday.com
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+monday.com integration pushes annotated issues onto your board mid-session. One click carries the screenshots and context. Connecting takes the account URL and an API key; reporting happens from any test case result.
+
+<Prerequisites>
+
+- Your organisation's **monday.com account URL** and an **API token**.
+
+</Prerequisites>
+
+## Connect
+
+<Steps>
+
+1. **Open integrations** — Go to **Settings → Integrations** and enable the **monday.com** toggle.
+
+2. **Enter the details** — **Account URL**, **API Key**, and its confirmation.
+
+3. **Save** — Click **Save & Enable**.
+
+</Steps>
+
+Then report from any run: open the failing **Test Case Result**, click **Report Bug**, pick the **Monday.com** icon, review, and click **Report Bug**. **Link to Issue** attaches an existing ticket instead. Testsigma adds the execution video and step screenshots to the created issue automatically.

@@ -1,0 +1,155 @@
+---
+title: 'Quickstart: Salesforce'
+description: Connect a Salesforce org, then build a Lead-creation flow in three steps that read your org metadata.
+pageType: task
+verified: 2026-07
+covers:
+  - Create a Salesforce project
+  - Add a user connection
+  - Create a test case
+  - Build the steps
+  - Query the org directly
+  - Run the test
+sidebar:
+  order: 50
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Salesforce testing reads your org metadata, so Suite already knows your objects, fields, and page layouts. A flow that would take a dozen recorded interactions becomes three steps. You connect an org, create a project, and build a Lead-creation flow.
+
+<Prerequisites>
+
+- You have a Testsigma account.
+- A Salesforce connected app is configured for your org.
+- A metadata connection is configured, so Suite can read your org structure.
+- The Testsigma Recorder extension is installed on Chrome.
+
+</Prerequisites>
+
+## Create a Salesforce project
+
+<Steps>
+
+1. **Open the project form** — From the **Dashboard**, go to **Project** and click **New Project**.
+
+2. **Set the application type** — Enter a **Project name**, then select **Salesforce** from the **Application type** dropdown.
+
+3. **Name the application** — Enter an **Application** name and a **Version**, then click **Create**. The **Salesforce connections** page opens.
+
+</Steps>
+
+## Add a user connection
+
+A metadata connection lets Suite read your org structure. A user connection is the login the test actually runs as, so add the one whose permissions you want to exercise.
+
+<Steps>
+
+1. **Open the connections page** — Go to **SF connections**.
+
+2. **Start a user connection** — Under **User connection**, click **Add Connection**.
+
+3. **Name it** — Enter a **Connection name**, then choose the environment of the user.
+
+4. **Choose authentication** — Select an **Authentication type**. **OAuth** needs a **Username**, **Consumer key**, **Consumer secret**, and **Callback URL**. **User name & Password** also needs a **Password** and **Security token**.
+
+5. **Authorise** — Click **Authorise & Connect**.
+
+</Steps>
+
+<Aside type="note">
+Running an admin flow as a standard profile, or the reverse, is a common cause of failures that look like product bugs. Check the profile on the connection before you blame the test.
+</Aside>
+
+## Create a test case
+
+<Steps>
+
+1. **Open the test case list** — Go to **Create Tests → Test Cases**.
+
+2. **Pick a scenario** — In **Test Case Explorer**, expand a **Feature** and click the **+** icon next to the scenario you want.
+
+3. **Name the test case** — Enter a name in the **Test Case Name** field and click **Create**. The **Test Case Details** page opens.
+
+</Steps>
+
+## Build the steps
+
+The flow below signs in, switches app, and creates a Lead record. Click **Add new step** for each one.
+
+<Steps>
+
+1. **Sign in** — Add the step **Login to Salesforce application using _Salesforce Connection_ connection**, then select an existing connection.
+
+2. **Switch app** — Add the step **Switch to _Application_** and select the target application, such as **Sales**.
+
+3. **Create the record** — Add the step **Create record in _Salesforce Object Form_ using _Salesforce Connection_ and store the record id in variable _test data_**.
+
+4. **Fill the object form** — Click **Salesforce Object Form**. In the **Create record using API** overlay, select an object, enter data in the fields you need, and click **Save**.
+
+5. **Store the record ID** — Store the **Record ID** in a variable, such as `Lead Records`. Later steps and other test cases can read it.
+
+</Steps>
+
+{/* SCREENSHOT NEEDED: the Create record using API overlay with an object selected and its field form showing */}
+
+Step 3 calls the Salesforce API rather than driving the UI, so it is faster and less brittle than filling the form manually. Only the fields you filled are sent in the request.
+
+<Aside type="note">
+To record UI interactions instead of writing steps, use **Copilot** on the **Test Case Details** page. Recorded steps and Salesforce steps mix freely in one test case.
+</Aside>
+
+## Query the org directly
+
+Salesforce projects add a **SOQL** step type, which reads live org data rather than driving the UI. Use it to verify a record the flow just created.
+
+<Steps>
+
+1. **Add the step** — On the **Test Case Details** page, open the step type list and select **SOQL**.
+
+2. **Pick a connection** — Select one from the **Salesforce Connection** dropdown, or parameterise it.
+
+3. **Write the query** — Enter your SOQL in the editor and click **Run Query** to see results.
+
+</Steps>
+
+```sql title="Verify the Lead you created"
+SELECT Id, Name, Phone, Industry, BillingCity, BillingState
+FROM Account
+WHERE Industry = 'Technology' AND BillingState = 'CA'
+ORDER BY Name
+LIMIT 50
+```
+
+You can store a queried value in a variable and read it in later steps, the same way the create-record step stores a **Record ID**.
+
+## Run the test
+
+<Steps>
+
+1. **Open the run panel** — Click **Run**. The **Ad-Hoc Run** panel opens.
+
+2. **Start the run** — Select a test machine and click **Run Now**.
+
+</Steps>
+
+Open a failed step for the error message and the screenshot captured at the point of failure. For steps that call the API, the panel also shows the request and the response.
+
+## FAQs
+
+**Authorisation fails when connecting the org.**
+
+Check, in order: the **ClientId** and **Secret** (typos, regenerate if unsure), the **Environment** (production vs sandbox), the **Callback URL** against the connected app, the app's permissions and scopes, and whether a firewall blocks the authorisation endpoint.
+
+**Metadata syncs but the Login NLP fails.**
+
+The access and refresh tokens have usually expired, the same connected app is shared by several users at once, or the app's configuration changed in the org. Re-authenticate the connection to mint new tokens, verify the connected app settings, and keep one connection per testing environment.
+
+**An MFA challenge appears during sync or execution.**
+
+Runs from labs and agents look like untrusted devices to Salesforce. Disable **Require multi-factor authentication for all direct UI logins** at org level, align user-level MFA under **Advanced User Settings → User Details → Profile**, or better: enable **Waive Multi-Factor Authentication for Exempt Users** and put your automation users in a dedicated permission set. Under **Session Settings → Session Security Levels**, remove the MFA requirement and keep username-password and passwordless login enabled.
+
+**Execution passes locally but fails on labs.**
+
+Salesforce invalidates the session when it is created on one machine and used from another. Confirm the automation user's profile matches System Administrator privileges, then under **Setup → Session Settings**: disable **Lock sessions to the IP address from which they originated**, enable **Lock sessions to the domain in which they were first used**, and enable **Force relogin after Login-As-User**.

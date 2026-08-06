@@ -1,0 +1,77 @@
+---
+title: Create and manage step groups
+description: Group repetitive steps once, link the group into any test case, and edit it in one place for all of them.
+pageType: task
+verified: 2026-07
+covers:
+  - Create a step group
+  - Create a step group from a test case
+  - Add a step group to a test case
+  - Edit a step group
+  - Delete a step group
+sidebar:
+  order: 60
+  label: Step Groups
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+A step group is a reusable sequence of steps shared across test cases. Instead of repeating the same steps in every case, you link the group — and editing it once updates every linked case.
+
+## Create a step group
+
+<Steps>
+
+1. **Start one** — Go to **Step Groups** and click **Create Step Group**.
+
+2. **Fill it** — Enter a **Title** and optional **Description**, then add the test steps. Attachments up to 25 MB are supported.
+
+3. **Save** — Click **Create Step Group**.
+
+</Steps>
+
+## Create a step group from a test case
+
+Existing steps can become a group without retyping them.
+
+<Steps>
+
+1. **Select the steps** — On the **Test Case Details** page, click **Create Step Group** and tick the steps to include.
+
+2. **Save** — Click **Create Step Group**. The creation page opens in a new tab — adjust the steps and save.
+
+</Steps>
+
+## Add a step group to a test case
+
+<Steps>
+
+1. **Link it** — On the **Test Case Details** page, click **Add Step Group**, select the group, and click **+**.
+
+</Steps>
+
+## Edit a step group
+
+<Steps>
+
+1. **Open it** — In **Step Groups**, pick **Edit** from the group's kebab menu.
+
+2. **Change it** — Update the name, description, attachments, or steps. Changes auto-save.
+
+</Steps>
+
+<Aside type="note">
+  Edits apply to every test case the group is linked to.
+</Aside>
+
+## Delete a step group
+
+<Steps>
+
+1. **Delete** — Pick **Delete** from the group's kebab menu, tick the confirmation checkbox, and click **Delete**.
+
+</Steps>
+
+<Aside type="note">
+  Deleting unlinks the group from every linked test case, permanently.
+</Aside>

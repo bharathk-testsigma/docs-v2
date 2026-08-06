@@ -1,0 +1,757 @@
+---
+title: Testsigma Tunnel
+description: Reach a locally hosted or firewalled application from a Testsigma cloud run, without IP whitelisting or public access.
+pageType: guide
+verified: 2026-07
+sidebar:
+  order: 40
+---
+
+import { Aside, CardGrid, FileTree, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import DocCard from '~/components/DocCard.astro';
+
+Testsigma Tunnel reaches an application that the public internet cannot. The tunnel client runs on a machine inside your network and opens an outbound connection to Testsigma. Cloud test machines then load your private URL through that connection.
+
+<CardGrid>
+	<DocCard
+		icon="tunnel"
+		title="How it works"
+		href="#how-it-works"
+		description="The five pieces between a cloud browser and your application."
+	/>
+	<DocCard
+		icon="page"
+		title="Requirements"
+		href="#requirements"
+		description="Operating system, hardware, network, and firewall requirements for the client."
+	/>
+	<DocCard
+		icon="terminal"
+		title="Run the client"
+		href="#run-the-client"
+		description="Start the binary manually on macOS, Windows, or Linux."
+	/>
+	<DocCard
+		icon="box"
+		title="Install as a service"
+		href="#install-as-a-service-on-linux"
+		description="Run the client on Linux as a systemd service that starts on boot."
+	/>
+	<DocCard
+		icon="box"
+		title="Run in Docker"
+		href="#run-in-docker"
+		description="Start the client from a Compose file, in the US, IN, or EU region."
+	/>
+	<DocCard
+		icon="layers"
+		title="Deploy on Kubernetes"
+		href="#deploy-on-kubernetes"
+		description="Build the Helm chart, configure your values file, and deploy the client."
+	/>
+	<DocCard
+		icon="layers"
+		title="Manage a Kubernetes tunnel"
+		href="#manage-a-kubernetes-tunnel"
+		description="Handle the API key, scale replicas, upgrade the image, and remove a release."
+	/>
+	<DocCard
+		icon="page"
+		title="Kubernetes reference"
+		href="#kubernetes-reference"
+		description="Every chart value, the resources it creates, and a troubleshooting table."
+	/>
+	<DocCard
+		icon="cloud"
+		title="Use a tunnel in a test"
+		href="#use-a-tunnel-in-a-test"
+		description="Point an automated run or a REST API step at a running tunnel."
+	/>
+</CardGrid>
+
+## How it works
+
+The client authenticates with an API key, receives a tunnel server, and holds a bidirectional connection open over WebSocket, HTTPS, and SSH. Cloud browsers and REST API executors then proxy their requests through that connection instead of the public internet.
+
+{/* SCREENSHOT NEEDED: the tunnel architecture diagram, redrawn as an SVG under src/assets/docs/installation/ -- the S3-hosted original cannot be used */}
+
+Five pieces make up the path from a cloud browser to your application.
+
+| Component | What it does |
+| --- | --- |
+| Tunnel client | The binary you run on a machine that can reach your application. It authenticates with your key |
+| Authentication server | Validates the key, then assigns a tunnel server for the session |
+| Tunnel server | A Testsigma-hosted proxy that forwards requests from test executors to your client |
+| Test executor | The cloud browser or REST API client running your test, using the tunnel server as its proxy |
+| Remote address | The URL the client resolves: `localhost`, a private host, or a public site |
+
+Every connection is outbound from your side. Nothing in your network has to accept an inbound connection, and no Testsigma address needs whitelisting.
+
+Reach for a tunnel when the application under test is not publicly resolvable:
+
+- An application on `localhost` or on your own workstation.
+- A staging environment behind a corporate firewall or a VPN.
+- A private API endpoint that a REST API step has to call.
+- An environment your proxy refuses to expose to the internet.
+
+A tunnel is a run-time concern, not a property of the test. The same test case runs against a public URL or a tunnelled one without editing a single step.
+
+A tunnel does not execute tests. Local execution on your own browsers and devices is [Testsigma Agent](/suite/installation/testsigma-agent/), which solves the opposite problem: the test runs on your machine rather than reaching it. A tunnel also does not persist, and it exists only while the client process runs.
+
+<Aside type="note">
+The tunnel name is what a run resolves, so two clients started with the same name collide. Give each environment its own name.
+</Aside>
+
+## Requirements
+
+The client is a single binary with modest requirements, but it has to sit on a machine that can already reach your application.
+
+The client ships for all three desktop platforms, and for both x64 and ARM.
+
+| Platform | Minimum version |
+| --- | --- |
+| Windows | XP or later |
+| macOS | 10.10 or later |
+| Linux | Ubuntu 12.04 or later |
+
+These cover the client process, not the application under test.
+
+| Resource | Requirement |
+| --- | --- |
+| CPU | x64, or ARM 32-bit or 64-bit |
+| Memory | 2 GB or more recommended |
+| Disk | 100 MB to install, 500 MB recommended |
+
+Two conditions decide whether a tunnel works, and both concern outbound traffic.
+
+| Condition | Requirement |
+| --- | --- |
+| Internet connection | Stable, for the duration of every run that uses the tunnel |
+| Outbound traffic | No firewall or security system may block the client's outbound connections |
+| Application reachability | The client machine must already resolve and reach your application URL |
+
+If a tunnel starts but your URL does not load, test the URL from the client machine first.
+
+## Run the client
+
+Start the client manually on macOS, Windows, or Linux. You download the binary, pass it your API key, and read the tunnel name it prints.
+
+Before you begin, confirm that the machine meets the [requirements](#requirements), that it can reach your application URL, and that you have an API key from **Settings → API Keys**.
+
+<Steps>
+
+1. **Open the tunnel settings** — Go to **Settings → Tunnels**. {/* UNVERIFIED: the legacy docs call this nav item "Testsigma Tunnel"; the IA canvas calls it "Tunnels" */}
+
+2. **Download the binary** — In the top right corner, click the download icon and pick the build for your machine architecture.
+
+3. **Extract it** — Extract the ZIP into a directory of your choice.
+
+4. **Start it** — Run the binary with your key. The command differs only in the binary's name.
+
+</Steps>
+
+<Tabs syncKey="os">
+<TabItem label="macOS">
+
+```bash
+./TestsigmaConnect --key <your-authentication-key>
+```
+
+</TabItem>
+<TabItem label="Windows">
+
+```bash
+TestsigmaConnect.exe --key <your-authentication-key>
+```
+
+</TabItem>
+<TabItem label="Linux">
+
+```bash
+testsigma-connect --key <your-authentication-key>
+```
+
+</TabItem>
+</Tabs>
+
+<Aside type="note">
+An API key on the command line lands in your shell history. On a shared or long-lived machine, use the configuration file below instead.
+</Aside>
+
+The extracted directory contains an `args.yaml` beside the binary. Set your key there and the binary needs no arguments at all.
+
+```yaml title="args.yaml"
+key: '<your-authentication-key>'
+tunnel-name: '' # leave empty and the server assigns one
+connections: 10 # concurrent connections to hold open
+inactive-timeout: 300 # seconds of inactivity before the tunnel closes
+verbose: false # set true when a tunnel connects but resolves nothing
+```
+
+A started client prints its tunnel name. Copy it: a run reaches your application only while this process is alive, so <kbd>Ctrl</kbd> + <kbd>C</kbd> ends the tunnel and every run that depends on it.
+
+```text title="Client output"
+ 🚀 Testsigma Connect is now running... 🚀
+
+ 🔑 Use the following tunnel name for your automation testing:
+
+ 🌍 Tunnel Name: <your-tunnel-name>
+
+ 🛑 To stop the tunnel, press Ctrl+C.
+```
+
+## Install as a service on Linux
+
+On Linux, install the client as a systemd service instead of starting it manually. The service comes up on boot and survives the terminal closing, which is what a shared test environment needs. Packages ship for both Debian and RPM distributions, and you need `sudo` on the machine.
+
+<Steps>
+
+1. **Download the package** — Go to **Settings → Tunnels**, click the download icon, and pick the DEB or RPM build for your architecture.
+
+2. **Install it** — Run the command for your package manager.
+
+   <Tabs syncKey="pkg">
+   <TabItem label="Debian">
+
+   ```bash
+   sudo apt install ./testsigma-connect-<version>.deb
+   ```
+
+   </TabItem>
+   <TabItem label="RPM">
+
+   ```bash
+   sudo rpm -ivh testsigma-connect-<version>.rpm
+   ```
+
+   </TabItem>
+   </Tabs>
+
+3. **Configure it** — Create or edit `/etc/testsigma-connect/args.yaml` with your key, using the same keys as the manual `args.yaml` above.
+
+4. **Enable it on boot** — Run `sudo systemctl enable testsigma-connect`.
+
+5. **Start it now** — Run `sudo systemctl start testsigma-connect`.
+
+6. **Confirm the tunnel name** — Run `sudo journalctl -u testsigma-connect` and read the name from the startup output.
+
+</Steps>
+
+<Aside type="note">
+`/etc/testsigma-connect/args.yaml` holds an API key in plain text. Restrict it to root and keep it out of any configuration repository.
+</Aside>
+
+### Remove the service
+
+Uninstalling takes four commands, and the last two matter: the package manager can leave the unit file behind.
+
+<Steps>
+
+1. **Stop it starting on boot** — Run `sudo systemctl disable testsigma-connect.service`.
+
+2. **Stop it now** — Run `sudo systemctl stop testsigma-connect.service`.
+
+3. **Uninstall the package** — Run `sudo apt remove -y testsigma-connect`, or `sudo rpm -e testsigma-connect`.
+
+4. **Clear the unit file** — If `/etc/systemd/system/testsigma-connect.service` still exists, delete it and run `sudo systemctl daemon-reload`.
+
+</Steps>
+
+## Run in Docker
+
+Run the client as a container instead of installing a binary. You write one Compose file, set your API key as an environment variable, and bring the service up. The image you pick depends on which Testsigma region your account lives in.
+
+The tag ends in `arm64-latest` or `amd64-latest` to match your host architecture.
+
+<Tabs syncKey="region">
+<TabItem label="US">
+
+```yaml title="docker-compose.yml"
+services:
+  testsigma-tunnel:
+    image: testsigmainc/testsigma-tunnel:<arm64|amd64>-latest
+    container_name: testsigma-tunnel
+    environment:
+      - KEY=<API_KEY>
+      - TUNNEL_NAME=<NAME_OF_TUNNEL>
+      - CONNECTIONS=<NUMBER>
+      - INACTIVE_TIMEOUT=<SECONDS>
+      - VERBOSE=false
+```
+
+</TabItem>
+<TabItem label="IN">
+
+```yaml title="docker-compose.yml"
+services:
+  testsigma-tunnel:
+    image: testsigmainc/testsigma-tunnel-in:<arm64|amd64>-latest
+    container_name: testsigma-tunnel
+    environment:
+      - KEY=<API_KEY>
+      - TUNNEL_NAME=<NAME_OF_TUNNEL>
+      - CONNECTIONS=<NUMBER>
+      - INACTIVE_TIMEOUT=<SECONDS>
+      - VERBOSE=false
+```
+
+</TabItem>
+<TabItem label="EU">
+
+```yaml title="docker-compose.yml"
+services:
+  testsigma-tunnel:
+    image: testsigmainc/testsigma-tunnel-eu:<arm64|amd64>-latest
+    container_name: testsigma-tunnel
+    environment:
+      - KEY=<API_KEY>
+      - TUNNEL_NAME=<NAME_OF_TUNNEL>
+      - CONNECTIONS=<NUMBER>
+      - INACTIVE_TIMEOUT=<SECONDS>
+      - VERBOSE=false
+```
+
+</TabItem>
+</Tabs>
+
+<Aside type="note">
+The region in the image name has to match the region your account lives in. A US image authenticating against an EU account fails at the authentication server, which reads as an invalid key.
+</Aside>
+
+Each environment variable maps to one client option. `KEY` is your API key, `TUNNEL_NAME` is the name a run resolves, `CONNECTIONS` is how many connections to hold open, `INACTIVE_TIMEOUT` is the idle timeout in seconds, and `VERBOSE` turns on client logging.
+
+<Steps>
+
+1. **Bring it up** — Run `docker compose up -d` in that directory.
+
+2. **Confirm the tunnel name** — Run `docker compose logs testsigma-tunnel` and read the name from the startup output.
+
+</Steps>
+
+Run `docker compose down` to stop. The tunnel closes with the container, and any run still using it fails to resolve the URL.
+
+<Aside type="tip">
+Pass the key as `KEY=${TUNNEL_API_KEY}` and keep the real value in a `.env` file that you never commit. Compose substitutes it at start.
+</Aside>
+
+## Deploy on Kubernetes
+
+Run the client in your cluster and cloud test machines reach applications deployed in private networks. You build a small Helm chart, point a values file at your API key, and deploy.
+
+Before you begin, confirm that your cluster runs Kubernetes 1.19 or later, that Helm 3.x and `kubectl` are set up, and that at least one node carries a `pool-type` label such as `app` or `common`.
+
+Make the chart root and its templates directory:
+
+```bash
+mkdir -p testsigma-tunnel/templates
+cd testsigma-tunnel
+```
+
+Once every file below exists, the chart looks like this.
+
+<FileTree>
+
+- testsigma-tunnel
+  - Chart.yaml
+  - values.yaml
+  - templates
+    - deployment.yaml
+    - configmap.yaml
+    - **service.yaml** only with multiple replicas
+
+</FileTree>
+
+Create `Chart.yaml` in the chart root.
+
+```yaml title="Chart.yaml"
+apiVersion: v2
+name: testsigma-tunnel
+description: Helm chart for Testsigma Tunnel Client
+type: application
+version: 0.1.0
+appVersion: '0.1.0'
+```
+
+Create `templates/deployment.yaml`. Despite the filename, this template defines a **StatefulSet**, which is deliberate: pods must register with the tunnel server one at a time.
+
+```yaml title="templates/deployment.yaml"
+{{- range $name, $deployment := .Values.Deployments }}
+{{- if $deployment.enabled }}
+
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: {{ (index $.Values.Application $name).name }}-{{ $.Values.Environment.name }}-statefulset
+  labels:
+    app: {{ (index $.Values.Application $name).name }}-{{ $.Values.Environment.name }}
+  namespace: {{ (index $.Values.Namespace $name).name }}
+spec:
+  serviceName: {{ (index $.Values.Application $name).name }}-{{ $.Values.Environment.name }}-headless
+  replicas: {{ $deployment.replicas }}
+  podManagementPolicy: OrderedReady
+  selector:
+    matchLabels:
+      app: {{ (index $.Values.Application $name).name }}-{{ $.Values.Environment.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ (index $.Values.Application $name).name }}-{{ $.Values.Environment.name }}
+    spec:
+      containers:
+        - name: {{ (index $.Values.Application $name).name }}-{{ $.Values.Environment.name }}
+          image: {{ $deployment.containers.image }}:{{ $deployment.containers.version }}
+          imagePullPolicy: {{ $deployment.containers.imagePullPolicy }}
+          volumeMounts:
+            - name: config
+              mountPath: /app/args.yaml
+              subPath: args.yaml
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: {{ (index $.Values.Application $name).name }}-{{ $.Values.Environment.name }}-config
+      nodeSelector:
+        pool-type: {{ $deployment.poolType }}
+{{- end }}
+{{- end }}
+```
+
+Create `templates/configmap.yaml`. It mounts your tunnel configuration into the container as `args.yaml`.
+
+```yaml title="templates/configmap.yaml"
+{{- range $name, $deployment := .Values.Deployments }}
+{{- if $deployment.enabled }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ (index $.Values.Application $name).name }}-{{ $.Values.Environment.name }}-config
+  namespace: {{ (index $.Values.Namespace $name).name }}
+  labels:
+    app: {{ (index $.Values.Application $name).name }}-{{ $.Values.Environment.name }}
+data:
+  args.yaml: |
+    key: {{ $deployment.config.key | quote }}
+    tunnel-name: {{ $deployment.config.tunnelName | quote }}
+    verbose: {{ $deployment.config.verbose }}
+    {{- if $deployment.config.delegateSslValidation }}
+    delegate-ssl-validation: {{ $deployment.config.delegateSslValidation }}
+    {{- end }}
+    {{- if $deployment.config.proxy }}
+    proxy: {{ $deployment.config.proxy | quote }}
+    {{- end }}
+    {{- if $deployment.config.headerRules }}
+    header-rules:
+      {{- toYaml $deployment.config.headerRules | nindent 6 }}
+    {{- end }}
+{{- end }}
+```
+
+Create `templates/service.yaml` only if you set `enabledStatefulSet: true`, which multiple replicas require for DNS resolution.
+
+```yaml title="templates/service.yaml"
+{{- range $name, $deployment := .Values.Deployments }}
+{{- if $deployment.enabled }}
+{{- if $deployment.enabledStatefulSet }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ (index $.Values.Application $name).name }}-{{ $.Values.Environment.name }}-headless
+  namespace: {{ (index $.Values.Namespace $name).name }}
+  labels:
+    app: {{ (index $.Values.Application $name).name }}-{{ $.Values.Environment.name }}
+spec:
+  clusterIP: None
+  selector:
+    app: {{ (index $.Values.Application $name).name }}-{{ $.Values.Environment.name }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+{{- end }}
+{{- end }}
+{{- end }}
+```
+
+Every key you define under `Deployments` needs a matching key under both `Application` and `Namespace`, spelled identically.
+
+```yaml title="values.yaml"
+Environment:
+  name: production
+
+Application:
+  myTunnel:
+    name: tunnel-client-mycompany
+
+Namespace:
+  myTunnel:
+    name: my-namespace
+
+Deployments:
+  myTunnel:
+    enabled: true
+    replicas: 1
+    poolType: app # must match a node label: pool-type=<value>
+    enabledStatefulSet: true # true also requires templates/service.yaml
+    containers:
+      image: testsigmainc/testsigma-tunnel
+      version: amd64-latest
+      imagePullPolicy: Always
+    config:
+      key: '<YOUR_TUNNEL_API_KEY>'
+      tunnelName: 'my-tunnel' # the name a test run resolves
+      verbose: true
+      delegateSslValidation: false # true skips SSL validation upstream
+      proxy: '' # HTTP proxy URL, if the cluster needs one
+```
+
+<Aside type="note">
+Never commit a real API key in a values file. Pass it at deploy time or through a secrets manager instead, as described under [Manage a Kubernetes tunnel](#manage-a-kubernetes-tunnel).
+</Aside>
+
+<Steps>
+
+1. **Create the namespace** — Run the command below. It is safe to re-run.
+
+   ```bash
+   kubectl create namespace my-namespace --dry-run=client -o yaml | kubectl apply -f -
+   ```
+
+2. **Install the release** — From inside the chart directory, run `helm install my-tunnel . -n my-namespace`.
+
+3. **Check the StatefulSet** — Run `kubectl get statefulset -n my-namespace`.
+
+4. **Check the pods** — Run `kubectl get pods -n my-namespace`.
+
+5. **Read the client logs** — Run `kubectl logs -n my-namespace <pod-name> -f` and look for the message confirming the tunnel registered.
+
+</Steps>
+
+If the tunnel does not appear in Suite after a few minutes, see [Kubernetes reference](#kubernetes-reference).
+
+## Manage a Kubernetes tunnel
+
+A deployed tunnel needs three things over its life: an API key that never lands in a repository, a replica count that matches your test traffic, and a safe upgrade path.
+
+### Keep the API key out of the values file
+
+Pass the key at deploy time with `--set`, and set each key separately when one release holds several tunnels.
+
+```bash
+helm install my-tunnel . -f my-values.yaml \
+  --set 'Deployments.siteA.config.key=eyJhbGciOi...' \
+  --set 'Deployments.siteB.config.key=eyJhbGciOi...' \
+  -n my-namespace
+```
+
+For a GitOps workflow, store the key in your secrets backend, sync it into a Kubernetes Secret with Sealed Secrets or External Secrets Operator, and reference it from the pipeline. For CI/CD, keep it as a pipeline secret and inject it on deploy.
+
+```yaml title=".github/workflows/deploy.yml"
+- name: Deploy tunnel
+  run: |
+    helm upgrade --install my-tunnel ./testsigma-tunnel \
+      -f my-values.yaml \
+      --set "Deployments.myTunnel.config.key=${{ secrets.TUNNEL_API_KEY }}" \
+      -n my-namespace
+```
+
+To rotate a key, generate a new one in **Settings → Tunnels**, replace it wherever your method keeps it, and run `helm upgrade`. The pods restart and pick up the new ConfigMap.
+
+### Scale the replicas
+
+Raise `replicas` in your values file to handle more concurrent test traffic, then run `helm upgrade my-tunnel . -f my-values.yaml -n my-namespace`. Scale down the same way.
+
+To scale temporarily without touching the file, use `kubectl scale`:
+
+```bash
+kubectl scale statefulset tunnel-client-mycompany-production-statefulset \
+  --replicas=1 -n my-namespace
+```
+
+<Aside type="note">
+A `kubectl scale` change is temporary. The next `helm upgrade` resets the count to whatever your values file says.
+</Aside>
+
+Scale to `--replicas=0` to stop a tunnel while keeping the release and its configuration intact. To make that permanent, set `replicas: 0` in your values file and run `helm upgrade`.
+
+### Run several tunnels from one release
+
+One values file can drive several tunnel clients, which is how you reach more than one private network from the same cluster. Give each tunnel its own key under `Application`, `Namespace`, and `Deployments`, and its own API key and `tunnelName`.
+
+```yaml
+Application:
+  siteA:
+    name: tunnel-client-site-a
+  siteB:
+    name: tunnel-client-site-b
+Namespace:
+  siteA:
+    name: my-namespace
+  siteB:
+    name: my-namespace
+Deployments:
+  siteA:
+    enabled: true
+    replicas: 1
+    poolType: app
+    containers:
+      image: testsigmainc/testsigma-tunnel
+      version: amd64-latest
+      imagePullPolicy: Always
+    config:
+      key: '<API_KEY_FOR_SITE_A>'
+      tunnelName: 'site-a-tunnel'
+      verbose: true
+  siteB:
+    enabled: true
+    replicas: 1
+    poolType: app
+    containers:
+      image: testsigmainc/testsigma-tunnel
+      version: amd64-latest
+      imagePullPolicy: Always
+    config:
+      key: '<API_KEY_FOR_SITE_B>'
+      tunnelName: 'site-b-tunnel'
+      verbose: true
+```
+
+Each test then picks its network by resolving the matching `tunnelName`.
+
+### Upgrade the client image
+
+Scale to zero first. This lets the tunnel deregister cleanly before the new version registers.
+
+<Aside type="note">
+Do not run `helm upgrade` while pods are active. The old and new versions both try to register the same tunnel name, and the registration conflict takes the tunnel down.
+</Aside>
+
+<Steps>
+
+1. **Scale to zero** — Run `kubectl scale statefulset <name> --replicas=0 -n my-namespace`.
+
+2. **Wait for termination** — Watch with `kubectl get pods -n my-namespace -l app=<app-label> -w` until no pods remain.
+
+3. **Set the new version** — Update `containers.version` in your values file, for example to `amd64-1.2.0`.
+
+4. **Apply the upgrade** — Run `helm upgrade my-tunnel . -n my-namespace`.
+
+5. **Scale back up** — Run `kubectl scale statefulset <name> --replicas=<count> -n my-namespace`.
+
+6. **Confirm registration** — Run `kubectl logs -n my-namespace <pod-name> -f` and look for the registration message.
+
+</Steps>
+
+### Remove a tunnel
+
+To drop one tunnel from a multi-tunnel release, set `enabled: false` for it and run `helm upgrade`. That removes every resource belonging to it and leaves the others running. To remove everything, run `helm uninstall my-tunnel -n my-namespace`.
+
+## Kubernetes reference
+
+Three resources come out of a deployment, and one of them is conditional.
+
+| Resource | Description |
+| --- | --- |
+| StatefulSet | Runs the client pods under an `OrderedReady` policy, so pods start one at a time |
+| ConfigMap | Mounts the tunnel configuration file, `args.yaml`, into each container at startup |
+| Service | A headless service for StatefulSet DNS resolution. Created only when `enabledStatefulSet` is `true` |
+
+<Aside type="note">
+The `OrderedReady` policy is why this is a StatefulSet rather than a Deployment. A Deployment starts every replica at once, and each one races to register the same tunnel name. Under a StatefulSet the first pod registers, and the rest join the session it created.
+</Aside>
+
+One key sits outside the per-tunnel blocks: `Environment.name` is a required string, such as `production`, and it names every resource the chart creates.
+
+Each key below lives under `Deployments.<name>`, and that `<name>` must also exist under `Application` and `Namespace`.
+
+| Key | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `enabled` | boolean | Yes | — | Enables this tunnel. Set `false` and every resource for it is removed |
+| `replicas` | integer | Yes | — | Number of client pods to run |
+| `poolType` | string | Yes | — | Node selector value for `pool-type`. Must match an existing node label |
+| `enabledStatefulSet` | boolean | No | `false` | Creates the headless Service for DNS resolution |
+| `containers.image` | string | Yes | — | Client image name |
+| `containers.version` | string | Yes | — | Client image tag, such as `amd64-latest` |
+| `containers.imagePullPolicy` | string | Yes | — | One of `Always`, `IfNotPresent`, or `Never` |
+| `config.key` | string | Yes | — | API key from **Settings → Tunnels**. Never commit a real value |
+| `config.tunnelName` | string | Yes | — | The name a test run resolves |
+| `config.verbose` | boolean | No | `true` | Verbose client logging |
+| `config.delegateSslValidation` | boolean | No | `false` | Skips SSL certificate validation for upstream requests |
+| `config.proxy` | string | No | `""` | Outbound HTTP proxy URL |
+| `config.headerRules` | list | No | — | Per-hostname HTTP header injection rules |
+
+`config.headerRules` adds HTTP headers to requests for a given hostname, which is how you attach credentials the test itself should not carry. Use `X-TS-BASIC-AUTH-HEADER` for URL-based Basic Authentication, which works on both HTTP and HTTPS endpoints.
+
+```yaml title="values.yaml"
+config:
+  proxy: 'http://proxy.internal.example.com:8080'
+  headerRules:
+    - hostname: 'internal-app.example.com'
+      headers:
+        X-TS-BASIC-AUTH-HEADER: 'Basic dXNlcm5hbWU6cGFzc3dvcmQ='
+    - hostname: 'api.example.com'
+      headers:
+        X-Custom-Auth: 'my-token'
+        X-Environment: 'staging'
+```
+
+Each row below pairs a symptom with the cause that produces it most often.
+
+| Symptom | Likely cause | What to check |
+| --- | --- | --- |
+| Pod stuck in `Pending` | No node matches the `pool-type` selector | Run `kubectl get nodes --show-labels` and confirm a node carries the label |
+| Pod in `CrashLoopBackOff` | Invalid API key, or malformed configuration | Run `kubectl logs <pod-name>`, then verify `config.key` and `config.tunnelName` |
+| Tunnel absent from Suite | Wrong `tunnelName`, or an expired key | Confirm `config.tunnelName`, and generate a fresh key if it has expired |
+| Connection timeouts during a run | Network policy or proxy misconfiguration | Verify `config.proxy`, and confirm policies allow outbound connections |
+| SSL errors during a run | The application uses a self-signed certificate | Set `config.delegateSslValidation: true` and run `helm upgrade` |
+
+If none of those resolve it, collect the output of `kubectl describe statefulset <name> -n my-namespace` and the full pod logs, then send both to Testsigma support.
+
+## Use a tunnel in a test
+
+A running tunnel does nothing until a test resolves its name. For an automated run you pass the name as a desired capability. For a REST API step you set it in the step's own settings.
+
+<Steps>
+
+1. **Open the run panel** — On the **Test Case Details** page, click **Run**. The **Ad-Hoc Run** panel opens.
+
+2. **Choose a machine** — Select a **Test Lab** and a **Test Machine**, then expand **Desired Capabilities**.
+
+3. **Add the capability** — Enter the key, data type, and value from the table below.
+
+</Steps>
+
+One capability carries the tunnel name.
+
+| Key | Data type | Value |
+| --- | --- | --- |
+| `testsigmaLab.tunnelName` | String | Your tunnel name |
+
+The same capability works on a test plan's machine profile, which is how a scheduled or CI-triggered run reaches a private environment.
+
+For a REST API step, open the step, go to **Settings**, and enter your tunnel name in the **Tunnel Name** field.
+
+{/* SCREENSHOT NEEDED: the REST API step Settings tab with the Tunnel Name field filled in */}
+
+<Aside type="note">
+A tunnel name saved on a REST API step is used for automated runs too. The `testsigmaLab.tunnelName` capability on the run form overrides it when both are set.
+</Aside>
+
+## FAQs
+
+**How do I know whether cloud machines can reach my application?**
+
+Open the application URL from a workstation outside your company network, without VPN. If it loads, cloud runs work as-is and you do not need a tunnel. If it does not, the application is private — that is what this page solves.
+
+**Why can't cloud test machines access my locally hosted application?**
+
+Cloud test labs — Testsigma Lab, BrowserStack, Sauce Labs — run on their providers' networks. A development server behind your firewall, proxy, or VPN is invisible to them, and an app served only on your machine (`http://localhost:8080`) is invisible to everyone. Run a tunnel, or run on your own hardware through [Testsigma Agent](/suite/installation/testsigma-agent/).
+
+**A run reports the URL as not accessible. What do I check?**
+
+In order: the URL itself (HTTPS vs HTTP, a stray `/`), whether it loads in an incognito browser from your workstation, whether the test case carries it correctly, whether the app needs a VPN, and whether the page takes longer than the run's page-load timeout. If the app is under development, personal-machine hosted, on a private company server, or VPN-only, cloud machines cannot reach it without a tunnel.
+
+**What does a secured or intranet business app need for cloud runs?**
+
+Five things, in practice: whitelist Testsigma's IPs on your server (or run a tunnel), run the [agent](/suite/installation/testsigma-agent/) where local execution is wanted, set the iOS re-signing capability where devices install your app, install the Chrome extension for recording, and add the addons your flows need beyond the built-in NLPs.

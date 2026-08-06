@@ -1,0 +1,104 @@
+---
+title: Debug web test failures
+description: Work a failure from the result to its root cause, then step through it live with Copilot debug points.
+pageType: task
+verified: 2026-07
+covers:
+  - Narrow down why it failed
+  - Step through it with Copilot
+  - Collect logs from a run
+  - Launch Copilot in the same window
+sidebar:
+  order: 100
+  label: Debug
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Debugging a failure is a move from symptom to cause. The result tells you which step stopped the run and what the screen looked like. Copilot then lets you pause on that step against the live application and change the test case without starting over.
+
+<Prerequisites>
+
+- A run has failed, and you can open its result.
+- For the interactive part, **Testsigma Terminal** is running on your desktop.
+
+</Prerequisites>
+
+## Narrow down why it failed
+
+Most failures come from a short list of causes. Reading the evidence in order tells you which one you have.
+
+<Steps>
+
+1. **Find the failing step** — Open the result. Suite marks the step that failed and stopped execution.
+
+2. **Look at the evidence** — Check the screenshot taken at that moment, and the execution recording at that timestamp if one was captured.
+
+3. **Compare against the element** — Open the step's element information. A locator that no longer matches looks different from an application that never loaded.
+
+</Steps>
+
+These are the usual causes, roughly in order of how often they turn up:
+
+- The application changed, so the element or its locator no longer matches.
+- The element is unchanged, but the navigation to reach it changed.
+- The application or the API did not load.
+- The locator was never unique, and the run picked a different match.
+- Add-on code did not behave as expected.
+- A real bug in the application under test.
+
+<Aside type="tip">
+A test that fails intermittently is usually a locator matching several elements rather than a flaky application. See [Elements](/suite/web/elements/) for counting matches in DevTools.
+</Aside>
+
+## Step through it with Copilot
+
+Copilot pauses a run on the step you choose, against the live application. You can then fix the step and carry on without a fresh run.
+
+Set a debug point on the failing step, then launch a session from the test case editor. When the run pauses, the global toolbar drives it: **Resume**, **Pause**, **Step Over**, **Skip Over**, **Restart Execution**, and **Rec** to record a fix instead of typing it.
+
+[Copilot Mode](/suite/atto/copilot/) covers the launch panel, debug points, and every toolbar control.
+
+## Collect logs from a run
+
+A failure the screenshot does not explain is usually visible in the logs the run captured. **Show Logs** on the **Run Results** page opens the **Logs** view, which collects them in one place.
+
+| Log | What it holds |
+| --- | --- |
+| Console | Browser console output, when a console capability was set |
+| Network | Every request and response, downloadable as HAR |
+
+**Download log file** in the top-right corner saves the log for offline analysis, and the network log comes out as HAR. Network logs are on by default for web tests.
+
+Console output only exists if the run was told to capture it, and the capability differs by lab — see [Console logs by lab](/suite/web/capabilities/#console-logs-by-lab).
+
+## Launch Copilot in the same window
+
+By default Copilot opens a new window. Running it in the window you already have requires Chrome started in remote debugging mode.
+
+```bash title="Windows"
+start chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\selenum\ChromeProfile"
+```
+
+```bash title="macOS"
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir="~/ChromeProfile"
+```
+
+<Aside type="note">
+`--user-data-dir` points at a separate Chrome profile, not your everyday one. Remote debugging on a profile holding your real sessions exposes them to anything that can reach port 9222.
+</Aside>
+
+## Related
+
+- [Web run results](/suite/web/results/) — the evidence a run leaves behind
+- [Copilot Mode](/suite/atto/copilot/) — the interactive session in full
+- [Capabilities](/suite/web/capabilities/) — turning on the logs a run captures
+
+## FAQs
+
+**Support asked for a HAR file. How do I collect one?**
+
+A HAR file is the browser's own record of network activity, and it is what diagnoses performance and latency problems. Open DevTools (<kbd>F12</kbd>, or <kbd>Cmd</kbd> + <kbd>Option</kbd> + <kbd>I</kbd> on a Mac) → **Network** tab → reload the page so requests record → right-click in the request list → **Save all as HAR with content** (wording varies slightly in Firefox and Edge).
+
+For an execution failure, sign out first, then record from the sign-in onward so the whole failing flow is in the capture. Attach the file to the support ticket.

@@ -1,0 +1,39 @@
+---
+title: Bitbucket Pipelines
+description: Trigger Testsigma test plans from a Bitbucket pipeline step on every push to the repository.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 25
+  label: Bitbucket
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Bitbucket Pipelines runs the [shell script](/suite/integrations/ci-cd/shell-script/) from a step in `bitbucket-pipelines.yml`. Every push triggers the test plan and waits on it. The run's JUnit report lands at whatever path the script sets, ready for later steps.
+
+<Prerequisites>
+
+- The script (here `testsigma-cicd.sh`) is committed, with the API key and test plan ID set.
+
+</Prerequisites>
+
+## Configure the pipeline
+
+In **Repository → Pipelines**, click **Create your first pipeline**, pick **Starter pipeline**, and use:
+
+```yaml title="bitbucket-pipelines.yml"
+pipelines:
+  default:
+    - parallel:
+      - step:
+          name: 'Build and Test'
+          script:
+            - echo "Your build and test goes here..."
+            - echo "Calling Shell Script of testsigma"
+            - chmod a+x testsigma-cicd.sh
+            - ./testsigma-cicd.sh
+```
+
+Commit the file to run the job. The same runner note as GitLab applies: bash runners work unchanged; PowerShell runners need the PowerShell script and version 7+.

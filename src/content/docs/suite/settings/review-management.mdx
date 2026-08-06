@@ -1,0 +1,111 @@
+---
+title: Review management
+description: Send test cases and elements for peer or self review, then approve them or send them back for rework.
+pageType: guide
+verified: 2026-07
+sidebar:
+  order: 9
+  label: Review Management
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Review management puts an approval step between authoring and trusting. A test case or element goes to a reviewer, who approves it or sends it back for rework. Both work the same way, and both allow reviewing your own work.
+
+<Prerequisites>
+
+- A [project](/suite/settings/projects/) with test cases, and elements if you are reviewing those.
+- [Users and roles](/suite/settings/team-management/) are set up, so there is someone to assign as reviewer.
+- The relevant toggle is on under **Settings → Preferences**.
+
+</Prerequisites>
+
+## The two review modes
+
+| Mode | Who reviews |
+| --- | --- |
+| Peer review | The author asks another team member to review, which spreads responsibility for automation quality across the team |
+| Self-review | The author reviews their own work, handling every stage themselves |
+
+Self-review is otherwise identical to peer review. The only difference is that the author assigns the review to themselves.
+
+## Turn it on
+
+<Steps>
+
+1. **Open preferences** — Click **Settings** in the left navigation, then **Preferences**.
+
+2. **Enable test case review** — Turn on the **Test Case Review Management** toggle.
+
+3. **Enable self-review** — Turn on **Self-Review Management** if authors should be able to review their own work.
+
+4. **Enable element review** — Turn on **Element Review Management** to review elements as well.
+
+</Steps>
+
+## Submit a test case for review
+
+<Steps>
+
+1. **Build the case** — Create a test case with its test steps.
+
+2. **Submit it** — Click the **Submit for Review** icon in the top-right corner.
+
+3. **Choose a reviewer** — Select a **Reviewer** from the dropdown, tick **Notify Assignee and Reviewer**, and add comments.
+
+4. **Send it** — Click **Submit**.
+
+</Steps>
+
+The **Submitted for Review** section of the dashboard tracks what you have sent.
+
+## Review a test case
+
+<Steps>
+
+1. **Find the request** — Open the link in the notification email, or the **Assigned for your Review** section on the dashboard.
+
+2. **Read it** — Work through the test case.
+
+3. **Give a verdict** — Click **Review Testcase** in the top-right corner.
+
+4. **Record it** — In **Update Review Status**, tick **Notify Assignee and Reviewer**, add comments, and click **Approve** or **Rework**.
+
+</Steps>
+
+Rework sends it back to the author, and the cycle repeats until the case is approved.
+
+## Submit an element for review
+
+<Steps>
+
+1. **Open the element** — Go to **Create Tests → Elements** and click the element.
+
+2. **Edit it** — Click **Edit** in the **Element Details** overlay.
+
+3. **Submit it** — Click **Submit for Review** in the **Update Element** overlay.
+
+4. **Choose a reviewer** — Select a **Reviewer**, tick **Notify Assignee and Reviewer**, add comments, and click **Submit**.
+
+</Steps>
+
+## Review an element
+
+<Steps>
+
+1. **Find the request** — On the **Dashboard**, go to **Assigned for your review** and click **Elements**.
+
+2. **Open it** — Click the element you are reviewing. The **Elements** page opens filtered to your assignments.
+
+3. **Start the review** — Hover the element, click the kebab menu, and select **Edit**.
+
+4. **Give a verdict** — Click **Review element**, then mark **Approve** or **Rework** in **Update review status**.
+
+5. **Save it** — Back in **Update Element**, click **Update Element**.
+
+</Steps>
+
+<Aside type="note">
+An element review is not recorded until you click **Update Element** at the end. Marking the status and closing the overlay loses the verdict.
+</Aside>

@@ -1,0 +1,55 @@
+---
+title: Requirement traceability report
+description: Map requirements to their test cases, runs, and results, and share the traceability matrix with a link.
+pageType: task
+verified: 2026-07
+covers:
+  - Create the report
+  - Report structure
+sidebar:
+  order: 30
+  label: Requirement Traceability
+---
+
+import { Steps } from "@astrojs/starlight/components";
+
+A requirement traceability report shows how each requirement is validated — which test cases cover it, which runs executed them, and with what result. Requirements come from Jira, Linear, or ClickUp.
+
+## Before you begin
+
+- Test cases are [generated from requirements](/arcus/qi-home/generate/ad-hoc/), linked to test runs, and have execution results.
+
+## Create the report
+
+<Steps>
+
+1. **Start one** — Go to **Reports**, click **Create Report**, and choose **Select Requirements** in the dialog.
+
+2. **Attach requirements** — Select the requirements to include and click **Attach Test Requirements**.
+
+3. **Name it** — Enter a **Title** and optional **Description**, then click **Create a Report**.
+
+4. **Share it (optional)** — Click **Share**, enable **Anyone with the link can view**, and click **Copy**.
+
+</Steps>
+
+## Report structure
+
+The report opens with requirement distribution by priority, test case counts split by **Manual** vs **Automated**, and the traceability matrix.
+
+**Requirements by Priority** counts requirements per business priority:
+
+| Priority     | Meaning                                               |
+| ------------ | ----------------------------------------------------- |
+| **Critical** | Must-have functionality that blocks release if failed |
+| **Major**    | Core functionality on primary workflows               |
+| **Medium**   | Important but non-blocking                            |
+| **Minor**    | Optional or low-impact improvements                   |
+
+**Traceability Matrix** maps each requirement to its evidence:
+
+| Column          | What it holds                                                |
+| --------------- | ------------------------------------------------------------ |
+| **Requirement** | The requirement title or story summary                       |
+| **Test Cases**  | The linked test case IDs                                     |
+| **Test Runs**   | Execution records with timestamps and Tested / Untested tags |

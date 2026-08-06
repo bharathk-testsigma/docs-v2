@@ -1,0 +1,15 @@
+---
+/**
+ * Footer override -- the page-feedback row, then Starlight's footer.
+ *
+ * Feedback comes FIRST so it sits above the prev/next pagination, per the
+ * reference: the reader rates the page they just read, then moves on. The
+ * default footer is rendered unchanged below it (pagination, edit link, last
+ * updated), so nothing is lost.
+ */
+import Default from '@astrojs/starlight/components/Footer.astro';
+import PageFeedback from './PageFeedback.astro';
+---
+
+<PageFeedback />
+<Default><slot /></Default>

@@ -1,0 +1,28 @@
+---
+title: Mailboxes
+description: A Testsigma-hosted inbox receives email during runs, so tests can read OTPs, links, and message content.
+pageType: concept
+verified: 2026-07
+sidebar:
+  label: Mail Boxes
+---
+
+A mailbox is a Testsigma-hosted inbox attached to your account. Tests enter its address in a signup or login form, then read the email that arrives — an OTP, a verification link, a subject line — while the run is still going.
+
+## How it works
+
+The **& Mail Box** [test data type](/suite/web/test-data/test-data-types/) inserts the inbox address into a step. `MailBoxFunctions` [data generators](/suite/web/test-data/data-generators/) then read the incoming email: the OTP, a link, the subject, or the full content. Reads target the first matching email. `MailBoxAliasFunctions` generates a unique alias per run, so signup tests never hit "email already registered".
+
+## When it applies
+
+Use a mailbox wherever the app sends an email the test must read: email OTP for two-factor authentication, verification links in signup flows, and content checks — including email in languages other than English. A toggle also allows reading the mailbox outside test executions; runs behave the same either way.
+
+## What it does not do
+
+Mailboxes are not enabled by default; Testsigma allocates them per account — contact **support@testsigma.com** or use the in-app chat. When an app refuses to deliver to the hosted inbox, the Testsigma SMS Forwarder app is the fallback: it forwards messages from your own device into the mailbox.
+
+## Related
+
+- [Test data types](/suite/web/test-data/test-data-types/) — the **& Mail Box** type in a step
+- [Data generators](/suite/web/test-data/data-generators/) — `MailBoxFunctions` and the OTP-fetch walkthrough
+- [Phone numbers](/suite/settings/phone-numbers/) — the SMS equivalent for two-factor flows

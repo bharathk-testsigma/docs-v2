@@ -1,0 +1,33 @@
+---
+title: Configure SMTP
+description: Send Arcus email notifications from your own authenticated address for better branding and deliverability.
+pageType: task
+verified: 2026-07
+sidebar:
+  order: 80
+  label: SMTP Configuration
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+SMTP configuration makes Arcus send email notifications from your organization's own authenticated address instead of the default Testsigma sender. Your domain on the envelope means better branding, deliverability, and security.
+
+## Before you begin
+
+- You have your provider's SMTP server address, port, username and password, and any extra parameters.
+
+## Configure SMTP
+
+<Steps>
+
+1. **Open the section** — Go to **Settings → SMTP Configuration** and turn on the **SMTP Configuration** toggle.
+
+2. **Enter your server** — Select **@own** and fill in the **Host**, **Port**, **Username**, and **Password**.
+
+3. **Save** — Click **Save**. Every email notification now goes out from your address.
+
+</Steps>
+
+<Aside type="note">
+  Selecting **Testsigma** instead keeps the default Testsigma sender.
+</Aside>

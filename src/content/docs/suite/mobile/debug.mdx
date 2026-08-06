@@ -1,0 +1,87 @@
+---
+title: Debug mobile test failures
+description: Work a failure from the result to its root cause, then step through it on a live device with Copilot.
+pageType: task
+verified: 2026-07
+covers:
+  - Narrow down why it failed
+  - Step through it with Copilot
+  - Collect logs from a run
+sidebar:
+  label: Debug
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Debugging a mobile failure is a move from symptom to cause. The result tells you which step stopped the run and what the screen looked like. Copilot then lets you pause on that step against a live device and change the test case without starting over.
+
+<Prerequisites>
+
+- A run has failed, and you can open its result.
+- For the interactive part, **Testsigma Terminal** is running on your desktop.
+
+</Prerequisites>
+
+## Narrow down why it failed
+
+Most failures come from a short list of causes. Reading the evidence in order tells you which one you have.
+
+<Steps>
+
+1. **Find the failing step** — Open the result. Suite marks the step that failed and stopped execution.
+
+2. **Look at the evidence** — Check the screenshot taken at that moment, and the execution recording at that timestamp if one was captured.
+
+3. **Compare against the element** — Open the step's element information. A locator that no longer matches looks different from an app that never launched.
+
+</Steps>
+
+These are the usual causes, roughly in order of how often they turn up:
+
+- The app changed, so the element or its locator no longer matches.
+- The element is unchanged, but the navigation to reach it changed.
+- The app did not launch, or the build under test is not the uploaded one.
+- The locator was never unique, and the run picked a different match.
+- On Unified projects, the step ran on a platform the element was not recorded for.
+- A real bug in the app under test.
+
+<Aside type="tip">
+A locator that no longer matches often heals on its own — check the auto-heal badge on the result before touching the element. See [Auto Heal](/suite/mobile/auto-heal/).
+</Aside>
+
+## Step through it with Copilot
+
+Copilot pauses a run on the step you choose, against a live device session mirrored through [Testsigma Terminal](/suite/installation/testsigma-terminal/). You can then fix the step and carry on without a fresh run.
+
+Set a debug point on the failing step, then launch a session from the test case editor. When the run pauses, the toolbar drives it: **Resume**, **Pause**, **Step Over**, and **Rec** to record a fix on the device instead of typing it.
+
+[Copilot Mode](/suite/atto/copilot/) covers the launch panel, debug points, and every toolbar control.
+
+## Collect logs from a run
+
+A failure the screenshot does not explain is usually visible in the logs the run captured. **Show Logs** on the **Run Results** page opens the **Logs** view, which collects them in one place.
+
+| Log | What it holds |
+| --- | --- |
+| Appium | The mobile automation session's own log |
+| Device | The device's log during the run |
+| Network | Every request and response, downloadable as HAR |
+
+**Download log file** in the top-right corner saves the log for offline analysis.
+
+Network logs are on by default for mobile web. Android and iOS applications need the toggle set, and it lives on BrowserStack machines.
+
+<Steps>
+
+1. **For one run** — Click **Run** on **Test Case Details**, select **BrowserStack** as the **Test Lab**, enable **Network Log**, then click **Run Now**.
+
+2. **For a plan** — On **Add Test Suites & Link Machine Profiles**, click the **Test Machine Settings** icon, select **BrowserStack** as the **Test Lab**, enable **Network Log**, and click **Create/Update Profile**.
+
+</Steps>
+
+## Related
+
+- [Mobile run results](/suite/mobile/results/) — the evidence a run leaves behind
+- [Copilot Mode](/suite/atto/copilot/) — the interactive session in full
+- [Auto Heal](/suite/mobile/auto-heal/) — locator failures that repair themselves

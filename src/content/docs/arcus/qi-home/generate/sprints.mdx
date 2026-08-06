@@ -1,0 +1,62 @@
+---
+title: "Generate test cases: Sprints"
+description: QI Home detects a sprint start, pulls context from the linked stories, and generates test cases on your confirmation.
+pageType: task
+verified: 2026-07
+covers:
+  - Confirm generation when a sprint starts
+  - Generate for an unprocessed sprint
+sidebar:
+  order: 40
+  label: Sprints
+---
+
+import { Aside, Steps } from "@astrojs/starlight/components";
+
+Sprints mode ties generation to your sprint workflow. When a sprint starts in your connected project management tool, QI Home detects it and notifies you. You confirm, and QI Home generates test cases from the sprint stories and their linked artifacts.
+
+## Before you begin
+
+- You have an active [project](/arcus/get-started/projects/).
+- Your project management tool — Jira, Azure DevOps, Linear, or ClickUp — is [connected](/arcus/integrations/jira/set-up/).
+- Artifacts linked in sprint stories are publicly accessible or connected as integrations.
+
+## Confirm generation when a sprint starts
+
+<Steps>
+
+1. **Go to QI Home** — Select the **Sprints** tab.
+
+2. **Watch for the notification** — When QI Home detects a new sprint, it asks: **A new sprint is live. Shall I start creating test cases for this?** The sprint name and start date are shown.
+
+3. **Confirm** — Click **Start Generating Tests**. The sprint moves to **In Progress** and generation begins.
+
+</Steps>
+
+<Aside type="note">
+  Click **Not Now** to defer. The sprint stays in **To Do** with a **Generate
+  Test Cases** link, so you can trigger it later.
+</Aside>
+
+QI Home pulls context from the sprint automatically — no manual attaching:
+
+- story titles, descriptions, and acceptance criteria
+- Confluence pages, Figma designs, and PRDs linked in the stories
+- relevant pull requests linked to the stories
+
+<Aside type="note">
+  QI Home reads only artifacts that are public or connected as integrations. A
+  private Confluence page or Figma file without its integration is skipped.
+</Aside>
+
+## Generate for an unprocessed sprint
+
+<Steps>
+
+1. **Find the sprint** — On the **Sprints** tab, look for the sprint with **To Do** status in the sidebar.
+
+2. **Trigger it** — Click **Generate Test Cases** next to the sprint name.
+
+</Steps>
+
+Generation runs the same way as [Ad-Hoc](/arcus/qi-home/generate/ad-hoc/), including the summary at the end. When it completes, the sprint moves to **In Progress** and shows the **Tests**, **Coverage**, and **Test Plan** tabs.

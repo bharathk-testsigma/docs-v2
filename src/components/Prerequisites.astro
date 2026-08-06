@@ -1,0 +1,58 @@
+---
+/**
+ * Prerequisites -- the bordered "Prerequisites" box from the design canvas.
+ *
+ * The design uses a distinct treatment for prerequisites: a full hairline box
+ * with a small label, NOT the 2px-left-rule used for note/tip/caution/danger
+ * asides. Keeping them visually different matters, because a prerequisite is a
+ * gate the reader must clear before step 1, not an aside they can skim.
+ *
+ *   <Prerequisites>
+ *     - You have a Testsigma account.
+ *     - **Testsigma Terminal** is installed.
+ *   </Prerequisites>
+ */
+---
+
+<div class="ts-prereq">
+	<p class="ts-prereq-label">Prerequisites</p>
+	<slot />
+</div>
+
+<style>
+	/* Matches the blockquote-based Prerequisites gate on the .md pages (see
+	   theme.css): same fill, radius, padding and label, so the two authoring
+	   routes are indistinguishable to a reader. */
+	.ts-prereq {
+		border: 1px solid var(--ts-note-bd);
+		border-radius: 8px;
+		padding: 13px 16px;
+		margin: 0 0 1.75rem;
+		background: var(--ts-note-bg);
+	}
+
+	.ts-prereq-label {
+		font-size: 11.5px;
+		font-weight: 600;
+		letter-spacing: 0.01em;
+		text-transform: uppercase;
+		color: var(--ts-tx2);
+		margin: 0 0 6px;
+	}
+
+	.ts-prereq :global(ul) {
+		margin: 0;
+		padding-left: 1.375rem;
+		font-size: 14px;
+		line-height: 1.65;
+		color: var(--ts-tx2);
+	}
+
+	.ts-prereq :global(li) + :global(li) {
+		margin-top: 0.5rem;
+	}
+
+	.ts-prereq :global(p:last-child) {
+		margin-bottom: 0;
+	}
+</style>

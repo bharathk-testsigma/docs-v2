@@ -1,0 +1,125 @@
+---
+title: Manage mobile test cases
+description: Search, sort, filter, and save views of the test case list, then configure an individual test case from its right rail.
+pageType: task
+verified: 2026-07
+covers:
+  - Find a test case
+  - Filter the list
+  - Save a filter
+  - Configure a test case
+  - Choose how prerequisites re-run
+  - Snapshot the project with a save point
+  - Manage labels
+sidebar:
+  label: Manage Tests
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Past a handful of test cases, finding one matters more than creating one. This page covers searching and filtering the mobile test case list, saving a view you reuse, and the settings in a test case's right rail.
+
+<Prerequisites>
+
+- You have a project with existing test cases.
+- You have permission to edit test cases, for the settings covered below.
+
+</Prerequisites>
+
+## Find a test case
+
+Go to **Create Tests → Test Cases** and click the list view icon. Type in the **Search** bar at the top right. Matches narrow as you type.
+
+**Sort by** orders the list by **Title**, **Created Date**, or **Updated Date**.
+
+## Filter the list
+
+Click **Show Filters**, then **Add Filter**. Filters stack, so several together give a narrow result.
+
+| Filter on | |
+| --- | --- |
+| **Status** | **Priority** |
+| **Last run result** | **Added to Test Suite** |
+| **Assignee** | **Reviewer** |
+| **Created By** | **Created Date** |
+| **Updated Date** | **Test Case Type** |
+| **Labels** | **Requirement** |
+| **Requirement Type** | Custom fields you have defined |
+
+## Save a filter
+
+<Steps>
+
+1. **Build the filter** — Click **Show Filters**, then **Add Filter**, and select what you want.
+
+2. **Start saving** — Expand **Save Filter** and select **As New**.
+
+3. **Name it** — In the **Save filter config as** dialog, enter a name. Tick **Mark as Public** to share it with the team, then click **Save**.
+
+</Steps>
+
+Saved filters live under **Saved Filters** in the menu bar, split into **Custom** and **Predefined**. Hover a custom filter to edit or delete it. To overwrite one, open it, change the filters, then **Save Filter → Replace Existing**.
+
+<Aside type="tip">
+**Reset** clears the filter you are building. **All** in the menu bar drops back to the unfiltered list. They are different buttons for different moments.
+</Aside>
+
+## Configure a test case
+
+Open a test case and use the right rail. Six panels sit there. **Test Case Settings** is the one that changes how the case runs.
+
+| Setting | What it does |
+| --- | --- |
+| **Pre-Requisites** | Names a test case that must run first, to set up state |
+| **Test Data Profile** | The profile that parameter-type steps read values from |
+| **Test Data Set** | Which set inside that profile to use |
+| **Data-Driven** | Runs the case once per data set, with **Iteration**, **Set Name**, and **Parameter** filters |
+| **Fail Test Case if Visual Testing Fails** | Fails the case on any visual difference |
+| **After Test Case** | Steps that run afterwards, for clean-up |
+| **Mark this for AfterTest Suite** | Runs this case after the whole suite, for teardown |
+
+The other five panels are read-mostly. **Test Case Info** holds the name, description, and timestamps. **Ad-Hoc Runs** lists run history. **Manage Test Case** carries status, priority, assignee, reviewer, and labels. **Activity** has history and comments, and **Help** has examples.
+
+A Unified test case is one artifact covering Android and iOS — archiving or deleting it affects both. App builds are not managed with test cases: APK and IPA files live under **Test Data → Uploads**, with their own versions.
+
+## Choose how prerequisites re-run
+
+A prerequisite has two execution modes, and the difference only shows on a data-driven case.
+
+| Option | Behaviour |
+| --- | --- |
+| **Always run Pre-requisite** | Runs the prerequisite every time. Use it when setup produces runtime or dynamic data |
+| **Only execute failed Pre-requisite iteration(s)** | Re-runs only the iterations that failed, skipping the ones that passed |
+
+<Aside type="note">
+On a four-iteration case where 1 and 3 failed, the second option re-runs 1 and 3 only. That is faster, but it assumes the setup from iterations 2 and 4 is still valid.
+</Aside>
+
+## Snapshot the project with a save point
+
+A save point captures every test case, element, test data profile, and step group in the project, so you can put the project back exactly as it was. Imports can create one automatically.
+
+<Steps>
+
+1. **Create it** — Go to **Save Points** and click **Create Save Point**. Enter a name in the **Create a Save Point?** dialog and click **Create**.
+
+2. **Inspect one** — Click **Open this Save Point in new tab** to look at its contents without restoring.
+
+3. **Restore it** — Click the **Restore** icon, type `RESTORE`, then click **I understand, Confirm Restore**.
+
+</Steps>
+
+<Aside type="note">
+Restoring replaces the current state of every test case, element, test data profile, and step group in the project. Work done since the save point is gone. Open the save point in a new tab and check it first.
+</Aside>
+
+## Manage labels
+
+Labels span test cases, elements, step groups, test suites, and test plans. They are created centrally in **Settings → Labels** rather than on a test case — see [Manage labels](/suite/settings/labels/) for creating, attaching, and tracing them.
+
+## Related
+
+- [Author tests](/suite/mobile/tests/author-tests/) — creating what this page manages
+- [Mobile test data profiles](/suite/mobile/test-data/test-data-profiles/) — what **Test Data Profile** links to
+- [Manage custom fields](/suite/settings/custom-fields/) — the custom columns the filter list mentions
