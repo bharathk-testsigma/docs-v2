@@ -140,6 +140,9 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 <script>
 	import { pagefindUserConfig } from 'virtual:starlight/pagefind-config';
 	import { streamAsk, sendFeedback, renderMarkdown, escapeHtml, bindCopyHandlers, product, IC_COPY, IC_CHECK } from '../scripts/ask-shared';
+	// Retrieval-index URLs are stored base-free ('/suite/...'), so each source
+	// link needs prefixing before it goes into the DOM or it 404s under the base.
+	import { withBase } from '../lib/base';
 
 	// Suggested questions for the empty state, per product (first 4 are shown).
 	const SUGGESTIONS: Record<string, string[]> = {
@@ -367,7 +370,7 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 							sourcesEl.innerHTML =
 								'<div class="ts-sa-sources-head">Sources</div>' +
 								srcs.map(s =>
-									`<a class="ts-sa-source" href="${escapeHtml(s.url)}">
+									`<a class="ts-sa-source" href="${escapeHtml(withBase(s.url))}">
 										<div class="ts-sa-source-crumb">${crumbs(s.url)}</div>
 										<div class="ts-sa-source-title">${BOOK}<span>${escapeHtml(s.title || s.url)}</span></div>
 									</a>`

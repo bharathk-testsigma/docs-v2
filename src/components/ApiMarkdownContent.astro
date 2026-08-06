@@ -23,15 +23,18 @@ import CopyPage from './CopyPage.astro';
  */
 import { isArcusPath } from '../starlightRouteData';
 import { regionsForHost } from '../data/regions';
+import { withBase } from '../lib/base';
 
 const { entry } = Astro.locals.starlightRoute;
 
 // Both products have an API overview with an #authentication section, and each
 // documents its OWN key. Hardcoding Suite's sent every Arcus endpoint page to
 // the wrong product's page.
-const authHref = isArcusPath(Astro.url.pathname)
-	? '/arcus/api-reference/overview/#authentication'
-	: '/suite/api/overview/#authentication';
+const authHref = withBase(
+	isArcusPath(Astro.url.pathname)
+		? '/arcus/api-reference/overview/#authentication'
+		: '/suite/api/overview/#authentication'
+);
 const api = (entry.data as any).api as
 	| {
 			method: string;

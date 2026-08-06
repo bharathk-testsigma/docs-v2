@@ -1,5 +1,6 @@
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
 import type { SidebarEntry } from '@astrojs/starlight/route-data';
+import { stripBase } from './lib/base';
 
 /**
  * Three left navs out of one sidebar config.
@@ -41,10 +42,10 @@ const API_SECTIONS = {
  * tab lighting up on Arcus endpoint pages.
  */
 export const isApiReferencePath = (pathname: string) =>
-	Object.values(API_SECTIONS).some((section) => pathname.startsWith(section.path));
+	Object.values(API_SECTIONS).some((section) => stripBase(pathname).startsWith(section.path));
 
 /** Pages served by the Arcus tree. Keep in sync with ProductSwitcher.astro. */
-export const isArcusPath = (pathname: string) => pathname.startsWith('/arcus/');
+export const isArcusPath = (pathname: string) => stripBase(pathname).startsWith('/arcus/');
 
 type Group = Extract<SidebarEntry, { type: 'group' }>;
 
@@ -76,7 +77,8 @@ const humanizeLabels = (entries: SidebarEntry[]): SidebarEntry[] =>
 
 export const onRequest = defineRouteMiddleware((context) => {
 	const { starlightRoute } = context.locals;
-	const { pathname } = context.url;
+	// Base-free, so it can be matched against the literal prefixes below.
+	const pathname = stripBase(context.url.pathname);
 	const arcus = isArcusPath(pathname);
 
 	// ── 1. pick the product tree ──
