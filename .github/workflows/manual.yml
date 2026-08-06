@@ -51,7 +51,10 @@ jobs:
           # NOTE: `inputs.Environment` — capital E. The website repo's workflow
           # reads `github.event.inputs.environment` in places, which is always
           # empty and silently produces a repo name ending in "-". Not copied.
-          echo "REPO_NAME=docs-${{ inputs.Environment }}" >> $GITHUB_ENV
+          # Must match the ECR repository names that exist in AWS
+          # (docs-v2-staging / docs-v2-production) AND the image in
+          # devops-helm website/*-values.yaml under .Deployments.docsNew.
+          echo "REPO_NAME=docs-v2-${{ inputs.Environment }}" >> $GITHUB_ENV
 
           if [[ "${{ inputs.Environment }}" == "production" ]]; then
             echo "AWS_ROLE_ARN=${{ secrets.WEBSITE_AWS_GITHUB_OIDC_ROLE_ARN }}" >> $GITHUB_ENV
