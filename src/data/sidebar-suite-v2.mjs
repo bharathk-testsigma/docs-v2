@@ -116,7 +116,7 @@ export const suiteV2 = [
         label: 'Test Data',
         collapsed: true,
         items: [
-          { label: 'TDPs', slug: 'suite/web/test-data/test-data-profiles' },
+          { label: 'Test Data Profiles', slug: 'suite/web/test-data/test-data-profiles' },
           { label: 'Test Data Types', slug: 'suite/web/test-data/test-data-types' },
           { label: 'Data Generators', slug: 'suite/web/test-data/data-generators' },
           // Canonical Uploads page. Product puts Uploads under Test Data and it
@@ -159,7 +159,7 @@ export const suiteV2 = [
         label: 'Test Data',
         collapsed: true,
         items: [
-          { label: 'TDPs', slug: 'suite/mobile/test-data/test-data-profiles' },
+          { label: 'Test Data Profiles', slug: 'suite/mobile/test-data/test-data-profiles' },
           { label: 'Test Data Types', slug: 'suite/mobile/test-data/test-data-types' },
           { label: 'Data Generators', slug: 'suite/mobile/test-data/data-generators' },
           { label: 'Uploads', slug: 'suite/web/test-data/uploads' },
@@ -204,7 +204,7 @@ export const suiteV2 = [
         label: 'Test Data',
         collapsed: true,
         items: [
-          { label: 'TDPs', slug: 'suite/salesforce/test-data/test-data-profiles' },
+          { label: 'Test Data Profiles', slug: 'suite/salesforce/test-data/test-data-profiles' },
           { label: 'Test Data Types', slug: 'suite/salesforce/test-data/test-data-types' },
           { label: 'Data Generators', slug: 'suite/salesforce/test-data/data-generators' },
         ],
@@ -240,7 +240,7 @@ export const suiteV2 = [
         label: 'Test Data',
         collapsed: true,
         items: [
-          { label: 'TDPs', slug: 'suite/windows-lite/test-data/test-data-profiles' },
+          { label: 'Test Data Profiles', slug: 'suite/windows-lite/test-data/test-data-profiles' },
           { label: 'Test Data Types', slug: 'suite/windows-lite/test-data/test-data-types' },
           { label: 'Data Generators', slug: 'suite/windows-lite/test-data/data-generators' },
         ],
@@ -275,7 +275,7 @@ export const suiteV2 = [
         label: 'Test Data',
         collapsed: true,
         items: [
-          { label: 'TDPs', slug: 'suite/windows-beta/test-data/test-data-profiles' },
+          { label: 'Test Data Profiles', slug: 'suite/windows-beta/test-data/test-data-profiles' },
           { label: 'Test Data Types', slug: 'suite/windows-beta/test-data/test-data-types' },
           { label: 'Data Generators', slug: 'suite/windows-beta/test-data/data-generators' },
         ],
@@ -660,23 +660,6 @@ export const suiteV2 = [
     ],
   },
   {
-    label: 'Security',
-    collapsed: true,
-    items: [
-      { label: 'Password Policy', slug: 'suite/security/password-policy' },
-      { label: 'Two-Factor Authentication', slug: 'suite/security/two-factor-authentication' },
-      {
-        label: 'Single Sign-On (SSO)',
-        collapsed: true,
-        items: [
-          { label: 'Google SSO', slug: 'suite/security/google-sso' },
-          { label: 'Azure SSO', slug: 'suite/security/azure-sso' },
-          { label: 'Okta SSO', slug: 'suite/security/okta-sso' },
-        ],
-      },
-    ],
-  },
-  {
     label: 'Settings',
     collapsed: true,
     items: [
@@ -692,6 +675,28 @@ export const suiteV2 = [
       { label: 'Review Management', slug: 'suite/settings/review-management' },
       { label: 'API Keys', slug: 'suite/settings/api-keys' },
       { label: 'Manage Access', slug: 'suite/settings/manage-access' },
+      // Security lives INSIDE Settings, matching the product: password policy and
+      // SSO sit under Settings → Organization Settings in the UI, so a top-level
+      // Security section contradicted the app it documents. Pages stay in
+      // src/content/docs/suite/security/, so no URL moved -- same as Gen AI Keys
+      // and Tunnels below, which also point at pages owned by other sections.
+      {
+        label: 'Security',
+        collapsed: true,
+        items: [
+          { label: 'Password Policy', slug: 'suite/security/password-policy' },
+          { label: 'Two-Factor Authentication', slug: 'suite/security/two-factor-authentication' },
+          {
+            label: 'Single Sign-On (SSO)',
+            collapsed: true,
+            items: [
+              { label: 'Google SSO', slug: 'suite/security/google-sso' },
+              { label: 'Azure SSO', slug: 'suite/security/azure-sso' },
+              { label: 'Okta SSO', slug: 'suite/security/okta-sso' },
+            ],
+          },
+        ],
+      },
       { label: 'Custom Fields', slug: 'suite/settings/custom-fields' },
       { label: 'Labels', slug: 'suite/settings/labels' },
       { label: 'iOS Settings', slug: 'suite/settings/ios-settings' },
