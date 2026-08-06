@@ -12,6 +12,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { withDocsBase } from '../src/lib/site-config.mjs';
 import {
 	SUITE_REGIONS,
 	CANONICAL_HOSTS,
@@ -124,10 +125,13 @@ test("each product's overview page still renders as ordinary markdown", () => {
 
 test('an endpoint page links to its OWN product for authentication', () => {
 	for (const { slug, html, product } of endpoints) {
-		const expected =
+		// Base-prefixed like every other in-site link: the site is served from a
+		// sub-path, so asserting the bare path would only pass if base were dropped.
+		const expected = withDocsBase(
 			product === 'arcus'
 				? '/arcus/api-reference/overview/#authentication'
-				: '/suite/api/overview/#authentication';
+				: '/suite/api/overview/#authentication'
+		);
 		assert.ok(
 			html().includes(`href="${expected}"`),
 			`${product}/${slug}: auth link should point at ${expected}`

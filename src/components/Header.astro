@@ -18,6 +18,7 @@
 import ThemeSelect from './ThemeSelect.astro';
 import Breadcrumbs from './Breadcrumbs.astro';
 import { isApiReferencePath, isArcusPath } from '../starlightRouteData';
+import { withBase } from '../lib/base';
 
 // The REST API reference is its own destination: this tab lights up on
 // /suite/api/*, and the route middleware swaps the left nav to the endpoint
@@ -33,12 +34,14 @@ const isChangelog = Astro.url.pathname.includes('/changelog');
 const sections = [
 	{
 		label: 'Documentation',
-		href: onArcus ? '/arcus/get-started/what-is-arcus/' : '/suite/get-started/introduction/',
+		href: withBase(
+			onArcus ? '/arcus/get-started/what-is-arcus/' : '/suite/get-started/introduction/'
+		),
 		current: !isApiReference && !isChangelog,
 	},
 	{
 		label: 'API reference',
-		href: onArcus ? '/arcus/api-reference/overview/' : '/suite/api/overview/',
+		href: withBase(onArcus ? '/arcus/api-reference/overview/' : '/suite/api/overview/'),
 		current: isApiReference,
 	},
 	// No 'Arcus' tab: switching product is the sidebar head's job now
@@ -46,7 +49,7 @@ const sections = [
 	// drift, and this one was a dead `href: '#'`.
 	{
 		label: 'Changelog',
-		href: onArcus ? '/arcus/changelog/' : '/suite/changelog/',
+		href: withBase(onArcus ? '/arcus/changelog/' : '/suite/changelog/'),
 		current: isChangelog,
 	},
 ];

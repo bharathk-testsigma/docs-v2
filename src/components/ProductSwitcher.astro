@@ -9,18 +9,19 @@
  * is chosen from the URL prefix by starlightRouteData.ts.
  */
 import { isArcusPath } from '../starlightRouteData';
+import { withBase } from '../lib/base';
 
 const PRODUCTS = [
 	{
 		label: 'Suite',
 		description: 'AI-native test automation',
-		href: '/suite/get-started/introduction/',
+		href: withBase('/suite/get-started/introduction/'),
 		arcus: false,
 	},
 	{
 		label: 'Arcus',
 		description: 'AI-native test management',
-		href: '/arcus/get-started/what-is-arcus/',
+		href: withBase('/arcus/get-started/what-is-arcus/'),
 		arcus: true,
 	},
 ];
@@ -30,8 +31,8 @@ const current = PRODUCTS.find((p) => p.arcus === onArcus) ?? PRODUCTS[0];
 ---
 
 <div class="ts-switch-row">
-	<a href="/" class="ts-switch-brand" aria-label="Testsigma docs home">
-		<img src="/testsigma-mark.svg" alt="" width="28" height="28" />
+	<a href={withBase('/')} class="ts-switch-brand" aria-label="Testsigma docs home">
+		<img src={withBase('/testsigma-mark.svg')} alt="" width="28" height="28" />
 		<span class="ts-switch-sep" aria-hidden="true"></span>
 		<span class="ts-switch-docs">Docs</span>
 	</a>

@@ -3,18 +3,43 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { suiteV2 } from './src/data/sidebar-suite-v2.mjs';
 import { arcusNav } from './src/data/sidebar-arcus.mjs';
+import { DOCS_BASE, withDocsBase } from './src/lib/site-config.mjs';
+import { rehypeBaseLinks } from './src/lib/rehype-base-links.mjs';
 
 // https://astro.build/config
 export default defineConfig({
+	// The site is served under a sub-path, not the domain root:
+	//   production  https://testsigma.com/docs-new/
+	//   staging     https://website.testsigma.com/docs-new/
+	//
+	// This cannot be done at the Apache layer instead: a proxy can rewrite the
+	// REQUEST path, but the built HTML and JS carry absolute URLs, and some are
+	// constructed at runtime from import.meta.env.BASE_URL (Pagefind's
+	// bundlePath in Search.astro) where no response rewriting can reach them.
+	//
+	// Astro re-prefixes the links it generates; hand-written paths go through
+	// withBase()/stripBase() in src/lib/base.ts.
+	base: DOCS_BASE,
 	// No landing page: the docs root is the introduction. The three entries below
 	// are the pages Introduction absorbed -- their URLs are kept alive because
 	// they were the linkable ones (What is Testsigma? was the site root's target,
 	// and Terminology was linked from quickstarts and Arcus).
+	//
+	// NOTE the asymmetry: Astro applies `base` to the KEYS (the route each
+	// redirect is emitted at) but NOT to the VALUES. Without withDocsBase() here
+	// every redirect would land outside the docs, on the website's own /suite/ 404.
 	redirects: {
-		'/': '/suite/get-started/introduction/',
-		'/suite/get-started/what-is-testsigma/': '/suite/get-started/introduction/',
-		'/suite/get-started/terminology/': '/suite/get-started/introduction/#terminology',
-		'/suite/get-started/execution-stacks/': '/suite/get-started/introduction/#execution-stacks',
+		'/': withDocsBase('/suite/get-started/introduction/'),
+		'/suite/get-started/what-is-testsigma/': withDocsBase('/suite/get-started/introduction/'),
+		'/suite/get-started/terminology/': withDocsBase('/suite/get-started/introduction/#terminology'),
+		'/suite/get-started/execution-stacks/': withDocsBase(
+			'/suite/get-started/introduction/#execution-stacks'
+		),
+	},
+	// Authors write in-site links as '/suite/...'; this re-prefixes them with
+	// `base` at build time. See the plugin for why it is not done in content.
+	markdown: {
+		rehypePlugins: [rehypeBaseLinks(DOCS_BASE)],
 	},
 	integrations: [
 		starlight({

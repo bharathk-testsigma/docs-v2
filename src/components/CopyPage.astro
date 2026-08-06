@@ -10,8 +10,13 @@
  * so the copied text is the real source rather than scraped DOM. The URL is
  * computed at build time from the current route -- no client-side guessing.
  */
-const path = Astro.url.pathname.replace(/\/$/, '');
-const mdUrl = (path === '' ? '/index' : path) + '.md';
+/* Stripped first, then re-prefixed: the `.md` endpoint lives under the same
+   base, but the site root must resolve to `<base>/index.md` rather than turning
+   the base segment itself into `/docs-new.md`. */
+import { stripBase, withBase } from '../lib/base';
+
+const path = stripBase(Astro.url.pathname).replace(/\/$/, '');
+const mdUrl = withBase((path === '' ? '/index' : path) + '.md');
 ---
 
 {/* `data-pagefind-ignore`: this control sits inside the indexed content region,
