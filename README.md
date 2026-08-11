@@ -278,7 +278,7 @@ the workflow). What is left is infrastructure:
 | ECR repos `docs-v2-staging` / `docs-v2-production` | AWS |
 | OIDC trust policy extended to this repo | AWS — the role currently trusts `TestsigmaInc/website` only. |
 | Repo secrets + GitHub App install | This repo's Actions settings. |
-| `.Deployments.docsNew` on the **`prod`** branch | `devops-helm` — the change is currently only on `staging`. |
+| `.Deployments.docsNew` in both `staging-values.yaml` and `production-values.yaml` | `devops-helm` — both live on the **`prod`** branch; there is no `staging` branch. |
 
 **Vercel** is also configured (`vercel.json`) and is the only target where the
 Ask AI API runs as a serverless function. On the httpd/EKS path there is no

@@ -64,7 +64,7 @@ jobs:
             echo "SITE_URL=https://testsigma.com/docs-new/" >> $GITHUB_ENV
           elif [[ "${{ inputs.Environment }}" == "staging" ]]; then
             echo "AWS_ROLE_ARN=${{ secrets.WEBSITE_AWS_GITHUB_OIDC_ROLE_ARN }}" >> $GITHUB_ENV
-            echo "HELM_BRANCH=staging" >> $GITHUB_ENV
+            echo "HELM_BRANCH=prod" >> $GITHUB_ENV
             echo "VALUES_FILE=staging-values.yaml" >> $GITHUB_ENV
             echo "CLOUD_FRONT_DISTRIBUTION_ID=${{ secrets.WEBSITE_CLOUD_FRONT_DISTRIBUTION_ID_ELB_V1 }}" >> $GITHUB_ENV
             echo "SITE_URL=https://website.testsigma.com/docs-new/" >> $GITHUB_ENV
