@@ -36,6 +36,17 @@ COPY dist/ htdocs/docs-new/
 # image change.
 RUN printf '%s' 'ok' > htdocs/index.html
 
+# The Ask AI retrieval index (~9MB of the 57MB build) is read from the FILESYSTEM
+# by api/ask.ts on Vercel — vercel.json bundles it into the function. Nothing in
+# the browser ever fetches it. Astro copies it out of public/ into dist/ all the
+# same, so without this it rides along in the image and is publicly downloadable
+# at /docs-new/ask-index.bin. Removed rather than blocked in httpd config: the
+# bytes should not be in the layer at all.
+#
+# If /api/ask is ever served from this pod (see deploy/README.md), the index has
+# to come back — but as a file the API reads, not as a document-root asset.
+RUN rm -f htdocs/docs-new/ask-index.bin htdocs/docs-new/ask-index.meta.json
+
 # Fail the build rather than ship an image that 404s everywhere: an empty or
 # stale dist/ is otherwise indistinguishable from a good one until it is live.
 RUN test -f htdocs/docs-new/index.html \

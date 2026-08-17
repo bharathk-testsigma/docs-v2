@@ -1,0 +1,33 @@
+# The deploy workflow runs `docker build .` from the repo root AFTER `npm ci` and
+# `npm run build`, so without this the build context is the whole working tree —
+# node_modules (hundreds of MB), .git, and a second copy of the Pagefind index in
+# public/. All of it is uploaded to the daemon on every build and none of it is
+# used: the Dockerfile copies exactly two paths, dist/ and apache2/.
+node_modules/
+.git/
+.github/
+.astro/
+.vscode/
+.claude/
+
+# Generated into public/ by `postbuild` purely so that search works under
+# `astro dev`. The copy that ships is dist/pagefind.
+public/pagefind/
+
+# Source, tooling and docs — none of it is in the image.
+src/
+tests/
+scripts/
+api/
+httpd-conf/
+deploy/
+*.md
+tsconfig.json
+astro.config.mjs
+vercel.json
+package*.json
+
+# Never let a local .env reach the build context.
+.env
+.env.*
+!.env.example
