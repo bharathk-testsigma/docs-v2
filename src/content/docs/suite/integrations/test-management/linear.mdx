@@ -2,32 +2,54 @@
 title: Linear
 description: Connect Linear so bugs flow from a Testsigma run result into your Linear project in one click.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 208
   label: Linear
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Linear integration pushes bugs from a run result into a Linear project. Screenshots and annotations travel with each issue. Connecting takes one API key; reporting happens from any test case result.
+Linear integration pushes bugs from a Testsigma run result into your Linear project. Screenshots, annotations, and team sharing travel with each bug. Connecting takes one API key.
 
 <Prerequisites>
 
-- You have a **Linear API key**, generated under Linear's API settings.
+- A **Linear API Key**. See [Linear's API and webhooks docs](https://linear.app/docs/api-and-webhooks) to generate one.
 
 </Prerequisites>
 
-## Connect
+## Connect Linear
 
 <Steps>
 
-1. **Open integrations** — Go to **Settings → Integrations** and enable the **Linear** toggle.
+1. **Open integrations**: Go to **Settings > Integrations**.
 
-2. **Enter the key** — In the **Linear details** dialog, enter the **API Key**.
+2. **Enable the widget**: Turn on the toggle on the **Linear** widget.
 
-3. **Save** — Click **Save & Enable**.
+3. **Enter the key**: In the **Linear Details** overlay, enter the **API Key** and click **Save & Enable**.
 
 </Steps>
 
-Then report from any run: open the failing **Test Case Result**, click **Report Bug**, pick the **Linear** icon, review, and click **Report Bug**. **Link to Issue** attaches an existing ticket instead. Testsigma adds the execution video and step screenshots to the created issue automatically.
+## Report a bug
+
+<Steps>
+
+1. **Open the result**: Go to **Run Results** and open the **Test Case Result** where you want to add a bug.
+
+2. **Start the report**: Click **Report Bug**.
+
+3. **Pick Linear**: In the **Report** overlay, click the **Linear** icon.
+
+4. **Send it**: Review the details and click **Report Bug**.
+
+</Steps>
+
+{/* SCREENSHOT NEEDED: Report overlay with the Linear icon selected */}
+
+Testsigma attaches the execution video and step screenshots to the created issue automatically.
+
+<Aside type="tip">
+To attach an existing Linear issue instead of creating one, open the **Link to Issue** tab, search for the issue, and click **Link To Ticket**.
+</Aside>
+

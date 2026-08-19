@@ -1,55 +1,13 @@
 ---
-title: AI agents
-description: What each Atto agent does, where it runs, what it needs before it can run, and which ones are not released yet.
-pageType: reference
-verified: 2026-07
+title: AI Agents
+description: AI Agents — this page is being written.
+pageType: guide
 sidebar:
-  order: 10
+  order: 20
 ---
 
 import { Aside } from '@astrojs/starlight/components';
 
-Atto is a set of agents rather than one assistant. Each owns a single job, and each runs from the part of the product where that job belongs. This page lists all seven, what each needs, and which are still unreleased.
-
-## Available agents
-
-Five agents are live. The entry point column is where you actually invoke each one.
-
-| Agent | What it does | Entry point |
-| --- | --- | --- |
-| Generator | Generates test cases from requirements, files, recordings, and prompts, then automates the manual steps | **Atto's Home → Generate with AI** |
-| Test Data Generator | Builds a test data profile for a data-driven test case | **Test Case Settings → Test Data Profile → Generate TDP with AI** |
-| Runner | Drives Copilot, Run with Copilot, and Agentic Learning (Beta) execution | **Copilot** in the test case editor |
-| Healer | Corrects element locators that fail during execution | Runs automatically when Auto Healing is on |
-| Analyzer | Identifies the error type and root cause of a failed step, with the evidence captured during the run | **Run Results → Step Details → Analyze with Agent** |
-| Bug Reporter | Files a bug into your tracker from the Analyzer panel, with the context attached | **Analyzer Agent → Report Bug** |
-
-## What each agent needs
-
-An agent that appears to do nothing is usually missing a prerequisite rather than failing.
-
-| Agent | Needs |
-| --- | --- |
-| Generator | Testsigma Terminal installed, and at least one source attached |
-| Test Data Generator | Generative AI features enabled, and a test case open |
-| Runner | Testsigma Terminal running locally |
-| Healer | Auto Healing turned on in preferences |
-| Analyzer | An executed test plan containing at least one failed step |
-| Bug Reporter | An Analyzer run on a failed step, and a bug tracker integrated |
-
 <Aside type="note">
-The Bug Reporter pre-populates the report with the test case name, environment, test plan ID, result URL, error type, root cause, and suggested fixes. A developer does not have to reproduce the failure to read it.
-</Aside>
-
-## Unreleased agents
-
-Two agents appear in the product reference but are not available yet. Do not plan work around them.
-
-| Agent | Intended job | Status |
-| --- | --- | --- |
-| Coverage Planner | Analyses test coverage across your application | Coming soon |
-| Optimizer | Reports on test suite efficiency | Coming soon |
-
-<Aside type="note">
-Agent availability was last confirmed in July 2026. Check the product before you rely on a status here, particularly for the two above.
+This page is being written. Content lands here in an upcoming update.
 </Aside>

@@ -48,7 +48,7 @@ for external use, with the same bearer-key authentication as the rest of this re
 ## Authentication
 
 Every request carries an API key in the `Authorization` header as a bearer token. Generate and revoke
-keys under **Settings → API Keys**.
+keys under **Settings > API Keys**.
 
 ```http
 Authorization: Bearer <API_KEY>
@@ -60,13 +60,11 @@ ready-to-run sample in cURL, JavaScript, and Python.
 
 ## Resource IDs
 
-Most endpoints take a project, application, or upload ID in the path or the request body. Three
-endpoints return those IDs.
+Most endpoints take a project, application, or upload ID in the path or the request body. Upload IDs
+are returned by the endpoint below.
 
 | ID | Request | Endpoint |
 | --- | --- | --- |
-| Project | `GET /projects` | [List projects](/suite/api/projects/list-projects/) |
-| Application | `GET /applications` | [List applications](/suite/api/projects/list-applications/) |
 | Upload | `GET /uploads` | [List uploads](/suite/api/projects/list-uploads/) |
 
 ## Response codes

@@ -2,32 +2,52 @@
 title: monday.com
 description: Connect monday.com so bugs flow from a Testsigma run result into your board with one click.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 305
   label: monday.com
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-monday.com integration pushes annotated issues onto your board mid-session. One click carries the screenshots and context. Connecting takes the account URL and an API key; reporting happens from any test case result.
+monday.com integration lets you file a bug in monday.com from a run result. The ticket carries the test's evidence: annotations, step screenshots, and the execution video. Setup needs two monday.com values.
 
 <Prerequisites>
 
-- Your organisation's **monday.com account URL** and an **API token**.
+- Your organization's monday.com **Account URL** and a monday.com **API Key** (token).
 
 </Prerequisites>
 
-## Connect
+## Connect monday.com
 
 <Steps>
 
-1. **Open integrations** — Go to **Settings → Integrations** and enable the **monday.com** toggle.
+1. **Enable the widget**: go to **Settings > Integrations** and turn on the toggle on the **monday.com** widget.
 
-2. **Enter the details** — **Account URL**, **API Key**, and its confirmation.
-
-3. **Save** — Click **Save & Enable**.
+2. **Enter the details**: in the **Monday.com details** dialog, enter the **Account URL**, **API Key**, and **Confirm API Key**, then click **Save & Enable**.
 
 </Steps>
 
-Then report from any run: open the failing **Test Case Result**, click **Report Bug**, pick the **Monday.com** icon, review, and click **Report Bug**. **Link to Issue** attaches an existing ticket instead. Testsigma adds the execution video and step screenshots to the created issue automatically.
+## Report a bug
+
+<Steps>
+
+1. **Open the result**: go to **Run Results** and open the **Test Case Result** where you want to add a bug.
+
+2. **Start the report**: click **Report Bug**.
+
+3. **Pick monday.com**: in the **Report** overlay, click the **Monday.com** icon.
+
+4. **File it**: enter the bug details in the form and click **Report Bug**.
+
+{/* SCREENSHOT NEEDED: Report overlay with the Monday.com icon selected */}
+
+</Steps>
+
+<Aside type="tip">
+To attach the result to an existing monday.com issue instead, click **Link to Issue**, search for the issue, and click **Link Issue**.
+</Aside>
+
+When the bug is created, Testsigma automatically adds test result context to the monday.com issue, including the test execution video and step screenshots.
+

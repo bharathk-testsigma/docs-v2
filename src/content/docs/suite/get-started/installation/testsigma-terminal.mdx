@@ -1,0 +1,119 @@
+---
+title: Testsigma Terminal
+description: Install Testsigma Terminal — requirements, local ports, the network allowlist for IT, installation, and verification.
+pageType: guide
+verified: 2026-08
+covers:
+  - Requirements
+  - Local ports
+  - Network, proxy, and security requirements
+  - Download and install
+  - Verify the installation
+sidebar:
+  order: 42
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+Terminal is the desktop application behind Copilot, local recording, and local execution. It runs on Windows 10/11 (64-bit), macOS 12 or later, and Linux (64-bit). Mac builds cover Apple Silicon and Intel; Windows and Linux builds are x64.
+
+The machine needs 8 GB of memory, or 16 GB if it also runs an IDE, and 20–30 GB of free disk space. Terminal downloads the agent, Chrome for Testing, browser drivers, and the recorder at runtime. The account also needs permission to install a desktop application and load a browser extension.
+
+The download is 850 MB and extracts to 1.5 GB. Terminal deletes the ZIP after it extracts. The extract location is `%user_profile%\.testsigma\TestsigmaTerminal\` on Windows and `$HOME/.testsigma/TestsigmaTerminal/` on macOS and Linux.
+
+<Aside type="note">
+Each concurrent Terminal or agent instance on one machine, such as several RDP sessions on a server, uses its own memory, CPU, and disk. Multiply the requirements above by the number of instances.
+</Aside>
+
+## Local ports
+
+The agent uses these ports by default. Reconfigure them from **Terminal** > **Settings** > **Ports** if one is already in use.
+
+| Port | Used for |
+| --- | --- |
+| 8383 | Agent HTTP (loopback) |
+| 8484 | Agent HTTPS |
+| 8585 | Agent control channel |
+| 18329 | Debugger component, if installed |
+
+Each concurrent instance needs its own set of ports. Assign a distinct port block per instance.
+
+## Network, proxy, and security requirements
+
+Your IT team will ask for these. Send them this section.
+
+For the network allowlist:
+
+- `*.testsigma.com` and `local.testsigmaagent.com` pass the firewall, proxy, and web filtering.
+- Outbound ports 443 and 80 are open to the Testsigma cloud and asset hosts.
+- The outbound ephemeral port range 10000–65535 is not blocked. Live test sessions and device communication use it.
+- The machine resolves `local.testsigmaagent.com` to `127.0.0.1`.
+
+For proxies and certificates:
+
+- The proxy bypass list includes `local.testsigmaagent.com`, `localhost`, and `127.0.0.1`. This traffic stays on the local machine and must never route through the proxy.
+- The machine trusts any self-signed or internal corporate SSL certificate used on the test environment.
+- Where SSL inspection is active, the Testsigma domains are excluded from it, or the inspection root CA and its full chain are added to Terminal's trust store.
+
+For endpoint security and application control:
+
+- Endpoint protection and EDR tools allow the agent path and its child processes to run from the user profile at `.testsigma`. Those processes are Node.js, Java, ADB, and browser drivers.
+- Application allow-listing tools such as AppLocker and WDAC allow the agent to run from the user profile, because it does not run from Program Files.
+- The machine downloads and runs `.exe`, `.zip`, and `.crx` files without them being blocked or quarantined.
+
+For the browser:
+
+- Browser policy allows installing and enabling extensions, because the recorder loads as one.
+- Where policy disables loading unpacked extensions, which is common on Edge, IT has allowed the recorder extension ID.
+
+## Download and install
+
+Terminal ships as an executable and a compressed archive per platform, plus a Docker image.
+
+| Platform | Executable | Compressed |
+| --- | --- | --- |
+| Mac (Intel) | `.dmg` | `.zip` |
+| Mac (M Series) | `.dmg` | `.zip` |
+| Windows | `.exe` | `.zip` |
+| Linux | `.bin` | `.zip` |
+
+<Steps>
+
+1. **Open the download dialog** — Go to **Agents** and select **Testsigma Terminal** in the top-right corner.
+
+2. **Pick your platform** — Select the download for your platform. Testsigma downloads the installer.
+
+3. **Install and open** — Install **Testsigma Terminal**, then open it.
+
+4. **Sign in** — Select **Login to Testsigma**. Testsigma opens in your browser.
+
+5. **Hand control back** — Select **Open the desktop app**. Terminal opens.
+
+6. **Wait for the download** — Terminal downloads the files it needs and finishes the installation.
+
+</Steps>
+
+<Aside type="note">
+A login session stays valid for 24 hours. Sign in and authorize again after that to keep using Copilot.
+</Aside>
+
+## Verify the installation
+
+The Terminal dashboard lists two sections, each with a status dot per component: **COPILOT** for Web, Mobile, and Salesforce, and **AGENTIC** for Web and Mobile. A green dot means the component is ready. A red dot means it is updating or has an error.
+
+Your machine also appears on the **Agents** page under **Active agent**, with its operating system, available browsers, last successful ping, status, and version.
+
+<Aside type="tip">
+If Terminal has a problem, select **Report Issue** in the left panel. Include a description, the agent log, the App Session ID, and the Debugging ID. The Debugging ID exists only when Testsigma started the agent.
+</Aside>
+
+
+## FAQs
+
+**Why does Copilot say Terminal must be running?**
+
+Copilot needs a live connection to the local agent, and only Terminal provides it. Start Terminal and retry.
+
+**Can I run more than one Terminal on the same machine?**
+
+Yes, but each instance needs its own memory, CPU, disk, and port block. Assign a distinct port block per instance from **Terminal** > **Settings** > **Ports**.

@@ -1,0 +1,79 @@
+---
+# ── Concept page template (v6 IA) — filled sample ──────────────────────────
+# Every style component a concept page may use appears once below, in context.
+# Title: noun phrase naming the mechanism, sentence case
+title: Auto-healing
+# 9-24 words, one sentence, NOT a copy of the intro (W-07, W-08)
+description: How Testsigma repairs broken element locators during a run instead of failing the step.
+pageType: concept
+verified: 2026-08 # YYYY-MM of last product verification (T-24)
+sidebar:
+  order: 40 # integer, spaced by 10 from neighbors
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+{/* Intro: 30-45 words DEFINING the thing. "X is ..." first. No steps, no
+    benefit framing, no anthropomorphism (W-04, W-05). */}
+
+Auto-healing is Testsigma's locator repair mechanism. When a step fails
+because an element's locator no longer matches, auto-healing looks for the
+same element by its other recorded attributes and, if it finds one match,
+continues the run with the updated locator.
+
+## How it works
+
+Every element stores more than one locator — `id`, `xpath`, CSS, and the
+attributes captured at recording time. When the primary locator fails,
+auto-healing tries the alternatives in [locator precedence](/suite/test-authoring/elements/)
+order. A step healed this way is marked in the run result, and the suggested
+locator update waits for your review; nothing is rewritten silently.
+
+Healing happens at run time only. Editing an element in the repository never
+triggers it.
+
+## When it applies
+
+Auto-healing runs when the feature is enabled for the project and the step
+uses a repository element (inline locators are never healed).
+
+| Application type | Supported |
+| ---------------- | ----------------------------------------------------- |
+| Web              | Yes                                                    |
+| Mobile           | Yes                                                    |
+| Salesforce       | Yes                                                    |
+| Windows          | No {/* UNVERIFIED: Windows Advanced healing support */} |
+
+## What it does not do
+
+- It does not create locators for elements that were never recorded.
+- It does not heal a step when two or more candidate elements match — the
+  step fails and the result names both candidates.
+- It does not change the element repository until a reviewer accepts the
+  suggestion.
+
+<Aside type="tip">
+Healing suggestions accumulate under **Elements** > **Review**. Accepting one
+updates every test case that uses the element. Verified August 2026.
+</Aside>
+
+{/* OPTIONAL — multi-topic concept pages only (e.g. the Concepts page in
+    Getting started): drop the three sections above and repeat, per topic:
+
+## Cross-browser testing
+
+<What it is, one paragraph.>
+<How Testsigma does it + the one config fact, one paragraph.>
+See [Test plan](/suite/test-execution/test-plan/) to configure it.
+*/}
+
+{/* v6 rule: behavior-related issues fold in here, symptom-titled, fix-first. */}
+
+## Troubleshooting
+
+### Steps heal on every run
+
+The primary locator is stale, so each run repairs it again. Accept the
+pending suggestion under **Elements** > **Review** to make the healed locator
+primary.
+

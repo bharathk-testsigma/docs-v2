@@ -21,17 +21,11 @@ import CopyPage from './CopyPage.astro';
  * Note: PageTitle.astro renders nothing on these pages, so the `#_top` anchor
  * the table of contents links to lives on this component's <h1> instead.
  */
-import { isArcusPath } from '../starlightRouteData';
 import { regionsForHost } from '../data/regions';
 
 const { entry } = Astro.locals.starlightRoute;
 
-// Both products have an API overview with an #authentication section, and each
-// documents its OWN key. Hardcoding Suite's sent every Arcus endpoint page to
-// the wrong product's page.
-const authHref = isArcusPath(Astro.url.pathname)
-	? '/arcus/api-reference/overview/#authentication'
-	: '/suite/api/overview/#authentication';
+const authHref = '/suite/api/overview/#authentication';
 const api = (entry.data as any).api as
 	| {
 			method: string;
@@ -154,14 +148,6 @@ const pythonCode = api ? buildPython(api.method, fullUrl, api.requestBody, api.f
 const responseJson = api ? JSON.stringify(api.response, null, 2) : '';
 const statusColor = api && api.status < 300 ? '#00a96e' : '#e74c3c';
 ---
-
-{/* Pagefind product filter: every page declares which product it documents,
-    so the search dialog's All/Suite/Arcus chips can filter with true counts.
-    Rendered inside the indexed region (data-pagefind-body); invisible. */}
-<meta
-	data-pagefind-filter="product[content]"
-	content={isArcusPath(Astro.url.pathname) ? 'Arcus' : 'Suite'}
-/>
 
 {/* Frontmatter `searchTerms` → searchable text, WITHOUT putting keywords in the
     rendered page. Pagefind indexes attribute values named in
@@ -789,10 +775,10 @@ const statusColor = api && api.status < 300 ? '#00a96e' : '#e74c3c';
 	.ts-api-params-table tr:last-child {
 		border-bottom: 1px solid var(--ts-bd);
 	}
-	/* No `nowrap` here, and a max rather than a fixed width: Arcus documents
-	   nested attributes like `data.test_cases[].id`, and an unbreakable 26-char
-	   name pushed this column past its 38% share until the description opposite
-	   it wrapped one word per line. Long names now wrap instead of the prose. */
+	/* No `nowrap` here, and a max rather than a fixed width: nested attributes
+	   like `data.test_cases[].id` are unbreakable 26-char names that pushed this
+	   column past its 38% share until the description opposite it wrapped one
+	   word per line. Long names now wrap instead of the prose. */
 	.ts-param-name {
 		padding: 12px 16px 12px 0;
 		vertical-align: top;

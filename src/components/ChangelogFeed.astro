@@ -4,23 +4,11 @@
 //  Renders releases (newest first) grouped under month dividers, each as a card
 //  with a version pill, release date, headline, and change-type sections.
 //  Release content lives as markdown in the `changelog` collection
-//  (src/content/changelog/**); each product is filtered via the `product` prop.
+//  (src/content/changelog/**).
 // ─────────────────────────────────────────────────────────────────────────────
 import { getCollection } from 'astro:content';
 
-// Which product's releases to show. Suite is the default; pass product="arcus"
-// on the Arcus changelog page. Drives both filtering and the header copy.
-interface Props {
-	product?: 'suite' | 'arcus';
-}
-const { product = 'suite' } = Astro.props;
-const PRODUCT_COPY: Record<string, { sub: string }> = {
-	suite: { sub: "What's new in Suite — features, improvements, and fixes in every release." },
-	arcus: {
-		sub: "What's new in Arcus by Testsigma — features, improvements, and fixes in every release.",
-	},
-};
-const copy = PRODUCT_COPY[product] ?? PRODUCT_COPY.suite;
+const copy = { sub: "What's new in Suite — features, improvements, and fixes in every release." };
 
 type Item = { title: string; desc: string };
 type Section = { type: string; items: Item[] };
@@ -61,8 +49,8 @@ function monthOf(date: string): string {
 	return m ? `${m[1]} ${m[2]}` : date;
 }
 
-// Load this product's releases, newest first, and shape them for rendering.
-const entries = (await getCollection('changelog')).filter((e) => e.data.product === product);
+// Load the releases, newest first, and shape them for rendering.
+const entries = await getCollection('changelog');
 const releases: Release[] = entries
 	.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
 	.map((e) => ({

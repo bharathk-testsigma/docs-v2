@@ -2,32 +2,58 @@
 title: Travis CI
 description: Trigger Testsigma runs from a Travis CI build and block deployment until the tests pass.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
-  order: 40
+  order: 106
   label: Travis CI
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Travis CI runs the [shell script](/suite/integrations/ci-cd/shell-script/) from the `script:` phase of `.travis.yml`. Each build triggers the test plan and waits for the outcome. Failed tests fail the build, which keeps a broken change away from deployment.
+Travis CI builds trigger Testsigma test plans through webhooks callable from any CLI tool. The build runs the [shell script](/suite/integrations/ci-cd/shell-script/), waits for the tests, and checks they passed before deployment.
 
 <Prerequisites>
 
-- A Travis CI account connected to your source control, with a pipeline.
-- An API key (**Settings → API Keys → Generate API Key**, then **Copy API Key**) and the test plan ID, set in the script.
+- A Travis CI account with connected source code management.
+- A CI/CD pipeline.
 
 </Prerequisites>
 
-## Configure the build
+## Get the API key and test plan ID
 
 <Steps>
 
-1. **Commit the script** — Save it in the repository as `scripts/trigger_testsigma_tests_and_wait.sh`.
+1. **Generate the key**: Navigate to **Settings > API Keys** and click **Generate API Key**. On the **Generate API Key** overlay, enter a **Key Name** and click **Generate API Key**.
 
-2. **Make it executable** — `chmod +x scripts/trigger_testsigma_tests_and_wait.sh`, committed.
+2. **Copy it**: On the **API Keys** page, hover over the generated key and click **Copy API Key**. This key authenticates the remote trigger requests from Travis CI.
 
-3. **Call it from `.travis.yml`** — Add the script to the build's `script:` phase so the build waits on the result.
+3. **Get the test plan ID**: Navigate to **Test Plans > Test Plan > CI/CD Integrations**. The execution ID is in the **REST API call to start Test Plan** section. It tells the script which plan to trigger.
 
 </Steps>
+
+## Update the shell script
+
+The script lives in your code repository, on GitHub, Bitbucket, Azure, or any such platform, and carries the commands that trigger the test plan remotely. Copy the generic [shell script](/suite/integrations/ci-cd/shell-script/), then set your API key and test plan ID in it.
+
+## Configure the Travis CI pipeline
+
+<Steps>
+
+1. **Save the script**: Store it in the repository as `scripts/trigger_testsigma_tests_and_wait.sh`.
+
+2. **Make it executable**: Run `chmod ugo+x scripts/trigger_testsigma_tests_and_wait.sh`.
+
+3. **Commit it**: Commit the script to your repository.
+
+4. **Call it from the build**: Add it to the `script:` phase of `.travis.yml`:
+
+   ```yaml title=".travis.yml"
+   script:
+     - ./scripts/trigger_testsigma_tests_and_wait.sh
+   ```
+
+</Steps>
+
+With this in place, any change to the repository triggers a build, and the build starts the tests in Testsigma. The script waits until the run completes and verifies that the result is passed.
+

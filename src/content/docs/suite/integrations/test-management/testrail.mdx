@@ -2,43 +2,107 @@
 title: TestRail
 description: Link TestRail test cases to Testsigma automation and push run results back through a Post Plan Hook.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 204
   label: TestRail
+covers:
+  - Export results with a Post Plan Hook
+  - Trigger runs through the API
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-TestRail integration maps TestRail cases onto Testsigma automation and reports results back. Linking works per test case, and the export runs through a Post Plan Hook. Ask support to enable Post Plan Hook first.
+TestRail integration maps TestRail cases onto Testsigma test cases and pushes run results back. Connect once, link cases by ID, then attach a Post Plan Hook.
 
 <Prerequisites>
 
-- A valid **Host URL**, **Username**, and **Password** from TestRail.
-- **Post Plan Hook** enabled on your account — ask Testsigma support.
+- A **Host URL**, **Username**, and **Password** from TestRail.
+- **Post Plan Hook** enabled: contact Testsigma support.
 
 </Prerequisites>
 
-## Connect
-
-Go to **Settings → Integrations**, enable the **Testrail** toggle, enter the **Host URL**, **Username**, and **Password**, and click **Save & Enable**.
-
-## Link test cases
-
-Copy the case **ID** from TestRail — numbers only, drop the letter prefix. Open the Testsigma test case, select **Manage Test Case** from the **Utility Panel**, enter the ID, and click the link icon. Matching names on both sides keeps the mapping readable.
-
-## Export results with the Post Plan Hook
+## Connect TestRail
 
 <Steps>
 
-1. **Assemble the plan** — Suite of linked cases, suite into a test plan.
+1. **Open integrations**: from the left navigation bar, go to **Settings > Integrations**.
 
-2. **Attach the hook** — In **Test Plan Settings**, select **Standard TestRail Addon** under **Post Plan Hook** and enter the `PROJECT_NAME` — it must match TestRail exactly.
+2. **Enable TestRail**: turn on the toggle on the **Testrail** widget.
 
-3. **Run** — **Run Now**. The run duplicates, executes, and **TestRail Result Link** in the top-right opens the TestRail result with the Testsigma Run ID. Post-plan export lags the run by a few seconds — refresh if it shows in progress.
+3. **Enter credentials**: in the **Testrail Details** dialog, enter the **Host URL**, **Username**, and **Password**.
+
+4. **Save**: click **Save & Enable**.
+
+</Steps>
+
+## Link test cases
+
+Before mapping, make sure the project, test runs, and test cases already exist in TestRail.
+
+<Steps>
+
+1. **Copy the ID**: open the test case in TestRail and copy its **ID**. Enter only the numeric portion, ignoring any preceding letters.
+
+2. **Open the Testsigma test case**: navigate to the test case you want to link and select **Manage Test Case** from the **Utility Panel**.
+
+3. **Link it**: enter the TestRail ID in the input box and click the link icon.
+
+</Steps>
+
+Repeat for each TestRail test case you want to map. Keeping the test case names identical in both tools makes the mapping easier to follow.
+
+## Export results with a Post Plan Hook
+
+<Steps>
+
+1. **Build the plan**: create a test suite with the linked test cases and add it to a test plan.
+
+2. **Attach the hook**: in the Test Plan Settings, select **Standard TestRail Addon** from the **Post Plan Hook** dropdown menu.
+
+3. **Name the project**: enter the project name in the **PROJECT_NAME** text box. It must match the project name in TestRail exactly.
+
+   {/* SCREENSHOT NEEDED: Test Plan Settings with Post Plan Hook dropdown and PROJECT_NAME field */}
+
+4. **Run the plan**: go to **Test Plans** and click **Run Now**. Testsigma creates a duplicate of the test run and displays the result once execution completes.
+
+5. **Open the TestRail result**: click **TestRail Result Link** in the top right corner. TestRail shows the result along with the Run ID created in Testsigma.
 
 </Steps>
 
 <Aside type="note">
-**TestRail Custom with Case Match** is the variant addon: it additionally takes an `API_KEY` and a `TEMPLATE_URL` pointing at a JUnit template XML. The template URL must be publicly reachable and expires quickly — copy it from your download history and use it immediately. Reruns update the same result link; a fresh execution creates a new one.
+Post-plan execution can still be in progress after the test cases finish. Wait a few seconds and refresh the page. A rerun updates results at the same link; executing the plan again creates a new result link.
 </Aside>
+
+### Use the TestRail Custom with Case Match addon
+
+If you select the **TestRail Custom with Case Match** addon instead, fill three fields: the project name in **PROJECT_NAME**, a Testsigma API key (from **Settings > API Keys**) in **API_KEY**, and a JUnit template URL in **TEMPLATE_URL**.
+
+To create the template URL:
+
+<Steps>
+
+1. **Download the template**: download the <a href="https://drive.google.com/file/d/1caC7QFZKoShFsRubnIZ-Vze-BcxJqta1/view" rel="nofollow">JUnit template XML</a> to your local system.
+
+2. **Copy the file's URL**: open your browser's **Download History**, locate the downloaded XML file, then right-click it and select **Copy link address** (or click the **Copy download link** icon).
+
+3. **Update the plan**: paste the URL into the **TEMPLATE_URL** field in the Test Plan Settings and click **Create** or **Update**.
+
+</Steps>
+
+<Aside type="note">
+The copied download URL is valid only for a limited time. Use it immediately after copying.
+</Aside>
+
+## Trigger runs through the API
+
+You can also trigger TestRail test runs using APIs. Download the <a href="https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/TR_QT.postman_collection.json.zip" rel="nofollow">Postman collection</a> to get started.
+
+- **Authorization**: a Bearer Token, copied from **Settings > API Keys** in Testsigma.
+- Request body fields:
+  - **TestRail Run ID**: the unique identifier for the test run in TestRail.
+  - **Hook Data**: the **Testsigma API Key** (from **Settings > API Keys**), the **Project Name** associated with the execution, and the **Template URL** of the JUnit template file used to configure result data.
+  - **Title**: a title for the run.
+  - **Execution Lab**: the execution environment or lab used for running the test cases.
+

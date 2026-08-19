@@ -1,20 +1,22 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import { suiteV2 } from './src/data/sidebar-suite-v2.mjs';
-import { arcusNav } from './src/data/sidebar-arcus.mjs';
+import { suite } from './src/data/sidebar-suite.mjs';
 
 // https://astro.build/config
 export default defineConfig({
-	// No landing page: the docs root is the introduction. The three entries below
-	// are the pages Introduction absorbed -- their URLs are kept alive because
-	// they were the linkable ones (What is Testsigma? was the site root's target,
-	// and Terminology was linked from quickstarts and Arcus).
+	// No compatibility redirects: this site is staging/local only, never
+	// published anywhere a link could exist to an old slug. Just the root
+	// and the home/overview slugs that moved during development.
 	redirects: {
-		'/': '/suite/get-started/introduction/',
-		'/suite/get-started/what-is-testsigma/': '/suite/get-started/introduction/',
-		'/suite/get-started/terminology/': '/suite/get-started/introduction/#terminology',
-		'/suite/get-started/execution-stacks/': '/suite/get-started/introduction/#execution-stacks',
+		// Docs home lives at the site root.
+		'/': '/home/',
+		'/suite/home/': '/home/',
+		'/suite/get-started/home/': '/home/',
+		'/suite/get-started/': '/suite/get-started/overview/',
+		// Overview moved into get-started/ when the sidebar became folder-driven
+		// (2026-08-17) and each rail section became one content folder.
+		'/suite/overview/': '/suite/get-started/overview/',
 	},
 	integrations: [
 		starlight({
@@ -24,6 +26,33 @@ export default defineConfig({
 			// unset). Same mark the sidebar head uses, extracted from
 			// testsigma-logo.svg -- one asset for both.
 			favicon: '/testsigma-mark.svg',
+			// The SVG above is the primary icon and stays crisp at any size, but it
+			// is not enough on its own: iOS ignores SVG icons, and every browser
+			// still probes /favicon.ico blind (a 404 until now). Both files are
+			// rasterised FROM that same SVG by `npm run favicons`, so the three can
+			// never drift into three different marks.
+			head: [
+				{
+					tag: 'link',
+					attrs: { rel: 'icon', href: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+				},
+				{
+					tag: 'link',
+					attrs: { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
+				},
+				// Preload the header logos: on a full-page navigation the fetch starts
+				// with the HTML instead of after layout, so the wordmark doesn't pop in
+				// last and read as a "reload". Both variants, since the theme decides
+				// late which one shows.
+				{
+					tag: 'link',
+					attrs: { rel: 'preload', as: 'image', href: '/testsigma-logo.png' },
+				},
+				{
+					tag: 'link',
+					attrs: { rel: 'preload', as: 'image', href: '/testsigma-logo-dark.png' },
+				},
+			],
 			// The wordmark and the "Docs" chip are rendered by the SiteTitle
 			// override, so no `logo` config here.
 			description:
@@ -48,6 +77,9 @@ export default defineConfig({
 				// Appends the "Was this page helpful?" row below the pagination.
 				Footer: './src/components/Footer.astro',
 			},
+			// Chain-link anchor icons on headings (Bharath, 2026-08-19, reversing
+			// the 2026-08-18 removal) — Linear-style copyable section links.
+			markdown: { headingLinks: true },
 			pagination: true,
 			tableOfContents: {
 				// Linear's rail nests H3s under their H2, so the reader can see
@@ -56,20 +88,12 @@ export default defineConfig({
 				minHeadingLevel: 2,
 				maxHeadingLevel: 3,
 			},
-			// Both products in ONE sidebar, each under a top-level group. The route
-			// middleware unwraps whichever group matches the URL, so only that
-			// product's tree is ever rendered -- the reader never sees a "Suite" /
-			// "Arcus" wrapper node, just that product's sections at top level.
-			//
-			// Two separate `sidebar` arrays is not an option: Starlight takes exactly
-			// one, and it builds the tree before rendering. Nesting + unwrapping is
-			// the same trick already used to split the API reference out of Suite.
-			sidebar: [
-				{ label: 'Suite', items: suiteV2 },
-				{ label: 'Arcus', items: arcusNav },
-			],
-			// Picks the product tree by URL, then splits API reference out of Suite.
-			// See the file for why it isn't two `sidebar` arrays.
+			// One product (Suite) since Arcus was removed 2026-08-17; when Arcus
+			// returns, wrap each product's tree in a labeled group and unwrap by
+			// URL in the middleware again (see git history).
+			sidebar: suite,
+			// Splits the API reference out of the tree: endpoint pages show only
+			// the endpoint groups, every other page shows everything else.
 			routeMiddleware: './src/starlightRouteData.ts',
 			expressiveCode: {
 				// ONE theme, and a dark one, so code blocks stay dark on the light

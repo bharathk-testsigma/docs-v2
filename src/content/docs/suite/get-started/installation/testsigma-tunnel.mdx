@@ -1,0 +1,67 @@
+---
+title: Testsigma Tunnel
+description: Install the Testsigma Tunnel client and use a tunnel in a run to test applications the public internet cannot reach.
+pageType: guide
+verified: 2026-08
+covers:
+  - Architecture
+  - Install and start the client
+  - Use a tunnel in a run
+sidebar:
+  order: 43
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Tunnel tests a private server URL or a locally hosted application on real browsers and devices. It needs no IP allowlisting and exposes nothing to the internet. The client opens a secure connection to the Testsigma cloud over WebSocket, HTTPS, and SSH.
+
+Five pieces make up the architecture:
+
+- **Tunnel client** — A binary you install on a machine that can reach your application.
+- **Authentication server** — Processes the client's authentication request and assigns a tunnel server.
+- **Tunnel server** — A virtual machine or container in a Testsigma data centre, running an HTTP and TCP proxy.
+- **Automation environment** — The browser or REST API client running your test, which uses the tunnel server as a proxy.
+- **Remote address** — The URL under test, whether localhost, a privately hosted site, or a public site.
+
+## Install and start the client
+
+<Steps>
+
+1. **Open the download** — Go to **Settings** > **Testsigma Tunnel**.
+
+2. **Pick your architecture** — Select the download icon in the top-right corner and choose the file for your machine.
+
+3. **Extract it** — Extract the ZIP file to a directory of your choice.
+
+4. **Copy your API key** — Go to **Settings** > **API Keys** and copy the key.
+
+5. **Run the binary** — In the extracted folder, run `TestsigmaConnect` with your key.
+
+</Steps>
+
+```bash
+./TestsigmaConnect --key <your-authentication-key>
+```
+
+Set the key and other parameters in the `args.yaml` file in the same directory instead, if you prefer not to pass them on the command line.
+
+To run Tunnel in a container, create a `docker-compose.yml` using the `testsigmainc/testsigma-tunnel` image. Set `KEY` to your API key and `TUNNEL_NAME` to the tunnel's name.
+
+## Use a tunnel in a run
+
+<Steps>
+
+1. **Start the run** — On the test case details page, select **Run**.
+
+2. **Open the capabilities** — In the **Ad-Hoc Run** overlay, select the **Test Lab** and **Test Machine**, then select **Desired Capabilities**.
+
+3. **Name the tunnel** — Add the capability below.
+
+</Steps>
+
+| Key | Data type | Value |
+| --- | --- | --- |
+| `testsigmaLab.tunnelName` | String | `<tunnel_name>` |
+
+For a REST API step, set the tunnel in the step's **Settings**, under the advanced API settings.
+

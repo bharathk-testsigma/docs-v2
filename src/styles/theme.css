@@ -1,77 +1,86 @@
 /* ---------------------------------------------------------------------------
-   Testsigma Suite Docs V2 theme.
-   Ported from the design canvas `Suite Docs V2.dc.html`.
+   Testsigma Docs V4 theme.
+   Ported from the design canvas `Testsigma Docs V4.dc.html`.
 
-   The design defines its own 20-token palette (--bg/--tx/--ac/...) and uses
-   NO tokens from the marketing design system -- only its Inter @font-face.
-   Verified: zero references to --brand-*, --text-*, --fs-*, --sp-*, --radius-*,
-   --shadow-*, or the .ts-* classes, and _ds_bundle.js exposes components: [].
+   V4 is a MONOCHROME shell: the accent IS the text navy, so active states read
+   by weight and a hairline bar rather than by hue. Brand teal survives only in
+   the logo mark and the "Book a demo" button. The canvas defines its own
+   palette (--bg/--tx/--ac/...) and takes nothing from the marketing design
+   system except Inter -- the navy scale is the design system's Atlassian-style
+   --text-* ramp (#091E42 / #42526E / #64718C) restated locally.
+
+   The V4 token NAMES from the canvas are mapped onto this file's existing
+   --ts-* names rather than renamed, so every downstream rule (asides, tables,
+   code frames, cards) keeps working against one palette swap.
 
    Starlight is dark-first: :root carries dark, [data-theme='light'] overrides.
-   The design is written light-first, so the two blocks below are swapped
+   The canvas is written light-first, so the two blocks below are swapped
    relative to the source file. Values are otherwise verbatim.
    --------------------------------------------------------------------------- */
 
 /* ---- design tokens: dark (Starlight default) ---- */
 :root {
-	--ts-bg: #08080a;
-	--ts-panel: #0c0c0e;
-	--ts-code-bg: #101012;
-	--ts-hover: #171719;
-	--ts-bd: #1e1e21;
-	--ts-bd-soft: #151517;
-	--ts-tx: #f0f0f2;
-	--ts-tx2: #8d8d97;
-	--ts-tx3: #5e5e68;
-	/* Inline-code text. Pure black in light, so a chip reads harder than the prose
-	   around it; in dark that would be invisible, so it stays --ts-tx. */
-	--ts-code-tx: var(--ts-tx);
-	--ts-ac: #5eb8bd;
-	--ts-ac-soft: #131b1c;
-	--ts-on-ac: #08080a;
-	--ts-logo-filter: invert(1) saturate(0) brightness(1.5);
+	--ts-bg: #08090a;
+	--ts-panel: #17181a;
+	--ts-code-bg: #17181a;
+	--ts-hover: #232426;
+	--ts-bd: #2f3032;
+	--ts-bd-soft: #1d1e20;
+	--ts-tx: #f4f4f5;
+	--ts-tx2: #b4b4ba;
+	--ts-tx3: #85858e;
+	/* Monochrome: the accent is the text colour itself. */
+	--ts-ac: #f4f4f5;
+	--ts-ac-soft: #232426;
+	--ts-on-ac: #08090a;
 
 	--ts-note: #9aa4b2;
-	--ts-note-bg: #111113;
-	--ts-note-bd: #232326;
+	--ts-note-bg: #17181a;
+	--ts-note-bd: #2f3032;
 	--ts-warn: #c9a86a;
-	--ts-warn-bg: #131210;
-	--ts-warn-bd: #2b2620;
+	--ts-warn-bg: #2c2a25;
+	--ts-warn-bd: #46403a;
 	--ts-tip: #7aab8c;
-	--ts-tip-bg: #0f1210;
-	--ts-tip-bd: #1f2822;
+	--ts-tip-bg: #272c29;
+	--ts-tip-bd: #3a453e;
 	--ts-dang: #c48179;
-	--ts-dang-bg: #131010;
-	--ts-dang-bd: #2c2220;
+	--ts-dang-bg: #2c2727;
+	--ts-dang-bd: #473d3a;
 
-	/* AI surface (Ask Assistant). Pink→purple marks the AI surface ONLY --
-	   teal --ts-ac stays on search chrome, links, and doc cards. */
+	/* AI surface (Ask Assistant). Pink→purple marks the AI surface ONLY -- it is
+	   the one place colour is allowed in a monochrome shell. */
 	--ts-ai: #e58086;
-	--ts-ai-bd: rgba(229, 128, 134, 0.35);
+	--ts-ai-bd: rgba(229, 128, 134, 0.45);
 	--ts-ai-grad: linear-gradient(95deg, #e58086 0%, #5c27f5 100%);
-	--ts-ai-wash: linear-gradient(95deg, rgba(229, 128, 134, 0.13) 0%, rgba(92, 39, 245, 0.13) 100%);
+	--ts-ai-wash: linear-gradient(95deg, rgba(229, 128, 134, 0.14) 0%, rgba(92, 39, 245, 0.12) 100%);
+
+	--ts-sel-bg: #5c61ce;
+	--ts-sel-tx: #ffffff;
+
+	--ts-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.35);
+	--ts-shadow-chip: 0 0.8px 1.8px rgba(0, 0, 0, 0.55), 0 0.15px 0.45px rgba(0, 0, 0, 0.4);
+	--ts-shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.5);
+	--ts-scrim: rgba(0, 0, 0, 0.55);
 }
 
 /* ---- design tokens: light ---- */
 :root[data-theme='light'] {
 	--ts-bg: #ffffff;
-	--ts-panel: #fcfcfc;
-	--ts-code-bg: #fafafa;
-	--ts-hover: #f4f4f5;
-	--ts-bd: #ececed;
-	--ts-bd-soft: #f4f4f5;
-	--ts-tx: #16161a;
-	--ts-tx2: #61616b;
-	--ts-tx3: #95959e;
-	--ts-code-tx: #000000;
-	--ts-ac: #1a6b70;
-	--ts-ac-soft: #f1f5f5;
+	--ts-panel: #f6f7f8;
+	--ts-code-bg: #f6f7f8;
+	--ts-hover: #e8eaed;
+	--ts-bd: #dcdfe5;
+	--ts-bd-soft: #f0f0f3;
+	--ts-tx: #091e42;
+	--ts-tx2: #42526e;
+	--ts-tx3: #64718c;
+	--ts-ac: #091e42;
+	--ts-ac-soft: #f1f2f4;
 	--ts-on-ac: #ffffff;
-	--ts-logo-filter: saturate(0.15) brightness(0.55);
 
 	--ts-note: #4a5568;
-	--ts-note-bg: #fafafa;
-	--ts-note-bd: #e6e6e8;
+	--ts-note-bg: #f6f7f8;
+	--ts-note-bd: #dcdfe5;
 	--ts-warn: #8a6a2f;
 	--ts-warn-bg: #fcfaf5;
 	--ts-warn-bd: #eae2d2;
@@ -87,6 +96,49 @@
 	--ts-ai-bd: rgba(229, 128, 134, 0.5);
 	--ts-ai-grad: linear-gradient(95deg, #e58086 0%, #5c27f5 100%);
 	--ts-ai-wash: linear-gradient(95deg, rgba(229, 128, 134, 0.11) 0%, rgba(92, 39, 245, 0.07) 100%);
+
+	--ts-sel-bg: #cdcef5;
+	--ts-sel-tx: #091e42;
+
+	--ts-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02);
+	--ts-shadow-chip: 0 0.8px 1.8px rgba(0, 0, 0, 0.13), 0 0.15px 0.45px rgba(0, 0, 0, 0.11);
+	--ts-shadow-pop: 0 12px 32px rgba(9, 30, 66, 0.16);
+	--ts-scrim: rgba(9, 30, 66, 0.4);
+}
+
+/* ---- shell geometry + motion, theme-independent ---- */
+:root,
+:root[data-theme='light'] {
+	/* The canvas centres everything in a 1680px shell with a 24px gutter. The
+	   rail and the content column are both positioned off ONE derived value:
+	   `50%` resolves against the viewport for the fixed rail and against the
+	   page for the flow content, and both exclude the scrollbar (html carries
+	   `scrollbar-gutter: stable`), so the two agree. */
+	--ts-shell: 1680px;
+	--ts-gutter: 24px;
+	--ts-edge: max(var(--ts-gutter), calc(50% - 816px));
+	--ts-rail-w: 288px;
+	/* Width both header side clusters reserve, so the centred search group is
+	   actually centred -- see the note in Header.astro. */
+	/* INVARIANT: search is centred ONLY while BOTH header side clusters fit in
+	   this reservation. The right cluster (API Reference · Changelog · theme ·
+	   Book a demo, 18px gaps) measures ~400px — re-measure and raise this any
+	   time a header item is added, renamed, or resized. */
+	--ts-hdr-cluster: 27rem; /* 432px */
+	--ts-toc-w: 264px;
+	--ts-t: 150ms;
+	--ts-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+	/* HTTP method colours, used on the endpoint PAGES (the rail's own chips are
+	   filled, and carry their fill/text/border triplet in the chip rules). */
+	--ts-m-get: #00a96e;
+	--ts-m-post: #e67e22;
+	--ts-m-put: #2980b9;
+	--ts-m-patch: #8e44ad;
+	--ts-m-delete: #e74c3c;
+	/* "On this page" glyph (Lucide `list`), used as a mask so it inherits the
+	   heading colour. Declared as a token because a data URI inside a mask
+	   shorthand is unreadable inline. */
+	--ts-toc-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 6h13'/%3E%3Cpath d='M8 12h13'/%3E%3Cpath d='M8 18h13'/%3E%3Cpath d='M3 6h.01'/%3E%3Cpath d='M3 12h.01'/%3E%3Cpath d='M3 18h.01'/%3E%3C/svg%3E");
 }
 
 /* ---- map the design tokens onto Starlight's own variables ----
@@ -121,64 +173,95 @@
 	--sl-color-gray-6: var(--ts-bd);
 	--sl-color-gray-7: var(--ts-bd-soft);
 
-	/* Geometry, measured off the design canvas. */
-	--sl-nav-height: 3.5rem; /* 56px header */
-	--sl-sidebar-width: 17.875rem; /* 286px left nav */
-	--sl-sidebar-pad-x: 1rem;
-	--sl-content-width: 70ch; /* the design caps prose at 70ch */
+	/* The header is ONE 64px row (the section-tab strip was removed 2026-08-14;
+	   products switch from the dropdown in the brand cluster). Every sticky
+	   offset -- rail, ToC, scroll padding -- derives from this. */
+	--sl-nav-height: 4rem; /* 64px */
+	--sl-sidebar-width: var(--ts-rail-w); /* 288px left rail */
+	--sl-sidebar-pad-x: 0px;
+	--sl-content-width: 50rem; /* 800px prose column */
 	--sl-content-pad-x: 3rem;
-	--sl-text-code: 0.781rem; /* 12.5px */
+	--sl-text-code: 0.813rem; /* 13px */
 
 	--sl-font: 'Inter', -apple-system, system-ui, 'Segoe UI', sans-serif;
+	/* ui-monospace first (SF Mono on macOS): Courier New led this stack before,
+	   and its hairline strokes made chip text read pale at any colour. Matches
+	   the expressiveCode block stack in astro.config.mjs. */
 	--sl-font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 }
 
-/* ------------------------------------------------------------------ type ---
-   Scale: body 15.5px/1.7, page title 32px (PageTitle.astro), markdown h1 29px,
-   h2 24px, h3 20px, h4 15px.
+/* Short pages have no scrollbar while long ones do; without a stable gutter the
+   viewport width changes and the whole layout appears to zoom on navigation.
+   It is also what makes the two `50%` bases in --ts-edge agree. */
+html {
+	scrollbar-gutter: stable;
+}
 
-   Sizes are set on the .sl-heading-wrapper as well as the heading itself.
-   Starlight wraps each heading with its anchor link in that wrapper and makes
-   the heading `display: inline`, so the wrapper -- not the heading -- owns the
-   em basis for the anchor icon AND the block margins. Sizing only the heading
-   leaves the icon scaled to Starlight's default h2 (24px), which is what makes
-   it render oversized and overlapping the last word. */
+
+/* ------------------------------------------------------ content screenshots ---
+   Every markdown image renders on a framed panel: a padded background with a
+   hairline and rounded corners, so raw app screenshots read as figures instead
+   of floating bitmaps. Write plain markdown (![alt](url)) and the frame is
+   automatic.
+
+   The panel is a FIXED deep navy in both themes, same rationale as the code
+   blocks (see astro.config.mjs): the product screens are white, and a white
+   screenshot on a white panel frames nothing. The gradient tones are the
+   light theme's ink (#091e42) family, so the frame reads as the site's own
+   navy rather than a foreign black. */
+.sl-markdown-content img:not(.ts-hero img) {
+	display: block;
+	max-width: 100%;
+	padding: 20px;
+	margin: 1.25rem 0;
+	background: linear-gradient(135deg, #12274d 0%, #091e42 55%, #0a1730 100%);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 12px;
+	box-sizing: border-box;
+}
+
+/* ------------------------------------------------------------------ type ---
+   V4 scale: body 15.5px/1.65, page title 44px (PageTitle.astro), markdown
+   h2 30px, h3 22px, h4 16px. Headings are 700, not 600 -- with no accent hue
+   left in the shell, weight is the only thing separating a heading from bold
+   prose.
+
+   `markdown.headingLinks: true` in astro.config.mjs wraps each heading in an
+   .sl-heading-wrapper carrying the chain-link anchor; the heading selectors
+   below still match as descendants. Anchor colour is set at the end of this
+   type section. */
 .sl-markdown-content {
 	font-size: 0.969rem; /* 15.5px */
-	line-height: 1.7;
+	line-height: 1.65;
 	color: var(--ts-tx2);
 }
 
 .sl-markdown-content :is(h1, h2, h3, h4) {
 	color: var(--ts-tx);
-	font-weight: 600;
+	font-weight: 700;
 }
-.sl-markdown-content h1,
-.sl-markdown-content .sl-heading-wrapper.level-h1 {
-	font-size: 1.813rem; /* 29px */
-	letter-spacing: -0.022em;
+.sl-markdown-content h1 {
+	font-size: 2.75rem; /* 44px */
+	letter-spacing: -0.03em;
+	line-height: 1.12;
+	text-wrap: balance;
+}
+/* H2 is the section ruler: a big step down from the title but a far bigger step
+   up from the body, so a reader scanning the page has a landmark between the
+   two. */
+.sl-markdown-content h2 {
+	font-size: 1.875rem; /* 30px */
+	letter-spacing: -0.024em;
 	line-height: 1.25;
 	text-wrap: balance;
 }
-/* H2 is the section ruler in the Linear reference -- close to h1 in size, and
-   far bigger than the body. At 18px it read as a bolded paragraph, so a reader
-   scanning the page had no landmark between the title and the prose. */
-.sl-markdown-content h2,
-.sl-markdown-content .sl-heading-wrapper.level-h2 {
-	font-size: 1.5rem; /* 24px */
-	letter-spacing: -0.019em;
-	line-height: 1.3;
-	text-wrap: balance;
-}
-.sl-markdown-content h3,
-.sl-markdown-content .sl-heading-wrapper.level-h3 {
-	font-size: 1.25rem; /* 20px */
-	letter-spacing: -0.013em;
+.sl-markdown-content h3 {
+	font-size: 1.375rem; /* 22px */
+	letter-spacing: -0.016em;
 	line-height: 1.35;
 }
-.sl-markdown-content h4,
-.sl-markdown-content .sl-heading-wrapper.level-h4 {
-	font-size: 0.938rem; /* 15px */
+.sl-markdown-content h4 {
+	font-size: 1rem; /* 16px */
 	letter-spacing: -0.006em;
 }
 
@@ -187,20 +270,22 @@
    prose instead of leaving it floating between two sections. Starlight's flat
    1.5em does neither, so each level gets its own pair.
 
-   The margins go on `.sl-heading-wrapper`, not the heading: Starlight makes the
-   heading `display: inline` inside that wrapper, and inline elements ignore
-   block margins. */
-.sl-markdown-content :not(h1, h2, h3, h4, h5, h6, .sl-heading-wrapper) + .sl-heading-wrapper {
+   With headingLinks on, each heading sits inside an .sl-heading-wrapper
+   (level-h2/level-h3/...), so margins sit on the wrapper and the heading
+   itself is zeroed -- otherwise its margins collapse unpredictably through
+   the wrapper. */
+.sl-markdown-content .sl-heading-wrapper > :is(h1, h2, h3, h4, h5, h6) {
+	margin: 0;
+}
+.sl-markdown-content
+	:not(.sl-heading-wrapper)
+	+ .sl-heading-wrapper:is(.level-h1, .level-h4, .level-h5, .level-h6) {
 	margin-top: 1.75rem;
 }
-.sl-markdown-content
-	:not(h1, h2, h3, h4, h5, h6, .sl-heading-wrapper)
-	+ .sl-heading-wrapper.level-h2 {
+.sl-markdown-content :not(.sl-heading-wrapper) + .sl-heading-wrapper.level-h2 {
 	margin-top: 2rem; /* 32px */
 }
-.sl-markdown-content
-	:not(h1, h2, h3, h4, h5, h6, .sl-heading-wrapper)
-	+ .sl-heading-wrapper.level-h3 {
+.sl-markdown-content :not(.sl-heading-wrapper) + .sl-heading-wrapper.level-h3 {
 	margin-top: 2.5rem; /* 40px */
 }
 .sl-markdown-content .sl-heading-wrapper.level-h2 {
@@ -209,35 +294,42 @@
 .sl-markdown-content .sl-heading-wrapper:is(.level-h3, .level-h4) {
 	margin-bottom: 0.5rem;
 }
+/* Chain-link anchor beside each heading: body-text colour, darkening on
+   hover. Visibility (hover-reveal) is Starlight's own.
+   Per spec (Bharath, 2026-08-19): two spaces of gap (a space ~0.25em), icon
+   2pt smaller than Starlight's default, centred on the heading's line. The
+   centring transform in Starlight's anchor-links.css keys on
+   --sl-line-height-headings, so it is restated per level to match the actual
+   line-heights set on h2/h3 above -- otherwise the icon rides high. */
+.sl-markdown-content .sl-heading-wrapper {
+	--sl-anchor-icon-size: calc(0.8275em - 2pt);
+	--sl-anchor-icon-gap: 0.5em;
+}
+.sl-markdown-content .sl-heading-wrapper.level-h2 {
+	--sl-line-height-headings: 1.25;
+}
+.sl-markdown-content .sl-heading-wrapper.level-h3 {
+	--sl-line-height-headings: 1.35;
+}
+.sl-markdown-content .sl-anchor-link {
+	color: var(--ts-tx2);
+}
+.sl-markdown-content .sl-anchor-link:hover {
+	color: var(--ts-tx);
+}
+/* Starlight's own centring calc plus a small downward nudge (Bharath,
+   2026-08-19): pure line-centring reads high next to descenders. */
+.sl-markdown-content .sl-anchor-icon > svg {
+	transform: translateY(
+		calc((var(--sl-line-height-headings) * 1em - var(--sl-anchor-icon-size)) / 2 + 0.08em)
+	);
+}
 
-/* Anchor link -- hover-only, per Starlight's default: hidden until the pointer
-   is on the heading, then faint, then accent once it's on the icon itself.
-
-   `:after` on the link is Starlight's own hit-area expander (inset -.25/-.5rem);
-   widened here so the 15px icon is a comfortable target rather than a pixel
-   hunt.
-
-   No `scroll-margin-top` on the headings: Starlight already sets
+/* No `scroll-margin-top` on the headings: Starlight already sets
    `scroll-padding-top: calc(1.5rem + var(--sl-nav-height))` on <html>
    (Page.astro), and scroll-padding on the scroller ADDS to scroll-margin on the
    target -- 80px each, so every ToC jump overshot by a full extra bar-height and
    landed inside the previous section. */
-.sl-markdown-content .sl-anchor-link {
-	opacity: 0;
-	color: var(--ts-tx3);
-}
-.sl-markdown-content .sl-heading-wrapper:hover .sl-anchor-link,
-.sl-markdown-content .sl-anchor-link:focus-visible {
-	opacity: 1;
-}
-.sl-markdown-content .sl-anchor-link:hover,
-.sl-markdown-content .sl-anchor-link:focus-visible {
-	opacity: 1;
-	color: var(--ts-ac);
-}
-.sl-markdown-content .sl-anchor-link::after {
-	inset: -0.5rem -0.625rem;
-}
 .sl-markdown-content p {
 	text-wrap: pretty;
 }
@@ -305,8 +397,13 @@
 .sl-markdown-content li::marker {
 	color: var(--ts-tx3);
 }
+/* Linear-style indigo selection: solid indigo in dark, pale lavender in light.
+   Uses tokens because `inherit`/`currentColor` in ::selection resolve against
+   the parent's ::selection, not the element — a literal color per theme is the
+   only reliable way. */
 ::selection {
-	background: var(--ts-ac-soft);
+	background: var(--ts-sel-bg);
+	color: var(--ts-sel-tx);
 }
 
 /* The lede: first paragraph after the page title, per the design. */
@@ -326,24 +423,25 @@
    Declared once for both elements so the two surfaces cannot drift apart. Only
    typography and padding differ below: code is mono, a key is sans.
 
-   `color-mix` toward --ts-tx darkens the border in light and lightens it in
-   dark, correct in both. The shadow is plain black at low alpha: on the dark
-   canvas it has nothing to darken, so it self-disables instead of needing a
-   second token -- there the heavier border carries the edge on its own. */
+   The shadow is plain black at low alpha: on the dark canvas it has nothing to
+   darken, so it self-disables -- there the border carries the edge on its own. */
 .sl-markdown-content :not(pre) > code,
 .sl-markdown-content kbd {
 	background: var(--ts-bg);
-	border: 1px solid color-mix(in srgb, var(--ts-bd) 88%, var(--ts-tx));
-	border-radius: 5px;
-	box-shadow: 0 1px 1px rgb(0 0 0 / 6%);
+	border: 1px solid color-mix(in srgb, var(--ts-bd) 85%, var(--ts-tx));
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
 }
 
 /* ------------------------------------------------------------ inline code -- */
 .sl-markdown-content :not(pre) > code {
 	font-family: var(--sl-font-mono);
-	font-size: 0.86em;
-	padding: 1px 5px;
-	color: var(--ts-code-tx);
+	font-size: 0.9em;
+	font-weight: 500;
+	padding: 2px 8px;
+	/* Match the surrounding text colour (Bharath, 2026-08-19), so a chip in
+	   body prose reads as body, in a table cell as the cell, etc. */
+	color: inherit;
 	/* Long unbroken identifiers (k8s resource names, paths) have no space to wrap
 	   at, so without this they push the content column wide and the whole page
 	   scrolls sideways. */
@@ -355,9 +453,10 @@
 }
 
 /* ============================================================== LAYOUT ======
-   Linear-style split chrome. Starlight's default is one full-width header with
-   the sidebar starting beneath it; Linear gives the sidebar the full viewport
-   height and puts a top bar inside the content column instead.
+   V4 shell: ONE full-width sticky header (two rows) across the top, and below
+   it a 1680px-wide centred body -- 288px rail, prose column, 264px ToC. This
+   is Starlight's own topology, so most of the work here is re-anchoring its
+   fixed elements to the centred shell instead of to the viewport edges.
 
    These rules override Starlight's own, which live in `@layer starlight.core`.
    Unlayered declarations beat layered ones regardless of specificity, so no
@@ -366,29 +465,37 @@
 
 /* `header.header`, NOT `.header`: Expressive Code names its code-frame caption
    `<figcaption class="header">`, so a bare `.header` selector also hits every
-   code block -- the inset below then shifted each caption right by the sidebar
-   width, detaching the title tab from its frame. */
+   code block -- padding rules here would then detach each title tab from its
+   frame.
+
+   No border-bottom: the tab strip inside Header.astro draws the only hairline,
+   so the two rows read as one bar rather than as two stacked bars. */
 header.header {
-	border-bottom: 1px solid var(--ts-bd);
 	background: var(--ts-bg);
-	padding-inline: 1.5rem;
+	border-bottom: none;
+	padding: 0;
 }
 
 @media (min-width: 50rem) {
-	/* Top bar starts where the sidebar ends. */
-	header.header {
-		inset-inline-start: var(--sl-sidebar-width);
-		width: auto;
-		inset-inline-end: 0;
+	/* Starlight reserves room for its mobile menu button on the header's inline
+	   end; on desktop there is no button, so reclaim it. */
+	[data-has-sidebar] header.header {
+		padding-inline-end: 0;
 	}
 
-	/* Sidebar runs the full height, from y=0. */
+	/* The rail: starts under the header, at the shell's left gutter, and carries
+	   the vertical hairline the canvas draws at x=312 -- the column rule between
+	   nav and prose -- as its own border. Its left edge is open: a second rule at
+	   x=24 has only the shell gutter beside it, so it reads as a stray line
+	   rather than a division between two things. */
 	.sidebar-pane {
-		inset-block: 0 0;
+		inset-block: var(--sl-nav-height) 0;
+		inset-inline-start: var(--ts-edge);
+		width: var(--ts-rail-w);
+		background: var(--ts-bg);
 		border-inline-end: 1px solid var(--ts-bd);
-		/* The nav region (.ts-sb-nav) owns scrolling; the pane stays `visible`
-		   so the product-switcher dropdown can extend past the sidebar edge.
-		   Nothing else overflows: the head/foot are pinned and sized. */
+		/* The nav list owns scrolling; the pane itself must not clip, or the
+		   API version dropdown would be cut off at the rail edge. */
 		overflow: visible;
 		display: flex;
 		flex-direction: column;
@@ -396,185 +503,479 @@ header.header {
 	.sidebar-content {
 		flex: 1;
 		min-height: 0;
-		padding: 0;
+		/* Inset on the END only. The start has to be flush: the rail's icons line
+		   up with the section-tab icons in the header above, and both sit on the
+		   shell's 24px gutter -- any left padding here breaks that column.
+		   The -12px/-+12px pair is NOT an inset: overflow-y makes this box clip
+		   horizontally too, and the hover chips extend 12px left of the flush
+		   edge (see the row rules). The pair widens the clip region by exactly
+		   that 12px -- content stays flush, the chip's left corners survive. */
+		margin-left: -12px;
+		padding: 0 12px 0 12px;
 		gap: 0;
+		overflow-y: auto;
+		/* The rail's scrollbar stays invisible until the rail is hovered, so the
+		   nav has no permanent gutter stripe. */
+		scrollbar-width: thin;
+		scrollbar-color: transparent transparent;
+	}
+	.sidebar-pane:hover .sidebar-content,
+	.sidebar-content:focus-within {
+		scrollbar-color: var(--ts-bd) transparent;
+	}
+	.sidebar-content::-webkit-scrollbar-thumb {
+		background: transparent;
+	}
+	.sidebar-pane:hover .sidebar-content::-webkit-scrollbar-thumb,
+	.sidebar-content:focus-within::-webkit-scrollbar-thumb {
+		background: var(--ts-bd);
 	}
 	.sidebar-content::after {
 		display: none;
 	}
+
+	/* The content column sits inside the same shell: rail width on the left,
+	   the shell gutter on the right. */
+	.main-frame {
+		padding-inline-start: calc(var(--ts-edge) + var(--ts-rail-w));
+		padding-inline-end: var(--ts-edge);
+	}
 }
 
-/* ---------------------------------------------------------------- sidebar --
-   Measured off the Linear reference (sidebar ~322px, screenshot ~1.71x):
-     - 38px row pitch: roomier than Starlight's default
-     - group labels are GREY + medium, not dark + bold. Only the group holding
-       the current page goes dark, which is what makes "you are here" readable
-       at a glance in a 223-node tree
-     - the active item has NO background fill -- weight and colour carry it.
-       A fill is reserved for hover.
-     - generous separation between group blocks (~24px), tight between a label
-       and its own items (~4px), so a group reads as one unit
-   Scroll padding is owned by .ts-sb-nav in Sidebar.astro. */
-
-/* ---- group labels ---- */
-#starlight__sidebar summary {
-	padding: 7px 8px;
-	border-radius: 6px;
-}
-#starlight__sidebar summary:hover {
-	background: var(--ts-hover);
-}
-#starlight__sidebar .group-label .large {
-	font-size: 0.844rem; /* 13.5px */
-	font-weight: 500;
-	letter-spacing: -0.003em;
-	/* Half a step brighter than --ts-tx2: plain tx2 reads too faint at 13.5px
-	   on the panel background, but full --ts-tx would erase the "current group
-	   is dark" cue below. */
-	color: color-mix(in srgb, var(--ts-tx) 45%, var(--ts-tx2));
-	line-height: 1.4;
-}
-/* The group containing the current page: dark + heavier, per the reference. */
-#starlight__sidebar details:has(a[aria-current='page']) > summary .group-label .large {
-	color: var(--ts-tx);
-	font-weight: 600;
-}
-#starlight__sidebar summary .caret {
-	color: var(--ts-tx3);
-	width: 1rem;
-	height: 1rem;
+/* Mobile: Starlight turns the rail into a full-width overlay under the header
+   and its own menu button drives it. Keep that mechanism, wear V4's clothes. */
+@media (max-width: 50rem) {
+	.sidebar-pane {
+		background: var(--ts-bg);
+		inset-block: var(--sl-nav-height) 0;
+	}
 }
 
-/* ---- top-level sections are headings, not disclosures ----
-   Only groups nested INSIDE a section collapse. The section itself is a static
-   uppercase label with its pages listed flush beneath it, so a reader sees the
-   whole shape of the product without opening anything (the route middleware
-   forces these open; see starlightRouteData.ts step 3).
-
-   Safe to make inert: Starlight only restores a group's collapse state if the
-   reader clicked its summary, and `pointer-events: none` means these never
-   receive that click -- no stored state can close a section it can't reopen. */
-#starlight__sidebar ul.top-level > li > details > summary {
-	padding-inline: 8px;
-	pointer-events: none;
-}
-#starlight__sidebar ul.top-level > li > details > summary:hover {
-	background: transparent;
-}
-#starlight__sidebar ul.top-level > li > details > summary .caret {
+/* Below the ToC breakpoint the canvas simply drops the ToC -- there is no
+   collapsed "On this page" strip in this design, so Starlight's is hidden and
+   the space it reserves in the main frame is zeroed with it. */
+mobile-starlight-toc {
 	display: none;
 }
-#starlight__sidebar ul.top-level > li > details > summary .group-label .large,
-#starlight__sidebar
-	ul.top-level
-	> li
-	> details:has(a[aria-current='page'])
-	> summary
-	.group-label
-	.large {
-	font-size: 0.719rem; /* 11.5px */
-	font-weight: 700;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	/* Same brightening as the item rows: tx3, then tx2, still read faint at
-	   this size — small caps need the extra contrast most. */
-	color: color-mix(in srgb, var(--ts-tx) 45%, var(--ts-tx2));
+:root,
+:root[data-theme='light'] {
+	--sl-mobile-toc-height: 0rem;
 }
 
-/* Section icons. Sidebar.astro emits one nth-child rule per section, setting
-   `content` + the mask-image (keyed by label, so only matched sections get
-   one); everything shape-independent lives here. Mask + background rather
-   than an <img> so the icon takes the heading's exact colour. */
-#starlight__sidebar ul.top-level > li > details > summary .group-label,
-#starlight__sidebar ul.top-level > li > a.large {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-#starlight__sidebar ul.top-level > li > details > summary .group-label::before,
-#starlight__sidebar ul.top-level > li > a.large::before {
-	width: 13px;
-	height: 13px;
-	flex: none;
-	background: color-mix(in srgb, var(--ts-tx) 45%, var(--ts-tx2));
-	-webkit-mask: center / contain no-repeat;
-	mask: center / contain no-repeat;
+/* ---- ToC column ----
+   Starlight sizes and positions the ToC off --sl-sidebar-width, which in this
+   layout is the LEFT rail -- so both formulas are replaced with the canvas's
+   fixed 264px column. Sticky rather than fixed, so it scrolls with the shell
+   instead of being pinned to the viewport. */
+@media (min-width: 72rem) {
+	.right-sidebar-container {
+		width: var(--ts-toc-w);
+		position: relative;
+	}
+	.right-sidebar {
+		position: sticky;
+		top: var(--sl-nav-height);
+		height: calc(100vh - var(--sl-nav-height));
+		padding-top: 0;
+		border-inline-start: none;
+	}
+	/* `auto`, not 0: the prose column is capped at --sl-content-width, so once
+	   the pane is wider than that the leftover has to go somewhere. Splitting it
+	   evenly centres the column between the rail and the ToC; pinning it to 0
+	   pushed the whole page against the rail and left the gap on one side. */
+	[data-has-sidebar][data-has-toc] .main-pane {
+		width: calc(100% - var(--ts-toc-w));
+		--sl-content-margin-inline: auto;
+	}
 }
 
-/* Space between sibling group blocks, and between a group and a bare link. */
-#starlight__sidebar ul.top-level > li + li {
-	margin-top: 1.5rem; /* 24px */
-}
-#starlight__sidebar ul.top-level > li > details > ul {
-	margin-top: 0.375rem;
+/* ------------------------------------------------------------------ rail --
+   The left navigation, measured off the V4 canvas.
+
+     - every row highlights as a 6px chip inset 8px from both column edges.
+       The canvas draws a full-bleed lozenge (`border-radius: 0 16px 16px 0`)
+       instead; kept the V2 chip on Bharath's call -- the lozenge's rounded end
+       lands on the rail hairline and the two read as one shape
+     - 14px/20px rows, 7px vertical padding
+     - section headings are UPPERCASE 12px/600 and, unlike V2, are real
+       disclosures the reader can collapse
+     - the current page carries a 2px navy bar on the rail's left edge plus
+       weight 600 -- no background fill, and no colour: this shell is
+       monochrome, so "here" is signalled by weight and a rule
+     - nested groups indent by 20px behind their own hairline
+
+   Scroll padding is owned by .sidebar-content (see LAYOUT above). */
+
+#starlight__sidebar {
+	padding: 24px 0 16px;
 }
 
-/* ---- item rows ---- */
+/* ---- rows: links ----
+   `align-items: flex-start`, not `center`: a label long enough to wrap must
+   keep its icon and caret on the FIRST line, level with the text, the way a
+   one-line row reads. Centring floats them into the gap between the two lines
+   instead. The 2px/3px offsets below re-centre each glyph against that first
+   20px line, so a one-line row is pixel-identical either way. */
 #starlight__sidebar a {
-	font-size: 0.844rem; /* 13.5px */
-	font-weight: 450;
-	color: color-mix(in srgb, var(--ts-tx) 45%, var(--ts-tx2));
+	position: relative;
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	/* -6px margin + 6px padding: the hover chip extends 12px LEFT of the icon
+	   while every icon and label keeps its flush-edge position. Derived
+	   paddings below stay content-true because the margin is inherited. */
+	margin-inline-start: -12px;
+	padding: 7px 8px 7px 12px;
 	border-radius: 6px;
-	padding: 8px;
-	line-height: 1.45;
+	font-size: 0.875rem; /* 14px */
+	line-height: 1.4286; /* 20px */
+	font-weight: 400;
+	color: var(--ts-tx2);
 	text-decoration: none;
+	transition:
+		background var(--ts-t) var(--ts-ease),
+		color var(--ts-t) var(--ts-ease);
 }
 #starlight__sidebar a:hover {
 	background: var(--ts-hover);
 	color: var(--ts-tx);
 }
-/* Active page: colour + weight only. No fill -- the reference has none. */
+
+/* Current page: weight and colour only, no fill and no edge bar. The canvas
+   draws a 2px bar on the rail edge; dropped on Bharath's call -- the weight
+   step already carries "you are here", and the bar competed with the column
+   hairline it sat against. */
 #starlight__sidebar a[aria-current='page'],
 #starlight__sidebar a[aria-current='page']:hover {
 	background: transparent;
 	color: var(--ts-tx);
-	font-weight: 550;
+	font-weight: 600;
 }
 
-/* Nested lists. A section's own pages sit flush under its heading (no indent
-   step -- the heading is a label, not a parent row); a sub-folder's pages
-   indent, and carry the guide rule from the Testsigma design canvas.
+/* Row badge -- a quiet pill on the panel fill, e.g. "New" beside Learn &
+   Execute. Declared BEFORE the API-nav block, which restyles the same element
+   as a bare coloured verb and must win. (A `:not([data-api-nav])` guard cannot
+   do that job: as a descendant selector it matches on the <ul>, <li> or <a>
+   between the rail and the badge, so it hits the API rows too.) */
+#starlight__sidebar .sl-badge {
+	flex: none;
+	padding: 3px 8px;
+	border: none;
+	border-radius: 999px;
+	background: var(--ts-panel);
+	font-family: var(--sl-font);
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 1;
+	color: var(--ts-tx2);
+	text-transform: none;
+	letter-spacing: normal;
+}
 
-   Starlight's core CSS hangs a hairline off every nested <li>, which would draw
-   that rule at both levels; zeroed here so the `ul` rules own it. */
+/* ---- rows: group disclosures ---- */
+#starlight__sidebar summary {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin-inline-start: -12px;
+	padding: 7px 8px 7px 12px;
+	border-radius: 6px;
+	cursor: pointer;
+	transition:
+		background var(--ts-t) var(--ts-ease),
+		color var(--ts-t) var(--ts-ease);
+}
+#starlight__sidebar summary:hover {
+	background: var(--ts-hover);
+}
+#starlight__sidebar .group-label {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	flex: 1;
+	min-width: 0;
+}
+#starlight__sidebar .group-label .large {
+	font-size: 0.875rem; /* 14px */
+	line-height: 1.4286;
+	font-weight: 400;
+	color: var(--ts-tx2);
+}
+#starlight__sidebar summary:hover .group-label .large {
+	color: var(--ts-tx);
+}
+
+/* The caret: right-pointing when closed, down when open -- Starlight ships a
+   `right-caret` glyph, so only the rotation changes. */
+#starlight__sidebar summary .caret {
+	flex: none;
+	width: 14px;
+	height: 14px;
+	/* (20px line - 14px glyph) / 2 -- centres it on the first text line. */
+	margin-top: 3px;
+	margin-inline-start: auto;
+	color: var(--ts-tx);
+	opacity: 0.7;
+	transform: rotate(0deg);
+	transition: transform var(--ts-t) var(--ts-ease);
+}
+#starlight__sidebar details[open] > summary .caret {
+	transform: rotate(90deg);
+}
+#starlight__sidebar summary:hover .caret {
+	opacity: 1;
+}
+
+/* ---- top-level sections ----
+   Uppercase headings, still collapsible. The section block gets 22px of air
+   beneath it so the tree reads as blocks rather than one continuous list. */
+#starlight__sidebar ul.top-level > li {
+	margin-bottom: 22px;
+}
+#starlight__sidebar ul.top-level > li > details > summary {
+	margin-bottom: 2px;
+}
+#starlight__sidebar ul.top-level > li > details > summary .group-label .large,
+#starlight__sidebar ul.top-level > li > a.large {
+	font-size: 0.75rem; /* 12px */
+	font-weight: 600;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	color: var(--ts-tx);
+}
+#starlight__sidebar ul.top-level > li > a.large {
+	margin-bottom: 2px;
+}
+
+/* ---- top-of-rail utility rows (Home / API Reference / Changelog) ----
+   Standalone links, not sections: sentence case at row size, so they read as
+   destinations rather than as headings for the pages beneath them. Their
+   framed icons are emitted by Sidebar.astro. */
+#starlight__sidebar ul.top-level > li > a.large[data-nav-utility] {
+	font-size: 0.875rem; /* 14px */
+	font-weight: 400;
+	letter-spacing: normal;
+	text-transform: none;
+	color: var(--ts-tx2);
+	/* Rail rows align to flex-start so a wrapping label keeps its icon on the
+	   first line. These rows are one line by construction and their box is
+	   taller than that line, so the label centres against the box instead of
+	   riding 3px above it. */
+	align-items: center;
+	/* Tighter than the 7px every other row gets: the 22px framed box already
+	   makes these taller than a text row, so full padding read as airy. */
+	padding-block: 3px;
+}
+/* The framed box. A real bordered element rather than part of the icon's mask,
+   so it can take a fill of its own while the glyph (floated over it from the
+   label span by Sidebar.astro) keeps the row's ink.
+   NO negative margin: the box is taller than the 20px line, so it sets the
+   row's content height, and the glyph's `top: 50%` then resolves against the
+   same box the frame centres in. Pulling the box up by 3px made the row 3px
+   shorter than the box's own height and dropped the glyph 1.5px below centre. */
+#starlight__sidebar ul.top-level > li > a.large[data-nav-utility]::before {
+	content: '';
+	width: 22px;
+	height: 22px;
+	flex: none;
+	border: 1px solid var(--ts-bd);
+	border-radius: 8px;
+	transition: background var(--ts-t) var(--ts-ease);
+}
+
+/* State lives on the ICON, not behind the row: hovering fills the box with the
+   SAME wash every other rail row gets behind its whole chip, and the label goes
+   to full ink. Both together would be two highlights for one hover, so these
+   rows drop the row-wide chip. */
+#starlight__sidebar ul.top-level > li > a.large[data-nav-utility]:hover {
+	background: transparent;
+	color: var(--ts-tx);
+}
+#starlight__sidebar ul.top-level > li > a.large[data-nav-utility]:hover::before,
+#starlight__sidebar ul.top-level > li > a.large[data-nav-utility][aria-current='page']::before {
+	/* Exactly the wash a section row's full-width chip uses -- same token, so
+	   the two highlights stay identical if the palette moves. */
+	background: var(--ts-hover);
+	border-color: transparent;
+}
+#starlight__sidebar ul.top-level > li > a.large[data-nav-utility][aria-current='page'] {
+	color: var(--ts-tx);
+	font-weight: 600;
+}
+/* They stack as one cluster -- 22px between every top-level block would spread
+   three one-line rows over the first fold. The last of the run keeps the full
+   gap, so the first real section still starts against open space. */
+#starlight__sidebar ul.top-level > li:has(> a.large[data-nav-utility]) {
+	margin-bottom: 2px;
+}
+#starlight__sidebar
+	ul.top-level
+	> li:has(> a.large[data-nav-utility]):not(:has(+ li > a.large[data-nav-utility])) {
+	margin-bottom: 22px;
+}
+
+/* Section icons are emitted per-section by Sidebar.astro (one nth-child rule
+   carrying `content`, the mask AND its geometry).
+   Deliberately NO blanket `::before` rule here: a top-level entry can also be
+   the current page, and the current-page bar below is a `::before` too -- a
+   shared geometry rule repainted that 2px bar as a 16px icon-sized square. */
+
+/* A section's own pages sit flush under its heading -- the heading is a label,
+   not a parent row -- so no indent step at the first level. Starlight hangs a
+   hairline off every nested <li>; zeroed here so the rules below own it. */
 #starlight__sidebar ul ul li {
 	margin-inline-start: 0;
 	padding-inline-start: 0;
 	border-inline-start: 0;
-}
-#starlight__sidebar .sidebar-content ul ul {
-	padding-left: 0;
-}
-#starlight__sidebar .sidebar-content ul ul ul {
-	padding-left: 12px;
-	margin-left: 9px;
-	border-left: 1px solid var(--ts-bd);
+	margin-bottom: 0;
 }
 
+/* Rows with no icon of their own keep the icon gutter, so labels line up
+   whether or not a row has a glyph -- and so a child's label lands under its
+   parent's label. Padding, not a pseudo-element: `::after` is the current-page
+   bar and `::before` is the icon, so a spacer would have to share one of them.
+   26px = 16 (glyph) + 10 (gap), measured from the flush row edge. */
+#starlight__sidebar ul.top-level > li > details > ul > li > a,
+#starlight__sidebar ul.top-level > li > details > ul > li > details > summary {
+	padding-left: 38px; /* 26px content indent + the 12px chip extension */
+}
+
+/* A sub-folder's pages, indented behind their own hairline. The step is the
+   SAME one every level uses -- 26px, the width of a glyph slot plus its gap --
+   so a child's label always lands under its parent's label, and the guide rule
+   under its parent's icon:
+
+     GET STARTED        icon 25   label 51
+       Overview                   label 51   (child text under parent text)
+       Test Data        icon 51   label 77
+     │   Test Data Profiles       label 77   (same rule, one level down)
+
+   The selector matches the 3rd level and every level below it, and each nested
+   <ul> re-applies the margin, so the pattern recurses on its own. */
+#starlight__sidebar ul ul ul {
+	margin: 6px 0 6px 26px;
+	padding-left: 0;
+	border-left: 1px solid var(--ts-bd);
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+#starlight__sidebar ul ul ul a,
+#starlight__sidebar ul ul ul summary {
+	/* No chip extension here: these rows sit behind the guide hairline, and a
+	   -6px margin would pull the chip across it. */
+	margin-inline-start: 0;
+	padding: 7px 8px 7px 25px;
+	gap: 0;
+}
 /* ---- API reference nav ----
-   On /suite/api/* the left nav holds only the endpoint groups (the swap happens
-   in starlightRouteData.ts), so it stops being a 223-node tree to browse and
-   becomes a flat index of one API: the HTTP method leads each row so the list
-   can be scanned by verb. The entity sections are top-level groups, so they
-   already render as the static uppercase headings above.
+   On an API section the rail holds only the endpoint groups (the swap happens
+   in starlightRouteData.ts), so it stops being a tree to browse and becomes a
+   flat index of one API: the HTTP method leads each row so the list can be
+   scanned by verb. Entity sections render as the uppercase headings above.
 
    Method chip leads the row. Starlight emits it after the label and lays these
-   anchors out as blocks, so the row becomes a flex line here purely to reorder
-   the two -- the accessible name still reads "List projects, GET". The fixed
-   chip gutter keeps every label on one left edge, and aligning to the start
-   keeps the chip on the first line when a long label wraps. */
+   anchors out as blocks, so the row becomes a flex line purely to reorder the
+   two -- the accessible name still reads "List projects, GET". The fixed chip
+   gutter keeps every label on one left edge, and aligning to the start keeps
+   the chip on the first line when a long label wraps.
+
+   Labels WRAP rather than ellipsise: this is the V2 treatment, kept on
+   Bharath's call. An endpoint name is the only thing distinguishing two
+   otherwise identical rows ("List test case results" vs "List test case
+   results (v2)"), so truncating it is the one place a lost word costs a
+   reader real time. */
 #starlight__sidebar [data-api-nav] a {
-	display: flex;
 	align-items: flex-start;
 	justify-content: flex-start;
-	gap: 10px;
+	/* Keeps the base rule's -12px margin: that is what puts the method chip on
+	   the same left edge as the entity headings above it, while still letting
+	   the hover highlight bleed 12px further left so the chip's border is not
+	   flush against it. Opting out of the margin indented every row by 12px
+	   and broke the column. */
+	padding-inline: 12px 10px;
 }
-#starlight__sidebar [data-api-nav] a .sl-badge {
+/* This tree has no section icons, so it gets no icon gutter: the method chip
+   occupies the space a glyph would have. This exists only to cancel the icon
+   gutter the docs rail sets on the same selector -- it is MORE specific than
+   the `[data-api-nav] a` rule above, so it has to restate that rule's 12px
+   rather than zero it. At zero the method chip's border sat flush against the
+   edge of the hover highlight and read as cramped. */
+#starlight__sidebar [data-api-nav] ul.top-level > li > details > ul > li > a {
+	padding-left: 12px;
+}
+/* "Overview" is a top-level LINK in this tree, so the uppercase section-heading
+   treatment above would catch it -- but it is a page, not a section.
+   Keeps the 12px left padding every other row in this rail carries: at 0 it sat
+   12px left of the entity headings and the method chips below it, and its own
+   hover highlight (which bleeds 12px further left, from the base -12px margin)
+   started flush against the label. */
+#starlight__sidebar [data-api-nav] ul.top-level > li > a.large {
+	font-size: 0.875rem; /* 14px */
+	font-weight: 400;
+	letter-spacing: normal;
+	text-transform: none;
+	color: var(--ts-tx2);
+	padding: 7px 8px 7px 12px;
+}
+#starlight__sidebar [data-api-nav] ul.top-level > li > a.large:hover {
+	color: var(--ts-tx);
+}
+#starlight__sidebar [data-api-nav] a > span:not(.sl-badge) {
+	flex: 1;
+	min-width: 0;
+}
+
+/* ---- HTTP method chips ----
+   Each endpoint page carries its method as a Starlight badge in frontmatter.
+   Starlight's variants are semantic (tip/caution/note/default/danger), so they
+   are recoloured here to read as methods: GET green, POST amber, PUT blue,
+   PATCH purple, DELETE red. Filled chips, per V2 -- the canvas writes the verb
+   as bare coloured text instead. */
+#starlight__sidebar [data-api-nav] .sl-badge {
 	order: -1;
 	flex: none;
-	min-width: 2.375rem; /* 38px -- fits DELETE at 9.5px */
+	/* Fixed, not V2's `min-width: 38px`: this theme's mono is Courier New, which
+	   is wider than V2's ui-monospace, so PATCH and DELETE outgrew the gutter
+	   and every label after them started at a different x. 48px fits the
+	   longest verb, so all labels share one left edge. */
+	width: 3rem; /* 48px */
+	padding: 1px 5px;
+	border: 1px solid transparent;
+	border-radius: 4px;
 	text-align: center;
-	margin-top: 1px; /* optical centring against the 13.5px label */
+	margin-top: 1px; /* optical centring against the 14px label */
+	font-family: var(--sl-font-mono);
+	font-size: 9.5px;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	line-height: 1.4;
+	text-transform: uppercase;
+}
+#starlight__sidebar [data-api-nav] .sl-badge.tip {
+	background: #d4f5e9;
+	color: #007a4d;
+	border-color: #a8e6cf;
+}
+#starlight__sidebar [data-api-nav] .sl-badge.caution {
+	background: #fff0d6;
+	color: #8a5c00;
+	border-color: #ffd280;
+}
+#starlight__sidebar [data-api-nav] .sl-badge.note {
+	background: #dbeafe;
+	color: #1d4ed8;
+	border-color: #93c5fd;
+}
+#starlight__sidebar [data-api-nav] .sl-badge.default {
+	background: #f3e8ff;
+	color: #7c3aed;
+	border-color: #c4b5fd;
+}
+#starlight__sidebar [data-api-nav] .sl-badge.danger {
+	background: #fee2e2;
+	color: #b91c1c;
+	border-color: #fca5a5;
 }
 
 /* Stub nodes: real IA positions with no page behind them yet. */
@@ -583,7 +984,6 @@ header.header {
 	cursor: not-allowed;
 	pointer-events: none;
 }
-
 /* ---------------------------------------------------- content / ToC seam ---
    No partition between the content column and the ToC. Starlight draws a
    full-height hairline there (`.right-sidebar` border-inline-start); the
@@ -610,9 +1010,33 @@ header.header {
 	padding-top: 1.5rem;
 }
 
-/* No heading, per Linear. */
+/* "On this page", labelled the way the rail labels a section: uppercase 12px,
+   with a 16px glyph at half opacity. Starlight already renders the <h2> (its
+   text is the `tableOfContents.onThisPage` string), so this only restyles it --
+   the icon is a mask on ::before, same technique as the rail's section icons,
+   so it takes the heading's own colour. */
 starlight-toc nav > h2 {
-	display: none;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0 0 12px;
+	font-size: 0.75rem; /* 12px */
+	font-weight: 600;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	color: var(--ts-tx);
+}
+starlight-toc nav > h2::before {
+	content: '';
+	flex: none;
+	width: 16px;
+	height: 16px;
+	opacity: 0.5;
+	background: currentColor;
+	-webkit-mask: center / contain no-repeat;
+	mask: center / contain no-repeat;
+	-webkit-mask-image: var(--ts-toc-icon);
+	mask-image: var(--ts-toc-icon);
 }
 
 /* The rail. */
@@ -983,15 +1407,19 @@ footer > .meta:empty {
 	border: 3px solid var(--ts-bg);
 }
 
-/* ------------------------------------------------------------------ search */
-.search-input,
-site-search button[data-open-modal] {
-	border: 1px solid var(--ts-bd);
-	border-radius: 7px;
-	background: var(--ts-bg);
-	color: var(--ts-tx3);
-	font-size: 0.813rem;
-	height: 32px;
+/* ------------------------------------------------------------- menu button --
+   Starlight's own mobile menu button is the mechanism behind the rail drawer,
+   but the canvas puts the trigger at the start of the brand cluster. The header
+   renders that trigger and clicks this one, so this one only has to disappear
+   without leaving the disclosure inaccessible. */
+starlight-menu-button button {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
 }
 
 /* ------------------------------------------------------- definition lists --
@@ -1121,14 +1549,16 @@ starlight-toc nav > ul > li:first-child {
 }
 
 /* --------------------------------------------------------------- page title -
-   Linear's h1 sits directly above the lede with no divider and a 32px size
+   The canvas opens the column 36px below the header and closes it 96px above
+   the fold, with the 44px h1 sitting directly over the lede and no divider
    (PageTitle.astro owns the type; this is the surrounding spacing). */
 .content-panel:first-of-type {
-	padding-top: 2.5rem;
+	padding-top: 2.25rem; /* 36px */
 	padding-bottom: 0;
 }
 .content-panel:first-of-type + .content-panel {
-	padding-top: 1rem;
+	padding-top: 1.25rem; /* 20px, per the canvas h1 margin-bottom */
+	padding-bottom: 6rem; /* 96px */
 }
 
 /* -------------------------------------------------------------- hero image --
@@ -1244,3 +1674,25 @@ starlight-toc nav > ul > li:first-child {
 	padding: 3px 6px;
 	white-space: nowrap;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -10,6 +10,8 @@
     "//search": "Pagefind is generated into dist/ by the build, but `astro dev` serves public/ -- so the index is copied there afterwards to make search work in dev. `prebuild` removes the previous copy first, otherwise Astro copies it into dist/ before Pagefind regenerates and the old content-hashed fragments pile up in the deployed output. public/pagefind/ is gitignored.",
     "prebuild": "rm -rf public/pagefind",
     "postbuild": "cp -r dist/pagefind public/pagefind",
+    "favicons": "node scripts/gen-favicons.mjs",
+    "logo:dark": "node scripts/gen-logo-dark.mjs",
     "build:ask-index": "node --env-file=.env scripts/build-ask-index.mjs",
     "dev:ask": "node --import tsx --env-file=.env scripts/dev-server.mjs",
     "test": "node --test \"tests/*.test.mjs\"",

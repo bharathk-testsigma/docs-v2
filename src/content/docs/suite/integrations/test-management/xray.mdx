@@ -2,27 +2,71 @@
 title: Xray
 description: Link Xray tests, test sets, and test plans to their Testsigma counterparts on top of your Jira connection.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 201
   label: Xray
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Xray integration links test artifacts across the two systems. An Xray test maps to a Testsigma test case, a test set to a suite, a test plan to a test plan. It rides on a working Jira connection.
+Xray integration links Xray artifacts to their Testsigma counterparts: test to test case, test set to test suite, test plan to test plan.
 
 <Prerequisites>
 
 - A working [Jira integration](/suite/integrations/bug-reporting/jira/).
-- Xray's **Client ID** and **Client Secret**, from Xray's global API key settings, plus the Jira **Account URL**.
+- Your **Jira Account URL**, plus Xray's **Client ID** and **Client Secret**.
 
 </Prerequisites>
 
-## Connect
+## Connect Xray
 
-Go to **Settings → Integrations**, enable the **Xray** toggle, enter the **Jira Account URL**, **Client Id**, and **Client Secret**, and click **Save & Enable**. Tick **Add Attachments to Test** to ship logs, screenshots, and videos with each execution.
+<Steps>
+
+1. **Open integrations**: navigate to **Settings > Integrations**.
+
+2. **Enable Xray**: turn on the toggle on the **Xray** widget.
+
+3. **Enter credentials**: in the **Xray Details** dialog, enter the **Jira Account URL**, **Client Id**, and **Client Secret**, then click **Save & Enable**.
+
+</Steps>
+
+You can generate the Client ID and Client Secret in Xray. See Xray's <a href="https://docs.getxray.app/display/XRAYCLOUD/Global+Settings%3A+API+Keys" rel="nofollow">Global Settings: API Keys</a>.
+
+<Aside type="tip">
+Check **Add Attachments to Test** to include logs, screenshots, and videos of the execution with each test run.
+</Aside>
 
 ## Link artifacts
 
-The Xray ID is the tail of its Jira URL — `PT-10` from `.../browse/PT-10`. Enter it on the matching Testsigma artifact: the test case details page for a test, the suite for a test set, the plan for a test plan.
+Each Xray artifact links to one Testsigma artifact:
+
+| Xray | Testsigma | Where to link |
+|---|---|---|
+| Test | Test case | Test case details page |
+| Test set | Test suite | Test suite details page |
+| Test plan | Test plan | Test plan details page |
+
+The Xray ID is the key at the end of the artifact's Jira URL. For `https://testserver.atlassian.net/browse/PT-10`, the ID is **PT-10**.
+
+### Link a test case
+
+Get the ID of the test from Xray. Open the matching test case details page in Testsigma, enter the **Xray ID**, and click **Link Test Case**.
+
+{/* SCREENSHOT NEEDED: Xray ID field with Link Test Case button on the test case details page */}
+
+### Link a test set
+
+Get the ID of the test set from Xray (for example, **PT-11**). Open the matching test suite details page, enter the **Xray ID**, and click the link button.
+
+<Aside type="note">
+For execution results to flow for every test case inside the suite, each test case must also be linked to its Xray test.
+</Aside>
+
+### Link a test plan
+
+Get the ID of the test plan from Xray (for example, **PT-12**). Open the matching test plan details page, enter the **Xray ID**, and click **Link Test Plan**.
+
+When you execute the test plan in Testsigma, the execution status updates for the linked test sets in Xray.
+

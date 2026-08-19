@@ -2,32 +2,54 @@
 title: Bugzilla
 description: Connect Bugzilla so annotated bugs flow from a Testsigma run result into your Bugzilla project in one click.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 302
   label: Bugzilla
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Bugzilla integration pushes annotated issues into a Bugzilla project mid-session. One click assigns them and attaches screenshots. Connecting takes the account URL and an API key; reporting happens from any test case result.
+Bugzilla integration lets you file a bug in Bugzilla from a run result. The ticket carries the test's evidence: annotations, step screenshots, and the execution video. Setup needs two values from your Bugzilla account.
 
 <Prerequisites>
 
-- The **Account URL** — your organisation's Bugzilla URL — and an **API key** from your Bugzilla account.
+- Your organization's Bugzilla **Account URL** and a Bugzilla **API Key**.
 
 </Prerequisites>
 
-## Connect
+## Connect Bugzilla
 
 <Steps>
 
-1. **Open integrations** — Go to **Settings → Integrations** and enable the **Bugzilla** toggle.
+1. **Open integrations**: go to **Settings > Integrations**.
 
-2. **Enter the details** — In the **Bugzilla details** dialog: **Account URL** and **API Key**.
+2. **Enable Bugzilla**: turn on the toggle on the **Bugzilla** widget.
 
-3. **Save** — Click **Save & Enable**.
+3. **Enter the details**: in the **Bugzilla details** dialog, enter the **Account URL** and **API Key**, then click **Save & Enable**.
 
 </Steps>
 
-Then report from any run: open the failing **Test Case Result**, click **Report Bug**, pick the **Bugzilla** icon, review, and click **Report Bug**. **Link to Issue** attaches an existing ticket instead. Testsigma adds the execution video and step screenshots to the created issue automatically.
+## Report a bug
+
+<Steps>
+
+1. **Open the result**: go to **Run Results** and open the **Test Case Result** where you want to add a bug.
+
+2. **Start the report**: click **Report Bug**.
+
+3. **Pick Bugzilla**: in the **Report** overlay, click the **Bugzilla** icon.
+
+4. **File it**: enter the bug details in the form and click **Report Bug**.
+
+{/* SCREENSHOT NEEDED: Report overlay with the Bugzilla icon selected */}
+
+</Steps>
+
+<Aside type="tip">
+To attach the result to an existing Bugzilla issue instead, click **Link to Issue**, search for the issue, and click **Link Issue**.
+</Aside>
+
+When the bug is created, Testsigma automatically adds test result context to the Bugzilla issue, including the test execution video and step screenshots.
+

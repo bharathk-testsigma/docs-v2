@@ -2,34 +2,38 @@
 title: Sauce Labs
 description: Run Testsigma tests on Sauce Labs cloud devices by connecting your existing Sauce Labs account.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 402
   label: Sauce Labs
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Sauce Labs integration runs your Testsigma tests on Sauce Labs's cloud devices. Web, mobile web, and mobile tests all qualify. Author in Testsigma as usual, then pick Sauce Labs as the test lab at run time.
+Sauce Labs integration runs Testsigma tests on Sauce Labs cloud devices. Author web, mobile web, and mobile tests as usual, then pick it as the test lab for a run.
 
 <Prerequisites>
 
-- You have the **username** and **API key** from your Sauce Labs account dashboard.
+- Your Sauce Labs **username** and **API key**, from the account dashboard.
 
 </Prerequisites>
 
-## Connect
+## Connect your account
 
 <Steps>
 
-1. **Open integrations** — Go to **Settings → Integrations**, open the **Test Lab** tab, and enable the **Sauce Labs** toggle.
+1. **Open the integration**: under **Settings > Integrations**, on the **Test Lab** tab, enable **Sauce Labs**.
 
-2. **Enter the details** — Username and API key, with the key confirmed.
+2. **Enter your credentials**: in the **Sauce Labs details** dialog, enter the username and API key from Sauce Labs, then confirm the key.
 
-3. **Save** — Click **Save & Enable**.
+3. **Save**: click **Save & Enable**.
 
 </Steps>
 
-## Use it in a run
+To update credentials or remove the lab, click **Manage** on the widget.
 
-On any ad-hoc run or test plan machine profile, select **Sauce Labs** as the **Test Lab** instead of Testsigma Lab. **Manage** on the integration widget updates the credentials or removes the lab later.
+## Select Sauce Labs in a run
+
+When you create an ad-hoc run or a test plan machine profile, select **Sauce Labs** as the **Test Lab** type instead of Testsigma Lab. The run then executes on Sauce Labs cloud devices.
+

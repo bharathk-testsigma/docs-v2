@@ -1,0 +1,186 @@
+---
+title: Projects and applications
+description: Create and manage the projects, applications, and versions that hold your tests, pick an execution engine, and map requirements.
+pageType: guide
+verified: 2026-08
+covers:
+  - Create a project
+  - Supported application types
+  - Execution engines
+  - Manage applications
+  - Manage application versions
+  - Requirements
+  - Delete a project
+searchTerms:
+  - create project
+  - new application
+  - application types
+  - supported platforms
+  - application version
+  - execution engine
+  - classic modern
+  - requirements
+  - delete project
+sidebar:
+  order: 10
+  label: Projects & Applications
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+A project holds the applications you test, and each application in it holds its own versions. Test cases, elements, test data, and everything else you author belong to one application version.
+
+## Create a project
+
+<Steps>
+
+1. Click **Create New** and select **Project**.
+
+2. Enter the **Project Name** and an optional **Description**.
+
+3. To create more than one application, select **Allow adding multiple applications in this project**. Click **Add Application**, select the **Application Type**, and enter a **Name**. A project holds a single application by default.
+
+4. To create more than one version per application, select **Allow multiple versions for applications**.
+
+5. Click **Create**.
+
+</Steps>
+
+
+To edit a project, go to **Project > Project Settings**. The **Edit Project** dialog updates the project details, the multiple applications and versions settings, the project members, the test case types, and the requirement types. Click **Update** to save.
+
+To switch projects, click the current project on the Dashboard, select the **Project**, **Application**, and **Version**, then click **Go to project**.
+
+## Supported application types
+
+The application type decides what you test, which authoring tools appear, and which execution engines are available. Nine types are supported, matching the **Application type** picker in the product.
+
+| Application type |
+| --- |
+| Web application |
+| Salesforce (New) |
+| Android |
+| iOS |
+| Mobile web |
+| Rest API |
+| Windows (Lite) |
+| Windows (Beta) |
+| Unified Mobile (New) |
+
+The type is set per application when you create it and cannot be changed later; a project with multiple applications can mix types. The per-platform sections under Cloud and Desktop cover creating tests for each type.
+
+## Execution engines
+
+Test cases runs tests on 2 engines, Classic and Modern. Modern waits for elements and for the page state before it interacts with them, which reduces timing-related failures, and it handles Shadow DOM and web components more natively than Classic.
+
+You select the engine when you create an application, and the engines on offer depend on the application type.
+
+![Engine version selection while creating a project](https://s3.amazonaws.com/static-docs.testsigma.com/new/projects/applications/Engine_version_in_Project_Selection.png)
+
+| Application type | Available engines |
+|---|---|
+| Web application | Classic and Modern |
+| Unified (Android + iOS) | Modern |
+| Android | Classic |
+| iOS | Classic |
+| Mobile Web | Classic |
+| Salesforce | Classic |
+| REST API | Classic |
+| Desktop | Classic |
+| Windows | Classic |
+
+<Aside type="note">
+The engine cannot be changed after you create the application. To use a different engine, create a new application.
+</Aside>
+
+<Aside type="note">
+When an application type supports more than one engine, the selection appears only if engine selection is enabled for your account. Otherwise Testsigma applies the default engine for that application type and the selection does not appear. Contact support@testsigma.com to have it enabled.
+</Aside>
+
+Addons are engine-specific. A Classic addon is written in Java and a Modern addon in TypeScript, so moving one to the other engine means rebuilding it.
+
+## Manage applications
+
+Applications live under **Project Settings > Edit Project > Applications**.
+
+<Aside type="note">
+The **Applications** tab is hidden while a project holds a single application. To show it, edit the project and allow multiple applications.
+</Aside>
+
+To add an application, click **New Application**, enter the **Application name**, **Description**, and **Version name**, select the **Application type**, and click **Create**.
+
+To edit one, select it from the dropdown, make the changes, and click **Update**.
+
+To delete one, select it from the dropdown, click **Delete Application**, enter `DELETE`, and click **Delete**.
+
+<Aside type="note">
+Deleting an application destroys every version in it, along with the test cases, test data, and uploads in those versions.
+</Aside>
+
+## Manage application versions
+
+A version keeps one line of tests separate from another. If you have 10 tests against version 1.0.0 and a beta build is in development, copy the version, rename the copy to 1.0.0-beta, and add the beta tests there. Work on 1.0.0-beta leaves the tests in 1.0.0 untouched.
+
+Versions live under **Project Settings > Edit Project > Versions**.
+
+<Steps>
+
+1. Click **New version**.
+
+2. Enter a **Name**, an optional **Description**, and the **Start Date - End Date**.
+
+3. (Optional) Turn on **Copy Data from Previous Versions** and select the models to carry forward.
+
+4. Click **Create**.
+
+</Steps>
+
+<Aside type="note">
+Multiple versions are available only if **Allow multiple versions for applications** was selected when the project was created.
+</Aside>
+
+To edit or delete a version, click the ellipsis icon `⋮` next to it and select **Edit Version** or **Delete Version**. Deleting asks you to enter `DELETE` and click **I understand, delete this**.
+
+To find a version's ID, hover over the version name and click **Copy**.
+
+## Requirements
+
+A requirement is a condition or capability the application has to meet, and mapping test cases to requirements is how you track coverage against them. A requirement is functional, non-functional, or domain.
+
+Requirements are created from a test case, not from project settings.
+
+<Steps>
+
+1. Open a test case and click **Manage Test Case** in the utility panel.
+
+2. Click **Create New** in the **Requirement** field.
+
+3. Enter a **Name** and an optional **Description**.
+
+4. Select the **Type**.
+
+5. Select the **Start Date** and **Completion Date**.
+
+6. Click **Create**.
+
+</Steps>
+
+To edit one, expand the **Requirement** field in **Manage Test Case** and click **Edit**.
+
+## Delete a project
+
+<Steps>
+
+1. Go to **Project > Project Settings**.
+
+2. Click **Delete**.
+
+3. Enter `DELETE` and click **Delete** in the **Delete project** dialog.
+
+4. Enter `DELETE` and click **Delete** at the **Delete project** prompt.
+
+</Steps>
+
+<Aside type="note">
+Deleting a project destroys every application and application version in it, along with all of its test cases, elements, test data profiles, custom functions, uploads, requirements, test suites, test plans, run results, and environments.
+</Aside>

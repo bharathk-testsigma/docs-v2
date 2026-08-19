@@ -1,0 +1,159 @@
+---
+title: Testsigma Agent
+description: Install, register, upgrade, and remove the Testsigma Agent, as a process, a service, or a Docker container.
+pageType: guide
+verified: 2026-08
+covers:
+  - Download and install
+  - Start the agent as a process or service
+  - Register the agent
+  - Run the agent in Docker
+  - Upgrade the agent
+  - Make an agent obsolete or delete it
+sidebar:
+  order: 41
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+The agent registers one of your machines so test plans and ad-hoc runs execute on it. It needs 8 GB of memory dedicated to the tests, around 20 GB of disk space, and a dual-core or faster processor. The disk figure includes reserved space for screenshots and downloaded files.
+
+## Download and install
+
+The agent ships as a ZIP file, an executable, a DMG, and a Docker image.
+
+<Steps>
+
+1. **Open the download list** — Go to **Agents** and select **Download Agent**.
+
+2. **Pick your platform** — Select the file for your machine: exe for Windows, dmg for macOS, or bin for Linux. To install from an archive instead, select the ZIP file.
+
+3. **Run the installer** — Open the downloaded file, choose an install location, and let the installer finish. For the ZIP, extract the archive to your home directory.
+
+</Steps>
+
+Install into your home directory rather than a system location. It avoids file permission problems, and it keeps the agent folder out of iCloud and Google Drive sync, which can corrupt files.
+
+The preferred location differs per operating system.
+
+| Operating system | Preferred location |
+| --- | --- |
+| Windows | `C:\Users\<your_username>\` |
+| macOS | `/Users/<your_username>/` |
+| Linux | `/home/<your_username>/` |
+
+## Start the agent as a process
+
+Run the agent as a process when you want it running only while you need it. On Windows, run `start.bat` from the installation folder. On macOS and Linux, open a terminal window, drag `start.sh` into it, and press **Return**.
+
+Startup takes a few minutes. Testsigma then opens the agent registration page. Opening the executable in the installation folder starts the agent too — on Windows that file is `TestsigmaAgent.exe`.
+
+## Start the agent as a service
+
+Run the agent as a service when a machine keeps the agent available without anyone starting it.
+
+<Steps>
+
+1. **Open a command line** — Use Command Prompt on Windows, or a terminal on macOS or Linux.
+
+2. **Go to the wrapper** — In the agent installation folder, go to **Wrapper** > **Bin**.
+
+3. **Start it** — Run `TestsigmaAgent start` on macOS and Linux, or `TestsigmaAgent install` on Windows. Only Windows supports starting the agent at boot.
+
+4. **Stop it** — Run `TestsigmaAgent stop` from the same location.
+
+</Steps>
+
+`TestsigmaAgent` accepts these commands.
+
+| Command | What it does |
+| --- | --- |
+| `console` | Launches in the current console. |
+| `start` | Starts in the background as a daemon process. |
+| `stop` | Stops if running as a daemon or in another console. |
+| `restart` | Stops if running, then starts. |
+| `condrestart` | Restarts only if already running. |
+| `status` | Reports the current status. |
+| `install` | Installs the agent to start automatically at boot. |
+| `installstart` | Installs and starts running as a daemon process. |
+| `remove` | Uninstalls. |
+| `dump` | Requests a Java thread dump if running. |
+
+## Register the agent
+
+<Steps>
+
+1. **Start registration** — On the **Agent Registration** page, select **Register**.
+
+2. **Name the machine** — In the **Add new Agent** dialog, enter a **Name**.
+
+3. **Set the session limit** — Enter the maximum number of sessions.
+
+4. **Set visibility** — Select **Public** or **Private**.
+
+5. **Choose when it activates** — Select **Activate now** or **Activate later**.
+
+6. **Finish** — Select **Register & Activate**. The dialog confirms that registration succeeded.
+
+</Steps>
+
+The agent then appears on the **Agents** page with the browsers available on that machine. The operating system version and browser names can take a few minutes to appear.
+
+<Aside type="tip">
+Choose **Activate later** to add an agent now and activate it another time. Testsigma opens the agent configuration page, which holds the command that activates it later.
+</Aside>
+
+## Run the agent in Docker
+
+Two routes start a local agent in Docker. Register the agent in Testsigma first and pass its activation key to the container, or create and register a new agent while the container boots.
+
+<Steps>
+
+1. **Copy the key** — Go to **Agents**, select the agent, open **Config**, and copy the **Activation Key**.
+
+2. **Write the Compose file** — Create a `docker-compose.yml` that sets `TS_ACTIVATION_KEY` to that key, using the `testsigmainc/testsigma-agent:latest` image.
+
+3. **Start the container** — Run the Compose file.
+
+</Steps>
+
+## Upgrade the agent
+
+Automatic upgrades are on by default, and the agent upgrades itself when a new version is released. Nothing is required of you.
+
+To control when upgrades happen, go to **Agents** > select the agent > **Settings** > **Agent upgrade settings** and select **Manual**. The page then shows the current and latest version numbers, and **Upgrade** applies the new one.
+
+<Aside type="note">
+An upgrade that becomes available during an execution waits until that execution finishes. The agent then upgrades automatically.
+</Aside>
+
+## Make an agent obsolete or delete it
+
+Push an agent to the obsolete state to hide it from the **Agents** list without losing it. Obsolete agents cannot run tests.
+
+<Steps>
+
+1. **Open the list** — Go to **Agents**.
+
+2. **Choose the action** — Select the ellipsis icon (⋯) beside the agent, then select **Obsolete**.
+
+3. **Confirm** — In the **Obsolete agent?** dialog, select **Obsolete Agent**.
+
+</Steps>
+
+Select **Restore** beside the agent to bring it back. To remove an agent for good, select **Delete Permanently** from the same ellipsis menu, then confirm in the **Delete Agent Permanently?** dialog.
+
+<Aside type="note">
+Permanent deletion cannot be undone. Use **Obsolete** if you may want the agent again.
+</Aside>
+
+
+## FAQs
+
+**Do I need both the agent and Terminal?**
+
+No. Terminal downloads and manages an agent for you. Install the agent on its own only when a machine runs test plans with nobody working at it.
+
+**What happens to an obsolete agent?**
+
+Testsigma hides it from the **Agents** list, and it cannot run tests. Select **Restore** beside it to bring it back.

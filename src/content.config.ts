@@ -4,9 +4,8 @@ import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
 
 export const collections = {
-	// Release notes rendered by ChangelogFeed.astro on the per-product
-	// /suite/changelog/ and /arcus/changelog/ pages. Frontmatter holds the meta;
-	// the markdown body holds the notes:
+	// Release notes rendered by ChangelogFeed.astro on /suite/changelog/.
+	// Frontmatter holds the meta; the markdown body holds the notes:
 	//   ## New features        (or "Improvements" / "Fixes")
 	//   **Item title** — one-line description
 	changelog: defineCollection({
@@ -16,9 +15,6 @@ export const collections = {
 			date: z.string(), // e.g. "June 16, 2026"
 			latest: z.boolean().default(false),
 			headline: z.string(),
-			// Suite entries live as flat files (default); Arcus entries live under
-			// changelog/arcus/ and set product: arcus.
-			product: z.enum(['suite', 'arcus']).default('suite'),
 		}),
 	}),
 

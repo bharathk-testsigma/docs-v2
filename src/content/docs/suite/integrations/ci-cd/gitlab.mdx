@@ -2,41 +2,65 @@
 title: GitLab CI
 description: Run the Testsigma trigger script from a GitLab CI job so tests run on every push.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
-  order: 20
+  order: 104
   label: GitLab CI
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-GitLab runs the [shell script](/suite/integrations/ci-cd/shell-script/) as a pipeline job. Commit the script to the project and reference it from `.gitlab-ci.yml`. Every pipeline run then triggers the test plan and waits on the result before later stages run.
+GitLab pipelines run the Testsigma [shell script](/suite/integrations/ci-cd/shell-script/) as a build job. Commit the script to the project, call it from the CI/CD configuration file, and every pipeline run triggers the test plan.
 
 <Prerequisites>
 
-- An API key and the test plan ID are set in the committed script (or injected as CI variables).
-- The script (here `gitlabcicd.sh`) is committed to the project.
+- A GitLab account, a Testsigma API key, and the test plan ID.
 
 </Prerequisites>
 
-## Configure the job
+## Configure the pipeline
 
-In **CI/CD → Jobs**, click **Create CI/CD Configuration file**, or use this job directly:
+<Steps>
 
-```yaml title=".gitlab-ci.yml"
-stages:
- - build
-build-code-job:
- stage: build
- script:
- - echo "Calling Shell Script of testsigma"
- - pwd
- - ls -la
- - chmod a+x gitlabcicd.sh
- - ./gitlabcicd.sh
-```
+1. **Log in**: Sign in to your GitLab account.
+
+2. **Create a project**: Click **New project** and create a blank project or a CI/CD project, as you prefer. On the create project page, enter the details and click **Create project**.
+
+3. **Open the jobs page**: Navigate to **CI/CD** and click **Jobs**.
+
+4. **Create the configuration file**: Click **Create CI/CD Configuration file** to create a YML file, or use this sample job:
+
+   ```yaml title=".gitlab-ci.yml"
+   stages:
+    - build
+   build-code-job:
+    stage: build
+    script:
+    - echo "Calling Shell Script of testsigma"
+    - pwd
+    - ls -la
+    - chmod a+x gitlabcicd.sh
+    - ./gitlabcicd.sh
+   ```
+
+5. **Set the script inputs**: The [shell script](/suite/integrations/ci-cd/shell-script/) (`gitlabcicd.sh` here) triggers the test plan and fetches the run result. In it, replace the `TESTSIGMA_API_KEY` and `TESTSIGMA_TEST_PLAN_ID` values. The key comes from [Settings > API Keys](/suite/settings/developers/), the plan ID from **Test Plans > CI/CD Integrations**.
+
+6. **Commit**: Click **Commit changes**. The job starts to run, and the test plan configured in the script starts with it.
+
+</Steps>
 
 <Aside type="note">
-Any bash runner works as-is, Docker included. On a PowerShell runner, adapt the job to the PowerShell variant of the script and use PowerShell 7 or later.
+Place the script in the same project and call it from the YML file, or fetch it from an external source by giving the appropriate path.
 </Aside>
+
+<Aside type="note">
+Any bash runner works with this YML as-is, the Docker runner included. On a different runner such as PowerShell, modify the YML so it executes there and use PowerShell 7 or above.
+</Aside>
+
+## Check the result
+
+Once the job completes, the execution report is saved as an XML file at the path set in the shell script. The job's detail page shows the run outcome.
+
+{/* SCREENSHOT NEEDED: GitLab job log showing the Testsigma test plan run and result */}
+

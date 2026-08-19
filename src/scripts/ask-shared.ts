@@ -13,8 +13,7 @@ export const IC_COPY =
 export const IC_CHECK =
   '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
 
-export const product = (): 'suite' | 'arcus' =>
-  location.pathname.startsWith('/arcus/') ? 'arcus' : 'suite';
+export const product = (): 'suite' => 'suite';
 
 export function escHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

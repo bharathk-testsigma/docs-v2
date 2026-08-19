@@ -1,0 +1,120 @@
+---
+title: Overview
+description: What Suite is, the four parts of it, what needs installing, and which application types run on which engine.
+pageType: guide
+verified: 2026-08
+covers:
+  - What Suite is
+  - The four parts
+  - What you need installed
+  - Projects and application types
+  - Classic or Modern
+  - Where Atto fits
+sidebar:
+  order: 1
+  label: Overview
+---
+
+import { Aside, CardGrid } from '@astrojs/starlight/components';
+import DocCard from '~/components/DocCard.astro';
+
+Suite is Testsigma's agentic test automation product. You say what needs testing, Atto's agents plan, build, run, and maintain the tests, and you review what they produce. Testsigma hosts the execution infrastructure, so there is no grid to stand up and no test framework of your own to maintain.
+
+<CardGrid>
+	<DocCard
+		icon="layers"
+		title="The four parts"
+		href="#the-four-parts"
+		description="Authoring, Atto, execution, and results, and which nav entry each one is."
+	/>
+	<DocCard
+		icon="download"
+		title="What you need installed"
+		href="#what-you-need-installed"
+		description="Nothing for cloud runs. Three things for everything else."
+	/>
+	<DocCard
+		icon="list-format"
+		title="Projects and application types"
+		href="#projects-and-application-types"
+		description="The nine types a project can target, and what Unified does differently."
+	/>
+	<DocCard
+		icon="box"
+		title="Classic or Modern"
+		href="#classic-or-modern"
+		description="Which engine each application type supports, and why the choice is permanent."
+	/>
+</CardGrid>
+
+{/* SCREENSHOT NEEDED: the Suite left navigation at full height, expanded so Create Tests and Test Data show their child items, light and dark */}
+
+## The four parts
+
+A test case is an ordered list of steps in the order a user would perform them. Each step is an NLP step, Testsigma's human-readable step syntax, so you read a test case as sentences rather than code. Four parts of Suite take that test case from idea to answer.
+
+| Part | What it does | Where it lives |
+| --- | --- | --- |
+| Authoring | Record steps off your app, write NLP steps, or have Atto draft them | **Create Tests**, **Test Data** |
+| Atto | Plans coverage, builds test cases, runs them, and repairs them when the app changes | **Atto's Home**, and inside the recorder and editor |
+| Execution | Decides what runs, on which browsers, devices, and machines, and on what schedule | **Test Suites**, **Test Plans** |
+| Results | Step-level outcomes, screenshots, and the reports you send on | **Run Results**, **Dashboard** |
+
+Suite covers web and mobile applications, mobile web, desktop, Windows, Rest API, Salesforce, and SAP. Visual testing, accessibility testing, and cross-browser and cross-device runs come with it rather than as addons. Jenkins, GitHub, GitLab, Azure DevOps, Bitbucket, and CircleCI are among 30+ native integrations, and anything else can trigger a test plan and poll its status over the REST API.
+
+Three nav entries sit outside those four parts: **Settings** for integrations, Gen AI Keys, and preferences, plus **Save Points** and **Command Center**.
+
+## What you need installed
+
+Running a test on Testsigma Lab needs nothing installed. You sign in, build a test case, and run it from the browser. Three things do need an install.
+
+| Install | Needed for |
+| --- | --- |
+| Testsigma Recorder extension | Recording steps off a web app in your own browser. Chrome, Edge, and Firefox |
+| Testsigma Terminal | Copilot mode, agentic sessions, and recording or running on local devices |
+| SAP Logon | SAP applications, on the machine that runs the tests |
+
+Terminal is a desktop application for macOS, Windows, and Linux. It downloads its own recorder for local sessions, so the two recorders coexist: which one you get depends on where you are recording, not on a setting you choose. A Terminal login stays valid for 24 hours, after which you sign in again.
+
+<Aside type="note">
+Copilot and agentic sessions open Chrome for Testing, a dedicated Chrome build, rather than your everyday browser.
+</Aside>
+
+## Projects and application types
+
+A project targets one application type. The type decides what you record, which step types you get, and where tests run. There are nine: **Web application**, **Unified**, **Salesforce**, **Android**, **iOS**, **Mobile web**, **Rest API**, **Desktop (Beta)**, and **Windows (Lite)**.
+
+**Unified** runs one test case on both Android and iOS. Each element stores a separate Android locator and iOS locator, and Testsigma uses the one that matches the device. You author **Unified** test cases by hand, since Atto does not support the type yet, and you run them on the cloud lab rather than a local device.
+
+SAP applications run under **Desktop**, the advanced Windows path, rather than **Windows (Lite)**.
+
+Your account comes with four sample projects, for Web, Mobile web, Android, and iOS, that you can run and edit.
+
+
+## Classic or Modern
+
+Suite runs tests on two execution engines, **Classic** and **Modern**. **Modern** waits automatically for elements and page state before interacting with them, which cuts timing-related failures, and it handles Shadow DOM and web components more natively than **Classic**. Eight of the nine application types run on **Classic** today. **Web application** offers both, and **Unified** is **Modern** only.
+
+<Aside type="note">
+You pick the engine when you create an application and the choice is permanent. To use a different engine, create a new application. Your existing tests stay as they are.
+</Aside>
+
+The selector only appears when the application type supports more than one engine and engine selection is enabled for your account. **AI Step** and the loop and conditional addons run on **Classic** and are not available on **Modern** yet.
+
+## Where Atto fits
+
+Atto works as a set of agents rather than one assistant, and it is not available for **Unified** applications yet. Each agent owns one job, and you do not invoke them by name.
+
+| Agent | What it does |
+| --- | --- |
+| Generator | Generates test cases from requirements, files, recordings, and prompts |
+| Runner | Drives Copilot and Agentic Learning (Beta) execution |
+| Healer | Corrects element locators that fail during execution |
+| Analyzer | Diagnoses failed steps, and reports patterns and risk signals |
+| Bug Reporter | Files bugs into your tracker from the analysis panel |
+| Coverage Planner | Analyses test coverage across your application |
+| Optimizer | Reports on test suite efficiency |
+
+Two preferences control Atto, both under **Settings > Preferences**. **Generative AI features** covers generation and Copilot. **Auto Healing** is separate, and it governs the locator repair that happens during a run.
+
+---

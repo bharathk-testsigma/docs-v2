@@ -1,0 +1,65 @@
+---
+title: Salesforce NLPs
+description: The Salesforce-specific step grammar — record APIs, navigation, field controls, listview tables, and SOQL.
+pageType: reference
+verified: 2026-07
+sidebar:
+  order: 43
+  label: Salesforce NLPs
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Nineteen Salesforce-specific NLPs sit alongside the standard grammar. Table NLPs cover listviews, and a SOQL step type queries live data. API steps manipulate records directly; UI steps are tuned to Salesforce's components.
+
+## Record API steps
+
+These act on the org through the API, not the browser.
+
+| NLP | Does |
+| --- | --- |
+| *Create record in Salesforce Object Form using Salesforce Connection connection and store the record id in variable test data* | Creates a record from a generated form, returns its ID |
+| *Update record in Salesforce object form where record id is test data using Salesforce connection connection* | Updates by record ID |
+| *Delete record in Salesforce Object where record id is test data using Salesforce Connection connection* | Deletes by record ID |
+| *Get record details from Salesforce Object Form for RECORD_ID test data using Salesforce Connection connection* | Reads a record; store variables and add verifications from the response |
+
+For the get-details step: pick the object and **Select Fields** to choose what comes back. On the **Request Info** tab, enter the **Record ID** — parameterise it with `/` — and **Send Request**. Variables and verifications attach to the response body.
+
+## Session and navigation steps
+
+| NLP | Does |
+| --- | --- |
+| *Login to Salesforce using Salesforce Connection connection* | Signs in as a user connection |
+| *Login to Salesforce Application application using Salesforce Connection connection* | Signs in and lands in an app |
+| *Switch to Salesforce Application application* | Changes app |
+| *Navigate to Salesforce tab* | Changes tab |
+| *Open the Salesforce Object details page where record id is Record ID* | Jumps straight to a record |
+| *Open the create Salesforce Object record form* | Opens a create form |
+| *Open the edit Salesforce Object form where record id is Record ID* | Opens an edit form |
+| *Store the recordID from details page into variable test data* | Captures the current record's ID |
+
+## Field steps
+
+| NLP | Does |
+| --- | --- |
+| *Clear and enter test data in the element field* | Replaces a field's content |
+| *Undo field in element* | Reverts a field |
+| *Select option test data from element picklist* | Picklists |
+| *Select multiple options using value test data in the element multipicklist* | Multipicklists — add |
+| *Remove multiple options using value test data in the element multipicklist* | Multipicklists — remove |
+| *Enter test data in the element richInput text box* | Rich text fields |
+| *Search test data on element lookup* | Lookup fields |
+
+## Listview table NLPs
+
+Salesforce listviews are virtual tables with mixed cell types. Some cells are editable, some are dropdowns, some hold checkboxes. Dedicated table NLPs drive them.
+
+<Aside type="note">
+Create a table element for the listview before using any table NLP, or the step fails at execution.
+</Aside>
+
+## SOQL as a test step
+
+The **SOQL** step type runs a query against live org data mid-test. Pick it from the step options list, choose or parameterise the connection, write the query, and **Run Query**. Read the response as **Table**, **Outline**, or **JSON**. The **Outline** tab turns values into variables and verifications. `SELECT Id, Name FROM Account WHERE Industry = 'Technology' LIMIT 50` is the shape.
+
+Prefer not to write SOQL manually? The **Salesforce Query Builder** in the test case page's **Utility Panel** composes it. Choose the connection and object, add SELECT fields, WHERE conditions, ORDER BY and LIMIT. The query updates live. **Customise Query** edits it directly, and **Run Query** shows the same three result views.

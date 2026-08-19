@@ -68,10 +68,10 @@ function enhance(res) {
 async function serveStatic(req, res) {
   const { pathname } = new URL(req.url, 'http://localhost');
 
-  // Mirror vercel.json's root redirect
+  // Mirror astro.config.mjs's '/' redirect (not read dynamically -- keep in sync by hand).
   if (pathname === '/') {
     res.statusCode = 302;
-    res.setHeader('Location', '/suite/get-started/introduction/');
+    res.setHeader('Location', '/home/');
     res.end();
     return;
   }

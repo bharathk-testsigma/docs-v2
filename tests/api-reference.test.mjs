@@ -19,21 +19,10 @@ import {
 	regionsForHost,
 } from '../src/data/regions.ts';
 
-/**
- * Both products' API references. Arcus's 44 endpoint pages went unchecked while
- * this only walked Suite -- and they render through the same component, so a
- * break in it showed up as 50 passing pages and 44 unverified ones.
- */
 const SECTIONS = [
-	// Counts rose from 51/50 when the collection-derived endpoint pages landed.
-	{ product: 'suite', content: 'suite/api/', dist: 'suite/api/', pages: 135, endpoints: 134 },
-	{
-		product: 'arcus',
-		content: 'arcus/api-reference/',
-		dist: 'arcus/api-reference/',
-		pages: 46,
-		endpoints: 44,
-	},
+	// 46 endpoints + the overview: the legacy-documented set (the generated
+	// rest were deleted 2026-08-11; see sidebar-suite-api.mjs).
+	{ product: 'suite', content: 'suite/api/', dist: 'suite/api/', pages: 47, endpoints: 46 },
 ];
 const srcDir = (rel) => new URL(`../src/content/docs/${rel}`, import.meta.url).pathname;
 const distDir = (rel) => new URL(`../dist/${rel}`, import.meta.url).pathname;
@@ -124,10 +113,7 @@ test("each product's overview page still renders as ordinary markdown", () => {
 
 test('an endpoint page links to its OWN product for authentication', () => {
 	for (const { slug, html, product } of endpoints) {
-		const expected =
-			product === 'arcus'
-				? '/arcus/api-reference/overview/#authentication'
-				: '/suite/api/overview/#authentication';
+		const expected = '/suite/api/overview/#authentication';
 		assert.ok(
 			html().includes(`href="${expected}"`),
 			`${product}/${slug}: auth link should point at ${expected}`

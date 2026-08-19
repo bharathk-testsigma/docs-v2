@@ -1,0 +1,51 @@
+---
+title: SAP automation
+description: Connect to your SAP system, capture SAP GUI elements with the desktop recorders, and build test cases from suggested actions.
+pageType: task
+verified: 2026-07
+covers:
+  - Capture SAP elements
+  - Build a test case
+sidebar:
+  order: 20
+  label: Create Project
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+SAP testing runs through the same desktop tooling as any Windows (Beta) application. The recorders capture SAP GUI controls into a hierarchical tree, and test steps offer actions matched to each element's SAP type.
+
+<Prerequisites>
+
+- [Testsigma Terminal](/suite/installation/testsigma-terminal/) is installed, with the **WinTest Automation** folder in the agent directory, on a machine with 8 GB memory and 20 GB free disk.
+- **SAP Logon** (64-bit) is installed, with your system connection details: System ID (SID), instance number, and application server host.
+- SAP's ports are open — 3200 and 5000 are typical, but confirm with your IT team.
+- The SAP application is open, connected, and focused on the screen under test.
+
+</Prerequisites>
+
+## Capture SAP elements
+
+Both [desktop recorders](/suite/windows-beta/elements/) work unchanged on SAP: in **Create Tests > Elements**, click **Record** and pick one.
+
+- **Batch Element Recorder** captures every accessible element in the focused SAP window at once.
+- **Selective Element Recorder** captures one control at a time — hover a textbox, dropdown, or button until it highlights green, click, then confirm with **Locate Element** and **Save Element**.
+
+<Aside type="note">
+The recorder reads whichever SAP window holds focus. Bring the right screen forward before you start.
+</Aside>
+
+## Build a test case
+
+<Steps>
+
+1. **Create it** — In **Create Tests > Test Cases**, expand the feature and scenario, click **+**, name it, and click **Create**.
+
+2. **Pick actions** — On the **Test Case Details** page, open **Actions** and choose from the overlay.
+
+3. **Bind elements** — Select captured SAP elements. Suite suggests the actions that fit each element's type — the full catalogue is in [SAP actions](/suite/windows-beta/sap-actions/).
+
+4. **Run** — Execute locally through the agent.
+
+</Steps>

@@ -2,42 +2,42 @@
 title: Audit logs
 description: Read the immutable record of every account action, filter it, and export it for a compliance review.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 covers:
   - View audit logs
   - Filter audit logs
   - Export audit logs
 sidebar:
-  order: 45
+  order: 60
   label: Audit Logs
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Audit logs record every key activity in the account, from changes to test assets to sign-ins. Entries are immutable, which is what makes them useful for investigating an incident or answering a compliance question rather than just satisfying curiosity.
+Audit logs record every key account activity as immutable entries, from test asset changes to sign-ins. Administrators use them to monitor usage, investigate security incidents, troubleshoot issues, and keep the organization accountable.
 
 <Prerequisites>
 
 - You administer the account.
-- You know the per-entity **Activity** logs, which cover one asset's history rather than the account's.
+- You know the per-entity **Activity** logs.
 
 </Prerequisites>
 
 ## View audit logs
 
-Go to **Settings → Audit Logs**. The page lists every recorded activity, and each entry carries six fields.
+Go to **Settings > Audit Logs**. The page lists every recorded activity, and each entry carries six fields.
 
 | Field | What it holds |
 | --- | --- |
 | **Time** | The date and time the action occurred |
-| **Event Type** | The entity involved: Test Case, Test Suite, Test Plan, Test Data, Element, Environment, or Authentication & Access Bridge |
-| **Project/App/Version** | Where the change was made |
+| **Event Type** | The entity involved: Test Case, Test Suite, Test Plan, Test Data, Element, Environment, REST API Step, Step Group, or Authentication & Access Bridge |
+| **Project/App/Version** | The project, application, and version where the change was made |
 | **Action** | Create, Update, Delete, Login, or Logout |
 | **User** | Who performed it |
-| **Details** | The fields that changed, with their values |
+| **Details** | The fields that changed, with their specific values |
 
-**Details** is the field that matters in an investigation. It records the specific values, so you can see what a value changed from as well as what it changed to.
+**Details** is the field that matters in an investigation. It records specific values, so you can see what a value changed from as well as what it changed to.
 
 ## Filter audit logs
 
@@ -48,7 +48,7 @@ Five filters narrow the list, and they combine.
 | **Event Type** | One entity type, such as Test Case or Environment |
 | **Action** | One activity type: Create, Update, Delete, Login, or Logout |
 | **Date Range** | Activity between a **From Date & Time** and a **To Date & Time** |
-| **User** | One person in your organisation |
+| **User** | One person in your organization |
 | **Project** | Actions inside one project |
 
 ## Export audit logs
@@ -57,16 +57,17 @@ An export runs against whatever filters are applied, so set those first.
 
 <Steps>
 
-1. **Filter the list** — Apply the filters you want on the **Audit Logs** page.
+1. **Filter the list**: apply the filters you want on the **Audit Logs** page.
 
-2. **Start the export** — Click **Export** in the top-right corner.
+2. **Start the export**: click **Export** in the top-right corner.
 
-3. **Confirm** — Click **Export** in the dialog. A message confirms it has started.
+3. **Confirm**: click **Export** in the confirmation dialog. A message confirms the export has been initiated.
 
-4. **Collect the file** — Go to **Settings → Exports** and click **Download** beside the generated report.
+4. **Collect the file**: go to **Settings > Exports** and click **Download** next to the generated audit log report.
 
 </Steps>
 
 <Aside type="note">
-The export is asynchronous. The entry appears under **Settings → Exports** once the file is generated, so a large date range is worth starting before you need it.
+The export is asynchronous. The entry appears under **Settings > Exports** once the file is generated, so start a large date range before you need it.
 </Aside>
+

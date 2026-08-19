@@ -1,0 +1,138 @@
+---
+title: Mobile elements
+description: Capture elements from Android, iOS, and mobile web apps with the recorder, create them manually, and pick locators that survive.
+pageType: task
+verified: 2026-07
+covers:
+  - Record elements from a native app
+  - Record elements from a mobile web app
+  - Create an element manually
+  - Choose a locator type
+sidebar:
+  hidden: true
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+A mobile element is an item of the app's UI that a step acts on, stored with its locators. The recorder captures most of them; dynamic screens sometimes force manual creation. In a Unified project one element carries separate Android and iOS locators.
+
+<Prerequisites>
+
+- The application exists in your project, with the build uploaded as an **App Source** for native apps.
+- The Testsigma Chrome extension is installed for the recorder routes.
+- For local devices, [Testsigma Agent](/suite/installation/testsigma-agent/#connect-a-local-android-device) has the device attached and trusted.
+
+</Prerequisites>
+
+## Record elements from a native app
+
+The same flow serves Android and iOS.
+
+<Steps>
+
+1. **Start the recorder** — Go to **Create Tests > Elements** and click **Record**.
+
+2. **Pick the target** — In the **Record Elements** overlay, select the **Test Lab**, **Test Machine**, and **App Source**, then click **Record**. Wait for the app to load fully.
+
+3. **Capture** — Tap an element. In the **Create Element** panel, validate the **Name**, **Screen Name**, **Element Type**, and **Value**, then click **Create**. Repeat for everything you need.
+
+4. **Stop** — Click **Stop Recording**. The **Elements** page lists everything captured.
+
+</Steps>
+
+To fix a capture, hover the element and use the edit icon. A bad capture can also be repaired from a run, via **Ad-Hoc Runs > Test Step > Element > Edit Element**.
+
+## Record elements from a mobile web app
+
+Mobile web capture runs through Chrome's device emulation. Start **Record** from the **Elements** page, enter the URL, and press <kbd>F12</kbd>. Select **Companion Mode** and open **Testsigma Recorder** from the `>>` menu. Pick the device dimension — a custom device can be added under **Dimensions > Edit**. Then click elements to capture them.
+
+## Create an element manually
+
+<Steps>
+
+1. **Open the form** — In **Create Tests > Elements**, click **Create Element**.
+
+2. **Describe it** — Enter the **Name** and **Screen Name**, pick an **Element Type** — **XPATH**, **ID**, **Name**, **Class Name**, or **Accessibility ID** — and enter the matching value.
+
+3. **Save** — Click **Create element**.
+
+</Steps>
+
+The same form opens mid-test: hover an element placeholder in a step and select **Create** from the dropdown.
+
+## Choose a locator type
+
+Prefer them in this order.
+
+| Locator | Why |
+| --- | --- |
+| Accessibility ID | Fastest (one pass over the source, where XPath may walk the whole tree), unique by design, identical across Android and iOS — so Unified tests port cleanly. It also makes the app itself more accessible |
+| ID | Unique per element when developers set it. Ask them to add IDs rather than fall back to XPath |
+| XPath | Works everywhere, breaks most often — structure changes invalidate it |
+| Class Name, Name | Attribute matches; rarely unique on their own |
+
+Developers add Accessibility IDs with `contentDescription` on Android and `accessibilityIdentifier` on iOS.
+
+<Aside type="tip">
+Android resource IDs arrive as `<package>:id/<value>`, and the package differs per environment (`io.testsigma.tsdemo` vs `io.testsigma.tsdemobeta`). Store only the `<value>` part — Suite appends the package of whichever app the test targets.
+</Aside>
+
+## FAQs
+
+**My device does not show up in the recorder.**
+
+That is an agent-side problem — cable, USB debugging, agent version. The checklist lives on the [agent page](/suite/installation/testsigma-agent/#faqs).
+
+**iOS 16+ hides Developer Mode.**
+
+Connect the device to a Mac, open **Settings > Privacy & Security**, turn on **Developer Mode**, and restart when prompted.
+
+**The WDA process will not start on my iPhone.**
+
+Usually the device runs an iOS version newer than the bundled support files. Ask support for the current device support files, then: stop the agent, disconnect the device, replace the `<version>` folder under `TestsigmaAgent/ios/DeviceSupport/` with the new files, start the agent, reconnect.
+
+**The iOS app opens and immediately closes.**
+
+In order: restart the agent; delete the `devimage` folder in the agent directory; uninstall the **WebDriverAgent** app from the device and re-run; confirm Xcode is at `/Applications/Xcode.app` and the developer directory is set.
+
+**Push notifications or entitlements break when the app is installed for testing.**
+
+Suite re-signs iOS apps by default, which invalidates original signing credentials. If the app is signed through the Apple Developer Enterprise Program, add the `resignApp` desired capability (String, `false`) to the run.
+
+**Local execution fails with a permission error on a real device.**
+
+Vendor Android builds ship with monitoring that blocks automation. Beyond Developer Options and USB Debugging: Realme, Oppo, and OnePlus need **Disable Permission Monitoring** enabled (OnePlus also wants battery optimisation off for the app under test); Xiaomi wants the equivalent MIUI toggles under Developer Options.
+
+**What element types does iOS use?**
+
+iOS elements are XCUITest types. These are the ones you will meet most:
+
+| Element type | Used for | Common attributes |
+| --- | --- | --- |
+| `XCUIElementTypeTextField` | Text input such as username, email, name | value, text, name |
+| `XCUIElementTypeSecureTextField` | Password fields, which hide the entry | value, text, name |
+| `XCUIElementTypeButton` | Buttons | text, name |
+| `XCUIElementTypeSwitch` | Toggle switches | value, text, name |
+| `XCUIElementTypePickerWheel` | Selectors — country, date, or any option list | name |
+| `XCUIElementTypeSlider` | Horizontal sliders such as brightness or volume | name |
+| `XCUIElementTypeImage` | Images | name |
+| `XCUIElementTypeSearchField` | Search fields | value, text, name |
+| `XCUIElementTypeLink` | Hyperlinks | value, text, name |
+| `XCUIElementTypeDatePicker` | Date pickers | value, text, name |
+
+Less common ones you may still hit: `XCUIElementTypeActivityIndicator`, `XCUIElementTypeProgressIndicator`, `XCUIElementTypeAlert`, `XCUIElementTypeWindow`, `XCUIElementTypeOther`, `XCUIElementTypeStaticText`, `XCUIElementTypeNavigationBar`, `XCUIElementTypeSegmentedControl`, `XCUIElementTypeMap`, and `XCUIElementTypeStatusBar`.
+
+**A Flutter app's elements cannot be inspected or recorded.**
+
+Flutter renders to a canvas, so there are no ordinary DOM elements to capture. Its accessibility support exposes a semantic tree instead, and switching that on gives you `aria-label` attributes to locate against.
+
+Right-click the app screen and select **Inspect**. In the **Elements** tab, find the hidden element at the top of the tree and click it so it is selected in the DOM. Then in the **Console** tab, run:
+
+```js
+$0.click();
+```
+
+The **Elements** tab now carries a whole new tree, with `aria-label` values you can record and locate against.
+
+Two things to hold on to: accessibility mode has to be enabled again before you execute the test, and you should validate against `aria-label` or other semantic attributes rather than visible screen text. Accessibility mode is not supported on iOS devices using Safari.

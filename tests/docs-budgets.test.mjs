@@ -113,7 +113,7 @@ function measure(file) {
 	const intro = stripToProse(beforeFirstHeading).prose;
 	const lens = sentenceLengths(prose);
 
-	const relatedBlock = body.split(/^## Related\s*$/m)[1] ?? '';
+	const hasRelated = /^## Related\s*$/m.test(body);
 
 	// A page that declares `covers:` documents several routes through one
 	// feature, so the 600-word task cap fights the thing that matters more --
@@ -138,7 +138,7 @@ function measure(file) {
 		callouts: (body.match(/<Aside\b/g) ?? []).length,
 		screenshots: (body.match(/SCREENSHOT NEEDED/g) ?? []).length,
 		unverified: (body.match(/UNVERIFIED/g) ?? []).length,
-		relatedLinks: (relatedBlock.match(/^- \[/gm) ?? []).length,
+		hasRelated,
 		maxDepth: Math.max(0, ...(body.match(/^#{2,6} /gm) ?? []).map((h) => h.trim().length)),
 	};
 }
@@ -164,7 +164,7 @@ if (process.env.VERBOSE) {
 			String(p.tableRowCount).padStart(4),
 			String(p.callouts).padStart(4),
 			String(p.screenshots).padStart(4),
-			String(p.relatedLinks).padStart(4),
+			String(p.hasRelated ? 1 : 0).padStart(4),
 			String(p.maxDepth - 1).padStart(3),
 		].join(' ');
 	console.log(
@@ -211,11 +211,12 @@ test('W-31: at most 3 screenshots on a task page', () => {
 	assert.deepEqual(bad.map((p) => `${p.file}: ${p.screenshots}`), []);
 });
 
-test('W-34: 2-4 Related links on every page except an overview', () => {
-	const bad = pages.filter(
-		(p) => p.pageType !== 'overview' && (p.relatedLinks < 2 || p.relatedLinks > 4)
-	);
-	assert.deepEqual(bad.map((p) => `${p.file}: ${p.relatedLinks}`), []);
+// W-34 (2-4 Related links) RETIRED 2026-08-19: Related sections were removed
+// site-wide (Bharath's call); the sidebar and inline links carry navigation.
+// The inverse now holds: no page may carry a Related section at all.
+test('W-34 inverse: no Related sections anywhere', () => {
+	const bad = pages.filter((p) => p.hasRelated);
+	assert.deepEqual(bad.map((p) => p.file), []);
 });
 
 test('W-10: headings stop at h3', () => {

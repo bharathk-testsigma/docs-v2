@@ -1,0 +1,50 @@
+---
+title: IP whitelisting
+description: Allow Testsigma domains and IP ranges through your network so restricted environments and firewalled applications stay testable.
+pageType: task
+verified: 2026-08
+covers:
+  - Allow access to Testsigma
+  - Allow Testsigma to reach your application
+sidebar:
+  order: 90
+  label: IP Whitelisting
+---
+
+Restricted access works in two directions. If your administrator blocks outbound traffic, Testsigma's domains need a network exception before you can open the application. If your application sits behind a firewall, Testsigma's cloud IP ranges need one too.
+
+## Allow access to Testsigma
+
+Ask your network administrator to whitelist these domains:
+
+| Domain | What it unblocks |
+| --- | --- |
+| `*.testsigma.com` | The Testsigma application itself |
+| `*.freshchat.com` | Testsigma Chat Support, for live chat with the support team |
+| `*.freshdesk.com` | Testsigma Help Desk, for creating tickets and checking their status |
+
+## Allow Testsigma to reach your application
+
+Cloud test machines reach your application from Testsigma's own IP ranges. The **Testsigma IP** info screen under **Settings** publishes them for your account:
+
+- **Testsigma Server IP**: the address of the Testsigma server, where executions on Testsigma's device cloud run.
+- **Testsigma Lab IPs**: the ranges for Testsigma Labs, where the account's test assets and data are hosted.
+
+Share the listed ranges with your network administrator or infosec team to allow them.
+
+Allowlisting is one of three routes to a private application. [Testsigma Tunnel](/suite/get-started/installation/testsigma-tunnel/) opens a secure outbound connection instead. The [Testsigma Agent](/suite/get-started/installation/testsigma-agent/) runs tests on your own machines, so traffic never leaves your network.
+
+## Troubleshooting
+
+### You cannot open the Testsigma application
+
+Network restrictions are blocking the domain. Request that your administrator whitelist `*.testsigma.com`.
+
+### Chat support or the Help Desk does not load
+
+Whitelist `*.freshchat.com` and `*.freshdesk.com` to reach the customer support portals.
+
+### Tests pass on a local device but fail in Testsigma Lab
+
+The cloud machines cannot reach an application behind your firewall. Allow the ranges from the **Testsigma IP** info screen, or route around the firewall with Testsigma Tunnel or the Testsigma Agent.
+

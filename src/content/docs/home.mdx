@@ -1,0 +1,678 @@
+---
+title: Testsigma Suite
+description: What Testsigma Suite does, how Atto and Copilot fit into test creation, and where to start depending on what you came to do.
+# guide: the docs home is a single-page orientation hub — no prose cap (W-15
+# exemption), but W-04 intro and W-34 Related still apply.
+pageType: guide
+verified: 2026-08
+# splash: the hub renders full-width with no rail or ToC (GitBook-style docs
+# home); the top bar still carries brand, search, and section tabs.
+template: splash
+sidebar:
+  order: 0
+  label: Home
+---
+
+{/*
+  The docs landing page: `/` redirects here (astro.config.mjs), and the
+  top-level Docs Home row in sidebar-suite.mjs points here. Suite-only and
+  deliberately short (two folds): hero + Try-asking chips, Browse by topic,
+  Integrations. The full Suite orientation lives at
+  overview.mdx (Getting Started > Overview).
+  Hero layout implements "Testsigma Overview Splash.dc.html" from the Claude
+  Design project (29e89eb6…), 2026-08-11; design tokens map 1:1 onto --ts-*.
+*/}
+
+<section class="ov-hero not-content" aria-labelledby="_top">
+  <div class="ov-ribbon" aria-hidden="true"></div>
+
+  <div class="ov-art" aria-hidden="true">
+    <div class="ov-art-bar">
+      <span class="ov-art-strong">Run #2481</span>
+      <span class="ov-art-dim">Chrome 126 · macOS</span>
+      <span class="ov-art-spacer"></span>
+      <span class="ov-art-pass"><span class="ov-dot ov-dot-pass"></span>42 passed</span>
+      <span class="ov-art-fail"><span class="ov-dot ov-dot-fail"></span>1 failed</span>
+    </div>
+    <div class="ov-art-steps">
+      <div class="ov-art-head">
+        <img src="/testsigma-mark.svg" alt="" width="20" height="20" />
+        <span class="ov-art-strong">Login and checkout · Web</span>
+        <span class="ov-chip">Atto wrote this</span>
+      </div>
+      <div class="ov-art-step">
+        <span class="ov-art-num">1</span>
+        <span class="ov-art-text">Navigate to <strong>shop.testsigma.com</strong></span>
+        <svg class="ov-art-check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00875A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+      </div>
+      <div class="ov-art-step">
+        <span class="ov-art-num">2</span>
+        <span class="ov-art-text">Enter <code class="ov-art-code">@username</code> in the Email field</span>
+        <svg class="ov-art-check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00875A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+      </div>
+      <div class="ov-art-step">
+        <span class="ov-art-num">3</span>
+        <span class="ov-art-text">Click the <strong>Continue</strong> button</span>
+        <svg class="ov-art-check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00875A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+      </div>
+      <div class="ov-art-step ov-art-step-live">
+        <span class="ov-art-num">4</span>
+        <span class="ov-art-text">Verify the <strong>Order summary</strong> is displayed</span>
+        <span class="ov-art-run"></span>
+      </div>
+      <div class="ov-art-foot">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path></svg>
+        <span>Copilot is writing step 5…</span>
+      </div>
+    </div>
+    <div class="ov-art-heal">
+      <span class="ov-chip">Auto-healed</span>
+      <span class="ov-art-text">Locator for <strong>Continue</strong> updated</span>
+    </div>
+  </div>
+
+  <div class="ov-hero-inner">
+    <h1 id="_top" class="ov-h1">Automated tests, without writing code</h1>
+    <p class="ov-lede">Create, organize, run, and analyze tests across web, mobile, desktop, Salesforce, and API applications — without writing test code.</p>
+
+    <div class="ov-ask-row">
+      {/* A real input, not a button that opens the search dialog: the reader
+          types the question here and Enter (or the arrow) streams the answer
+          into the Ask panel. Search.astro binds the submit via data-ask-form. */}
+      <form class="ov-ask" data-ask-form>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path></svg>
+      <input class="ov-ask-ph" type="text" placeholder="What are you trying to do?" aria-label="Ask the assistant" autocomplete="off" />
+      {/* Disabled until something is typed -- Search.astro toggles it. Ships
+          disabled so the first paint matches an empty field. */}
+      <button type="submit" class="ov-ask-go" aria-label="Ask the assistant" disabled><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"></path></svg></button>
+      </form>
+
+      <a href="/suite/get-started/overview/" class="ov-browse">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
+        Browse Docs
+      </a>
+    </div>
+
+    <p class="ov-try-label">Try asking</p>
+    <div class="ov-try">
+      <button type="button" class="ov-try-chip" data-open-ask data-ask-q="How do I create my first test?">How do I create my first test?</button>
+      <button type="button" class="ov-try-chip" data-open-ask data-ask-q="Can Atto generate test cases from Jira stories?">Can Atto generate test cases from Jira stories?</button>
+      <button type="button" class="ov-try-chip" data-open-ask data-ask-q="How do I run tests on my own devices?">How do I run tests on my own devices?</button>
+      <button type="button" class="ov-try-chip" data-open-ask data-ask-q="How do I trigger a test plan from my CI pipeline?">How do I trigger a test plan from my CI pipeline?</button>
+    </div>
+  </div>
+</section>
+
+<section class="ov-section not-content">
+  <div class="ov-topics-head">
+    <h2 class="ov-col-h2">Browse by topic</h2>
+  </div>
+  <div class="ov-topics">
+    <a href="/suite/get-started/overview/" class="ov-topic">
+      <span class="ov-topic-c"><span class="ov-topic-t">Getting started</span><span class="ov-topic-d">What Suite does, how Atto and Copilot fit in, and where to start.</span></span>
+      <span class="ov-topic-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg></span>
+    </a>
+    <a href="/suite/test-management/test-authoring/create-test-cases/" class="ov-topic">
+      <span class="ov-topic-c"><span class="ov-topic-t">Test authoring</span><span class="ov-topic-d">The four ways to build test steps, and when to reach for each.</span></span>
+      <span class="ov-topic-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"></path></svg></span>
+    </a>
+    <a href="/suite/test-management/test-execution/test-plan/" class="ov-topic">
+      <span class="ov-topic-c"><span class="ov-topic-t">Test execution</span><span class="ov-topic-d">Build test plans, link suites to machine profiles, and schedule runs.</span></span>
+      <span class="ov-topic-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m10 8 6 4-6 4Z"></path></svg></span>
+    </a>
+    <a href="/suite/atto/overview/" class="ov-topic">
+      <span class="ov-topic-c"><span class="ov-topic-t">AI agents</span><span class="ov-topic-d">The AI layer that generates, repairs, and explains your tests.</span></span>
+      <span class="ov-topic-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path></svg></span>
+    </a>
+  </div>
+</section>
+
+<section class="ov-section not-content">
+  <h2 class="ov-c-h2">Integrate with popular tools</h2>
+  <p class="ov-c-sub">Plug Suite into the pipeline, trackers, and chat your team already uses.</p>
+  <div class="ov-grid ov-grid-3">
+    <div class="ov-card">
+      <h3>CI/CD</h3>
+      <p>Trigger a test plan from the build pipeline you already run, and fail the build on a failed run.</p>
+      <div class="ov-links ov-opts">
+        <a href="/suite/integrations/ci-cd/jenkins/" class="ov-link ov-opt">
+          <span class="ov-opt-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2.872 24h-.975a3.866 3.866 0 01-.07-.197c-.215-.666-.594-1.49-.692-2.154-.146-.984.78-1.039 1.374-1.465.915-.66 1.635-1.025 2.627-1.62.295-.179 1.182-.624 1.281-.829.201-.408-.345-.982-.49-1.3-.225-.507-.345-.937-.376-1.435-.824-.13-1.455-.627-1.844-1.185-.63-.925-1.066-2.635-.525-3.936.045-.103.254-.305.285-.463.06-.308-.105-.72-.12-1.048-.06-1.692.284-3.15 1.425-3.66.463-1.84 2.113-2.453 3.673-3.367.58-.342 1.224-.562 1.89-.807 2.372-.877 6.027-.712 7.994.783.836.633 2.176 1.97 2.656 2.939 1.262 2.555 1.17 6.825.287 9.934-.12.421-.29 1.032-.533 1.533-.168.35-.689 1.05-.625 1.36.064.314 1.19 1.17 1.432 1.395.434.422 1.26.975 1.324 1.5.07.557-.248 1.336-.41 1.875-.217.721-.436 1.441-.654 2.131H2.87zm11.104-3.54c-.545-.3-1.361-.622-2.065-.757-.87-.164-.78 1.188-.75 1.994.03.643.36 1.316.51 1.744.076.197.09.41.256.449.3.068 1.29-.326 1.575-.479.6-.328 1.064-.844 1.574-1.189.016-.17.016-.34.03-.508a2.648 2.648 0 00-1.095-.277c.314-.15.75-.15 1.035-.332l.016-.193c-.496-.03-.69-.254-1.021-.436zm7.454 2.935a17.78 17.78 0 00.465-1.752c.06-.287.215-.918.178-1.176-.059-.459-.684-.799-1.004-1.086-.584-.525-.95-.975-1.56-1.469-.249.375-.78.615-.983.914 1.447-.689 1.71 2.625 1.141 3.69.09.329.391.45.514.735l-.086.166h1.29c.013 0 .03 0 .044.014zm-6.634-.012c-.05-.074-.1-.135-.15-.209l-.301.195h.45zm2.77 0c.008-.209.018-.404.03-.598-.53.029-.825-.48-1.196-.527-.324-.045-.6.361-1.02.195-.095.105-.183.227-.284.316.154.18.295.375.424.584h.815c.014-.164.135-.285.3-.285.165 0 .284.121.284.27h.66zm2.116 0c-.314-.479-.947-.898-1.68-.555l-.03.541h1.71zm-8.51 0l-.104-.344c-.225-.72-.36-1.26-.405-1.68-.914-.436-1.875-.87-2.654-1.426-.15-.105-1.109-1.35-1.23-1.305-1.739.676-3.359 1.86-4.814 2.984.256.557.48 1.141.69 1.74h8.505zm8.265-2.113c-.029-.512-.164-1.56-.48-1.74-.66-.39-1.846.78-2.34.943.045.15.135.271.15.48.285-.074.645-.029.898.092-.299.03-.629.03-.824.164-.074.195.016.48-.029.764.69.197 1.5.303 2.385.332.164-.227.225-.645.211-1.082zm-4.08-.36c-.044.375.046.51.12.943 1.26.391 1.034-1.74-.135-.959zM8.76 19.5c-.45.457 1.27 1.082 1.814 1.115 0-.29.165-.564.135-.77-.65-.118-1.502-.042-1.945-.347zm5.565.215c0 .043-.061.03-.068.064.58.451 1.014.545 1.802.51.354-.262.67-.563 1.043-.807-.855.074-1.931.607-2.774.23zm3.42-17.726c-1.606-.906-4.35-1.591-6.076-.731-1.38.692-3.27 1.84-3.899 3.292.6 1.402-.166 2.686-.226 4.109-.018.757.36 1.42.391 2.242-.2.338-.825.38-1.26.356-.146-.729-.4-1.549-1.155-1.63-1.064-.116-1.845.764-1.89 1.683-.06 1.08.833 2.864 2.085 2.745.488-.046.608-.54 1.139-.54.285.57-.445.75-.523 1.154-.016.105.06.511.104.705.233.944.744 2.16 1.245 2.88.635.9 1.884 1.051 3.229 1.141.24-.525 1.125-.48 1.706-.346-.691-.27-1.336-.945-1.875-1.529-.615-.676-1.23-1.41-1.261-2.28 1.155 1.604 2.1 3 4.2 3.704 1.59.525 3.45-.254 4.664-1.109.51-.359.811-.93 1.17-1.439 1.35-1.936 1.98-4.71 1.846-7.394-.06-1.111-.06-2.221-.436-2.955-.389-.781-1.695-1.471-2.475-.781-.15-.764.63-1.23 1.545-.96-.66-.854-1.336-1.858-2.266-2.384zM13.58 14.896c.615 1.544 2.724 1.363 4.505 1.323-.084.194-.256.435-.465.515-.57.232-2.145.408-2.937-.012-.506-.27-.824-.873-1.102-1.227-.137-.172-.795-.608-.012-.609zm.164-.87c.893.464 2.52.517 3.731.48.066.267.066.593.068.913-1.55.08-3.386-.304-3.794-1.395h-.005zm6.675-.586c-.473.9-1.145 1.897-2.539 1.928-.023-.284-.045-.735 0-.904 1.064-.103 1.727-.646 2.543-1.017zm-.649-.667c-1.02.66-2.154 1.375-3.824 1.21-.351-.31-.485-1-.14-1.458.181.313.06.885.57.97.944.165 2.038-.579 2.73-.84.42-.713-.046-.976-.42-1.433-.782-.93-1.83-2.1-1.802-3.51.314-.224.346.346.391.45.404.96 1.424 2.175 2.174 3 .18.21.48.39.51.524.092.39-.254.854-.209 1.11zm-13.439-.675c-.314-.184-.393-.99-.768-1.01-.535-.03-.438 1.05-.436 1.68-.37-.33-.435-1.365-.164-1.89-.308-.15-.445.164-.618.284.22-1.59 2.34-.734 1.99.96zM4.713 5.995c-.685.756-.54 2.174-.459 3.188 1.244-.785 2.898.06 2.883 1.394.595-.016.223-.744.115-1.215-.353-1.528.592-3.187.041-4.59-1.064.084-1.939.52-2.578 1.215zm9.12 1.113c.307.562.404 1.148.84 1.57.195.19.574.424.387.95-.045.121-.365.391-.551.45-.674.195-2.254.03-1.721-.81.563.015 1.314.36 1.732-.045-.314-.524-.885-1.53-.674-2.13zm6.198-.013h.068c.33.668.6 1.375 1.004 1.965-.27.628-2.053 1.19-2.023.057.39-.17 1.05-.035 1.395-.25-.193-.556-.48-1.006-.434-1.771zm-6.927-1.617c-1.422-.33-2.131.592-2.56 1.553-.384-.094-.231-.615-.135-.883.255-.701 1.28-1.633 2.119-1.506.359.057.848.386.576.834zM9.642 1.593c-1.56.44-3.56 1.574-4.2 2.974.495-.07.84-.321 1.33-.351.186-.016.428.074.641.015.424-.104.78-1.065 1.102-1.41.31-.345.685-.496.94-.81.167-.09.409-.074.42-.33-.073-.075-.15-.135-.232-.105v.017z"/></svg></span>
+          Jenkins
+        </a>
+        <a href="/suite/integrations/ci-cd/bitbucket/" class="ov-link ov-opt">
+          <span class="ov-opt-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.778 1.213a.768.768 0 00-.768.892l3.263 19.81c.084.5.515.868 1.022.873H19.95a.772.772 0 00.77-.646l3.27-20.03a.768.768 0 00-.768-.891zM14.52 15.53H9.522L8.17 8.466h7.561z"/></svg></span>
+          Bitbucket
+        </a>
+      </div>
+      <a href="/suite/integrations/#cicd" class="ov-link ov-card-more">
+        View more
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+      </a>
+    </div>
+    <div class="ov-card">
+      <h3>Bug reporting</h3>
+      <p>File a failed step as a ticket in your tracker, with the run's evidence attached.</p>
+      <div class="ov-links ov-opts">
+        <a href="/suite/integrations/bug-reporting/jira/" class="ov-link ov-opt">
+          <span class="ov-opt-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.571 11.513H0a5.218 5.218 0 0 0 5.232 5.215h2.13v2.057A5.215 5.215 0 0 0 12.575 24V12.518a1.005 1.005 0 0 0-1.005-1.005zm5.723-5.756H5.736a5.215 5.215 0 0 0 5.215 5.214h2.129v2.058a5.218 5.218 0 0 0 5.215 5.214V6.758a1.001 1.001 0 0 0-1.001-1.001zM23.013 0H11.455a5.215 5.215 0 0 0 5.215 5.215h2.129v2.057A5.215 5.215 0 0 0 24 12.483V1.005A1.001 1.001 0 0 0 23.013 0Z"/></svg></span>
+          Jira
+        </a>
+        <a href="/suite/integrations/bug-reporting/bugzilla/" class="ov-link ov-opt">
+          <span class="ov-opt-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6Zm-3-13V6a3 3 0 1 1 6 0v1H9ZM6 13H2m20 0h-4M6 8 4 6m14 2 2-2M6 18l-2 2m14-2 2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+          Bugzilla
+        </a>
+      </div>
+      <a href="/suite/integrations/#bug-reporting" class="ov-link ov-card-more">
+        View more
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+      </a>
+    </div>
+    <div class="ov-card">
+      <h3>Collaboration</h3>
+      <p>Post run outcomes to the channel your team already watches, as soon as a run finishes.</p>
+      <div class="ov-links ov-opts">
+        <a href="/suite/integrations/collaboration/slack/" class="ov-link ov-opt">
+          <span class="ov-opt-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5.1 15.2a2.5 2.5 0 1 1-2.5-2.5h2.5Zm1.2 0a2.5 2.5 0 0 1 5 0v6.3a2.5 2.5 0 0 1-5 0ZM8.8 5.1a2.5 2.5 0 1 1 2.5-2.5v2.5Zm0 1.2a2.5 2.5 0 0 1 0 5H2.5a2.5 2.5 0 0 1 0-5Zm10.1 2.5a2.5 2.5 0 1 1 2.5 2.5h-2.5Zm-1.2 0a2.5 2.5 0 0 1-5 0V2.5a2.5 2.5 0 0 1 5 0Zm-2.5 10.1a2.5 2.5 0 1 1-2.5 2.5v-2.5Zm0-1.2a2.5 2.5 0 0 1 0-5h6.3a2.5 2.5 0 0 1 0 5Z"/></svg></span>
+          Slack
+        </a>
+        <a href="/suite/integrations/collaboration/google-chat/" class="ov-link ov-opt">
+          <span class="ov-opt-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M1.637 0C.733 0 0 .733 0 1.637v16.5c0 .904.733 1.636 1.637 1.636h3.955v3.323c0 .804.97 1.207 1.539.638l3.963-3.96h11.27c.903 0 1.636-.733 1.636-1.637V5.592L18.408 0Zm3.955 5.592h12.816v8.59H8.455l-2.863 2.863Z"/></svg></span>
+          Google Chat
+        </a>
+      </div>
+      <a href="/suite/integrations/#collaboration" class="ov-link ov-card-more">
+        View more
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+{/* Page-local styles: MDX <style> only ships on this page. Selectors are
+    prefixed with .sl-markdown-content where theme.css targets the same tags,
+    so this page's rules win on specificity. Design tokens map 1:1: the
+    splash's --bg/--panel/--bd/--tx… are this shell's --ts-* values. */}
+<style>{`
+  /* Hub layout: splash drops the rail and ToC. Reclaim the rail's gutter
+     (theme.css pads .main-frame for it unconditionally), widen the prose
+     column, hide the mobile rail toggle, and clip the hero art overflow. */
+  @media (min-width: 50rem) {
+    .main-frame { padding-inline-start: var(--ts-edge); }
+  }
+  .main-pane { --sl-content-width: 70rem; }
+  .main-frame { overflow-x: clip; }
+  .ts-railtoggle { display: none; }
+  /* No prev/next on the hub -- the topic grid is the navigation. */
+  .pagination-links { display: none; }
+
+  /* ---- hero ---- */
+  .ov-hero { position: relative; }
+  .ov-hero-inner {
+    position: relative;
+    max-width: 70rem;
+    padding: 56px 0 48px;
+  }
+  /* Art + ribbon anchor to the VIEWPORT's right edge, not the 70rem content
+     column -- the container is centered, so (70rem - 100vw)/2 walks from its
+     right edge out to the viewport's, then the design's bleed goes past it. */
+  .ov-ribbon {
+    position: absolute;
+    top: -300px;
+    right: calc((70rem - 100vw) / 2 - 340px);
+    width: 1180px;
+    height: 940px;
+    pointer-events: none;
+    opacity: .16;
+    filter: blur(48px);
+    -webkit-mask-image: radial-gradient(circle at 58% 46%, #000 0%, #000 34%, transparent 68%);
+    mask-image: radial-gradient(circle at 58% 46%, #000 0%, #000 34%, transparent 68%);
+    background:
+      linear-gradient(128deg, transparent 38%, #F2A65A 46%, #F2A65A 52%, transparent 60%),
+      linear-gradient(122deg, transparent 46%, #E58086 54%, #E58086 60%, transparent 68%),
+      linear-gradient(116deg, transparent 54%, #5C27F5 62%, #5C27F5 68%, transparent 76%),
+      linear-gradient(134deg, transparent 30%, #00B2BD 38%, #00B2BD 44%, transparent 52%);
+  }
+  .sl-markdown-content .ov-eyebrow {
+    margin: 0 0 18px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--ts-tx3);
+  }
+  .sl-markdown-content .ov-h1 {
+    margin: 0 0 18px;
+    max-width: 19ch;
+    font-size: clamp(38px, 5vw, 56px);
+    line-height: 1.06;
+    letter-spacing: -.025em;
+    font-weight: 600;
+    color: var(--ts-tx);
+    text-wrap: pretty;
+  }
+  .sl-markdown-content .ov-lede {
+    margin: 0 0 30px;
+    max-width: 60ch;
+    font-size: 18px;
+    line-height: 29px;
+    color: var(--ts-tx2);
+    text-wrap: pretty;
+  }
+  .ov-ask {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: min(640px, 100%);
+    height: 52px;
+    margin-bottom: 22px;
+    padding: 0 8px 0 16px;
+    border: 1px solid var(--ts-bd);
+    border-radius: 12px;
+    background: var(--ts-bg);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+    color: var(--ts-tx3);
+    font: inherit;
+    font-size: 15.5px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 150ms;
+  }
+  .ov-ask:hover { border-color: var(--ts-tx3); }
+  .ov-ask:focus-within { border-color: var(--ts-tx3); }
+  /* The field: chrome-free, so the bordered row around it still reads as the
+     control. Typed text takes full ink; the placeholder keeps the row's grey. */
+  .ov-ask-ph {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    background: none;
+    font: inherit;
+    color: var(--ts-tx);
+  }
+  .ov-ask-ph::placeholder { color: var(--ts-tx3); }
+  /* Send: the same states the Ask panel's own send button uses -- quiet while
+     the field is empty, the AI gradient once there is something to ask. */
+  .ov-ask-go {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 9px;
+    background: var(--ts-panel);
+    color: var(--ts-tx3);
+    cursor: not-allowed;
+    transition: background 150ms, color 150ms;
+  }
+  .ov-ask-go:not(:disabled) {
+    background: var(--ts-ai-grad);
+    color: #fff;
+    cursor: pointer;
+  }
+  .ov-ask-go:not(:disabled):hover { filter: brightness(1.1); }
+  .sl-markdown-content .ov-try-label {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ts-tx2);
+  }
+  .ov-try { display: flex; flex-wrap: wrap; gap: 8px; max-width: 720px; }
+  .ov-try-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--ts-bd);
+    border-radius: 999px;
+    background: var(--ts-bg);
+    color: var(--ts-tx2);
+    font: inherit;
+    font-size: 13.5px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 150ms, background 150ms;
+  }
+  .ov-try-chip:hover { border-color: var(--ts-tx3); background: var(--ts-panel); }
+
+  /* ---- hero art (decorative, wide screens only) ---- */
+  .ov-art {
+    position: absolute;
+    top: 52px;
+    right: calc((70rem - 100vw) / 2 - 150px);
+    width: 680px;
+    pointer-events: none;
+    transform: perspective(1500px) rotateY(-19deg) rotateX(7deg) rotate(-1.5deg);
+    transform-origin: left center;
+    -webkit-mask-image: linear-gradient(105deg, #000 68%, rgba(0,0,0,.4) 90%, transparent 100%);
+    mask-image: linear-gradient(105deg, #000 68%, rgba(0,0,0,.4) 90%, transparent 100%);
+  }
+  @media (max-width: 1180px) {
+    .ov-art, .ov-ribbon { display: none; }
+  }
+  .ov-art-bar {
+    width: 520px;
+    margin: 0 0 -18px 96px;
+    padding: 12px 16px;
+    border: 1px solid var(--ts-bd);
+    border-radius: 12px;
+    background: var(--ts-panel);
+    box-shadow: 0 8px 28px rgba(9, 30, 66, .10);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12.5px;
+  }
+  .ov-art-strong { font-size: 12.5px; font-weight: 600; color: var(--ts-tx); }
+  .ov-art-dim { color: var(--ts-tx3); }
+  .ov-art-spacer { flex: 1; }
+  .ov-art-pass { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: #00875A; }
+  .ov-art-fail { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--ts-tx3); }
+  .ov-dot { width: 7px; height: 7px; border-radius: 999px; }
+  .ov-dot-pass { background: #00875A; }
+  .ov-dot-fail { background: var(--ts-bd); }
+  .ov-art-steps {
+    width: 600px;
+    border: 1px solid var(--ts-bd);
+    border-radius: 14px;
+    background: var(--ts-bg);
+    box-shadow: 0 12px 28px rgba(9, 30, 66, .07);
+    overflow: hidden;
+  }
+  .ov-art-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--ts-bd-soft);
+  }
+  .ov-art-head img { display: block; flex: none; }
+  .ov-art-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--ts-bd-soft);
+  }
+  .ov-art-step-live { background: var(--ts-panel); border-bottom: none; }
+  .ov-art-num { flex: none; width: 18px; font-family: var(--sl-font-mono); font-size: 12px; color: var(--ts-tx3); }
+  .ov-art-text { flex: 1; font-size: 13.5px; line-height: 21px; color: var(--ts-tx2); }
+  .ov-art-text strong { color: var(--ts-tx); font-weight: 600; }
+  .ov-art-code {
+    font-family: var(--sl-font-mono);
+    font-size: 12.5px;
+    padding: 1px 5px;
+    border: 1px solid var(--ts-bd);
+    border-radius: 4px;
+    background: var(--ts-panel);
+    color: var(--ts-tx);
+  }
+  .ov-art-check { flex: none; margin-top: 3px; }
+  .ov-art-run {
+    flex: none;
+    margin-top: 4px;
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: #00B2BD;
+    animation: ov-run 1.6s ease-in-out infinite;
+  }
+  @keyframes ov-run { 0% { opacity: .35 } 50% { opacity: 1 } 100% { opacity: .35 } }
+  .ov-art-foot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border-top: 1px solid var(--ts-bd-soft);
+    font-size: 12.5px;
+    color: var(--ts-tx3);
+  }
+  .ov-art-heal {
+    width: 430px;
+    margin: -14px 0 0 168px;
+    padding: 11px 16px;
+    border: 1px solid var(--ts-bd);
+    border-radius: 12px;
+    background: var(--ts-bg);
+    box-shadow: 0 10px 30px rgba(9, 30, 66, .10);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ov-art-heal .ov-art-text { flex: none; font-size: 12.5px; }
+  .ov-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 9px;
+    border-radius: 5px;
+    background: var(--ts-ac-soft);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--ts-tx2);
+    white-space: nowrap;
+  }
+
+  /* ---- sections ---- */
+  .ov-section {
+    padding: 48px 0 8px;
+    border-top: 1px solid var(--ts-bd-soft);
+    margin-top: 32px;
+  }
+  .sl-markdown-content .ov-c-h2 {
+    margin: 0 0 10px;
+    text-align: center;
+    font-size: 30px;
+    line-height: 1.2;
+    letter-spacing: -.02em;
+    font-weight: 600;
+    color: var(--ts-tx);
+  }
+  .sl-markdown-content .ov-c-sub {
+    margin: 0 auto 30px;
+    max-width: 52ch;
+    text-align: center;
+    font-size: 16px;
+    line-height: 26px;
+    color: var(--ts-tx3);
+  }
+  .sl-markdown-content .ov-col-h2 {
+    margin: 0;
+    font-size: 24px;
+    letter-spacing: -.015em;
+    line-height: 1.25;
+    font-weight: 600;
+    color: var(--ts-tx);
+  }
+  .ov-grid { display: grid; gap: 16px; }
+  .ov-grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .ov-grid-ai { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .ov-card {
+    padding: 20px 24px 22px;
+    border: 1px solid var(--ts-bd);
+    border-radius: 12px;
+    background: var(--ts-bg);
+    transition: border-color 150ms, background 150ms;
+  }
+  /* Border AND fill, matching .ov-topic. Border-only was too quiet to read as
+     a response, especially on the dark theme where --ts-bd and --ts-tx3 are
+     four steps apart. */
+  .ov-card:hover { border-color: var(--ts-tx3); background: var(--ts-panel); }
+  .sl-markdown-content .ov-card h3 {
+    margin: 0 0 7px;
+    font-size: 17.5px;
+    letter-spacing: normal;
+    line-height: 1.3;
+    font-weight: 600;
+    color: var(--ts-tx);
+  }
+  .sl-markdown-content .ov-card p {
+    margin: 0 0 14px;
+    font-size: 14.5px;
+    line-height: 23px;
+    color: var(--ts-tx2);
+    text-wrap: pretty;
+  }
+  .ov-card p:last-child { margin-bottom: 0; }
+  .ov-links { display: flex; flex-direction: column; gap: 9px; }
+  .sl-markdown-content .ov-link {
+    font-size: 14.5px;
+    color: var(--ts-tx);
+    text-decoration: underline;
+    text-decoration-color: var(--ts-bd);
+    text-underline-offset: 3px;
+  }
+  .sl-markdown-content .ov-link:hover { text-decoration-color: var(--ts-tx3); }
+
+  /* ---- browse by topic (Canva-style rows: label left, icon right) ---- */
+  /* Hero: the Ask box and the docs link share one row and wrap together. */
+  .ov-ask-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .ov-ask-row .ov-ask { margin-bottom: 0; }
+  /* Rests in what used to be its hover state -- panel fill, bright ring -- and
+     the ring carries a highlight that travels round it, so the control reads as
+     clickable before the pointer arrives. The ring IS a rotating conic
+     gradient: ::before spins an oversized gradient, the anchor clips it to the
+     pill, and ::after covers all but a 1.5px edge. Cheaper and better
+     supported than animating an @property angle. */
+  .ov-browse {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 52px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 12px;
+    background: var(--ts-panel);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+    color: var(--ts-tx);
+    font-size: 15.5px;
+    font-weight: 550;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .ov-browse::before {
+    content: '';
+    position: absolute;
+    inset: -130%;
+    z-index: -2;
+    background: conic-gradient(
+      from 0deg,
+      var(--ts-bd) 0 52%,
+      var(--ts-tx) 66%,
+      var(--ts-bd) 80% 100%
+    );
+    animation: ov-ring 3.2s linear infinite;
+  }
+  .ov-browse::after {
+    content: '';
+    position: absolute;
+    inset: 1.5px;
+    z-index: -1;
+    border-radius: 10.5px;
+    background: var(--ts-panel);
+  }
+  .ov-browse:hover::after { background: var(--ts-hover); }
+  @keyframes ov-ring {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ov-browse::before { animation: none; }
+  }
+  /* theme.css underlines .sl-markdown-content a at higher specificity than
+     .ov-browse alone; matched here so the button never grows an underline. */
+  .sl-markdown-content .ov-browse,
+  .sl-markdown-content .ov-browse:hover {
+    text-decoration: none;
+    color: var(--ts-tx);
+  }
+
+  /* Integrations: each card lists the tools a reader recognises, then offers
+     the rest of its family behind one link. Type, colour and the underline all
+     come from .ov-link, which these share with the "Create tests, your way"
+     cards -- only the icon row and its gap live here. */
+  .ov-opts { gap: 12px; margin-top: 14px; }
+  .sl-markdown-content .ov-opt {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: max-content;
+  }
+  .ov-opt-i {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--ts-bd);
+    border-radius: 7px;
+    color: var(--ts-tx2);
+  }
+  .sl-markdown-content .ov-card-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    width: max-content;
+  }
+  /* An explicit line-height, so the anchor's box hugs its lettering. Without
+     it the box inherits the card's 1.65 prose leading, the centring puts the
+     arrow in the middle of THAT box, and it lands below the text it labels.
+     (No backticks in comments here -- this whole block is a template literal
+     inside MDX, and one would end the string.) */
+  /* Aligned to the TEXT BASELINE, not the box. The anchor's box is taller than
+     its lettering (the card's prose leading feeds the anonymous text item), so
+     centring put the arrow in the middle of the box and below the word it
+     labels. Baseline alignment ignores box height; the nudge then drops the
+     arrow from sitting on the baseline to centring on the x-height. */
+  .sl-markdown-content .ov-card-more { align-items: baseline; }
+  .ov-card-more svg { transform: translateY(2px); }
+
+  .ov-topics-head { margin-bottom: 20px; }
+  /* Flex, not grid: when the cards wrap (3+1, 2+2), the short row centres
+     instead of pinning left. grow/basis/max keep full rows filling edge to
+     edge like the old auto-fit grid did. */
+  /* Two per row, always: four topics in a 2x2 block reads as one set, where
+     the old auto-fit flex wrapped them 3+1 and left the last one orphaned. */
+  .ov-topics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  @media (max-width: 50rem) {
+    .ov-topics { grid-template-columns: 1fr; }
+  }
+  .sl-markdown-content .ov-topic {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 26px 24px 26px 28px;
+    border: 1px solid var(--ts-bd);
+    border-radius: 14px;
+    background: var(--ts-bg);
+    text-decoration: none;
+    transition: border-color 150ms, background 150ms;
+  }
+  .sl-markdown-content .ov-topic:hover { border-color: var(--ts-tx3); background: var(--ts-panel); }
+  /* Title over description; the icon stays a sibling so it keeps centring
+     against the pair however many lines the description runs to. */
+  .ov-topic-c { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .ov-topic-t { font-size: 17px; font-weight: 600; color: var(--ts-tx); }
+  .ov-topic-d { font-size: 14px; line-height: 21px; color: var(--ts-tx3); text-wrap: pretty; }
+  .ov-topic-i {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: var(--ts-panel);
+    color: var(--ts-tx2);
+  }
+`}</style>
