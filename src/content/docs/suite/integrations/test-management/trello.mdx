@@ -2,15 +2,16 @@
 title: Trello
 description: Connect Trello so bugs flow from a Testsigma run result onto your board, with video and screenshots attached.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 206
   label: Trello
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Trello integration pushes bugs from a run result onto your board. Cards arrive with annotations, the execution video, and step screenshots. Connecting takes the Trello API key together with a user token.
+Trello integration pushes bugs directly from Testsigma run results into your Trello project. Report a bug from a test case result, with screenshots, annotations, and the execution video attached.
 
 <Prerequisites>
 
@@ -18,16 +19,39 @@ Trello integration pushes bugs from a run result onto your board. Cards arrive w
 
 </Prerequisites>
 
-## Connect
+## Connect Trello
 
 <Steps>
 
-1. **Open integrations** — Go to **Settings → Integrations** and enable the **Trello** toggle.
+1. **Open integrations**: navigate to **Settings > Integrations**.
 
-2. **Enter the details** — **API Key** and **Token**.
+2. **Enable Trello**: turn on the toggle on the **Trello** widget.
 
-3. **Save** — Click **Save & Enable**.
+3. **Enter credentials**: in the **Trello details** prompt, enter the **API Key** and **Token**, then click **Save & Enable**.
 
 </Steps>
 
-Then report from any **Test Case Result**: click **Report Bug**, choose **Trello**, fill the bug details (or **Link to Issue** for an existing card), and click **Create Ticket**. Only tools enabled on the integrations page appear in the chooser.
+## Report a bug
+
+<Steps>
+
+1. **Open the result**: navigate to **Run Results > Test Case Result** where you want to add a bug.
+
+2. **Start the report**: click **Report Bug**.
+
+3. **Choose Trello**: select **Trello** and enter the detailed information for your bug.
+
+   {/* SCREENSHOT NEEDED: Report Bug panel with Trello selected */}
+
+4. **Create the ticket**: click **Create Ticket**.
+
+</Steps>
+
+To attach the result to an existing Trello card instead, click **Link to Issue**, search for the issue in the search field, and click **Link Issue**.
+
+<Aside type="note">
+Only bug reporting tools enabled on the integrations page appear in the chooser.
+</Aside>
+
+When the bug is created, Testsigma automatically adds test result details to the Trello issue, such as the test execution video and step screenshots. This gives the developer reviewing the card more context on the failure.
+

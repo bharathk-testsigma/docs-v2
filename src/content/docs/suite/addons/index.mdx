@@ -1,30 +1,30 @@
 ---
-title: Add-ons
+title: Addons
 description: Extend Suite's built-in actions with your own Java code, for the actions unique to your application.
 pageType: concept
 verified: 2026-07
 sidebar:
-  order: 0
+  order: 10
   label: Overview
 ---
 
 import { CardGrid } from '@astrojs/starlight/components';
 import DocCard from '~/components/DocCard.astro';
 
-An add-on extends Suite's built-in action repository with custom actions you write yourself. Suite already automates most user actions in plain English. Some actions are specific to one application, and add-ons cover those without waiting for a product change.
+An addon extends Suite's built-in action repository with custom actions you write yourself. Suite already automates most user actions in plain English. Some actions are specific to one application, and addons cover those without waiting for a product change.
 
 <CardGrid>
 	<DocCard
 		icon="box"
 		title="Marketplace"
 		href="/suite/addons/marketplace/"
-		description="Find, install, and use add-ons the community has published."
+		description="Find, install, and use addons the community has published."
 	/>
 	<DocCard
 		icon="code"
 		title="Build your own"
 		href="/suite/addons/build/"
-		description="Template, code, validate, upload, and publish an add-on."
+		description="Template, code, validate, upload, and publish an addon."
 	/>
 	<DocCard
 		icon="layers"
@@ -40,11 +40,11 @@ An add-on extends Suite's built-in action repository with custom actions you wri
 	/>
 </CardGrid>
 
-## Why add-ons exist
+## Why addons exist
 
 End-to-end testing covers a large, varied set of features. Some of them are unique to your application under test. Predicting an action statement for every one is not feasible, so Suite makes the action list extensible instead.
 
-Take `scroll indefinitely till the bottom of the page`. It suits an application that appends items as you scroll, the way Pinterest does. If your test has to reach the footer to verify a copyright notice, an add-on automates it at scale.
+Take `scroll indefinitely till the bottom of the page`. It suits an application that appends items as you scroll, the way Pinterest does. If your test has to reach the footer to verify a copyright notice, an addon automates it at scale.
 
 ## What you can build
 
@@ -60,6 +60,6 @@ Testsigma publishes step-by-step tutorials for each type: [custom actions](https
 
 ## Public, private, or borrowed
 
-You have three routes to an add-on, and they are not exclusive.
+You have three routes to an addon, and they are not exclusive.
 
-Install one from **Community**, which holds add-ons published by other teams and by Testsigma. Write your own and publish it publicly, sharing it with the wider community. Or keep it private to your organisation. Private is the right choice when the code is specific to your applications, or carries anything proprietary.
+Install one from **Community**, which holds addons published by other teams and by Testsigma. Write your own and publish it publicly, sharing it with the wider community. Or keep it private to your organisation. Private is the right choice when the code is specific to your applications, or carries anything proprietary.

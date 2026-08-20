@@ -2,32 +2,54 @@
 title: ClickUp
 description: Connect ClickUp so bugs flow from a Testsigma run result into your ClickUp project in one click.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 207
   label: ClickUp
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-ClickUp integration pushes bugs from a run result into a ClickUp project. Screenshots and annotations travel with each issue. Connecting takes one API key; reporting happens from any test case result.
+ClickUp integration pushes bugs from a Testsigma run result into your ClickUp project. Screenshots, annotations, and team sharing travel with each bug. Connecting takes one API token.
 
 <Prerequisites>
 
-- You have an **API token** from ClickUp — its help centre documents generating a personal API key.
+- A ClickUp **API token**. ClickUp's [personal API key guide](https://help.clickup.com/hc/en-us/articles/6303426241687-Getting-Started-with-the-ClickUp-API) covers generating one.
 
 </Prerequisites>
 
-## Connect
+## Connect ClickUp
 
 <Steps>
 
-1. **Open integrations** — Go to **Settings → Integrations** and enable the **ClickUp** toggle.
+1. **Open integrations**: Go to **Settings > Integrations**.
 
-2. **Enter the key** — In the **ClickUp details** dialog, enter the **Personal Token**.
+2. **Enable the widget**: Turn on the toggle on the **ClickUp** widget.
 
-3. **Save** — Click **Save & Enable**.
+3. **Enter the token**: In the **ClickUp details** prompt, enter the **Personal Token** and click **Save & Enable**.
 
 </Steps>
 
-Then report from any run: open the failing **Test Case Result**, click **Report Bug**, pick the **ClickUp** icon, review, and click **Report Bug**. **Link to Issue** attaches an existing ticket instead. Testsigma adds the execution video and step screenshots to the created issue automatically.
+## Report a bug
+
+<Steps>
+
+1. **Open the result**: Go to **Run Results** and open the **Test Case Result** where you want to add a bug.
+
+2. **Start the report**: Click **Report Bug**.
+
+3. **Pick ClickUp**: In the **Report** overlay, click the **ClickUp** icon.
+
+4. **Send it**: Review the details and click **Report Bug**.
+
+</Steps>
+
+{/* SCREENSHOT NEEDED: Report overlay with the ClickUp icon selected */}
+
+Testsigma attaches the execution video and step screenshots to the created issue automatically.
+
+<Aside type="tip">
+To attach an existing ClickUp issue instead of creating one, click **Link To Issue**, search for the issue, and click **Link To Ticket**.
+</Aside>
+

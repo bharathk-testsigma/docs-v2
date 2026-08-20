@@ -10,7 +10,7 @@
  * The final crumb is the page itself and is not a link.
  */
 import type { SidebarEntry } from '@astrojs/starlight/schema';
-import { isApiReferencePath, isArcusPath } from '../starlightRouteData';
+import { isApiReferencePath } from '../starlightRouteData';
 
 const { entry, sidebar } = Astro.locals.starlightRoute;
 
@@ -26,19 +26,14 @@ function trailTo(entries: SidebarEntry[], acc: string[] = []): string[] | null {
 	return null;
 }
 
-// Group labels arrive already humanized -- starlightRouteData.ts rewrites the
-// slug-shaped ones that Arcus's `autogenerate` groups produce, so the nav and
-// this trail cannot disagree about what a section is called.
 const ancestors = trailTo(sidebar) ?? [];
 
-// The API nav is that product's API group unwrapped (see starlightRouteData.ts),
-// so walking it yields the entity section but not the section it came from. Put
+// The API nav is the API group unwrapped (see starlightRouteData.ts), so
+// walking it yields the entity section but not the section it came from. Put
 // the root crumb back, otherwise an endpoint page reads "Projects / List
-// projects" with nothing saying which reference it belongs to. The label is the
-// product's own -- Arcus calls the section "API Reference", not "REST APIs".
-const apiRoot = isArcusPath(Astro.url.pathname) ? 'API Reference' : 'REST APIs';
+// projects" with nothing saying which reference it belongs to.
 const crumbs = [
-	...(isApiReferencePath(Astro.url.pathname) ? [apiRoot] : []),
+	...(isApiReferencePath(Astro.url.pathname) ? ['REST APIs'] : []),
 	...ancestors,
 	entry.data.title,
 ];
@@ -49,7 +44,22 @@ const crumbs = [
 		crumbs.map((label, i) => (
 			<span class="ts-crumb-part">
 				<span class:list={['ts-crumb', { current: i === crumbs.length - 1 }]}>{label}</span>
-				{i < crumbs.length - 1 && <span class="ts-crumb-sep">/</span>}
+				{i < crumbs.length - 1 && (
+					<svg
+						class="ts-crumb-sep"
+						width="14"
+						height="14"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.7"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<path d="m9 18 6-6-6-6" />
+					</svg>
+				)}
 			</span>
 		))
 	}
@@ -59,15 +69,16 @@ const crumbs = [
 	.ts-crumbs {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: 9px;
 		flex-wrap: wrap;
-		font-size: 13px;
+		font-size: 13.5px;
 		min-width: 0;
+		padding-top: 8px; /* optical centring against the 38px actions control */
 	}
 	.ts-crumb-part {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: 9px;
 	}
 	.ts-crumb {
 		color: var(--ts-tx3);

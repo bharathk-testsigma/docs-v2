@@ -1,6 +1,6 @@
 ---
-title: Add-on SDK reference
-description: Read and write runtime data from an add-on, and read the metadata of the run your action executes inside.
+title: Addon SDK reference
+description: Read and write runtime data from an addon, and read the metadata of the run your action executes inside.
 pageType: reference
 verified: 2026-07
 sidebar:
@@ -10,13 +10,13 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-The Testsigma SDK lets add-on code reach back into the run around it. Two classes carry most of that. `RunTimeData` reads and writes runtime variables, and `RunMetaData` reports facts about the execution itself.
+The Testsigma SDK lets addon code reach back into the run around it. Two classes carry most of that. `RunTimeData` reads and writes runtime variables, and `RunMetaData` reports facts about the execution itself.
 
 ## Get the dependency
 
-An add-on template already depends on the current SDK. A project generated from Suite needs nothing added.
+An addon template already depends on the current SDK. A project generated from Suite needs nothing added.
 
-For a project you assemble yourself, take the Maven dependency from the [testsigma-java-sdk repository](https://github.com/testsigmahq/testsigma-java-sdk#testsigma-sdk-dependency). You can also generate the project from the [add-on archetype](https://github.com/Testsigmahq/testsigma-addon-archetype#testsigma-maven-archetype-for-creating-add-on-project).
+For a project you assemble yourself, take the Maven dependency from the [testsigma-java-sdk repository](https://github.com/testsigmahq/testsigma-java-sdk#testsigma-sdk-dependency). You can also generate the project from the [addon archetype](https://github.com/Testsigmahq/testsigma-addon-archetype#testsigma-maven-archetype-for-creating-addon-project).
 
 ## Runtime data
 
@@ -37,10 +37,10 @@ runTimeData.setValue("token_value");
 
 ### A complete action
 
-This add-on reads the text of a PDF the browser is displaying. It stores that text in a runtime variable, named from the step's test data.
+This addon reads the text of a PDF the browser is displaying. It stores that text in a runtime variable, named from the step's test data.
 
 ```java
-package com.testsigma.add-ons.pdf.web;
+package com.testsigma.addons.pdf.web;
 
 @Data
 @Action(actionText = "Read the content from pdf and store the text into a runtime-variable variable",
@@ -92,7 +92,7 @@ public class ReadpdfContent extends WebAction {
 
 Sometimes an action needs to know about the execution it belongs to, not just the page in front of it. `RunMetaData` carries that.
 
-An instance called `runMetaData` is already in the template, for every add-on NLP. You do not create one, and you can reach it anywhere in the add-on. It is populated for dry test case executions and test plan executions alike.
+An instance called `runMetaData` is already in the template, for every addon NLP. You do not create one, and you can reach it anywhere in the addon. It is populated for dry test case executions and test plan executions alike.
 
 | Method | What it returns |
 | --- | --- |
@@ -126,5 +126,5 @@ public class CustomNLP extends WebAction {
 ```
 
 <Aside type="note">
-`getStartTime()` returns UTC. Compare it against a local timestamp without converting, and the add-on's time arithmetic comes out hours wrong.
+`getStartTime()` returns UTC. Compare it against a local timestamp without converting, and the addon's time arithmetic comes out hours wrong.
 </Aside>

@@ -2,36 +2,66 @@
 title: Google Chat
 description: Send test plan status notifications to a Google Chat space through an incoming webhook.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 503
   label: Google Chat
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Google Chat integration posts run outcomes into a Chat space. One webhook on the space, one toggle in Suite, and each test plan chooses which statuses notify. The webhook comes from the space's own settings.
+Google Chat integration posts test plan status notifications into a Chat space. Create an incoming webhook on the space, add its URL in Testsigma, then enable notifications per test plan.
 
 <Prerequisites>
 
-- A **Google Chat incoming webhook URL**.
+- A Google Chat space where you can add webhooks.
 
 </Prerequisites>
 
-## Get the webhook
+## Create the webhook in Google Chat
 
 <Steps>
 
-1. **Open the space** — In Google Chat, click the space name and select **Apps & Integrations**.
+1. **Open the space**: In [Google Chat](https://chat.google.com/), select the chat space where you want to add the connector.
 
-2. **Add the webhook** — Under **Integrations → Webhooks**, click **Add Webhook**. Name it — avatar optional — and click **Save**, then **Copy link**.
+2. **Open its integrations**: Click the space name and select **Apps & Integrations**.
+
+3. **Add a webhook**: Under **Integrations**, go to **Webhooks** and click **Add Webhook**.
+
+4. **Name it**: In the **Incoming webhooks** dialog, enter a **Webhook Name**. Adding an image or avatar URL is optional.
+
+5. **Save and copy**: Click **Save**, then click **Copy link** to copy the generated webhook URL.
 
 </Steps>
 
-## Connect
+## Connect Google Chat to Testsigma
 
-Go to **Settings → Integrations** and enable the **Google Chat** toggle. Enter the **Name** and **Connector URL**, then click **Save & Enable**.
+<Steps>
 
-## Turn it on per test plan
+1. **Open integrations**: Navigate to **Settings > Integrations**.
 
-In **Create/Edit Test Plan → Test Plan Settings**, enable **Send Notification**. Pick the statuses under **Notify On** — pass, fail, abort, any combination. Then select **Google Chat** under **Also send messages to**.
+2. **Enable the integration**: Turn on the **Google Chat** toggle.
+
+3. **Enter the details**: In the **Google Chat details** dialog, enter a **Name** and the **Connector URL** you copied, then click **Save & Enable**.
+
+</Steps>
+
+## Enable notifications in a test plan
+
+Once the integration is connected, notifications are configured per [test plan](/suite/test-management/test-execution/test-plan/). You can enable them while creating a new test plan or editing an existing one.
+
+<Steps>
+
+1. **Open plan settings**: On the **Create Test Plan** or **Edit Test Plan** page, click the **Test Plan Settings** tab.
+
+2. **Turn on notifications**: Enable the **Send Notification** toggle.
+
+3. **Pick the statuses**: Under **Notify On**, select the statuses you want to be notified about. You can select multiple statuses.
+
+4. **Pick the destination**: Under **Also send messages to**, open the dropdown and select **Google Chat (Google Chat)**.
+
+</Steps>
+
+{/* SCREENSHOT NEEDED: Google Chat details dialog in Settings > Integrations with Name and Connector URL fields */}
+

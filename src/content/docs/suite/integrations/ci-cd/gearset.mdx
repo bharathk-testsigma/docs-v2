@@ -2,28 +2,56 @@
 title: Gearset
 description: Fire a Testsigma test plan from a Gearset CI job using an outgoing webhook on deployment.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
-  order: 85
+  order: 117
   label: Gearset
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Gearset CI jobs send outgoing webhooks when a deployment runs. Pointing one webhook at the trigger endpoint runs the test plan on every Salesforce deployment. The configuration is four fields on the job — URL, payload, authorisation, and headers.
+Gearset integration triggers a Testsigma test plan on every Gearset deployment. An outgoing webhook on the Gearset CI job calls the test plan's trigger endpoint.
 
 <Prerequisites>
 
-- The test plan and an API key exist. The endpoint URL is under **Test Plans → CI/CD Integrations → REST API call to start Test Plan**.
+- A test plan, an API key ([Settings > API Keys](/suite/settings/developers/)), and the plan's execution ID.
 
 </Prerequisites>
 
-## Configure the webhook
+## Configure the webhook in the CI job
 
-In the CI job's **Outgoing webhooks** section:
+<Steps>
 
-- **Outgoing webhook url** — the trigger endpoint from the cURL.
-- **Payload** — **Custom**, with the body `{"executionId": "<id>"}`.
-- **Authentication** — **Authorization**. Credentials are `Bearer <API-KEY>`.
-- **Headers** — `Accept: application/json`; **Content-Type** `application/json`.
+1. **Open the webhook settings**: In the Gearset CI job, go to the **Outgoing webhooks** section.
+
+2. **Enter the URL**: In the **Outgoing webhook url** field, enter the API endpoint from the cURL command shown under **Test Plans > CI/CD Integrations > REST API call to start Test Plan**.
+
+3. **Set the payload type**: In the **Payload** field, select **Custom**.
+
+4. **Set authentication**: In the **Authentication** field, select **Authorization**. In the **Credentials** field, add the API key as `Bearer <API-KEY>`.
+
+5. **Add the header**: Add a header with key `Accept` and value `application/json`. In the **Content-Type** field, select **application/json**.
+
+6. **Enter the payload**: In the **Payload** field, enter the execution ID:
+
+   ```json
+   {
+   "executionId":"<id>"
+   }
+   ```
+
+7. **Save the job**: Go to **Notifications** and click **Save CI Job**.
+
+</Steps>
+
+<Aside type="note">
+The execution ID is on the same **REST API call to start Test Plan** section as the endpoint URL.
+</Aside>
+
+{/* SCREENSHOT NEEDED: Gearset CI job Outgoing webhooks section with URL, payload, and authentication fields filled in */}
+
+## Verify the trigger
+
+Once the deployment's metadata is downloaded, check that the test plan run has started in Testsigma.
+

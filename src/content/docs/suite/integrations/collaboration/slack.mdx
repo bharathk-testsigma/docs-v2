@@ -2,36 +2,64 @@
 title: Slack
 description: Send test plan pass, fail, and abort notifications to a Slack channel in real time.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 501
   label: Slack
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Slack integration posts run outcomes to a channel as they happen. Pass, fail, and abort notifications each toggle separately per test plan. The connection is one incoming webhook URL taken from your own workspace.
+Slack integration sends test pass, fail, and abort notifications to a Slack channel in real time. You can share results with teammates the moment a run finishes.
 
 <Prerequisites>
 
-- A Slack **incoming webhook URL**.
+- A Slack workspace where you can create apps and [incoming webhooks](https://api.slack.com/messaging/webhooks).
 
 </Prerequisites>
 
-## Get the webhook
+## Get a Slack incoming webhook URL
 
 <Steps>
 
-1. **Create an app** — In **Workspace → Tools & Settings → Manage Apps**, click **Build** to open the Slack API. Choose **Create an App → From Scratch**. Name it and pick the workspace.
+1. **Open app management**: In Slack, go to **Workspace > Tools & Settings > Manage Apps**.
 
-2. **Activate webhooks** — Under **Incoming Webhooks**, enable **Activate Incoming Webhooks**. Click **Add New Webhook to Workspace**, pick the channel, and copy the URL.
+2. **Open the Slack API**: In the **Installed Apps** section, click **Build**.
+
+3. **Create an app**: In the Slack API, click **Create an App**. In the **Create an App** dialog, select **From Scratch**, enter an **App Name**, select your **Workspace**, and click **Create App**.
+
+4. **Activate webhooks**: Go to **Incoming Webhooks** and enable **Activate Incoming Webhooks**.
+
+5. **Add a webhook**: Click **Add New Webhook to Workspace**, select a **Channel**, and click **Allow**.
+
+6. **Copy the URL**: In **Incoming Webhooks**, click **Copy** on the URL textbox to copy the generated webhook URL.
 
 </Steps>
 
-## Connect
+## Connect Slack to Testsigma
 
-Go to **Settings → Integrations** and enable the **Slack** toggle. Enter the name and webhook URL, then click **Save & Enable**.
+<Steps>
 
-## Turn it on per test plan
+1. **Enable the integration**: Navigate to **Settings > Integrations** and turn on the toggle on the **Slack** widget.
 
-In **Create/Edit Test Plan → Test Plan Settings**, enable **Send Notification**. Pick the statuses under **Notify On** — pass, fail, abort, any combination. Then select **Slack** under **Also send messages to**.
+2. **Enter the details**: In the **Slack details** prompt, enter the details along with the webhook URL and click **Save & Enable**.
+
+</Steps>
+
+## Enable notifications in a test plan
+
+<Steps>
+
+1. **Open plan settings**: Navigate to **Test Plans**, select or create a [test plan](/suite/test-management/test-execution/test-plan/), and open **Test Plan Settings**.
+
+2. **Turn on notifications**: On the **Edit Test Plan** page, enable the **Send Notification** toggle.
+
+3. **Pick the statuses**: Select the statuses for which you want to receive the notification.
+
+4. **Pick the destination**: Select **Slack** from the **Also send messages to** dropdown menu.
+
+</Steps>
+
+{/* SCREENSHOT NEEDED: Slack details prompt in Settings > Integrations */}
+

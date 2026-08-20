@@ -1,0 +1,230 @@
+---
+title: Concepts
+description: The objects you build tests from, where they run, the ways a plan can run, and what Atto does to all of it.
+pageType: guide
+verified: 2026-08
+covers:
+  - Test case anatomy
+  - Elements and locators
+  - Test data
+  - Grouping and scheduling
+  - Where tests run
+  - Ways to run a plan
+  - Atto and AI
+  - Beyond functional checks
+  - Project housekeeping
+sidebar:
+  order: 20
+  label: Concepts
+---
+
+import { Aside, CardGrid } from '@astrojs/starlight/components';
+import DocCard from '~/components/DocCard.astro';
+
+Suite has a small number of objects and a lot of names for them. A test case holds steps, steps act on elements and read test data, suites group cases, and plans decide where and when suites run. Everything else on this page is a variation on one of those five.
+
+<CardGrid>
+	<DocCard
+		icon="page"
+		title="What a test case is made of"
+		href="#what-a-test-case-is-made-of"
+		description="Steps, the six step types, and the elements a step acts on."
+	/>
+	<DocCard
+		icon="document"
+		title="Test data"
+		href="#test-data"
+		description="Nine ways to feed values into a step, from plain text to a real inbox."
+	/>
+	<DocCard
+		icon="list-format"
+		title="Grouping and scheduling"
+		href="#grouping-and-scheduling"
+		description="Suites collect cases, plans decide the where and when."
+	/>
+	<DocCard
+		icon="cloud"
+		title="Where tests run"
+		href="#where-tests-run"
+		description="Seven test lab types, and the two local applications that reach your own machines."
+	/>
+	<DocCard
+		icon="random"
+		title="Ways to run a plan"
+		href="#ways-to-run-a-plan"
+		description="Cross-browser, parallel, distributed, end-to-end, and headless runs."
+	/>
+	<DocCard
+		icon="layers"
+		title="Atto and AI"
+		href="#atto-and-ai"
+		description="The agents, Copilot, and the healing that happens mid-run."
+	/>
+</CardGrid>
+
+## What a test case is made of
+
+A test case is a list of steps or user actions, executed in a specific order, that automates one test scenario. A test step is one action or assertion inside it.
+
+Most steps are natural language steps. Testsigma calls the vocabulary Natural Language Actions, and they cover most of what you need when automating a test.
+
+<br />
+
+```
+Enter test data in the Email Address field
+```
+
+Six step types exist, and you pick from a side panel in the test case editor.
+
+| Step type | What it does |
+| --- | --- |
+| Natural language | An action or assertion written in Testsigma's step vocabulary |
+| REST API | A REST request, standalone or inside a UI test |
+| Step group | A reusable sequence of steps, called from this case |
+| For loop | Repeats a block over a set of test data |
+| While loop | Repeats a block while a condition holds |
+| If condition | Runs a block only when a condition is met |
+
+A **step group** saves a set of steps for reuse. Automating five flows that each start with a login means one login step group, called five times, rather than the same five steps pasted five times. Step groups can nest.
+
+**AfterTest** adds a block of steps that runs after a test case regardless of its result. The test case and the AfterTest block execute independently, which makes AfterTest the place for cleanup that has to happen even when the case fails.
+
+### Elements and locators
+
+An **element** is a thing on screen that a step acts on: a link, a button, an input field. Each element stores locator details such as XPath, CSS locator, ID, and Name, plus organizing details like screen name and review status.
+
+The **element repository** holds every element in an application version, and any test case in that version can reuse them. Changing one element there changes it everywhere, so each element carries an affected list showing which test cases, step groups, test suites, and test plans depend on it.
+
+The **Test Recorder** captures elements and actions from your running application. It is faster than creating elements by hand and captures more locator detail.
+
+## Test data
+
+Test data is the values a run feeds into steps: the username and password for a login, the source and destination for a booking. Nine data types cover different sources.
+
+| Type | Where the value comes from |
+| --- | --- |
+| Raw | Plain text you type into the step |
+| Parameter | A column in a test data profile, so one case runs against many rows |
+| Runtime | A value captured earlier in the same run and stored in a variable |
+| Random | Generated alphanumeric data, for account numbers and IDs |
+| Data generator | Generated at run time by type: names, emails, dates, numbers |
+| Environment | A value that changes per environment, such as a server name or credential |
+| Concat | Several data values joined into one |
+| Mail Box | A Testsigma-hosted inbox, for OTPs and email content checks |
+| Phone number | A valid number Testsigma supplies, for 2FA and mobile login |
+
+A **test data profile** is a table of values a case reads at run time, built in Suite or imported from Excel. Profiles are what make data-driven testing work: one test case, many rows.
+
+An **environment** is a named set of variables, so the same case runs against QA, UAT, and staging without edits.
+
+An **upload** is a file stored in the project, such as an APK or IPA, that steps and runs can select.
+
+A **Mock Server** stands in for a real API during a run, with rules you configure per scenario. Mock servers work in dry runs, test plan executions, and local runs.
+
+## Grouping and scheduling
+
+A **test suite** groups related test cases that run together, such as every login case in one suite.
+
+Suites come in two kinds. A **static** suite holds the cases you picked by hand. A **dynamic** suite holds every case matching a filter, and it updates itself as cases are added or change, so a new login case joins the login suite without anyone remembering to add it.
+
+A **test plan** defines how a set of suites executes: the environment, the test data, execution settings, and the schedule. Plans are also where parallel or sequential execution is decided.
+
+Plans come in two types.
+
+| Test plan type | What it does |
+| --- | --- |
+| Cross Browser Testing | Runs every suite in the plan against the browsers you choose |
+| Custom Test Plan | Links machine profiles to individual suites, one by one |
+
+<Aside type="note">
+You cannot switch a plan's type once its test machines are set up.
+</Aside>
+
+A **test machine** is one operating system, browser, or device that a run targets. Every suite in a plan needs at least one.
+
+**Recovery Actions** set what happens per failure type, configured on the plan. An **AfterTest Suite** is a suite that runs after the rest of the plan finishes, for teardown. A **post plan hook** fires when the plan completes.
+
+**Desired Capabilities** are key, data type, and value triples that configure the run environment.
+
+## Where tests run
+
+A **test lab** is where a run executes. Seven lab types are supported.
+
+| Test lab | What it is |
+| --- | --- |
+| Testsigma Labs | A managed set of operating systems, browsers, and real devices |
+| Local Devices | Your own machines and attached devices |
+| BrowserStack | Your existing BrowserStack account, connected as a lab |
+| Sauce Labs | Your existing Sauce Labs account |
+| Kobiton Test Lab | Your existing Kobiton account |
+| TestMU | Your existing TestMU account |
+| Private Grid | A grid your organisation hosts |
+
+A test case does not change when you change where it runs. The lab is chosen at run time.
+
+Two local applications extend Suite onto your own machine, and they do different jobs.
+
+**Testsigma Agent** is a local utility that orchestrates tests: queueing them, running them, and fetching results. **Testsigma Terminal** is a desktop application you interact with Suite from, used for Copilot recording and local device testing.
+
+**Testsigma Tunnel** reaches an application that is not on the public internet from a cloud run.
+
+## Ways to run a plan
+
+The same suites can run several ways. These are not separate products, they are configurations of a plan.
+
+| Way to run | What it means |
+| --- | --- |
+| Cross-browser | The same suites run against multiple browsers and versions, to confirm behaviour is consistent |
+| Parallel | Several suites or cases run at the same time, cutting total run time |
+| Distributed | One scenario is split across machines, each running a different part, coordinated during the run |
+| End-to-end | One plan pulls suites from multiple projects and applications, so a workflow that crosses apps is one test |
+| Headless | The browser runs without a graphical interface |
+
+**Parallel execution** is bounded by your subscription in two ways: how many suites or cases run at once, and how many wait in the queue behind them. When the parallel slots are full, the rest queue and start as slots free up.
+
+<Aside type="note">
+Some sessions consume a parallel slot you might not expect. Recording on a real Android or iOS device takes an extra slot, because the device launches from the lab. A Copilot session takes a Copilot parallel, and one on the cloud lab also holds a cloud parallel for its duration. An Agentic Learning session consumes an Atto session instead.
+</Aside>
+
+**Cross-application testing** works at the step level rather than the plan level. The `Install the app app-name and version app-version` step installs a specific build from **Uploads** mid-test, so one case can drive more than one mobile application, or two versions of the same one. Each upload can hold several versions, and the step defaults to the latest unless you pick one.
+
+An **ad-hoc run** executes a single test case on its own, to check it works before you mark it Ready or add it to a suite. Its result, kept with screenshots and logs, is a **dry run result**.
+
+## Atto and AI
+
+**Atto** is an AI coworker that brings a team of agents into one workspace to plan, create, execute, maintain, analyse, and report tests. You do not open agents by name. Each one runs from the feature it belongs to, so the Analyzer appears in **Run Results** and the Test Data Generator inside a test case.
+
+| Agent | What it does |
+| --- | --- |
+| Generator | Generates test cases from Jira requirements, files, and prompts, then automates them in the Live Editor |
+| Analyzer | Identifies the error type and root cause of a failed step, attaches the evidence captured during the run, and suggests fixes |
+| Bug Reporter | Files a bug from the Analyzer panel with the error type, root cause, suggested fixes, and evidence already attached |
+| Test Data Generator | Builds a test data profile for a data-driven case, instead of you entering rows by hand |
+| Coverage Planner | Coming soon |
+| Optimizer | Coming soon |
+
+**Copilot** authors, executes, debugs, and fixes in one live session. It generates steps for the screen in front of you, runs them inline, and gives you execution controls and diagnostics while you build. An **Execution Point** marks the step currently running; a **Debug Point** marks a step where the run pauses.
+
+**Agentic Learning (Beta)** drives your live application from manual steps and generates an automated test case from what it observed.
+
+**Auto-Healing** detects and corrects broken element locators when the application changes. If an XPath or ID moves after a UI update, Testsigma finds the new locator and updates it mid-run rather than failing the step. Every change it makes is reported, so healing stays visible.
+
+**Chrome for Testing** is the dedicated Chrome build used for Copilot and Agentic Learning sessions.
+
+## Beyond functional checks
+
+Two checks run alongside a functional test rather than replacing it.
+
+**Visual testing** compares screenshots across runs and flags differences, which catches layout shifts, broken styles, and missing elements that a passing assertion would miss.
+
+**Accessibility testing** scans screens during a run against standards such as WCAG, and reports violations in colour contrast, alt text, keyboard navigation, and ARIA labels.
+
+## Extending and organising
+
+**Addons** are custom extensions that add your own actions to the step vocabulary, usable in steps like any built-in action. **Plugins** connect Suite to third-party tools such as Jenkins, Slack, or MS Teams.
+
+**Save Points** are checkpoints, created by hand or during an import, that restore a project to the exact state it was in when the point was made.
+
+**Custom Fields** are user-defined fields on test cases, versions, applications, and projects.
+
+---

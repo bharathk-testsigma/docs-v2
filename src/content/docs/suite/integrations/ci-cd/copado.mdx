@@ -2,35 +2,55 @@
 title: Copado
 description: Trigger a Testsigma test plan from a Copado deployment step and optionally pause the pipeline on the result.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
-  order: 80
+  order: 116
   label: Copado
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Copado deployments call Testsigma through a **URL Callout** step. Each deployment triggers the test plan, and the step either pauses the pipeline for the result or continues without waiting. That choice decides whether failed tests can block a Salesforce release.
+Copado deployments trigger a Testsigma test plan through a URL Callout step, either pausing the Salesforce pipeline until results return or continuing without waiting.
 
 <Prerequisites>
 
-- The test plan and an API key exist.
+- A test plan containing the test cases the deployment should run.
+- An API key from **Settings > API Keys**.
 
 </Prerequisites>
 
-## Configure the deployment step
+## Add the callout step
 
 <Steps>
 
-1. **Open the app** — From the **App Launcher**, open **Copado Release Manager**, then **Deployment → Steps → Add Step**.
+1. **Open the app**: click **App Launcher** in the top navigation bar, search for **Copado Release Manager**, and open it.
 
-2. **Type it** — Name the step and select **URL Callout**.
+2. **Add a step**: navigate to **Deployment > Steps > Add Step**.
 
-3. **Choose the behaviour** — **Perform callout and pause step** blocks the deployment until the tests respond; **Perform callout and continue with deployment** fires and forgets.
-
-4. **Describe the call** — Method **POST**, URL `https://app.testsigma.com/api/v1/execution_results`, headers `Authorization: Bearer <API_KEY>`, `Accept: application/json`, `Content-Type: application/json`, and the JSON body with your `executionId`.
-
-5. **Save** — The test plan now fires with every deployment.
+3. **Name and type it**: enter a name in the **Step Name** textbox and select **URL Callout** from the **Type** dropdown menu.
 
 </Steps>
+
+## Fill in the callout details
+
+<Steps>
+
+1. **Choose the behavior**: in the details section, select one option from the **Type** dropdown menu:
+   - **Perform callout and pause step**: calls Testsigma, passes the results back to Copado, and waits before deploying. Use it when the deployment depends on the test results.
+   - **Perform callout and continue with deployment**: calls Testsigma but deploys without waiting. Use it for non-blocking tests.
+
+2. **Set the method and URL**: select **POST** as the method. In the URL, enter the REST API call given in the test plan's cURL snippet, for example `https://app.testsigma.com/api/v1/execution_results`. The cURL response also contains the execution ID.
+
+3. **Add the headers**: **Authorization** with your API key (`Bearer <API_KEY>`), **Accept** with `application/json`, and **Content-Type** with `application/json`.
+
+4. **Add the body**: paste the JSON payload in the **Body**, then click **Save**.
+
+   {/* SCREENSHOT NEEDED: URL Callout step with method, URL, headers, and body filled in */}
+
+</Steps>
+
+<Aside type="note">
+For **Perform callout and pause step**, Copado generates a **Resume URL** once you save the details. In Testsigma, go to **Test Plans > Test Plan > Test Plan Settings**, select **Copado Test plan call back hook**, paste the URL in the **Resume URL** textbox, and click **Update**. The test plan then runs with the pause behavior.
+</Aside>
+

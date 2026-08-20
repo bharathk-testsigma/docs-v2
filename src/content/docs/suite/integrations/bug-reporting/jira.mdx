@@ -2,32 +2,78 @@
 title: Jira
 description: Connect Jira so bugs flow from a Testsigma run result straight into your Jira project, with screenshots attached.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 301
   label: Jira
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Jira integration pushes bugs from a run result straight into a Jira project. Screenshots, annotations, video, and step context travel with the ticket. Connecting takes your account URL, username, and an API token.
+Jira integration pushes bugs from a run result straight into a Jira project. Screenshots, annotations, and step context travel with the ticket. Connecting takes your Jira account URL, username, and an API token.
 
 <Prerequisites>
 
-- Your Jira **Account URL** (`https://<organization>.atlassian.net/`), your **username** (email), and a Jira **API token**.
+- Your Jira **Account URL**, **Username** (email), and a Jira **API Key**.
 
 </Prerequisites>
 
-## Connect
+## Generate the API token
 
 <Steps>
 
-1. **Open integrations** — Go to **Settings → Integrations** and enable the **Jira** toggle.
+1. **Open account settings**: sign in to Jira, click your profile icon, and select **Account Settings**.
 
-2. **Enter the details** — In the **Jira Details** dialog: **Account URL**, **Username**, **API Key**, and its confirmation.
+2. **Open security**: on the **Account** page, go to the **Security** tab.
 
-3. **Save** — Click **Save & Enable**.
+3. **Open the token list**: under **API Tokens**, click **Create and manage API tokens** (labeled **API Tokens** in some accounts).
+
+4. **Create the token**: on the **API Tokens** page, click **Create API token**. In the **Create an API token** dialog, enter a name and click **Create**.
+
+5. **Copy it**: in the **Copy your API token** dialog, click **Copy**, then click **Done**.
 
 </Steps>
 
-Then report from any run: open the failing **Test Case Result**, click **Report Bug**, pick the **Jira** icon, review, and click **Report Bug**. **Link to Issue** attaches an existing ticket instead. Testsigma adds the execution video and step screenshots to the created issue automatically.
+## Connect Jira
+
+<Steps>
+
+1. **Open integrations**: from the left navigation bar, go to **Settings > Integrations**.
+
+2. **Enable Jira**: turn on the **Jira** toggle.
+
+3. **Enter the details**: in the **Jira Details** dialog, fill in **Account URL**, **Username**, **API Key**, and **Confirm API Key**.
+
+4. **Save**: click **Save & Enable**.
+
+</Steps>
+
+The fields map to your Jira account like this:
+
+- **Account URL**: your Jira URL, in the form `https://{organizationname}.atlassian.net/`.
+- **Username**: your email address.
+- **API Key**: the token you generated above.
+
+## Report a bug
+
+<Steps>
+
+1. **Open the result**: go to **Run Results**, open the **Test Plan Result**, then open the **Test Case Result** where you want to report a bug.
+
+2. **Start the report**: click **Report Bug**.
+
+3. **Pick Jira**: in the **Report** overlay, click the **Jira** icon.
+
+4. **File it**: review the details and click **Report Bug**.
+
+{/* SCREENSHOT NEEDED: Report overlay with the Jira icon selected */}
+
+</Steps>
+
+<Aside type="tip">
+To attach the result to an existing Jira issue instead, click the **Link to Issue** tab, search for the issue, and click **Link To Ticket**.
+</Aside>
+
+When the bug is created, Testsigma automatically adds test result context to the Jira issue, including the test execution video and step screenshots.
+

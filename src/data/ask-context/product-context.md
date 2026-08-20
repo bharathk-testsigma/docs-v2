@@ -4,7 +4,7 @@ purpose: Single-source product context for building the Ask Assistant index
 source: Live product walkthroughs, screen recordings, and product demo videos
 source_date: 2026-07-01
 compiled: 2026-07-30
-products_covered: Suite, Arcus, Atto
+products_covered: Suite, Atto
 status: Verified content only.
 ---
 
@@ -14,25 +14,17 @@ status: Verified content only.
 
 ## §1 Product architecture and URL map
 
-`product: all` `keywords: architecture, Suite, Arcus, Atto, URLs, login, org selector`
+`product: all` `keywords: architecture, Suite, Atto, URLs, login, org selector`
 
 Testsigma has three layers.
 
 | Layer | What it is | URL |
 |---|---|---|
 | **Suite** | Test automation product | `app.testsigma.com` |
-| **Arcus** | Test management product | `arcus.testsigma.com` |
-| **Atto** | AI coworker layer spanning both products | no standalone URL |
+| **Atto** | AI coworker layer | no standalone URL |
 
 **Product selector:** `id.testsigma.com` — shows all organizations after
 login.
-
-**Arcus URL note:** the Arcus app is at `arcus.testsigma.com`. The older
-address `test-management.testsigma.com` in some material refers to the same
-product, Arcus.
-
-**QI Platform** — Quality Intelligence Platform — is Testsigma's umbrella
-term for Arcus.
 
 #### URL reference table (Suite)
 
@@ -118,8 +110,7 @@ Full limitation list in §25.
 
 `product: all` `keywords: Atto, AI agents, Generator, Runner, Healer, Analyzer, Bug Reporter, Coverage Planner, Optimizer`
 
-Atto is the AI coworker layer spanning both Suite and Arcus. It is not
-exclusive to either product.
+Atto is the AI coworker layer across Testsigma.
 
 #### Atto agents
 
@@ -747,7 +738,7 @@ but were not individually confirmed.
 | **Bug Reporting** | Jira Cloud ✓, Jira Server/DC, Xray Cloud, Xray Server, Azure DevOps Boards ✓, Monday.com ✓, YouTrack ✓, Mantis, Bugzilla, Backlog, ClickUp, Linear, Trello |
 | **Collaboration** | Slack, MS Teams, Google Chat |
 | **Test Lab** | BrowserStack, SauceLabs, Kobiton, TestMU, LambdaTest |
-| **Test Management** | Test Management by Testsigma (Arcus), Zephyr Cloud, Xray, qTest, TestRail |
+| **Test Management** | Zephyr Cloud, Xray, qTest, TestRail |
 | **Product Management** | Figma ✓, Confluence Cloud ✓, Confluence Server, Jira ✓, Xray Server, GitHub |
 | **CI/CD** | Jenkins, GitHub, GitLab, Azure DevOps, Bitbucket, CircleCI, Travis CI, Bamboo, Bitrise, AWS CodePipeline, AWS Lambda, Google Cloud Build, Codemagic, CodeShip, Copado, Gearset, Shell Script, REST API |
 
@@ -824,47 +815,6 @@ mode**.
 
 ---
 
-## §25 Arcus — test management
-
-`product: arcus` `keywords: Arcus, test management, QI Platform, import cases, Zephyr, TestRail, two-way sync`
-
-**URL:** `arcus.testsigma.com`. Also referred to by the umbrella
-term **QI Platform** (Quality Intelligence Platform).
-
-#### Arcus left navigation
-
-```
-[Project Switcher]
-Dashboard
-Atto's Home
-Test Cases
-Step Groups
-Data Sets
-Test Runs
-Test Plans
-Reports
-Import Cases
-─────────────
-Invite Users
-Settings
-What's New
-Help
-[User Profile — bottom-left]
-```
-
-**Import Cases sources:** Zephyr, TestRail, BrowserStack, CSV.
-
-**Arcus Settings integrations:** Jira (with Jira App), Azure DevOps, Linear,
-ClickUp, Figma, Confluence, and **two-way sync with Suite**.
-
-**Index note:** Arcus nav differs from Suite. Arcus has *Data Sets*,
-*Test Runs*, *Reports*, *Import Cases*, *Invite Users*, *What's New*, and
-*Help*; Suite has *Create Tests*, *Test Data*, *Test Suites*, *Run Results*,
-and *Save Points*. Both have Dashboard, Atto's Home, Test Cases, Step
-Groups, Test Plans, and Settings.
-
----
-
 ## §26 Unified Mobile testing — In-Progress, July 2026
 
 `product: suite` `stack: modern` `keywords: Unified Mobile, cross-platform, dual locator, platform applicability, limitations` `volatility: high`
@@ -923,7 +873,6 @@ Unified Mobile.
 | Term | Definition |
 |---|---|
 | Suite | Test automation product (`app.testsigma.com`) |
-| Arcus | Test management product (`arcus.testsigma.com`) |
 | Atto | AI coworker spanning both products |
 | Copilot | AI assistant for step generation — in the recorder, editor, or Atto playground |
 | Agentic Learning | Beta: agent executes a manual test case live and generates automated steps from observations |
@@ -952,7 +901,6 @@ Unified Mobile.
 | Generate Steps button | Appears in the Copilot panel header during Run with Copilot — regenerates automation steps mid-session |
 | Execution Point | Blue marker in the Copilot panel showing the currently executing step |
 | Debug Point | Red dot in the Copilot panel — a breakpoint where execution pauses |
-| QI Platform | Quality Intelligence Platform — Testsigma's umbrella term for Arcus |
 
 ---
 

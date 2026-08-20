@@ -1,0 +1,37 @@
+---
+title: Developers
+description: Generate the bearer keys that authenticate REST API calls, CI/CD triggers, and integrations.
+pageType: task
+verified: 2026-08
+sidebar:
+  order: 80
+  label: Developers
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+API keys authenticate programmatic access to Testsigma: REST API calls, CI/CD pipeline triggers, and third-party integrations such as bug reporting tools. You generate them under **Settings > API Keys**.
+
+<Prerequisites>
+
+- You hold the **Admin** or **Super Admin** role; no other role can generate API keys.
+
+</Prerequisites>
+
+## Generate an API key
+
+<Steps>
+
+1. **Open the page**: go to **Settings > API Keys** in the left-side navbar.
+
+2. **Start a new key**: click **Generate new API Key** in the top-right corner. The **Generate API Key** overlay appears.
+
+3. **Configure the key**: enter a **Name**. To limit the key, turn on the toggle that restricts parallel test execution and specify the number of parallel test executions.
+
+4. **Generate and copy**: click **Generate Key**. The key appears on screen; click **Copy API Key** to copy it to your clipboard for use in your applications or scripts.
+
+</Steps>
+
+Pass the key in an `Authorization: Bearer <API_KEY>` header. The [API overview](/suite/api/overview/) covers the endpoints it unlocks.
+

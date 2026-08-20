@@ -2,36 +2,68 @@
 title: YouTrack
 description: Connect YouTrack so annotated bugs flow from a Testsigma run result into your YouTrack project in one click.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 306
   label: YouTrack
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-YouTrack integration pushes annotated issues into a YouTrack project mid-session. One click assigns them and attaches screenshots. Connecting takes the account URL and an API key; reporting happens from any test case result.
+YouTrack integration pushes bugs from a run result straight into a YouTrack project. Screenshots, annotations, and step context travel with the ticket. Connecting takes your account URL and a permanent API token.
 
 <Prerequisites>
 
-- The **Account URL** — your organisation's YouTrack URL — and an **API key** from your YouTrack account.
+- Your organization's YouTrack **Account URL** and a YouTrack **API Key** (permanent token).
 
 </Prerequisites>
 
-## Get the API token
-
-In your YouTrack profile, open **Account Security → New Token**, name it, set the scope, click **Create**, then **Copy Token**.
-
-## Connect
+## Create the API token
 
 <Steps>
 
-1. **Open integrations** — Go to **Settings → Integrations** and enable the **YouTrack** toggle.
+1. **Open your profile**: in YouTrack, go to your profile.
 
-2. **Enter the details** — In the **YouTrack details** dialog: **Account URL** and **API Key**.
+2. **Start a token**: go to **Account Security** and click **New Token**.
 
-3. **Save** — Click **Save & Enable**.
+3. **Create it**: in **New Permanent Token**, enter the **Name** and **Scope**, then click **Create**.
+
+4. **Copy it**: click **Copy Token**.
 
 </Steps>
 
-Then report from any run: open the failing **Test Case Result**, click **Report Bug**, pick the **YouTrack** icon, review, and click **Report Bug**. **Link to Issue** attaches an existing ticket instead. Testsigma adds the execution video and step screenshots to the created issue automatically.
+## Connect YouTrack
+
+<Steps>
+
+1. **Open integrations**: go to **Settings > Integrations**.
+
+2. **Enable YouTrack**: turn on the toggle on the **Youtrack** widget.
+
+3. **Enter the details**: in the **Youtrack Details** dialog, enter the **Organization URL** and **Access Key** (your token), then click **Save & Enable**.
+
+</Steps>
+
+## Report a bug
+
+<Steps>
+
+1. **Open the result**: go to **Run Results** and open the **Test Case Result** where you want to add a bug.
+
+2. **Start the report**: click **Report Bug**.
+
+3. **Pick YouTrack**: in the **Report** overlay, click the **Youtrack** icon.
+
+4. **File it**: review the details and click **Report Bug**.
+
+{/* SCREENSHOT NEEDED: Report overlay with the YouTrack icon selected */}
+
+</Steps>
+
+<Aside type="tip">
+To attach the result to an existing YouTrack issue instead, click the **Link to Issue** tab, search for the issue, and click **Link To Ticket**.
+</Aside>
+
+When the bug is created, Testsigma automatically adds test result context to the YouTrack issue, including the test execution video and step screenshots.
+

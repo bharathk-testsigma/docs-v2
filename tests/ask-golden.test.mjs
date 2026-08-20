@@ -63,12 +63,6 @@ const GOLDEN = [
     product: 'suite',
     mustMatch: [/\$\|i\||pipeline operator/i],
   },
-  {
-    name: 'arcus questions retrieve arcus content',
-    question: 'How do I create a test run?',
-    product: 'arcus',
-    mustNotMatchProduct: ['suite'],
-  },
 ];
 
 let mod, vectors, meta;

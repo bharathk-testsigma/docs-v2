@@ -1,0 +1,70 @@
+---
+title: On-premise architecture
+description: How the containers, database, and agents fit together on your own infrastructure, and which port each one uses.
+pageType: reference
+verified: 2026-07
+sidebar:
+  order: 10
+  label: Prerequisites
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+An on-premise deployment runs Suite inside your own network. Client machines hold the agents, a load balancer fronts a set of service containers, and every container reads and writes one MySQL database. This page lists the pieces and their ports.
+
+## The three layers
+
+| Layer | What sits there |
+| --- | --- |
+| Client systems | The [agents](/suite/installation/testsigma-agent/) that create and execute tests, plus the browsers people use to reach the web interface |
+| Central server | The container set that processes and stores everything the agents send, and serves the web interface |
+| Database | MySQL, holding test results, user data, and everything else |
+
+Traffic flows one way in. Client systems with the agent installed connect to the load balancer, which distributes requests across the service containers by role. Every container talks to the central database, and each has its own ports for internal communication.
+
+### Client systems
+
+Agents are installed per client machine. They drive test browsers and mobile devices, using ports **8383**, **8484**, **8100**, and **5037**, plus the range **10000–65535**. They send results back to the central server.
+
+### Central server
+
+The central server is the hub. It processes and stores the data agents send, serves the web interface, and communicates with the database to store and retrieve it. It also provides storage for data and test results.
+
+### Database
+
+MySQL is the backbone of storage, holding test results, user data, and the rest. It talks to the central server over TCP on port **3307**.
+
+## Services and ports
+
+| Service | Role | Ports |
+| --- | --- | --- |
+| Load balancer | The entry point, spreading incoming traffic so no single server becomes a bottleneck | — |
+| ID server | User identity, authentication, and authorisation | 8084, 9095, 4203 |
+| App server | The main application logic and user requests | 8080, 9096, 4211 |
+| Addon server | Addons and plugins that extend the application | 8082, 9097, 4201 |
+| Audit server | Logging, monitoring, and auditing of activity | 9090, 4230 |
+| Visual testing server | Visual testing, UI validation, and visual regression | 7010 |
+| MySQL | All application data, reachable by every server | 3307 |
+
+The load balancer routes to the ID, App, Addon, Audit, and Visual Testing servers. Each of those reads and writes MySQL as it needs to.
+
+## Ports by container name
+
+These are the names as they appear in the compose file, which is what you match against when a port conflict comes up.
+
+| Container | Ports |
+| --- | --- |
+| `testsigma_mysql` | 3307 |
+| `testsigma_id_server` | 8084, 9095 |
+| `testsigma_id_server_ui` | 4203 |
+| `testsigma_app_server` | 8080, 9096 |
+| `testsigma_groot_ui` | 4211 |
+| `testsigma_addon_server` | 8082, 9097 |
+| `testsigma_addon_server_ui` | 4201 |
+| `testsigma_audit_server` | 9090 |
+| `testsigma_audit_ui` | 4230 |
+| `testsigma_visual_testing_server` | 7010 |
+
+<Aside type="note">
+The port count surprises people. Each one belongs to a distinct micro-service running as its own container, so the list grows with the service set rather than representing redundancy. Note that MySQL is reached on 3307 externally while using 3306 inside its container.
+</Aside>

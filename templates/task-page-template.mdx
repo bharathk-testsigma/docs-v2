@@ -1,0 +1,105 @@
+---
+# ── Task page template (v6 IA) — filled sample ─────────────────────────────
+# Every style component a task page may use appears once below, in context.
+# Title: verb phrase, sentence case, < 60 chars
+title: Schedule a test plan
+# 9-24 words, one sentence, NOT a copy of the intro (W-07, W-08)
+description: Run a test plan automatically at a fixed time or on a recurring interval.
+pageType: task
+verified: 2026-08 # YYYY-MM of last product verification (T-24)
+sidebar:
+  order: 30 # integer, spaced by 10 from neighbors
+---
+
+{/* Imports: only what the page uses, alphabetical. */}
+
+import { Aside, Badge, Steps, TabItem, Tabs } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+{/* Intro: 30-45 words, subject in first 5 words (W-04, W-05, W-06). */}
+
+Scheduled test plans run without anyone clicking **Run**. You pick a start
+time and an optional repeat interval, and Testsigma triggers the plan on its
+own. Use a schedule for nightly regression or pre-release checks.
+
+<Prerequisites>
+
+- A test plan exists with at least one test suite. See
+  [Test plan](/suite/test-execution/test-plan/).
+- Your role has the **Run test plans** permission.
+
+</Prerequisites>
+
+## Schedule the plan
+
+<Steps>
+
+1. **Open the plan** — Go to **Test Plans** and select the plan you want to
+   schedule.
+
+2. **Open the scheduler** — Click **Schedule** in the top-right corner. The
+   **Schedule Test Plan** dialog opens.
+
+   {/* SCREENSHOT NEEDED: Schedule Test Plan dialog with the Recurring tab
+       visible. Max 3 screenshots per task page (W-31). */}
+
+3. **Pick a start time** — Set the date and time. Times use your profile
+   time zone, shown under the picker.
+
+4. **Choose the frequency** — Select how often the plan repeats:
+
+   <Tabs>
+     <TabItem label="Once">
+       Leave **Repeat** set to **Once**. The plan runs a single time at the
+       chosen start time.
+     </TabItem>
+     <TabItem label="Recurring">
+       Set **Repeat** to **Daily**, **Weekly**, or **Monthly**. Weekly
+       schedules also ask for the days of the week.
+     </TabItem>
+   </Tabs>
+
+5. **Save** — Click **Create**. The plan now shows a
+   <Badge text="Scheduled" variant="note" /> badge in the plans list, and the
+   next run time appears in the **Schedules** column.
+
+</Steps>
+
+{/* Callouts: 0-3 per page (W-24); note/tip ONLY (caution/danger retired). */}
+
+<Aside type="note">
+A paused test plan skips its scheduled runs. The schedule stays in place and
+resumes when the plan is un-paused. Verified August 2026.
+</Aside>
+
+<Aside type="tip">
+To trigger schedules from CI instead, call the run endpoint with your API
+key — see [CI/CD integrations](/suite/integrations/). A minimal example:
+
+```bash
+curl -X POST "https://app.testsigma.com/api/v1/test_plan_results" \
+  -H "Authorization: Bearer $TESTSIGMA_API_KEY" \
+  -d '{"executionId": "292"}'
+```
+
+</Aside>
+
+{/* v6 rule: no Troubleshooting pages. Issues live here, symptom-titled,
+    fix-first, one H3 per issue. Omit the section when empty. */}
+
+## Troubleshooting
+
+### Scheduled run did not start
+
+The most common cause is an offline agent. A schedule that targets local
+devices needs the Testsigma Agent running at trigger time.
+
+1. Check the agent status under **Settings** > **Agents**.
+2. Restart the agent if the status is **Offline**, then wait for the next
+   scheduled window. {/* UNVERIFIED: exact status label on the Agents page */}
+
+### Runs trigger at the wrong hour
+
+The schedule uses your profile time zone, not the server's. Update it under
+**Account Preferences**, then edit the schedule once to re-save it.
+

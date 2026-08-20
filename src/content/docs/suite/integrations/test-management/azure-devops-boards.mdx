@@ -1,33 +1,64 @@
 ---
 title: Azure DevOps Boards
-description: Create Azure DevOps work items — bugs, tasks, epics, stories — directly from Testsigma run results.
+description: Create Azure DevOps work items from Testsigma run results and link test cases across both tools.
 pageType: task
-verified: 2026-07
+verified: 2026-08
+covers:
+  - Report a work item
+  - Link test cases
 sidebar:
+  order: 205
   label: Azure DevOps Boards
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Azure DevOps Boards integration creates work items in your Azure project from a run result. Bugs, epics, tasks, and stories all flow through. Connecting takes the organisation URL and a personal access token.
+Azure DevOps Boards integration creates work items in your Azure project from Testsigma. Bugs, epics, tasks, and stories flow from run results, and test cases link across both tools.
 
 <Prerequisites>
 
-- Your **Azure DevOps organisation URL** and a **Personal Access Token**, from **Security → Personal Access Tokens** in Azure. Your Azure admin can help with both.
+- Your **Azure DevOps organization URL** and a **Personal Access Token** (**Security > Personal Access Tokens**).
 
 </Prerequisites>
 
-## Connect
+## Connect Azure DevOps
 
 <Steps>
 
-1. **Open integrations** — Go to **Settings → Integrations** and enable **Azure DevOps Boards**.
+1. **Open integrations**: Go to **Settings > Integrations**.
 
-2. **Enter the details** — **Organization URL** and **Access Key**.
+2. **Enable the widget**: Turn on the toggle on the **Azure DevOps Boards** widget.
 
-3. **Save** — Click **Save & Enable**.
+3. **Enter the details**: In the **Azure DevOps Boards details** prompt, enter the **Organization URL** and **Access Key**, then click **Save & Enable**.
 
 </Steps>
 
-Then report from any run: open the failing **Test Case Result**, click **Report Bug**, pick the **Azure DevOps** icon, review, and click **Report Bug**. **Link to Issue** attaches an existing ticket instead. Testsigma adds the execution video and step screenshots to the created issue automatically.
+The organization URL is your Azure domain name. Check with your Azure admin if you need help finding either value.
+
+## Report a work item
+
+<Steps>
+
+1. **Open the result**: Go to **Run Results** and open the **Test Case Result** where you want to add a bug.
+
+2. **Start the report**: Click **Report Bug**.
+
+3. **Pick Azure DevOps**: On the **Report** overlay, click the **Azure DevOps** icon.
+
+4. **Send it**: Review the details and click **Report Bug**.
+
+</Steps>
+
+{/* SCREENSHOT NEEDED: Report overlay with the Azure DevOps icon selected */}
+
+Testsigma attaches the execution video and step screenshots to the created work item automatically.
+
+<Aside type="tip">
+To attach an existing Azure DevOps issue instead of creating one, click **Link to Issue**, search for the issue, and click **Link Issue**.
+</Aside>
+
+## Link test cases
+
+You can also pair a Testsigma test case with an Azure DevOps test case. Copy the test case ID from Azure DevOps. In Testsigma, go to **Create Tests > Test Cases** and open the test case. In the top right corner of the test case details page, enter the ID in the **Enter Azure DevOps ID** box. The two test cases are now linked.
+

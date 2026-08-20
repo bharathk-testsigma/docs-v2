@@ -1,149 +1,398 @@
 ---
 /**
- * Header override -- the content-column top bar.
+ * Header override -- the top bar.
  *
- * Not a full-width site header: theme.css insets it to start where the sidebar
- * ends, matching Linear, where the sidebar runs the full viewport height.
+ * Two rows inside one sticky bar, each constrained to the 1680px shell:
  *
- * Layout: breadcrumbs (left) · section links (centre-right) · theme + CTA (right).
- * The section links sit here rather than in the sidebar footer so they stay at
- * the top of the page, while keeping Linear's single-bar layout -- a separate
- * full-width strip above this one would stack two bars, which is the thing
- * Linear's layout avoids.
+ * One 64px row (the old 49px tab strip is gone — wasted height):
  *
- * The wordmark and search live in Sidebar.astro. Search is deliberately not
- * repeated here: two Starlight <Search /> instances would register two search
- * modals on the same page.
+ *   [logo | Documentation] ·· [Search…  ⌘K] [Ask Assistant] ·· [◐] [Book a demo]
+ *
+ * The "| Documentation" label renders on the docs home only; every other page
+ * shows just the logo. API Reference and Changelog used to sit in the right
+ * cluster; they are top-of-rail rows in the left nav now (see the sidebar data
+ * files), so the bar carries neither.
+ *
+ * The search field is CENTRED in its own grid track, so it stays put no matter
+ * how wide the brand or utility clusters get -- that is why row 1 is a grid
+ * with two `minmax(max-content, 1fr)` side tracks rather than a flex row.
+ *
+ * Search lives here rather than in the rail (where V2 kept it): one
+ * <Search /> instance per page, or two dialogs would register on the same
+ * document. The Ask button opens that same dialog in Ask Assistant mode via
+ * `data-open-ask`.
  */
 import ThemeSelect from './ThemeSelect.astro';
-import Breadcrumbs from './Breadcrumbs.astro';
-import { isApiReferencePath, isArcusPath } from '../starlightRouteData';
-import { withBase } from '../lib/base';
+import Search from './Search.astro';
+// The tab strip is gone (Bharath, 2026-08-14 — its 49px was wasted height).
+// The product switcher is gone too (2026-08-17): only Suite ships for now;
+// a switcher returns with Arcus.
 
-// The REST API reference is its own destination: this tab lights up on
-// /suite/api/*, and the route middleware swaps the left nav to the endpoint
-// groups alone. Shared predicate so the tab and the nav can't disagree.
-// The remaining sections have no pages yet and stay inert placeholders.
-const isApiReference = isApiReferencePath(Astro.url.pathname);
-const onArcus = isArcusPath(Astro.url.pathname);
-const isChangelog = Astro.url.pathname.includes('/changelog');
+// Docs home hides the search pill and Ask button, and gains the
+// "| Documentation" label beside the logo. The <Search /> dialog still mounts
+// (hidden) because the home hero's "try asking" chips open it via
+// data-open-ask.
+import { stripBase, withBase } from '../lib/base';
 
-// Both destinations are product-scoped: on an Arcus page these must stay inside
-// Arcus, or "Documentation" would silently switch the reader to Suite -- the one
-// thing the product switcher is supposed to be in charge of.
-const sections = [
-	{
-		label: 'Documentation',
-		href: withBase(
-			onArcus ? '/arcus/get-started/what-is-arcus/' : '/suite/get-started/introduction/'
-		),
-		current: !isApiReference && !isChangelog,
-	},
-	{
-		label: 'API reference',
-		href: withBase(onArcus ? '/arcus/api-reference/overview/' : '/suite/api/overview/'),
-		current: isApiReference,
-	},
-	// No 'Arcus' tab: switching product is the sidebar head's job now
-	// (ProductSwitcher.astro). Two entry points for the same destination would
-	// drift, and this one was a dead `href: '#'`.
-	{
-		label: 'Changelog',
-		href: withBase(onArcus ? '/arcus/changelog/' : '/suite/changelog/'),
-		current: isChangelog,
-	},
-];
+// stripBase: under /docs-new the pathname carries the base, so the bare
+// comparison would never match and home would lose its header treatment.
+const isHome = stripBase(Astro.url.pathname).replace(/\/+$/, '') === '/home';
 ---
 
-<div class="ts-topbar">
-	<Breadcrumbs />
+<div class:list={['ts-bar', { 'ts-bar-home': isHome }]}>
+	<div class="ts-bar-row">
+		<div class="ts-brandcol">
+			{/* Mobile only: Starlight's own menu button is hidden (see theme.css) and
+			    this drives the same disclosure, so the toggle sits at the start of
+			    the brand cluster the way the canvas has it. */}
+			<button type="button" class="ts-railtoggle" data-ts-rail-toggle aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<svg
+					width="18"
+					height="18"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.8"
+					stroke-linecap="round"
+					aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg
+				>
+			</button>
 
-	<div class="ts-topbar-right">
-		<nav class="ts-sections" aria-label="Sections">
-			{
-				sections.map((s) => (
-					<a href={s.href} class:list={['ts-section-link', { current: s.current }]}>
-						{s.label}
-					</a>
-				))
-			}
-		</nav>
+			<span class="ts-brand">
+				<a href="https://testsigma.com/" class="ts-brand-site" aria-label="Testsigma home page">
+				{/* Two files, not one filtered file: the brand lock-up is a teal gear
+				    beside a near-black wordmark, and no CSS filter can lighten the
+				    word without dragging the gear off-brand with it. The dark one is
+				    generated from the light one by `npm run logo:dark`. */}
+				<img
+					class="ts-logo ts-logo-light"
+					src={withBase('/testsigma-logo.png')}
+					alt="Testsigma"
+					width="103"
+					height="24"
+				/>
+				<img
+					class="ts-logo ts-logo-dark"
+					src={withBase('/testsigma-logo-dark.png')}
+					alt=""
+					width="103"
+					height="24"
+					aria-hidden="true"
+				/>
+				</a>
+				{isHome && <span class="ts-brand-sep" aria-hidden="true" />}
+				{isHome && <span class="ts-brand-docs">Documentation</span>}
+			</span>
+		</div>
 
-		<div class="ts-topbar-actions">
+		<div class="ts-searchcol">
+			<Search />
+			<button type="button" class="ts-ask" data-open-ask>
+				<svg
+					width="15"
+					height="15"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.7"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<path
+						d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"
+					></path><path d="M20 3v4"></path><path d="M22 5h-4"></path>
+				</svg>
+				Ask Assistant
+			</button>
+		</div>
+
+		<div class="ts-utility">
+			{/* Not in the canvas, which ships no theme control at all -- kept because
+			    the canvas DOES define a full dark palette, and dropping the only way
+			    to reach it would strand that half of the design. */}
 			<ThemeSelect />
-			<a href="https://testsigma.com/request-demo" class="ts-topbar-cta">Book a demo</a>
+			<a href="https://testsigma.com/request-demo" class="ts-cta">Book a demo</a>
 		</div>
 	</div>
 </div>
 
+<script>
+	// The rail toggle drives Starlight's own mobile disclosure, so the sidebar
+	// keeps its focus handling and `aria-expanded` contract -- this button is
+	// only a second, better-placed trigger for it.
+	document.querySelectorAll<HTMLButtonElement>('[data-ts-rail-toggle]').forEach((btn) => {
+		const native = document.querySelector<HTMLButtonElement>('starlight-menu-button button');
+		if (!native) return;
+		btn.addEventListener('click', () => {
+			native.click();
+			btn.setAttribute('aria-expanded', native.getAttribute('aria-expanded') ?? 'false');
+		});
+	});
+</script>
 
 <style>
-	.ts-topbar {
+	.ts-bar {
 		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1.5rem;
+		flex-direction: column;
 		height: 100%;
-		min-width: 0;
+		/* The tab strip used to draw the bar's only hairline; with it gone the
+		   bar carries its own. */
+		border-bottom: 1px solid var(--ts-bd);
 	}
 
-	.ts-topbar-right {
-		display: flex;
+	/* ---- row 1 ---- */
+	.ts-bar-row {
+		display: grid;
+		/* The centre track is `minmax(0, 760px)`, not `auto`: an auto track sizes
+		   to its content, and the search field sizes to its track, so the pair
+		   collapsed to the width of the placeholder text. */
+		grid-template-columns: minmax(max-content, 1fr) minmax(0, 760px) minmax(max-content, 1fr);
 		align-items: center;
-		gap: 1.375rem;
+		gap: 20px;
+		height: 64px;
 		flex: none;
+		width: 100%;
+		max-width: var(--ts-shell);
+		margin: 0 auto;
+		padding-inline: var(--ts-gutter);
 	}
 
-	.ts-sections {
+	/* Both side clusters reserve the SAME width, so the two `1fr` tracks resolve
+	   equal and the search group lands on the page's true centre. Without it the
+	   wider cluster pushes the centre track off-centre by half the difference.
+	   The left cluster (logo + switcher, ~290px) sits under the reservation, and
+	   the right one is now well under it -- API Reference and Changelog moved to
+	   the rail, leaving only the theme toggle and the CTA.
+	   Raise --ts-hdr-cluster if either cluster ever grows past it. */
+	.ts-brandcol,
+	.ts-utility {
+		min-width: var(--ts-hdr-cluster);
+	}
+
+	.ts-brandcol {
 		display: flex;
 		align-items: center;
-		gap: 1.375rem;
-	}
-	.ts-section-link {
-		font-size: 13px;
-		font-weight: 450;
-		color: var(--ts-tx2);
-		text-decoration: none;
-		white-space: nowrap;
-	}
-	.ts-section-link:hover {
-		color: var(--ts-tx);
-	}
-	.ts-section-link.current {
-		color: var(--ts-tx);
-		font-weight: 500;
+		gap: 24px;
+		justify-self: start;
 	}
 
-	.ts-topbar-actions {
+	.ts-railtoggle {
+		display: none;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		flex: none;
+		border: 1px solid var(--ts-bd);
+		border-radius: 8px;
+		background: var(--ts-bg);
+		color: var(--ts-tx2);
+		cursor: pointer;
+		transition:
+			background var(--ts-t) var(--ts-ease),
+			border-color var(--ts-t) var(--ts-ease);
+	}
+	.ts-railtoggle:hover {
+		background: var(--ts-hover);
+	}
+
+	.ts-brand {
 		display: flex;
 		align-items: center;
 		gap: 10px;
+		flex: none;
 	}
-
-	/* Solid pill, per the reference -- fully rounded and heavier than the
-	   surrounding controls, so it reads as the single primary action. */
-	.ts-topbar-cta {
-		height: 32px;
+	.ts-brand-site {
+		display: flex;
+		align-items: center;
+	}
+	/* Starlight is dark-first: the root carries `data-theme="dark"` unless the
+	   reader picks light, so the dark lock-up is the default and the light one
+	   is the override. */
+	.ts-logo {
+		display: block;
+		height: 24px;
+		width: auto;
+	}
+	.ts-logo-light {
+		display: none;
+	}
+	.ts-brand-sep {
+		width: 1px;
+		height: 18px;
+		background: var(--ts-bd);
+	}
+	.ts-brand-docs {
+		font-size: 16px;
+		font-weight: 400;
+		color: var(--ts-tx3);
+		white-space: nowrap;
+	}
+	:root[data-theme='light'] .ts-logo-light {
+		display: block;
+	}
+	:root[data-theme='light'] .ts-logo-dark {
+		display: none;
+	}
+	/* ---- row 1, centre: search + ask ---- */
+	.ts-searchcol {
+		display: flex;
+		align-items: center;
+		/* Centre the CONTENT, not just the track: the pill + Ask button are
+		   narrower than this 760px box, and a flex row packs left by default --
+		   which parked the pair ~90px left of the page centre. */
+		justify-content: center;
+		gap: 10px;
+		justify-self: center;
+		width: min(760px, 100%);
+		min-width: 0;
+	}
+	/* Starlight's search trigger is a plain button inside <site-search>; the pill
+	   shape and the ⌘K chip are ours. */
+	.ts-searchcol :global(site-search) {
+		display: contents;
+	}
+	.ts-searchcol :global(button[data-open-modal]) {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		flex: 1;
+		min-width: 0;
+		height: 40px;
+		padding: 0 6px 0 14px;
+		border: 1px solid var(--ts-bd);
+		border-radius: 999px;
+		background: var(--ts-bg);
+		color: var(--ts-tx3);
+		font-family: var(--sl-font);
+		font-size: 14px;
+		font-weight: 400;
+		text-align: left;
+		cursor: pointer;
+		transition:
+			border-color var(--ts-t) var(--ts-ease),
+			background var(--ts-t) var(--ts-ease);
+	}
+	.ts-searchcol :global(button[data-open-modal]:hover) {
+		border-color: var(--ts-tx3);
+		background: var(--ts-panel);
+	}
+	.ts-searchcol :global(button[data-open-modal] svg) {
+		width: 16px;
+		height: 16px;
+		flex: none;
+	}
+	.ts-searchcol :global(button[data-open-modal] > span) {
+		display: block;
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.ts-searchcol :global(button[data-open-modal] > kbd) {
 		display: inline-flex;
 		align-items: center;
-		padding: 0 16px;
+		gap: 3px;
+		flex: none;
+		height: 24px;
+		margin-inline-start: auto;
+		padding: 0 8px;
+		border: 1px solid var(--ts-bd);
 		border-radius: 999px;
-		/* Brand teal gradient, same stops as the mark (testsigma-mark.svg). */
-		background: linear-gradient(135deg, #02b6b6, #0ac0a1);
+		background: var(--ts-panel);
+		font-family: inherit;
+		font-size: 11.5px;
+		font-weight: 500;
+		color: var(--ts-tx3);
+	}
+	.ts-searchcol :global(button[data-open-modal] kbd kbd) {
+		border: none;
+		background: transparent;
+		padding: 0;
+		font-size: inherit;
+	}
+
+	/* The one control allowed to show colour: hovering it washes the pink→purple
+	   AI gradient across the pill. */
+	.ts-ask {
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		height: 40px;
+		padding: 0 16px;
+		border: 1px solid var(--ts-bd);
+		border-radius: 999px;
+		background: var(--ts-bg);
+		color: var(--ts-tx);
+		font: inherit;
+		font-size: 14px;
+		font-weight: 500;
+		white-space: nowrap;
+		cursor: pointer;
+		transition:
+			border-color var(--ts-t) var(--ts-ease),
+			background var(--ts-t) var(--ts-ease);
+	}
+	.ts-ask svg {
+		flex: none;
+		color: var(--ts-tx2);
+	}
+	.ts-ask:hover {
+		background: var(--ts-ai-wash);
+		border-color: var(--ts-ai-bd);
+	}
+
+	/* ---- row 1, end: sections + utility ---- */
+	.ts-utility {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 18px;
+		justify-self: end;
+	}
+
+	/* Solid brand teal -- flat, not the gradient the mark uses, per the canvas. */
+	.ts-cta {
+		display: inline-flex;
+		align-items: center;
+		height: 36px;
+		padding: 0 16px;
+		border-radius: 8px;
+		background: #01bda7;
 		color: #fff;
-		font-size: 12.5px;
+		font-size: 13.5px;
 		font-weight: 600;
 		text-decoration: none;
 		white-space: nowrap;
+		transition: opacity var(--ts-t) var(--ts-ease);
 	}
-	.ts-topbar-cta:hover {
+	.ts-cta:hover {
 		opacity: 0.88;
 	}
 
-	/* The full item set does not fit a narrow bar: drop the section nav,
-	   leaving breadcrumbs + theme + CTA. */
-	@media (max-width: 68rem) {
-		.ts-sections {
+	/* Home: hide the search trigger and Ask button, not <site-search> itself --
+	   the dialog inside it must stay in the DOM for the hero's ask chips. */
+	.ts-bar-home .ts-searchcol :global(button[data-open-modal]),
+	.ts-bar-home .ts-ask {
+		display: none;
+	}
+
+	@media (max-width: 64rem) {
+		.ts-cta {
+			display: none;
+		}
+	}
+	/* The toggle appears exactly where the rail becomes a drawer -- Starlight's
+	   own 50rem breakpoint -- so it is never a button with nothing to open. */
+	@media (max-width: 50rem) {
+		.ts-railtoggle {
+			display: inline-flex;
+		}
+		.ts-ask span {
 			display: none;
 		}
 	}

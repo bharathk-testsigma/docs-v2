@@ -1,0 +1,300 @@
+---
+title: Frequently asked questions
+description: Answers to recurring questions about projects, test cases, recording, step groups, and elements, and fixes for common authoring failures.
+pageType: reference
+verified: 2026-08
+covers:
+  - Projects and applications
+  - Test cases
+  - Recording and Copilot
+  - Step groups
+  - Elements and locators
+  - Test steps and NLPs
+searchTerms:
+  - faq
+  - troubleshooting
+  - element not found
+  - execution engine
+  - locator
+  - select dropdown
+  - captcha
+  - api step fails
+sidebar:
+  order: 60
+  label: FAQs
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Answers to recurring questions about projects, test cases, recording, step groups, and elements, and fixes for the failures that come up most often while authoring tests.
+
+## Projects and applications
+
+### Can I add more than one application to a project?
+
+Yes, if you select **Allow adding multiple applications in this project** when you create the project. A project holds a single application by default, and the **Applications** tab stays hidden until you enable multiple applications. To change this later, edit the project details.
+
+### Can I create more than one version of an application?
+
+Yes, if you selected **Allow Multiple Versions** when you created the project. To carry data forward, turn on **Copy Data from Previous Versions** and select the models to transfer.
+
+### Can I change the execution engine after I create an application?
+
+No. You select the engine when you create the application, and the selection is permanent. To use a different engine, create a new application. Your existing tests stay unchanged.
+
+### Why can't I select an execution engine?
+
+Engine selection appears only when an application type supports more than one engine and engine selection is enabled for your account. When it does not appear, Testsigma applies the default engine for that application type. Contact support@testsigma.com to have selection enabled.
+
+### Can I use both engines in the same account?
+
+Yes. Each application carries its own engine, so Classic and Modern applications run side by side. The choice is permanent per application, not per account.
+
+### Is the Classic engine being discontinued?
+
+No. Classic and Modern run side by side, and Classic has no planned end date. Some application types run on Classic only.
+
+### Is the Modern engine a beta?
+
+No. Modern is a production engine. Its coverage is still expanding across application types, which is why some types run on Classic today.
+
+### What do I gain from the Modern engine?
+
+Modern waits for elements and for the page state before it interacts with them, which reduces timing-related failures. It also handles Shadow DOM and web components more natively than Classic.
+
+### Does the engine change how I author tests?
+
+No. The low-code editor, the recorder, and AI-assisted generation work the same on both engines. The engine affects execution only. The one exception is AI Step, which is available on Classic and not currently on Modern.
+
+### Do my Classic addons work on the Modern engine?
+
+No. Classic addons are written in Java and Modern addons in TypeScript, and the two are not interchangeable. Moving an addon to Modern means rebuilding it in TypeScript.
+
+### What happens when I delete a project or an application?
+
+Deleting a project deletes every application and application version in it, along with all of its test cases, elements, test data profiles, custom functions, uploads, requirements, test suites, test plans, run results, and environments. Deleting an application deletes every version in it, along with the test cases, test data, and uploads in those versions.
+
+<Aside type="note">
+Both deletions destroy the data listed above.
+</Aside>
+
+## Test cases
+
+### Why is the first step of my mobile test case already filled in?
+
+Android and iOS test cases start with **Launch App** by default.
+
+### Can I move a test case to a different subfolder?
+
+Yes. Open the test case, click the **Edit** icon next to the folder and subfolder names, select the new location in **Select Location**, and click **Confirm**.
+
+### Can I recover a test case I deleted?
+
+Yes, while it is in the trash. Click **Saved Filters** in List View, select **Trash (Deleted Test Cases)**, find the test case, click **Restore** next to it, then click **Restore** in the dialog.
+
+<Aside type="note">
+A permanent delete cannot be undone, and it also removes the test case's run reports and associated configurations.
+</Aside>
+
+### Does deleting a test case affect my test suites and plans?
+
+Deleting a test case removes its associations with test suites, test plans, and prerequisites.
+
+### Can I import test cases from another project?
+
+Yes, but only into the same application type. Test cases from a web application import into a web application in the target project, and cannot move to a different application type.
+
+### What do New, No Change, and Override mean on the Start Import tab?
+
+**New** means the test case does not exist in the target project. **No Change** means it exists and matches. **Override** means it exists and has been modified.
+
+### Can I undo an import?
+
+Yes. Testsigma creates a save point before an import, so you can restore the project to its state before the import. Testsigma stores a maximum of 10 save points at a time.
+
+### What is not imported from a Postman collection?
+
+Test scripts, prerequisite scripts, settings, unsupported authorizations, unsupported HTTP methods, and GraphQL requests. An import that matches an existing collection name creates a new entry with a timestamp appended.
+
+## Recording and Copilot
+
+### Why does the recorder show a blank screen with no elements?
+
+In a hybrid application, the screen is a WebView. Click **H** in the recorder panel and select the WebView to switch context. On web, check that the Testsigma Chrome extension is installed. Then open **Chrome > Settings > Privacy and security > Third-party cookies** and turn on **Block third-party cookies in Incognito mode**.
+
+### Why does Testsigma need a Chrome extension?
+
+Modern web applications are built from generic HTML elements such as `div` and `span`, so a test needs locators that identify each element in the page structure. The extension reads that structure while you record, which is how Testsigma captures usable locators.
+
+### What is Chrome for Testing?
+
+An isolated build of Chrome used only for automation. It runs sandboxed and does not touch your user data, cookies, or browsing history. Testsigma downloads it automatically once the agent is registered.
+
+### What does Copilot need before it can start?
+
+Testsigma Terminal must be installed and running on your desktop before you launch Copilot.
+
+### Can I run the old Java agent and Testsigma Terminal on the same machine?
+
+No. Only one agent can be active at a time. Testsigma Terminal detects an existing Java agent and uses it for Copilot and for test executions.
+
+### Will installing Testsigma Terminal upgrade my existing agent?
+
+Yes. Testsigma Terminal detects the old agent during installation, upgrades it, and converts it into the Testsigma Terminal Java agent. If it cannot detect an inactive agent, it installs a new one, which you then register again.
+
+### Which agent runs remote executions and ad-hoc runs?
+
+Your existing agent. Testsigma Terminal integrates with it, and that one agent serves remote executions, ad-hoc runs, and Copilot.
+
+### Can I start or stop the agent from Testsigma?
+
+Not yet. Manage it from the Testsigma Terminal desktop application. The agent starts automatically when Testsigma Terminal launches, and it runs in the background. To stop Testsigma Terminal, click **Quit Session**. To restart the agent, relaunch Testsigma Terminal or click **Restart** on the Copilot home page.
+
+### Where are Testsigma Terminal logs?
+
+Click **Logs** on the Testsigma Terminal home screen. On macOS, the log file also sits at `Disk > Users > user_folder > Library > Application Support > Testsigma > Testsigma Terminal > Logs`. The Java agent's files sit alongside it, at `Disk > Users > user_folder > Library > Application Support > Testsigma > Agent > Logs`.
+
+<Aside type="note">
+**Library** is hidden. On macOS, press **Command + Shift + .** in Finder to show hidden folders. On Windows, open **File Explorer > View** and select **Hidden items**.
+</Aside>
+
+## Step groups
+
+### How deep can step groups nest?
+
+Up to 3 levels, in both a test case and a step group. Deeper nesting is not supported.
+
+### Why is the Create and Replace button missing?
+
+The steps you selected are not consecutive. **Create and Replace** is offered only for consecutive steps. **Create** is still available, and it copies the selected steps into a new group.
+
+### Can I edit a step group from inside a test case?
+
+You can edit its test data and elements, but not its NLP. These edits stay local to that test case and do not change the original step group.
+
+### Do my changes to a step group affect the test cases that use it?
+
+Yes. Editing the step group itself changes every test case that calls it.
+
+### What happens when I delete a step group?
+
+Testsigma lists the affected test cases first, and deleting the step group removes it from each of them. To confirm, enter `DELETE` and click **I understand, delete this Step Group**.
+
+### Can a step group run on test data?
+
+Yes. Associate a test data profile with the group under **Step Group Settings**, which makes it a data-driven step group.
+
+### Can I use a step group from another project?
+
+Yes. Use **Reuse Step Group** to pull a group from another project, application, or version. Check that its element locators match the target application before you run it.
+
+## Elements and locators
+
+### Why does my locator match the wrong element?
+
+The attribute value is not unique. If two buttons on the page carry the name `submit`, that attribute cannot identify either one. Use an attribute whose value appears once on the page. When no unique attribute exists, use an XPath or a CSS locator.
+
+### Why do I get Element not found?
+
+The error has 3 causes:
+
+- **The element is not on the current page.** An earlier step passed without doing what you expected. Check the screenshots from the previous steps and fix the step that went wrong.
+- **The locator value is wrong**, often a typo in the XPath. Correct the value, or recapture the element with the Testsigma Recorder.
+- **The element sits inside an external frame.** The test case has to switch to that frame before it can act on the element.
+
+### Why does the recorder capture link text that differs from what I see?
+
+The recorder captures link text from the HTML, and the HTML can differ from the visible text, such as lowercase in the HTML against uppercase in the UI. Compare the captured value with what you see on screen, and update the element to match the HTML.
+
+### Why do my Android resource IDs break in other environments?
+
+An Android resource ID follows the pattern `<package_name>:id/<id_value>`, and the package name changes between builds such as `io.testsigma.tsdemobeta` and `io.testsigma.tsdemoalpha`. Use only the `<id_value>` portion, such as `startUserRegistration`. Testsigma appends the package name of the selected test app.
+
+### Why are accessibility IDs preferred over other mobile locators?
+
+They resolve faster. An ID locator takes a single pass through the app's source to find an element, while XPath and OS-native strategies traverse the tree.
+
+### Does my locator precedence apply to everyone on the project?
+
+No. A locator precedence applies only to the user who configured it, and only to the application it was configured for.
+
+### Why did my locator precedence go back to the default?
+
+The configuration was not saved. Click **Save** after you set the order.
+
+### How do I update many elements at once?
+
+Export the elements, edit the spreadsheet, and import it back. Keep the **UUID** column intact so each element updates in place, and change the other fields as needed. A sample template is available in the Element Import dialog.
+
+### How do I clear a filter on the Elements List page?
+
+Click **All** in the menu bar.
+
+## Test steps and NLPs
+
+### Why does my Click or Tap step fail?
+
+The element must be enabled, visible, and correctly located. A disabled or hidden element fails with "Element is either hidden or disabled". An element below the scroll view does not fail, because Testsigma scrolls to find it. If the element is enabled and visible, check the locator, and use the Chrome extension to capture a working XPath.
+
+### Why won't my Select NLP choose an option from a dropdown?
+
+Select NLPs work only on dropdowns built with the `<select>` tag. Right-click the element, select **Inspect**, and check the tag.
+
+For a `<select>` dropdown, pick from the 4 NLP families: by value, text, label, or index, such as **Select option by text test-data in the element list**. Each family has variants targeting lists by title, label text, or text, their containing forms, and button or radio button groups. For multiple selections, use **Select multiple options using value/by text/by index test-data in the element list**.
+
+For a dropdown built from `<div>`, `<a>`, or `<span>`, click instead. Use **Click on element with text test-data**, **Click on coordinates test-data inside element element**, or **Click on element using javascript executor**.
+
+### Why do the check and select NLPs fail on a checkbox or radio button?
+
+These NLPs validate the element's `type` attribute, which must be `checkbox` or `radiobutton`. Sometimes the visible control is a different tag styled to look like one. Write an XPath for the tag that carries the state, then change the NLP to a click NLP.
+
+### Why does Store text return nothing from a text field?
+
+`<input>` and `<textarea>` keep entered data in the `value` attribute, not as inner text. For data between tags, such as `<span>Text</span>`, use **Store text from the element element into a variable test data**. For data in an attribute, such as `value="Text"`, use **Store the value for the attribute attribute of the element element into a variable test data**.
+
+### How do I make a step skip instead of fail when an element is missing?
+
+**Click on element if visible** passes when the element is visible, and skips when the element exists in the DOM but is hidden. It still fails when the element is absent from the DOM, or when the locator is wrong. To keep the run going in those cases, wrap the click in an if condition: **If the element is visible**, then **Click on element**.
+
+An element's state comes from standard attributes. `disabled` and `readonly` block input. `hidden`, `display: none`, and zero width and height hide the element. `checked` and `selected` pre-set checkboxes and options.
+
+### Why does Scroll to Element fail in a mobile native app?
+
+The NLP acts only on an element already rendered in the current viewport. When the element exists in the app but has not scrolled into view, the step has no target, so it fails or does nothing.
+
+### Which element comes first in a drag and drop step?
+
+The source. **Drag the element and drop on the element element** takes the source element first and the target second.
+
+### Why does my file upload fail?
+
+**Upload file test data using the element** accepts a Testsigma storage path (`testsigma-storage:/…`), a public URL from a service such as S3, Google Drive, or Dropbox, or a local path. Local paths work only in local executions, because cloud machines cannot reach your file system. Files come from **Uploads**.
+
+### Why does the browser crash during a long run?
+
+A long session can fill the test machine's disk. Start the test case with **Delete all cookies from the current session** or **Delete all local storage cookies from the current session**, and close spare tabs with **Close all windows except the current window**, **Close the current window**, **Close all windows**, or **Close the window with index test data**.
+
+### How do I sign in to a page that uses basic authentication?
+
+Pass the credentials in the URL, in the form `protocol://username:password@host`.
+
+### Can I automate a CAPTCHA?
+
+A text-based CAPTCHA can be read with the OCR_ExtractText addon, installed from the addons page. Automating any CAPTCHA works against its purpose, which is to verify that a human is present, so the recommended practice is to bypass the CAPTCHA in your test environment.
+
+### How do I add more than one runtime variable to a data generator?
+
+After the first variable, press the right arrow key twice to insert the next variable, parameter, or environment value.
+
+### Can I run database queries from a step?
+
+Yes, with the mysql_queries addon, installed from the addons page. It runs MySQL over a JDBC URL of the form `jdbc:mysql://<hostname>:<port>/<database>?user=<user>&password=<password>`. Its NLPs execute a query, a create-procedure statement, a stored procedure call, an update, or a `.sql` script file. They also store a select result into a variable, verify a select result or an affected-row count, and compare two queries on one connection or the same query across two connections.
+
+### Why does my REST API step fail?
+
+- **The request never sends**: connectivity. Load any page in a browser, retry, then contact your network administrator.
+- **"Invalid request URL"**: a path that does not start with `/`, unmatched or empty `{}` placeholders, unencoded spaces (use `%20`), or reserved characters such as `; ? # $ * @ { } =`.
+- **"Invalid HTTP method"**: a body parameter on a **GET** request. Change the method, or move the parameter.
+- **"JSON Path not found"**: a syntax error in the JSON path. Review its syntax.
+- **403 Forbidden**: the request is authenticated but not authorized. The user lacks the role or the permission.
+- **501 Not implemented**: the server does not support the method. Try another one.

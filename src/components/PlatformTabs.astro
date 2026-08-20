@@ -44,7 +44,10 @@ const uid = 'pt-' + (++counter).toString(36) + '-' + tabs.join('').toLowerCase()
 <div class="ts-tabs" data-ts-tabs data-sync={sync}>
 	{label && <p class="ts-tabs-label">{label}</p>}
 
-	<div class="ts-tabs-row" role="tablist" aria-label={label ?? 'Platform'}>
+	{/* `not-content` opts the buttons out of Starlight's sibling-margin rules,
+	    which otherwise push every tab after the first 1rem down. Panels stay
+	    outside it so their markdown keeps content styling. */}
+	<div class="ts-tabs-row not-content" role="tablist" aria-label={label ?? 'Platform'}>
 		{
 			tabs.map((t, i) => (
 				<button
@@ -93,11 +96,16 @@ const uid = 'pt-' + (++counter).toString(36) + '-' + tabs.join('').toLowerCase()
 		margin: 0 0 8px;
 	}
 
+	/* inline-flex + max-content shrink-wraps the row, so the hairline ends at
+	   the last tab instead of running the content width (same treatment as the
+	   starlight-tabs restyle in theme.css). */
 	.ts-tabs-row {
-		display: flex;
-		gap: 2px;
+		display: inline-flex;
+		width: max-content;
+		max-width: 100%;
+		gap: 22px;
 		border-bottom: 1px solid var(--ts-bd);
-		margin-bottom: 1.15rem;
+		margin-bottom: 0.65rem;
 		overflow-x: auto;
 		scrollbar-width: none;
 	}
@@ -107,16 +115,19 @@ const uid = 'pt-' + (++counter).toString(36) + '-' + tabs.join('').toLowerCase()
 
 	.ts-tab {
 		flex: none;
-		padding: 7px 12px;
+		/* Near-zero horizontal padding: the row's hairline ends 2px after the
+		   last label instead of a full pad-width later; the 22px gap does the
+		   spacing (same geometry as the starlight-tabs restyle in theme.css). */
+		padding: 7px 2px;
 		border: none;
 		background: transparent;
 		font: inherit;
-		font-size: 12.5px;
-		font-weight: 450;
+		font-size: 0.844rem; /* 13.5px, matches body */
+		font-weight: 500;
 		line-height: 1.3;
-		color: var(--ts-tx3);
+		color: var(--ts-tx2);
 		cursor: pointer;
-		border-bottom: 1.5px solid transparent;
+		border-bottom: 2px solid transparent;
 		margin-bottom: -1px;
 		white-space: nowrap;
 		transition: color 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -128,7 +139,7 @@ const uid = 'pt-' + (++counter).toString(36) + '-' + tabs.join('').toLowerCase()
 	/* The design underlines the active tab in the primary text colour, not the
 	   accent -- see `tabStyle(on)` in the canvas source. */
 	.ts-tab[aria-selected='true'] {
-		font-weight: 550;
+		font-weight: 650;
 		color: var(--ts-tx);
 		border-bottom-color: var(--ts-tx);
 	}
@@ -139,7 +150,12 @@ const uid = 'pt-' + (++counter).toString(36) + '-' + tabs.join('').toLowerCase()
 		border-radius: 4px 4px 0 0;
 	}
 
-	/* Collapse the gap a markdown block would otherwise add at the panel top. */
+	/* Collapse the gap a markdown block would otherwise add at the panel top.
+	   The panel div itself also needs it: Starlight's sibling-margin rule gives
+	   it 1rem on top of the row's margin-bottom. */
+	.ts-tab-panel {
+		margin-top: 0;
+	}
 	.ts-tab-panel > :global(:first-child) {
 		margin-top: 0;
 	}

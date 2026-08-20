@@ -255,8 +255,8 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
-  // Prior turns of this conversation, so follow-ups ("what about Arcus?",
-  // "and the second step?") resolve. Bounded: last 6 messages, 4k chars each —
+  // Prior turns of this conversation, so follow-ups ("and the second step?",
+  // "what about iOS?") resolve. Bounded: last 6 messages, 4k chars each —
   // enough for context, small enough that a long thread can't blow the prompt.
   const history = (Array.isArray(body.history) ? body.history : [])
     .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
@@ -276,7 +276,7 @@ export default async function handler(req: any, res: any) {
     send('status', { text: 'Finding relevant docs…' });
 
     // 1. Embed the question. On a follow-up, prepend the previous question so a
-    // fragment like "and for Arcus?" still retrieves against the real topic.
+    // fragment like "and for iOS?" still retrieves against the real topic.
     const prevQuestion = [...history].reverse().find(m => m.role === 'user')?.content ?? '';
     const searchText = history.length && question.trim().length < 60
       ? `${prevQuestion}\n${question.trim()}`
@@ -322,13 +322,7 @@ Format the answer in clean GitHub-flavored Markdown:
 - If the excerpts don't contain enough information, say so honestly — do not guess.
 
 Product rules:
-- Suite (test automation) and Arcus (test management) are separate products. ${
-        product?.trim()
-          ? `The reader is currently browsing the ${product.trim() === 'arcus' ? 'Arcus' : 'Suite'} docs — answer for that product by default.`
-          : ''
-      }
-- SCOPE, never OWNERSHIP: open shared-feature answers with "In Suite, ..." or "In Arcus, ..." — never say a feature "is a Suite feature" or "is an Arcus feature". Test Cases, Test Plans, Step Groups, and Atto's Home exist in BOTH products, so an exclusivity claim is wrong even when your excerpts only cover one product.
-- When answering about a shared feature for one product, close with a single line noting the other product also has it (e.g. "Arcus, the test management product, has its own Test Plans — ask about Arcus if that's what you meant.").
+- These docs cover Testsigma Suite, the test automation product.
 - Quote UI labels (buttons, tabs, menus, fields) exactly as written in the excerpts — never invent or paraphrase a label the excerpts don't show.
 - For anything marked Beta or In-Progress in the excerpts, add a one-line note that the behavior may have changed since the docs were verified.
 

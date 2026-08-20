@@ -2,26 +2,65 @@
 title: Zephyr
 description: Link Zephyr Cloud test cases and plans to Testsigma and export run results back to Zephyr.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
+  order: 202
   label: Zephyr
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Zephyr Cloud integration links Zephyr test cases and test plans to their Testsigma counterparts. Run results export back to Zephyr as plans execute. Connecting takes a Zephyr access token plus your Jira account details.
+Zephyr Cloud integration links Zephyr test cases and test plans with their Testsigma counterparts and exports run results back. Link artifacts by ID once connected.
 
 <Prerequisites>
 
-- A **Personal Access Token** from Zephyr Cloud, and your Jira **Account URL**, **Username**, and **API key**.
+- A valid **Personal Access Token** from Zephyr Cloud.
+- Your Jira **Account URL**, **Username**, and **API key**.
 
 </Prerequisites>
 
-## Connect
+## Connect Zephyr Cloud
 
-Go to **Settings → Integrations** and turn on **Zephyr Cloud**. Select the **Region of your Zephyr instance**. Enter the **Personal Access Token** and **Jira details**, then click **Save & Enable**.
+<Steps>
 
-## Link artifacts
+1. **Open integrations**: from the left navigation bar, go to **Settings > Integrations**.
 
-Test case: copy its ID from Zephyr. Open the Testsigma test case, click **Manage Test Case**, enter the ID, and click **Link**. Test plan: the same flow from the test plan's own page.
+2. **Enable Zephyr Cloud**: turn on the toggle for **Zephyr Cloud**.
+
+3. **Enter credentials**: in the **Zephyr Cloud Details** dialog box, select the **Region of your Zephyr instance**, then enter your **Personal Access Token** and **Jira Details**.
+
+   {/* SCREENSHOT NEEDED: Zephyr Cloud Details dialog with region selector, token, and Jira fields */}
+
+4. **Save**: click **Save & Enable**.
+
+</Steps>
+
+## Link a test case
+
+<Steps>
+
+1. **Copy the ID**: get the **ID** of an existing test case from **Zephyr Cloud**.
+
+2. **Open the test case**: in Testsigma, go to **Create Tests > Test Cases** and open the test case you want to link, then click **Manage Test Case**.
+
+3. **Link it**: enter the Zephyr test case ID and click the **Link** button.
+
+</Steps>
+
+## Link a test plan
+
+<Steps>
+
+1. **Copy the ID**: get the **ID** of an existing test plan from **Zephyr Cloud**.
+
+2. **Open the test plan**: in Testsigma, go to **Test Plans** and open the test plan you want to link.
+
+3. **Link it**: enter the **Zephyr Project ID** and click the **Link** button.
+
+</Steps>
+
+## Check results in Zephyr
+
+Execute the linked test plan in Testsigma and wait for it to complete. Then click **Zephyr Execution**. You are redirected to **Zephyr Cloud**, where you can view the execution details.
+

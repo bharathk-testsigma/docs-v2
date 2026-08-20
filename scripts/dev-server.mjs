@@ -68,15 +68,23 @@ function enhance(res) {
 async function serveStatic(req, res) {
   const { pathname } = new URL(req.url, 'http://localhost');
 
-  // Mirror vercel.json's root redirect
-  if (pathname === '/') {
+  // The build carries base=/docs-new (site-config.mjs), so every URL in the
+  // output starts with it. Serve dist/ under that prefix, exactly like the
+  // production httpd does, and bounce the two roots a person actually types.
+  if (pathname === '/' || pathname === '/docs-new' || pathname === '/docs-new/') {
     res.statusCode = 302;
-    res.setHeader('Location', '/suite/get-started/introduction/');
+    res.setHeader('Location', '/docs-new/home/');
     res.end();
     return;
   }
+  if (!pathname.startsWith('/docs-new/')) {
+    res.statusCode = 404;
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.end('404 Not Found (the site is served under /docs-new/)');
+    return;
+  }
 
-  const rel = decodeURIComponent(pathname);
+  const rel = decodeURIComponent(pathname.slice('/docs-new'.length));
   const candidates = [join(DIST, rel)];
 
   try {

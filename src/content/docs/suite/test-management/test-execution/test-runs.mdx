@@ -1,0 +1,116 @@
+---
+title: Run web tests
+description: Run one test case ad hoc, save a run configuration to reuse, execute a full plan, or run part of one.
+pageType: task
+verified: 2026-07
+covers:
+  - Run a single test case
+  - Save and reuse a run configuration
+  - Execute a test plan
+  - Run part of a test plan
+sidebar:
+  order: 30
+  label: Test Runs
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Suite runs tests two ways. An ad-hoc run executes one test case on its own and stays out of reporting. A test plan run is the real thing, and it is what schedules and pipelines trigger.
+
+<Prerequisites>
+
+- You have a test case with steps, and a test suite and plan for the plan-level runs.
+- For a local run, Testsigma Agent is running on the target machine.
+
+</Prerequisites>
+
+## Run a single test case
+
+<Steps>
+
+1. **Open the run panel** — On the **Test Case Details** page, click **Run**. The **Ad-Hoc Run** panel opens.
+
+2. **Pick a test lab** — Choose **Testsigma Lab**, **Local Devices**, or **BrowserStack**. Testsigma Lab takes an **OS & Version**, **Browser**, and **Resolution**, plus an optional **Headless Test**.
+
+3. **Set the environment** — Select an **Environment**, and use **Manage Variables** if a value needs changing.
+
+4. **Adjust the run** — Under **Additional settings**, set the timeouts, screenshot capture, and a mock server if needed.
+
+5. **Start it** — Click **Run Now**.
+
+</Steps>
+
+Page and step timeouts default to 30 seconds and cap at 120.
+
+<Aside type="note">
+An ad-hoc run produces a dry run result, kept out of your reporting. Run a half-finished test case as often as you like.
+</Aside>
+
+## Save and reuse a run configuration
+
+Re-selecting a lab, browser, and resolution every run gets old fast.
+
+<Steps>
+
+1. **Configure the run** — Set up the **Ad-Hoc Run** panel the way you want it.
+
+2. **Save it** — Click **Save configuration** at the bottom right, enter a **Name**, and click **Save**.
+
+3. **Reuse it** — Click **Saved Configs** at the top of the panel and pick it from the dropdown.
+
+</Steps>
+
+With a saved config loaded, the footer offers **Update configuration** as well, so you can amend it in place.
+
+## Execute a test plan
+
+Open the plan and click **Run Now**. Suites and their test cases execute in the order the plan defines. Serial or parallel depends on its configuration.
+
+<Aside type="note">
+Cloud machines reach your application over the public internet. Behind a firewall, either whitelist the [Testsigma IP addresses](/suite/settings/testsigma-ip-info/) or use [Testsigma Tunnel](/suite/installation/testsigma-tunnel/). A plan that passes locally and fails in the lab is usually this.
+</Aside>
+
+## Run part of a test plan
+
+A partial run executes a subset without editing the plan. That is what you want after fixing one failing area.
+
+<Steps>
+
+1. **Open the option** — On the test plan, open the **Run Now** dropdown and click **Partial Run**.
+
+2. **Choose suites** — In the **Partial Test Plan Run** overlay, select **Include** or **Exclude**, then name the suites in **Test Suites to Include**.
+
+3. **Narrow the cases** — Apply **Test Case Filters**, such as **Labels**.
+
+4. **Start it** — Run the selection.
+
+</Steps>
+
+## FAQs
+
+**My tests sit in Queued for a long time.**
+
+Usually every parallel your licence allows is already in use. Click **Usage details** on the **Dashboard**: `Parallel Tests 2/2` means both slots are busy, and queued runs wait until one frees. Wait, stop something, or ask support about more parallels. On a local run, check the agent first — see [Testsigma Agent](/suite/installation/testsigma-agent/#faqs).
+
+**Pages load slowly only in cloud executions.**
+
+Rendering differences on cloud machines can stall a page. Add the step *Click on the Refresh button in the browser* immediately before the step that fails on load time.
+
+**A browser session error failed my run.**
+
+| Error contains | Cause and fix |
+| --- | --- |
+| `timeouts` on session start | Outdated browser driver — update the drivers |
+| `A session with id ... was not found` | Session started but lost contact: outdated drivers on Windows; on macOS, enable Safari's **Allow Remote Automation** |
+| `The driver server has unexpectedly died` | The WebDriver process crashed — restart and update drivers |
+| `timed out while connecting to a Safari instance` | Safari answered late — retry, update the driver |
+| `Safari instance is already paired with another WebDriver session` | A stale Safari/WebDriver process is stuck — kill it |
+| `You must enable the 'Allow Remote Automation' option` | Safari > Develop menu > **Allow Remote Automation** |
+| `For input string: ".DS_Store"` | System files polluting the driver folder — delete `.DS_Store` / `Thumbs.db` there |
+| `Element time out ... waiting for visibility` | The element never appeared: fix the locator, or add a wait step |
+| `Could not start a new session` | Wrong remote address or the browser failed to launch |
+
+**A test plan takes far longer than its tests should.**
+
+**Reset session for every test case** is on in the machine profile, so every test case waits for a fresh machine. Edit the test plan's machine profile in **Add Test Suites & Link Machine Profiles**, untick it, and update — the same setting that splits the [execution video](/suite/web/results/#faqs).

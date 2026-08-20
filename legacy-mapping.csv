@@ -1,0 +1,537 @@
+legacy_page,legacy_title,target_doc
+FAQs/general/faqs-on-classic-and-modern-engines,FAQs on Classic & Modern Engines,get-started/concepts
+FAQs/general/how-can-i-set-up-authenticator-based-authentication-in-testsigma,How Can I Set Up Authenticator-Based Authentication in Testsigma?,cloud/web/create-web-test-case
+FAQs/general/how-do-i-retrieve-the-otp-when-its-embedded-within-html-tags,How Do I Retrieve the OTP When it’s Embedded within HTML Tags?,test-management/test-data/test-data-types
+FAQs/general/how-to-add-multiple-runtime-variables-in-data-generator-functions,How to Add Multiple Runtime Variables in Data Generator Functions?,test-management/test-data/data-generators
+FAQs/general/how-to-configure-the-oracledb-add-on-in-testsigma,How to Configure the OracleDB Add-on in Testsigma?,addons/index
+FAQs/general/how-to-handle-browser-related-pop-up-issues,How to Handle Browser-Related Pop-Up Issues?,cloud/web/create-web-test-case
+FAQs/general/how-to-handle-text-based-captcha-in-testsigma,How to Handle Text-Based CAPTCHA in Testsigma?,cloud/web/create-web-test-case
+FAQs/general/how-to-insert-test-data-in-raw-body-post-api-request,How to Insert Test Data in RAW Body for POST API?,test-management/test-authoring/create-test-cases
+FAQs/general/how-to-test-flutter-apps-using-accessibility-mode,How to Test Flutter Apps Using Accessibility Mode?,cloud/android/create-android-test-case
+FAQs/general/how-to-update-an-excel-file-in-testsigma-uploads,How to Update an Excel File in Testsigma Uploads?,test-management/test-data/uploads
+FAQs/general/what-causes-longer-automation-test-execution-times-in-a-test-plan,What Causes Longer Automation Test Execution Times in a Test Plan?,test-management/test-execution/test-plan
+FAQs/general/what-is-chrome-for-testing-and-how-does-it-work,What is Chrome for Testing and How Does it Work?,test-management/test-execution/test-runs
+FAQs/general/why-am-i-unable-to-download-the-xls-file-from-the-edge-browser,Why am I Unable to Download the XLS File from the Edge Browser?,cloud/web/create-web-test-case
+FAQs/general/why-do-errors-occur-when-i-try-to-download-files-from-the-exports-page,Why do Errors Occur When I Try to Download Files from The Exports Page?,reports/view-and-export
+FAQs/general/why-does-test-execution-fail-with-the-error-no-route-to-host,Why does Test Execution Fail with the Error No Route to Host?,get-started/installation/testsigma-agent
+FAQs/mobile-apps/apple-pay-automation,Apple Pay Automation with Testsigma,cloud/ios/create-ios-test-case
+FAQs/mobile-apps/faqs-on-unified-mobile,FAQs on Unified Mobile,cloud/android/create-android-test-case
+FAQs/mobile-apps/how-do-i-enhance-the-execution-speed-for-mobile-native-apps.md,How do I Enhance the Execution Speed for Mobile Native Apps?,test-management/test-execution/test-runs
+FAQs/mobile-apps/how-to-execute-tests-in-emulators-simulators,How to Execute Android/iOS Tests in Emulators/Simulators?,test-management/test-execution/test-runs
+FAQs/mobile-apps/how-to-resolve-app-launch-issues,How to Resolve App Launch Issues?,test-management/test-execution/test-runs
+FAQs/mobile-apps/why-am-i-facing-permission-error-during-local-test-execution,Why am I Facing Permission Error During Local Test Execution?,get-started/installation/testsigma-agent
+FAQs/mobile-apps/why-does-scroll-to-element-fail-in-mobile-native-apps-and-how-do-i-fix-it,Why Does Scroll to Element Fail in Mobile Native Apps and How Do I Fix It??,cloud/android/create-android-test-case
+FAQs/mobile-apps/why-does-the-ios-app-close-right-after-opening-in-testsigma,Why does the iOS App Close Right After Opening in Testsigma?,cloud/ios/create-ios-test-case
+FAQs/web-apps/automating-captcha,Why Bypass CAPTCHA in Test Automation?,cloud/web/create-web-test-case
+FAQs/web-apps/basic-authentication,Basic Authentication for Web Pages,cloud/web/create-web-test-case
+FAQs/web-apps/failure-to-link-text-capture,Test Case Failures Due to Link Text Capture Issues,test-management/test-authoring/capture-elements
+FAQs/web-apps/how-to-enable-ie-mode-in-microsoft-edge,How to Enable IE Mode in Microsoft Edge?,cloud/web/create-web-test-case
+FAQs/web-apps/how-to-enter-non-text-keys-in-test-cases,Entering Non-Text Keys in Test Cases,cloud/web/create-web-test-case
+FAQs/web-apps/how-to-handle-browser-related-permission-issues,How to Handle Browser-Related Permission Issues?,cloud/web/create-web-test-case
+FAQs/web-apps/how-to-turnoff-onboarding-tutorial,How to Turnoff Onboading Tutorial?,settings/account-preferences
+FAQs/web-apps/viewing-full-testplan-execution-video,Why Is a Single Video for All Test Cases in a Test Plan Unavailable in Some Cases?,test-management/test-execution/test-runs
+FAQs/web-apps/what-should-i-do-if-my-browser-blocks-local-network-access,What Should I Do If My Browser Blocks Local Network Access?,test-management/test-execution/test-runs
+FAQs/web-apps/why-am-i-getting-an-error-while-registering-the-agent,Why Am I Getting an Error While Registering the Agent?,get-started/installation/testsigma-agent
+FAQs/web-apps/why-cant-selenium-chromedriver-interact-with-3ds-authentication-pages,Why Can’t Selenium ChromeDriver Interact With 3DS Authentication Pages?,cloud/web/create-web-test-case
+FAQs/web-apps/why-chrome-extension,About Testsigma Chrome extension,get-started/installation/recorder-extensions
+FAQs/web-apps/why-cloud-devices-cannot-access-local-apps,Cloud Based Test Machines Unable to Access Locally Hosted Applications,get-started/installation/testsigma-tunnel
+FAQs/web-apps/why-does-the-try-again-error-appear-while-installing-the-testsigma-agent-in-a-proxy-environment,Why Does the Try Again Error Appear While Installing the Testsigma Agent in a Proxy Environment?,get-started/installation/testsigma-agent
+accessibility-testing/accessibility-testing,Accessibility Testing for Web Applications,testing-types/accessibility-testing
+accessibility-testing/mobile-accessibility-testing,Accessibility Testing for Android & iOS Applications,testing-types/accessibility-testing
+activity-monitoring/audit-logs,Audit Logs: Complete Record of Activities,settings/audit-logs
+addons/classic/create,Create & Update an Addon for Classic Engine,addons/build
+addons/classic/create-a-post-plan-hook-add-on,Create an Addon for Post Plan Hook,addons/build
+addons/examples/connect-mongodb-and-postgresql-via-addon,Connect MongoDB & PostgreSQL Databases,addons/build
+addons/examples/ocr-extraction,Create OCR Text Extraction Addon,addons/build
+addons/modern/build-upload-and-publish,"Build, Upload, and Publish a Modern Addon",addons/build
+addons/modern/create-a-condition-addon,Create a Modern Condition Addon,addons/build
+addons/modern/create-a-test-data-function,Create a Modern Test Data Function,addons/build
+addons/modern/create-a-test-plan-hook,Create a Modern Test Plan Hook,addons/build
+addons/modern/create-an-action-addon,Create a Modern Action Addon,addons/build
+addons/modern/execution-context-reference,Modern Execution Context Reference,addons/sdk
+addons/modern/overview,Modern Addons in Testsigma,addons/index
+addons/modern/permissions-and-the-sandbox,Modern Addon Permissions and Sandbox,addons/build
+addons/modern/set-up-your-environment,Set Up a Modern Addon Environment,addons/build
+addons/modern/troubleshooting,Troubleshoot Modern Addons,addons/build
+addons/overview,Addons Overview,addons/index
+agent/command-line-arguments,Command-Line Arguments & Usage Guide,get-started/installation/testsigma-agent
+agent/connect-android-local-devices,Setting up Android Local Devices,get-started/installation/testsigma-agent
+agent/connect-ios-local-devices,Setting Up iOS Local Devices,get-started/installation/testsigma-agent
+agent/faqs,Testsigma Agent - FAQs,get-started/installation/testsigma-agent
+agent/force-delete,Force Delete Testsigma Agent Manually,get-started/installation/testsigma-agent
+agent/overview,Testsigma Agent - Overview,get-started/installation/testsigma-agent
+agent/pre-requisite,Prerequisites for Testsigma Agent,get-started/installation/testsigma-agent
+agent/setup-on-kubernetes,Setting Up Testsigma Agent on Kubernetes,get-started/installation/testsigma-agent
+agent/setup-on-windows-mac-linux,Setting Up Testsigma Agent Locally,get-started/installation/testsigma-agent
+agent/soft-and-permanent-deletion-of-agents,Delete Agents: Soft & Permanent,get-started/installation/testsigma-agent
+agent/trigger-tests-locally,Triggering Tests on Local Devices,test-management/test-execution/test-runs
+agent/troubleshooting/how-to-add-max-sessions-for-agents,How to Add Max Sessions for Agents?,get-started/installation/testsigma-agent
+agent/troubleshooting/how-to-configure-agent-logs,How to Configure Agent Logs?,get-started/installation/testsigma-agent
+agent/troubleshooting/how-to-configure-proxy-settings-in-testsigma-agent,How do I Configure Proxy Settings for the Testsigma Agent?,get-started/installation/testsigma-agent
+agent/troubleshooting/how-to-fix-setup-issues,How to Fix Agent Startup & Registration Errors?,get-started/installation/testsigma-agent
+agent/troubleshooting/how-to-resolve-access-blocked-errors-when-downloading-the-agent,How to Resolve Access Blocked Errors When Downloading the Agent?,get-started/installation/testsigma-agent
+agent/troubleshooting/how-to-upgrade-agent-automatically,How to Upgrade Testsigma Agent Automatically?,get-started/installation/testsigma-agent
+agent/troubleshooting/why-is-testsigma-agent-not-detecting-my-installed-browsers,Why is Testsigma Agent Not Detecting My Installed Browser?,get-started/installation/testsigma-agent
+agent/update-agent-manually,Update Testsigma agent manually,get-started/installation/testsigma-agent
+agent/update-drivers-manually,Update browser drivers for Testsigma agent manually,get-started/installation/testsigma-agent
+agent/upgrade-guide,Testsigma Agent Upgrade Guide,get-started/installation/testsigma-agent
+ai-agents/analyzer,Analyzer Agent in Testsigma,atto/ai-agents
+ai-agents/bug-reporter,Bug Reporter Agent in Testsigma,atto/ai-agents
+ai-agents/coverage-planner,Coverage Planner,atto/ai-agents
+ai-agents/generator,Generator Agent in Testsigma,atto/ai-agents
+ai-agents/optimizer,Optimizer Agent in Testsigma,atto/ai-agents
+ai-agents/test-data-generator,Test Data Generator in Testsigma,atto/ai-agents
+api/elements,Manage Elements using REST API,api/overview
+api/environments,Manage Environments Using REST APIs,api/overview
+api/examples/manage-test-steps-api,Manage Test Steps Using API,api/overview
+api/examples/rerun-test-cases-in-test-run,Rerun Test Cases from Run Results using API,api/overview
+api/examples/run-the-same-test-plan-multiple-times-in-parallel,Run the Same Test Plan Multiple Times in Parallel,api/overview
+api/examples/schedule-test-plan-with-API,"Schedule, Update & Delete a Test Plan Using API",api/overview
+api/examples/trigger-multiple-test-plans,Trigger Multiple Test Plans Consecutively,api/overview
+api/examples/trigger-sf-metadata,Salesforce Metadata Refresh Using API,api/overview
+api/examples/trigger-test-plan-wait-completion,Trigger Test Plans Remotely & Wait Until Completion,api/overview
+api/examples/update-test-case-results-using-API,Update Test Case Results Using API,api/overview
+api/examples/values-of-test-data-profile,Create and Update Values of Test Data Profile Using REST API,api/overview
+api/export-test-reports,Export Test Reports Using the API,api/overview
+api/get-project-wide-information,Get Project Wide Information,api/overview
+api/overview,Testsigma API - Overview,api/overview
+api/test-plans,Trigger Test Plans Remotely,api/overview
+api/test-results-at-all-levels,Fetch Test Results at all Levels Using APIs,api/overview
+api/upload-and-update-test-data-profile,Upload & Update Test Data Profile,api/overview
+api/upload-files,Upload Files using API,api/overview
+atto/generative-ai/byok/intro,Introduction: BYOK ֎ ,atto/ai-agents
+atto/generative-ai/byok/supported-llms/azure,Azure API,atto/ai-agents
+atto/generative-ai/byok/supported-llms/openai,OpenAI,atto/ai-agents
+atto/generative-ai/copilot/agentic-learning-vs-copilot,Understanding Agentic Learning and Run with Copilot,atto/agentic-execution
+atto/generative-ai/copilot/live-editor,Copilot in Testsigma,test-management/test-authoring/copilot
+atto/generative-ai/copilot/mobile-recorder,Copilot in Mobile Recorder,test-management/test-authoring/copilot
+atto/generative-ai/copilot/web-recorder,Copilot in Web Recorder,test-management/test-authoring/copilot
+atto/generative-ai/generate-tests/apis,Generate Test Cases for SOAP and REST APIs Using Atto,test-management/test-authoring/create-test-cases
+atto/generative-ai/generate-tests/automate-test-cases,Automate Test Cases,test-management/test-authoring/create-test-cases
+atto/generative-ai/generate-tests/desktop,Generate Test Cases for Desktop,desktop/lite/create-project
+atto/generative-ai/generate-tests/mobile,Generate Test Cases for Android & iOS,cloud/android/create-android-test-case
+atto/generative-ai/generate-tests/mobile-web,Generate Test Cases For Mobile Web,cloud/web/create-web-test-case
+atto/generative-ai/generate-tests/requirements,Add Requirements,test-management/test-authoring/projects-and-applications
+atto/generative-ai/generate-tests/salesforce,Generate Test Cases for Salesforce,cloud/salesforce/create-salesforce-test-case
+atto/generative-ai/generate-tests/web,Generate Test Cases For Web,cloud/web/create-web-test-case
+atto/generative-ai/integrations/figma,Integrating Figma with Testsigma,atto/ai-agents
+atto/generative-ai/integrations/github,Integrating GitHub with Testsigma,atto/ai-agents
+atto/generative-ai/integrations/jira,Integrating Jira with Testsigma,atto/ai-agents
+atto/generative-ai/integrations/jira-server,Integrating Jira Server/Data Center with Testsigma,atto/ai-agents
+atto/generative-ai/integrations/qtest,Integrating qTest with Testsigma,atto/ai-agents
+atto/generative-ai/integrations/xray,Integrating Xray with Testsigma,atto/ai-agents
+atto/generative-ai/overview,Overview: Generative AI Capabilities in Testsigma,atto/ai-agents
+auto-healing/ai-enabled-auto-healing-for-mobile-applications,AI-Enabled Auto-Healing for Mobile Applications,test-management/test-execution/test-runs
+auto-healing/ai-enabled-auto-healing-for-salesforce-applications,AI-Enabled Auto-Healing for Salesforce Applications,test-management/test-execution/test-runs
+auto-healing/ai-enabled-auto-healing-for-web-applications,AI-Enabled Auto-Healing for Web Applications,test-management/test-execution/test-runs
+auto-healing/auto-healing-for-ai-generated-test-cases,Auto-healing for AI-Generated Test Cases,test-management/test-execution/test-runs
+auto-healing/auto-healing-insights,Auto-Healing Insights,test-management/test-execution/test-runs
+auto-healing/enable-the-auto-healing-feature,Enable the Auto-Healing Feature,test-management/test-execution/test-runs
+auto-healing/intro,Introduction: Auto-Healing,test-management/test-execution/test-runs
+auto-healing/using-auto-healing-in-copilot-test-execution,Using Auto-Healing in Copilot Test Execution,test-management/test-execution/test-runs
+best-practices/best-practices,Testsigma Automation Standards and Best Practices,get-started/concepts
+collaboration/assign-projects,Assign Projects to Users,settings/users
+collaboration/elements-review-management,Review Management for Elements,settings/review-management
+collaboration/invite-team-members,Inviting Team Members to a Project,settings/users
+collaboration/manage-execution-stops,Execution Controls (Stopping Test Execution),test-management/test-execution/test-runs
+collaboration/test-cases-review-management,Review Management for Test Cases,settings/review-management
+collaboration/users-roles,Users & Role Management,settings/users
+configuration/api-keys,Generate API Key,settings/developers
+configuration/generate-wda-file,Creating WDA File for iOS App Testing,get-started/installation/testsigma-agent
+configuration/ios-settings,Configuring Local iOS Device with Provisioning Profile,get-started/installation/testsigma-agent
+configuration/manage-access,Manage Access: Grant/Revoke Permissions,settings/users
+configuration/security/azure-sso,Setting up SAML-based SSO login for Testsigma in Azure,settings/users
+configuration/security/google-sso,Setting Up Google Single Sign-On(SSO) Login in Testsigma,settings/users
+configuration/security/okta-sso,Setting Up Okta Single Sign-On Integration with SAML Login in Testsigma,settings/users
+configuration/security/org-settings,Configure Organization Settings,settings/account-preferences
+configuration/security/overview,Security Settings in Testsigma,settings/users
+configuration/security/password-policy,Configure Password Policy,settings/users
+configuration/security/setup-two-factor-authentication,Two-Factor Authentication (2FA),settings/users
+configuration/smtp-configuration,SMTP Configuration in Testsigma,settings/account-preferences
+configuration/user-settings,Configure User Settings,settings/account-preferences
+continuous-integration/aws-devops,Integrate Testsigma with AWS DevOps,integrations/ci-cd/aws-devops
+continuous-integration/aws-labmda,Integrate Testsigma with AWS Lambda,integrations/ci-cd/aws-lambda
+continuous-integration/azure-devops,Integrate Testsigma with Azure DevOps,integrations/ci-cd/azure-devops
+continuous-integration/bamboo-ci, Integrate Testsigma with Bamboo CI,integrations/ci-cd/bamboo
+continuous-integration/bitbucket-ci, Integrate Testsigma with Bitbucket CI,integrations/ci-cd/bitbucket
+continuous-integration/bitrise-ci, Integrate Testsigma with Bitrise CI,integrations/ci-cd/bitrise
+continuous-integration/circle-ci,Integrate Testsigma with Circle CI,integrations/ci-cd/circleci
+continuous-integration/codemagic-ci,Integrate Testsigma with Codemagic,integrations/ci-cd/codemagic
+continuous-integration/codeship-ci,Integrate Testsigma with CodeShip CI,integrations/ci-cd/codeship
+continuous-integration/copado-integration,Integrate Testsigma with Copado (Salesforce),integrations/ci-cd/copado
+continuous-integration/gearset,Integrate Testsigma with Gearset (Salesforce),integrations/ci-cd/gearset
+continuous-integration/get-test-plan-details,Get Test Plan ID,integrations/ci-cd/shell-script
+continuous-integration/github-cicd,Integrate Testsigma with Github,integrations/ci-cd/github-actions
+continuous-integration/gitlab-cicd,GitLab Integration With Testsigma,integrations/ci-cd/gitlab
+continuous-integration/google-cloud-build-ci,Integrate Testsigma with Google Cloud Build,integrations/ci-cd/google-cloud-build
+continuous-integration/jenkins,Integrate Testsigma with Jenkins,integrations/ci-cd/jenkins
+continuous-integration/rest-api,Integrate Testsigma with your CI/CD using REST API (Generic),integrations/ci-cd/shell-script
+continuous-integration/shell-script,Integrate Testsigma with any CI/CD tool using Shell Script,integrations/ci-cd/shell-script
+continuous-integration/travis-ci,Integrate Testsigma with Travis CI,integrations/ci-cd/travis-ci
+contributing/open-source-dev-environment-setup/macos-and-intellij-ce,macOS and IntelliJ Community Edition,(drop — not product docs)
+contributing/open-source-dev-environment-setup/macos-and-intellij-ue,macOS and IntelliJ Ultimate Edition,(drop — not product docs)
+contributing/open-source-dev-environment-setup/windows-and-intelliJ-ue,Windows and IntelliJ Ultimate Edition,(drop — not product docs)
+contributing/setup-dev-environment-addons,Testsigma Development Environment (Addons),(drop — not product docs)
+copilot/copilot-debug-toolbar,Copilot Debug Toolbar,test-management/test-authoring/copilot
+copilot/faqs-on-copilot,FAQs on Testsigma Copilot,test-management/test-authoring/copilot
+copilot/introduction,Introduction: Copilot,test-management/test-authoring/copilot
+copilot/key-capabilities,Key Capabilities,test-management/test-authoring/copilot
+copilot/launch-copilot,Launch Copilot,test-management/test-authoring/copilot
+copilot/manage-test-steps/add-test-steps,Add Test Steps,test-management/test-authoring/copilot
+copilot/manage-test-steps/bulk-actions,Bulk Actions,test-management/test-authoring/copilot
+copilot/manage-test-steps/delete-test-steps,Delete Test Steps,test-management/test-authoring/copilot
+copilot/manage-test-steps/edit-and-update-steps,Edit and Update Steps,test-management/test-authoring/copilot
+copilot/manage-test-steps/reorder-test-steps,Reorder Test Steps,test-management/test-authoring/copilot
+copilot/profile-setup-guide,Setup Browser Profile for Copilot Recording,test-management/test-authoring/copilot
+copilot/record-test-steps,Record Test Steps,test-management/test-authoring/copilot
+copilot/troubleshooting-for-copilot/unable-to-auto-register-your-device-using-testsigma-terminal,Unable to Auto-Register Your Device Using Testsigma Terminal?,get-started/installation/testsigma-terminal
+copilot/troubleshooting-for-copilot/unable-to-download-the-packages-required-to-start-the-agent,Unable to Download the Packages Required to Start the Agent?,get-started/installation/testsigma-agent
+copilot/troubleshooting-for-copilot/unable-to-download-the-terminal-files,Unable to Download the Terminal Files?,get-started/installation/testsigma-terminal
+copilot/troubleshooting-for-copilot/unable-to-extract-the-terminal-files,Unable to Extract the Terminal Files?,get-started/installation/testsigma-terminal
+copilot/troubleshooting-for-copilot/unable-to-login-to-testsigma-terminal,Unable to Login to Testsigma Terminal?,get-started/installation/testsigma-terminal
+copilot/troubleshooting-for-copilot/unable-to-reestablish-connection-to-agent,Unable to Reestablish Connection to Agent?,get-started/installation/testsigma-agent
+copilot/troubleshooting-for-copilot/unable-to-start-the-agent,Unable to Start the Agent?,get-started/installation/testsigma-agent
+copilot/troubleshooting-for-copilot/unable-to-start-the-terminal-due-to-port-unavailability,Unable to Start the Terminal Due to Port Unavailability?,get-started/installation/testsigma-terminal
+copilot/troubleshooting-for-copilot/unable-to-update-the-packages-required-to-start-the-agent,Unable to Update the Packages Required to Start the Agent?,get-started/installation/testsigma-agent
+debugging/debugging-localdevices-web,Copilot Test Authoring for Web Applications,test-management/test-authoring/copilot
+debugging/launch-the-debugger-in-the-same-window,Launch Copilot in the Same Window,test-management/test-authoring/copilot
+debugging/results-on-local-devices,Copilot Test Authoring for Mobile Applications,test-management/test-authoring/copilot
+desired-capabilities/add-chrome-extension,Automate Add Chrome Extension Functionality,test-management/test-execution/desired-capabilities
+desired-capabilities/app-resigning,Enable App Resigning in iOS,test-management/test-execution/desired-capabilities
+desired-capabilities/avoid-unsafe-download-prompt,Bypass Unsafe Download Prompt in Chrome,test-management/test-execution/desired-capabilities
+desired-capabilities/basic-authentication-safari,Automating Basic Authentication in Safari,test-management/test-execution/desired-capabilities
+desired-capabilities/biometric-authentication,Biometric Authentication,test-management/test-execution/desired-capabilities
+desired-capabilities/custom-user-profile-chrome,Using Custom User Profile in Chrome,test-management/test-execution/desired-capabilities
+desired-capabilities/emulate-mobile-devices-with-chrome,Emulate Mobile Devices with Chrome Browser,test-management/test-execution/desired-capabilities
+desired-capabilities/enable-browser-console-logs,Enable Browser Console Debug Logs,test-management/test-execution/desired-capabilities
+desired-capabilities/geo-location-for-localization,Geolocation Emulation for Localization Testing,test-management/test-execution/desired-capabilities
+desired-capabilities/incognito-mode,Run Browser in Incognito/Private mode,test-management/test-execution/desired-capabilities
+desired-capabilities/most-common,Common Desired Capabilities,test-management/test-execution/desired-capabilities
+desired-capabilities/network-logs,Network Logs,test-management/test-execution/desired-capabilities
+desired-capabilities/network-throttling,Network Throttling,test-management/test-execution/desired-capabilities
+desired-capabilities/overview,Desired Capabilities - Overview,test-management/test-execution/desired-capabilities
+desired-capabilities/screen-shot-capture,Enable Capturing Screenshots (Android & iOS),test-management/test-execution/desired-capabilities
+desired-capabilities/set-geo-location,Set Geolocation for Tests in Chrome & Firefox,test-management/test-execution/desired-capabilities
+desired-capabilities/set-playstore-credentials,Set Google Play Store Credentials,test-management/test-execution/desired-capabilities
+desired-capabilities/webviews,Configure Android WebViews,test-management/test-execution/desired-capabilities
+desktop-automation/batch-elements,Batch Element Recorder for Desktop Automation,desktop/lite/create-project
+desktop-automation/desktop-projects-and-applications,Create Projects and Applications,desktop/lite/create-project
+desktop-automation/intro,Introduction: Desktop Automation,desktop/lite/create-project
+desktop-automation/selective-elements,Selective Element Recorder for Desktop Automation,desktop/lite/create-project
+desktop-automation/test-cases-for-desktop-automation,Creating Test Cases for Desktop Automation,desktop/lite/create-project
+elements/android-apps/capture-single-element,Record Single Element Using Recorder,test-management/test-authoring/capture-elements
+elements/android-apps/create-manually,Create Elements Manually,test-management/test-authoring/elements
+elements/android-apps/overview,Elements for an Android Project - Overview,test-management/test-authoring/elements
+elements/android-apps/record-multiple-elements,Record Multiple Elements Using Recorder,test-management/test-authoring/capture-elements
+elements/dynamic-elements/dynamic-elements-in-tables,Locating Dynamic Elements in Tables,test-management/test-authoring/elements
+elements/dynamic-elements/freeze-webpage,Freeze & Inspect Dynamic Elements (WebPage),test-management/test-authoring/elements
+elements/dynamic-elements/locating-dynamic-elements-in-date-widget,Locating Dynamic Elements in Date Widget,test-management/test-authoring/elements
+elements/dynamic-elements/with-environment-data,Using Environment Test Data for Dynamic Locators,test-management/test-authoring/elements
+elements/dynamic-elements/with-parameter-test-data,Dynamic Locators using Parameter,test-management/test-authoring/elements
+elements/dynamic-elements/with-runtime-test-data,Dynamic Locators using Runtime,test-management/test-authoring/elements
+elements/flutter-apps/element-identification,Element identification,test-management/test-authoring/elements
+elements/import-export,Import and Export Elements,test-management/test-authoring/elements
+elements/ios-apps/capture-single-element,Record Single Element Using Recorder,test-management/test-authoring/capture-elements
+elements/ios-apps/create-manually,Create Elements Manually,test-management/test-authoring/elements
+elements/ios-apps/overview,Overview of Elements for an iOS Project,test-management/test-authoring/elements
+elements/ios-apps/record-multiple-elements,Record Multiple Elements Using Recorder,test-management/test-authoring/capture-elements
+elements/locator-precedence,Locator Precedence in Test Recorder,test-management/test-authoring/capture-elements
+elements/mobile-web-application/create-manually,Create Elements Manually,test-management/test-authoring/elements
+elements/mobile-web-application/record-elements,Record Multiple Elements Using Recorder,test-management/test-authoring/capture-elements
+elements/overview,Element List Actions,test-management/test-authoring/elements
+elements/verify-elements,Verify Elements from Test Recorder,test-management/test-authoring/capture-elements
+elements/web-apps/capture-single-element,Record Single Element Using Recorder,test-management/test-authoring/capture-elements
+elements/web-apps/create-manually,Create Element Manually,test-management/test-authoring/elements
+elements/web-apps/creating-locators-manually-strategies,Strategies for Formulating Elements,test-management/test-authoring/elements
+elements/web-apps/iframe-elements,Handling iframe Elements?,test-management/test-authoring/elements
+elements/web-apps/image-based-elements,Create Image Based Elements,test-management/test-authoring/elements
+elements/web-apps/overview,Elements for a Web Project (Overview),test-management/test-authoring/elements
+elements/web-apps/record-multiple-elements,Record Multiple Elements Using Recorder,test-management/test-authoring/capture-elements
+elements/web-apps/shadow-dom,Shadow DOM Elements,test-management/test-authoring/elements
+elements/web-apps/supported-locator-types,Supported Element Locator Types,test-management/test-authoring/elements
+elements/web-apps/verify-elements,Verifying elements in Chrome DevTools,test-management/test-authoring/elements
+getting-started/command-center,Command Center,get-started/concepts
+getting-started/faqs,Frequently Asked Questions,get-started/concepts
+getting-started/introduction-cloud,Introduction: Testsigma Cloud,get-started/overview
+getting-started/setup/overview,Setup Testsigma,get-started/overview
+getting-started/setup/testsigma-cloud,Deploy to Testsigma Cloud ,get-started/overview
+getting-started/terminology,Testsigma Terminology,get-started/concepts
+getting-started/testsigma-sample-apps,Testsigma Sample Applications,get-started/overview
+integrations/bug-reporting/backlog,Backlog Bug Reporting Integration,integrations/bug-reporting/backlog
+integrations/bug-reporting/bugzilla,Bugzilla Bug Reporting Integration,integrations/bug-reporting/bugzilla
+integrations/bug-reporting/jira,Jira Integration for Bug Reporting,integrations/bug-reporting/jira
+integrations/bug-reporting/mantis,Mantis Bug Reporting Integration,integrations/bug-reporting/mantis
+integrations/bug-reporting/monday.com,Monday.com Integration With Testsigma,integrations/bug-reporting/monday
+integrations/bug-reporting/youtrack,Youtrack Bug Reporting Integration,integrations/bug-reporting/youtrack
+integrations/collaboration/google-chat,Integrating Google Chat with Testsigma,integrations/collaboration/google-chat
+integrations/collaboration/microsoft-teams,Integrating MS Teams with Testsigma,integrations/collaboration/microsoft-teams
+integrations/collaboration/slack,Slack Integration with Testsigma,integrations/collaboration/slack
+integrations/it-admin/patchmypc-integration-with-testsigma,PatchMyPC Integration with Testsigma,get-started/installation/app-manager
+integrations/overview,Integrations in Testsigma,integrations/index
+integrations/test-labs/browserstack,Integrate Testsigma with BrowserStack,integrations/test-labs/browserstack
+integrations/test-labs/integrate-test-labs,Integrations with Test Labs,integrations/index
+integrations/test-labs/kobiton,Integrate Testsigma with Kobiton,integrations/test-labs/kobiton
+integrations/test-labs/sauce-labs,Integrate Testsigma with SauceLabs,integrations/test-labs/sauce-labs
+integrations/test-labs/testmu,Integrate Testsigma with TestMU,integrations/test-labs/testmu
+integrations/test-management/azure-devops-boards,Azure DevOps Integration,integrations/test-management/azure-devops-boards
+integrations/test-management/clickup,Integrate Testsigma with Clickup,integrations/test-management/clickup
+integrations/test-management/linear,Integrate Testsigma with Linear,integrations/test-management/linear
+integrations/test-management/qtest,qTest Integration with Testsigma,integrations/test-management/qtest
+integrations/test-management/testrail,TestRail Integration with Testsigma,integrations/test-management/testrail
+integrations/test-management/trello,Trello Bug Reporting Integration,integrations/test-management/trello
+integrations/test-management/xray,Xray Integration with Testsigma,integrations/test-management/xray
+integrations/test-management/zephyr,Zephyr Cloud Integration with Testsigma,integrations/test-management/zephyr
+on-premise-setup/installation-process/domain-configuration,Custom Domain Configuration,on-prem/installation
+on-premise-setup/installation-process/setup,On-Premise Installation Steps,on-prem/installation
+on-premise-setup/post-installation/faqs,On-Premise: FAQs,on-prem/installation
+on-premise-setup/post-installation/post-installation-checklist,On-Premise: Post-Installation Checklist,on-prem/installation
+on-premise-setup/post-installation/troubleshooting,On-Premise: Troubleshooting,on-prem/installation
+on-premise-setup/pre-installation/custom-domain-requirements,Custom Domain Requirements,on-prem/prerequisites
+on-premise-setup/pre-installation/prerequisites-and-machine-configurations,Prerequisites for On-Premise Installation,on-prem/prerequisites
+on-premise-setup/pre-installation/testsigma-on-prem-architecture,Testsigma's On-Premise Architecture,on-prem/prerequisites
+projects/applications,Manage Applications,test-management/test-authoring/projects-and-applications
+projects/overview,Manage Projects,test-management/test-authoring/projects-and-applications
+projects/requirements,Manage Requirements,test-management/test-authoring/projects-and-applications
+projects/settings/requirement-types,Requirement Types in Testsigma,test-management/test-authoring/projects-and-applications
+projects/settings/test-case-priorities,Test Case Priorities,test-management/test-authoring/projects-and-applications
+projects/settings/test-case-types,Test Case Types,test-management/test-authoring/projects-and-applications
+projects/versions,Manage Application Versions,test-management/test-authoring/projects-and-applications
+reports/custom-dashboard/manage-custom-dashboard,Manage Custom Dashboard,reports/custom-dashboards
+reports/custom-dashboard/overview,Overview: Custom Dashboard,reports/custom-dashboards
+reports/custom-dashboard/widgets-reference,Widgets Reference,reports/custom-dashboards
+reports/dashboard,Testsigma Dashboard - Overview,reports/view-and-export
+reports/export-reports/export-report-pdf,Exporting PDF Reports,reports/view-and-export
+reports/export-reports/export-report-xls,Exporting MS Excel Sheet Reports,reports/view-and-export
+reports/export-reports/export-reports-junit,Exporting JUnit Reports,reports/view-and-export
+reports/runs/custom-pdf-report,Custom PDF Report Generation,reports/generate-reports
+reports/runs/drill-down-reports,Test Plan Run Results in Testsigma,reports/view-and-export
+reports/runs/filter-custom-reports,Filters on the Run Results Page,reports/view-and-export
+reports/runs/generate-allure-report,Generate Custom Allure Reports,reports/generate-reports
+reports/runs/generate-junit-report,Generate Custom JUnit Report,reports/generate-reports
+reports/runs/overview,Test Runs - An Overview,reports/view-and-export
+runs/adhoc-runs,Ad-hoc Run,test-management/test-execution/test-runs
+runs/debug-test-case-failures,Debug Test Case Failures ,test-management/test-execution/test-runs
+runs/dry-runs-on-local-devices,Dry Runs on Local Devices,test-management/test-execution/test-runs
+runs/env-config/configure-bypass-ssl,Bypass the Missing SSL Certificate Error?,test-management/test-execution/desired-capabilities
+runs/env-config/configure-safari,Configure Safari for Test Automation in Testsigma,get-started/installation/testsigma-agent
+runs/executing-tests-in-private-grid,Run Tests on Private Grid,test-management/test-execution/test-runs
+runs/flutter-integration-driver-testing-on-testsigma,Flutter Integration Driver Testing on Testsigma,cloud/android/create-android-test-case
+runs/mock-servers/create-mock-servers,Create Mock Servers in Testsigma,test-management/test-execution/mock-servers
+runs/mock-servers/use-mock-servers,Use Mock Servers in Test Executions,test-management/test-execution/mock-servers
+runs/parallel-and-allowed-queues,Parallel and Allowed queues,get-started/concepts
+runs/run-on-cloud-vendor-platforms,Run on cloud vendor platforms,test-management/test-execution/test-runs
+runs/test-locally-hosted-applications,Access Locally Hosted Applications,test-management/test-execution/test-runs
+runs/test-plan-executions,Test Plan Executions,test-management/test-execution/test-runs
+runs/test-plans-on-local-devices,Test Plan Local Executions,test-management/test-execution/test-runs
+salesforce-testing/connected-app,Creating a Connected App,cloud/salesforce/setup
+salesforce-testing/create-sf-project,Creating a Salesforce Project,cloud/salesforce/setup
+salesforce-testing/element-repos,Salesforce Element Repositories,cloud/salesforce/setup
+salesforce-testing/error-handling,Error Handling Post Metadata Refresh,cloud/salesforce/setup
+salesforce-testing/introduction,Intro: Testsigma for Salesforce Testing,cloud/salesforce/setup
+salesforce-testing/metadata-connections,Creating Metadata Connections,cloud/salesforce/setup
+salesforce-testing/query-builder-for-salesforce,Query Builder for Salesforce Testing,cloud/salesforce/salesforce-nlps-and-soql
+salesforce-testing/sf-test-cases,Test Cases for Salesforce (Manual + Live),cloud/salesforce/create-salesforce-test-case
+salesforce-testing/soql-as-test-step,SOQL as Test Step,cloud/salesforce/salesforce-nlps-and-soql
+salesforce-testing/special-nlps,Intro: Testsigma Special NLPs,cloud/salesforce/salesforce-nlps-and-soql
+salesforce-testing/table-nlps,Automating Listview Table NLPs,cloud/salesforce/salesforce-nlps-and-soql
+salesforce-testing/test-salesforce-connection-before-authorization,Test Salesforce Connection Before Authorization,cloud/salesforce/setup
+salesforce-testing/user-connections,Adding User Connections,cloud/salesforce/setup
+sap-automation/available-actions-for-sap-automation,List of Actions,desktop/advanced/create-project
+sap-automation/batch-element-recorder,Batch Element Recorder for SAP Automation,desktop/advanced/create-project
+sap-automation/intro,Introduction: SAP Automation,desktop/advanced/create-project
+sap-automation/selective-element-recorder,Selective Element Recorder for SAP Automation,desktop/advanced/create-project
+sap-automation/test-cases-for-sap-automation,Creating Test Cases for SAP Automation,desktop/advanced/create-project
+sdk/manage-runtime-test-data,Create/Update Runtime Data using Testsigma SDK,addons/sdk
+sdk/runtime-metadata-addon,Run time metadata addon,addons/sdk
+test-cases/create-steps-restapi/add-body-data,Body Data,test-management/test-authoring/create-test-cases
+test-cases/create-steps-restapi/adding-headers,Headers,test-management/test-authoring/create-test-cases
+test-cases/create-steps-restapi/adding-parameters,Parameters,test-management/test-authoring/create-test-cases
+test-cases/create-steps-restapi/api-request,API Request,test-management/test-authoring/create-test-cases
+test-cases/create-steps-restapi/attachments-rest-api,Attachments,test-management/test-authoring/create-test-cases
+test-cases/create-steps-restapi/authorization-request,Authorization ,test-management/test-authoring/create-test-cases
+test-cases/create-steps-restapi/mock-apis,Testing API Responses with Custom Values,test-management/test-authoring/create-test-cases
+test-cases/create-steps-restapi/restful-api-overview,RESTful API Testing - Overview,test-management/test-authoring/create-test-cases
+test-cases/create-steps-restapi/store-variables,Store Variables,test-management/test-authoring/create-test-cases
+test-cases/create-steps-restapi/stored-objects,Stored Objects,test-management/test-authoring/create-test-cases
+test-cases/create-steps-restapi/verifications-request,Verifications,test-management/test-authoring/create-test-cases
+test-cases/create-test-cases/features-and-scenarios,Organizing Test Cases in Folders,test-management/test-authoring/create-test-cases
+test-cases/create-test-cases/test-cases-for-mobile-applications,Test Cases for Mobile Applications,cloud/android/create-android-test-case
+test-cases/create-test-cases/test-cases-for-mobile-web-applications,Test Cases for Mobile Web Applications,cloud/web/create-web-test-case
+test-cases/create-test-cases/test-cases-for-web-applications,Test Cases for Web Applications,cloud/web/create-web-test-case
+test-cases/create-test-steps/actions-and-options-manual/bulk-actions,Bulk Actions,test-management/test-authoring/create-test-cases
+test-cases/create-test-steps/actions-and-options-manual/step-options,Test Step Options,test-management/test-authoring/create-test-cases
+test-cases/create-test-steps/actions-and-options-manual/step-settings,Test Step Settings for Test Cases,test-management/test-authoring/create-test-cases
+test-cases/create-test-steps/actions-and-options-recorder/bulk-actions,Bulk Actions,test-management/test-authoring/create-test-cases
+test-cases/create-test-steps/actions-and-options-recorder/controls-and-actions,Controls and Actions,test-management/test-authoring/create-test-cases
+test-cases/create-test-steps/actions-and-options-recorder/multiple-webviews,Recording Tests with WebView for Hybrid Apps,test-management/test-authoring/create-test-cases
+test-cases/create-test-steps/actions-and-options-recorder/step-options,Test Step Options,test-management/test-authoring/create-test-cases
+test-cases/create-test-steps/actions-and-options-recorder/step-settings,Test Step Settings,test-management/test-authoring/create-test-cases
+test-cases/create-test-steps/overview,Create Test Steps in Testsigma,test-management/test-authoring/create-test-cases
+test-cases/cross-application-testing,Cross-application testing,get-started/concepts
+test-cases/image-injection,Image Injection,cloud/android/create-android-test-case
+test-cases/imports-and-exports/import-test-cases,Import Test Cases,settings/import-test-cases-between-projects
+test-cases/imports-and-exports/manage-save-points,Manage Save Points,test-management/test-authoring/create-test-cases
+test-cases/imports-and-exports/view-the-import-summary,View the Import Summary,settings/import-test-cases-between-projects
+test-cases/manage/add-edit-delete,Manage Test Cases for Web Applications,test-management/test-authoring/create-test-cases
+test-cases/manage/add-test-cases-for-mobile-web-app,Manage Test Cases for Mobile Web Applications,test-management/test-authoring/create-test-cases
+test-cases/manage/custom-fields,Custom Fields for Test Cases,settings/custom-fields
+test-cases/manage/import-postman-to-testsigma,Importing Postman Collections and Environments,test-management/test-authoring/create-test-cases
+test-cases/manage/label-management,Label Management in Testsigma,test-management/test-authoring/create-test-cases
+test-cases/manage/list-actions,Test Case List Actions,test-management/test-authoring/create-test-cases
+test-cases/manage/test-case-advanced-options,Test Case: Advanced Options Guide,test-management/test-authoring/create-test-cases
+test-cases/manage/test-cases-for-android-ios-apps,Manage Test Cases for Android & iOS Apps,test-management/test-authoring/create-test-cases
+test-cases/manage/update-test-case-results-in-a-test-plan,Update Test Case Result in a Test Plan,test-management/test-execution/test-runs
+test-cases/step-types/block,Test Step Type: Blocks,test-management/test-authoring/create-test-cases
+test-cases/step-types/for-loop,Adding For Loops in Test Cases,test-management/test-authoring/create-test-cases
+test-cases/step-types/if-condition,"Adding If, Else, Else If Conditions in Test Cases",test-management/test-authoring/create-test-cases
+test-cases/step-types/natural-language,Natural Language/Simple English Type Test Step,test-management/test-authoring/create-test-cases
+test-cases/step-types/nested-groups,Nested Step Groups,test-management/test-authoring/create-test-cases
+test-cases/step-types/overview,Test Step Types - Overview,test-management/test-authoring/create-test-cases
+test-cases/step-types/rest-api,Test Step Type: Rest API,test-management/test-authoring/create-test-cases
+test-cases/step-types/step-group,Test Step Type: Step Groups,test-management/test-authoring/create-test-cases
+test-cases/step-types/while-loop,While Loop in Test Cases,test-management/test-authoring/create-test-cases
+test-data/add-values-to-test-data-profile,Update Value in Test Data Profile,test-management/test-data/test-data-profiles
+test-data/bulk-deletion-of-test-data-profile,Bulk Deletion of a Test Data Profile,test-management/test-data/test-data-profiles
+test-data/create-data-profiles,Create & Use Test Data Profiles,test-management/test-data/test-data-profiles
+test-data/create-environment-data,Create Environment Test Data,test-management/test-data/test-data-profiles
+test-data/data-generators/address-function-type,Address Function Type,test-management/test-data/data-generators
+test-data/data-generators/change-data-type-function-type,ChangeDataType Function Type,test-management/test-data/data-generators
+test-data/data-generators/company-function-type,Company Function Type,test-management/test-data/data-generators
+test-data/data-generators/datefunctions-function-type,DateFunctions Function Type,test-management/test-data/data-generators
+test-data/data-generators/default-list,Default Test Data Generators,test-management/test-data/data-generators
+test-data/data-generators/domainfunctions-function-type,DomainFunctions Function Type,test-management/test-data/data-generators
+test-data/data-generators/emailfunctions-function-type,EmailFunctions Function Type,test-management/test-data/data-generators
+test-data/data-generators/file-function-type,File Function Type,test-management/test-data/data-generators
+test-data/data-generators/friends-function-type,Friends Function Type,test-management/test-data/data-generators
+test-data/data-generators/idnumber-function-type,IdNumber Function Type,test-management/test-data/data-generators
+test-data/data-generators/internet-function-type,Internet Function Type,test-management/test-data/data-generators
+test-data/data-generators/mailboxaliasfunctions-function-type,MailboxAliasFunctions Function Type,test-management/test-data/data-generators
+test-data/data-generators/mailboxfunctions-function-type,MailboxFunctions Function Type,test-management/test-data/data-generators
+test-data/data-generators/name-function-type,Name Function Type,test-management/test-data/data-generators
+test-data/data-generators/namefunctions-function-type,NameFunctions Function Type,test-management/test-data/data-generators
+test-data/data-generators/number-function-type,Number Function Type,test-management/test-data/data-generators
+test-data/data-generators/numberfunctions-function-type,NumberFunctions Function Type,test-management/test-data/data-generators
+test-data/data-generators/phone-function-type,Phone Number Function Type,test-management/test-data/data-generators
+test-data/data-generators/phonenumberfunctions-function-type,PhoneNumberFunctions Function Type,test-management/test-data/data-generators
+test-data/data-generators/random-string-function-type,Random String Function Type,test-management/test-data/data-generators
+test-data/data-generators/random-text-function-type,RandomText Function Type,test-management/test-data/data-generators
+test-data/data-generators/stringfunctions-function-type,StringFunctions Function Type,test-management/test-data/data-generators
+test-data/data-generators/testdatafromprofile-function-type,TestDataFromProfile Function Type,test-management/test-data/data-generators
+test-data/folder-structure-for-test-data-profiles,Folder Structure for Test Data Profiles,test-management/test-data/test-data-profiles
+test-data/import-data-profiles,Import Test Data Profile,test-management/test-data/test-data-profiles
+test-data/types/concat,Concat Test Data,test-management/test-data/test-data-types
+test-data/types/data-generator,Test Data Type: Data Generator,test-management/test-data/test-data-types
+test-data/types/environment,Environment Test Data,test-management/test-data/test-data-types
+test-data/types/mailbox,Test Data Type: Mail Box,test-management/test-data/test-data-types
+test-data/types/overview,Test Data Types,test-management/test-data/test-data-types
+test-data/types/parameter,Test Data - Parameter,test-management/test-data/test-data-types
+test-data/types/phone-number,Phone Number Type Test Data,test-management/test-data/test-data-types
+test-data/types/random,Random Test Data in Testsigma,test-management/test-data/test-data-types
+test-data/types/raw,Plain Text,test-management/test-data/test-data-types
+test-data/types/runtime,Test Data Type: Runtime,test-management/test-data/test-data-types
+test-data/update-test-data-profile,Update Test Data Profile,test-management/test-data/test-data-profiles
+test-plans/after-test,AfterTest in Test Cases & Step Groups,test-management/test-execution/test-plan
+test-plans/after-test-suite,AfterTest Suite,test-management/test-execution/test-plan
+test-plans/cross-browser-testing,Test Plan: Cross Browser Testing,get-started/concepts
+test-plans/disable-test-cases-in-test-plans,Disabling Test Cases in Test Plans,test-management/test-execution/test-plan
+test-plans/distributed-testing,Distributed Testing,get-started/concepts
+test-plans/email-configuration,Email Configuration in Test Plan,test-management/test-execution/test-plan
+test-plans/end-to-end-testing,End-to-End Testing in Testsigma,get-started/concepts
+test-plans/headless-testing,Headless Browser Testing,get-started/concepts
+test-plans/manage-test-machines,Manage Test Machines in Test Plans,test-management/test-execution/test-plan
+test-plans/manage-test-suites,Manage Test Suites in Test Plans,test-management/test-execution/test-plan
+test-plans/overview,Test Plans,test-management/test-execution/test-plan
+test-plans/partial-test-plan-run-via-api,Execute Partial Test Plan Run via API,api/overview
+test-plans/post-plan-hook,Post Plan Hook,test-management/test-execution/test-plan
+test-plans/run-tests-in-parallel,Efficient Test Execution with Parallel Runs and Backup Devices,get-started/concepts
+test-plans/schedule-plans,Schedule Test Plans,test-management/test-execution/test-plan
+test-plans/supported-test-lab-types,Test Lab Types,test-management/test-execution/test-plan
+test-step-recorder/freeze-elements-and-add-verifications-or-actions,Freeze Elements and Add Verifications or Actions,test-management/test-authoring/capture-elements
+test-step-recorder/install-chrome-extension,Install Testsigma Recorder Extension: Chrome,get-started/installation/recorder-extensions
+test-step-recorder/install-edge-extension,Install Testsigma Recorder Extension: Edge,get-started/installation/recorder-extensions
+test-step-recorder/install-firefox-extension,Install Testsigma Recorder Extension: Firefox,get-started/installation/recorder-extensions
+test-step-recorder/settings-include-exclude-attributes,Exclude Attributes/Classes,test-management/test-authoring/capture-elements
+test-suites/dynamic-test-suites,Dynamic Test Suites,test-management/test-execution/test-suite
+test-suites/overview,Test Suites,test-management/test-execution/test-suite
+testsigma-terminal/components-of-testsigma-terminal,Components of Testsigma Terminal,get-started/installation/testsigma-terminal
+testsigma-terminal/installing-testsigma-terminal,Installing Testsigma Terminal,get-started/installation/testsigma-terminal
+testsigma-terminal/installing-testsigma-terminal-on-linux,Installing Testsigma Terminal on Linux,get-started/installation/testsigma-terminal
+testsigma-terminal/installing-testsigma-terminal-on-windows,Installing Testsigma Terminal on Windows,get-started/installation/testsigma-terminal
+testsigma-terminal/intro-testsigma-terminal,Introduction: Testsigma Terminal,get-started/installation/testsigma-terminal
+testsigma-tunnel/intro,Intro: Testsigma Tunnel,get-started/installation/testsigma-tunnel
+testsigma-tunnel/key-components,Key Components & System Requirements,get-started/installation/testsigma-tunnel
+testsigma-tunnel/setup-installation-docker,Setup and Installation: Docker,get-started/installation/testsigma-tunnel
+testsigma-tunnel/setup-installation-kubernetes,Setup and Installation: Kubernetes (Helm),get-started/installation/testsigma-tunnel
+testsigma-tunnel/setup-installation-linux,Setup and Installation: Linux,get-started/installation/testsigma-tunnel
+testsigma-tunnel/setup-installation-mac,Setup and Installation: Mac,get-started/installation/testsigma-tunnel
+testsigma-tunnel/setup-installation-windows,Setup and Installation: Windows,get-started/installation/testsigma-tunnel
+testsigma-tunnel/using-tunnel,Using Testsigma Tunnel,get-started/installation/testsigma-tunnel
+troubleshooting/NLPs/drag-and-drop,Drag & Drop NLP,test-management/test-authoring/create-test-cases
+troubleshooting/NLPs/mysql-db-test-cases,Use MySQL Addon in NLPs,test-management/test-authoring/create-test-cases
+troubleshooting/NLPs/need-for-clearing-cookies,Clearing the Session or Cookies,test-management/test-authoring/create-test-cases
+troubleshooting/NLPs/ui-identifier,UI Identifier NLP,test-management/test-authoring/create-test-cases
+troubleshooting/NLPs/unable-to-capture-dropdown-element,Unable to capture dropdown element,test-management/test-authoring/create-test-cases
+troubleshooting/NLPs/unable-to-click-checkbox,Unable to Click Checkbox,test-management/test-authoring/create-test-cases
+troubleshooting/NLPs/unable-to-retrieve-value,Unable to Retrieve Text from a Text Field,test-management/test-authoring/create-test-cases
+troubleshooting/NLPs/unable-to-select-radiobutton,Unable to Select Radiobutton,test-management/test-authoring/create-test-cases
+troubleshooting/NLPs/upload-files,Uploading Files NLP,test-management/test-authoring/create-test-cases
+troubleshooting/REST-API/troubleshooting-api-testcase-failure,Troubleshooting API test case failure,test-management/test-authoring/create-test-cases
+troubleshooting/agent/agent-cleanup,Testsigma Agent Cleanup,get-started/installation/testsigma-agent
+troubleshooting/agent/agent-failures-due-to-used-ports,Agent Startup Failure Due to Used Ports,get-started/installation/testsigma-agent
+troubleshooting/agent/fix-agent-registration-failures,Fix Testsigma Agent Registration Failures,get-started/installation/testsigma-agent
+troubleshooting/agent/local-tests-queued,Tests Permanently Queued in Local Executions,get-started/installation/testsigma-agent
+troubleshooting/agent/mobile-device-not-displayed-recorder,Testsigma Agent's Failure to Detect Local Devices for Mobile Test Recorder,get-started/installation/testsigma-agent
+troubleshooting/agent/need-of-apache-tomcat-agent,Need of Apache Tomcat for Testsigma Agent,get-started/installation/testsigma-agent
+troubleshooting/agent/unable-to-create-new-testsession,Unable to Create New Test Session,get-started/installation/testsigma-agent
+troubleshooting/desktop-windows/recorder-failed,Failed to Start Element Recorder,desktop/lite/create-project
+troubleshooting/general/automating-chrome-extension,Automating Chrome Extension in Testsigma,test-management/test-execution/desired-capabilities
+troubleshooting/general/enable-disable-elements,"Disable, Hide, Check & Select Elements",test-management/test-authoring/create-test-cases
+troubleshooting/general/jenkins-xml-to-html,Convert JUnit XML Report to HTML - Jenkins,integrations/ci-cd/jenkins
+troubleshooting/general/ui-elements-for-ios-apps,Common UI Elements for iOS Apps,cloud/ios/create-ios-test-case
+troubleshooting/general/verify-file-download,Verify/Confirm File Download,cloud/web/create-web-test-case
+troubleshooting/general/view-test-execution-video,View Test Execution Video (Cloud Executions),test-management/test-execution/test-runs
+troubleshooting/mobile-apps/app-package-and-activity,How to Find App Package & Activity in Android?,cloud/android/create-android-test-case
+troubleshooting/mobile-apps/capture-network-logs-in-android-app,How to Capture Network Logs in an Android Application?,test-management/test-execution/desired-capabilities
+troubleshooting/mobile-apps/click-tap-failure,What are the Most Common causes for Click/Tap NLP Failure?,cloud/android/create-android-test-case
+troubleshooting/mobile-apps/common-android-issues,What are Common Android Issues & Proposed Solutions?,cloud/android/create-android-test-case
+troubleshooting/mobile-apps/compatible-id-locators,Cross-environment Compatible ID Locators (Android),test-management/test-authoring/elements
+troubleshooting/mobile-apps/developer-mode-for-ios,How to enable Developer Mode? (iOS 16 or Above),get-started/installation/testsigma-agent
+troubleshooting/mobile-apps/disable-play-protect-for-sms-forwarder-installation,How to Disable Play Protect for SMS Forwarder Installation?,cloud/android/create-android-test-case
+troubleshooting/mobile-apps/failed-to-launch-UI,Why Mobile App Keeps Stopping After Successful Launch?,cloud/android/create-android-test-case
+troubleshooting/mobile-apps/failed-to-launch-test-recorder,Failed to Start Mobile Test Recorder,cloud/android/create-android-test-case
+troubleshooting/mobile-apps/finding-app-bundle-id-ios,How to Find the App Bundle ID for iOS?,cloud/ios/create-ios-test-case
+troubleshooting/mobile-apps/handling-ios-app-compatibility-issues,How to Handle iOS App Compatibility Issues?,cloud/ios/create-ios-test-case
+troubleshooting/mobile-apps/mobile-recorder-actions-failures,Troubleshooting “Failed to perform action Mobile Test Recorder” error,cloud/android/create-android-test-case
+troubleshooting/mobile-apps/more-prerequisite-settings,More pre-requisite settings,get-started/installation/testsigma-agent
+troubleshooting/mobile-apps/test-execution-queued-for-a-long-time,Why Test Execution State is Queued for a Long Time?,test-management/test-execution/test-runs
+troubleshooting/mobile-apps/unable-to-start-wda-process,Why am I not able to start WDA Process on iPhone?,get-started/installation/testsigma-agent
+troubleshooting/mobile-apps/why-accessibility-ids-over-others,Why Accessibility IDs Over other Locators?,test-management/test-authoring/elements
+troubleshooting/on-prem/general-issues,Troubleshooting General Issues,on-prem/installation
+troubleshooting/on-prem/restart-docker,Restarting docker,on-prem/installation
+troubleshooting/salesforce-testing/most-common-issues,Troubleshooting Common Issues in Salesforce Testing,cloud/salesforce/create-salesforce-test-case
+troubleshooting/setup/secured-business-application-support,Secured Business Application Support,get-started/installation/testsigma-tunnel
+troubleshooting/setup/server-docker-deployment-errors,Troubleshoot Deployment Errors (Testsigma CE),on-prem/installation
+troubleshooting/setup/troubleshooting-restricted-access,Troubleshooting Restricted Access to Testsigma,settings/ip-whitelisting
+troubleshooting/web-apps/chrome-settings,Missing Elements in the Recorder,test-management/test-authoring/capture-elements
+troubleshooting/web-apps/collecting-har-file,Collecting HAR File for Support Tickets,test-management/test-execution/test-runs
+troubleshooting/web-apps/issues-with-browser-sessions,Most Common Errors with Browser Session,test-management/test-execution/test-runs
+troubleshooting/web-apps/issues-with-ui-Identifiers,Most Common Issues Caused When Using UI Identifiers,test-management/test-authoring/elements
+troubleshooting/web-apps/page-loading-issues,Page Loading Issues in TestsigmaLab,test-management/test-execution/test-runs
+troubleshooting/web-apps/test-execution-queued-for-a-long-time,Test Execution State is Queued For a Long Time,test-management/test-execution/test-runs
+troubleshooting/web-apps/url-not-accessible,Unable to Access URL from Testsigma Servers?,get-started/installation/testsigma-tunnel
+uploads/build-apk-or-ipa-files,How to generate mobile builds for Android/iOS applications?,test-management/test-data/uploads
+uploads/upload-apps,Upload Android and iOS Apps,test-management/test-data/uploads
+uploads/upload-files,Upload Files,test-management/test-data/uploads
+visual-testing/configure-test-steps,Visual Testing,testing-types/visual-testing
+visual-testing/visual-testing-with-figma-designs,Visual Testing with Figma Designs,testing-types/visual-testing
+windows-automation/error-handling,Error Handling Post TSRx File Update,desktop/advanced/create-project
+windows-automation/import-tsrx-files,Importing/Updating TSRx Files into Testsigma,desktop/advanced/create-project
+windows-automation/introduction,Intro: Windows Desktop Automation,desktop/advanced/create-project
+windows-automation/object-learning,Object Learning (Using UFT One),desktop/advanced/create-project
+windows-automation/project-and-application,Creating a Windows Project & Application,desktop/advanced/create-project
+windows-automation/test-cases,Test Cases for Windows Automation,desktop/advanced/create-project
+windows-automation/tsr-tsrx-files,Converting TSR Files to TSRx,desktop/advanced/create-project
+windows-lite-automation/element-learning,Element Learning (Using Test Recorder),desktop/lite/create-project
+windows-lite-automation/introduction,Intro: Windows Automation (Lite),desktop/lite/create-project
+windows-lite-automation/projects-and-applications,Creating a Windows Project & Application,desktop/lite/create-project
+windows-lite-automation/test-cases,Test Cases for Windows (Lite) Automation,desktop/lite/create-project

@@ -15,6 +15,8 @@
  * Wrap a set of these in Starlight's <CardGrid>, which lays out two per row at
  * the content column's width.
  */
+import { Icon } from '@astrojs/starlight/components';
+import type { StarlightIcon } from '@astrojs/starlight/types';
 
 /** 24x24 glyph bodies. Add one here rather than passing SVG from a content file. */
 const ICONS = {
@@ -35,12 +37,16 @@ interface Props {
 	title: string;
 	href: string;
 	description: string;
-	icon?: keyof typeof ICONS;
+	/** A glyph from the local map above, or any Starlight icon name
+	 *  (https://starlight.astro.build/reference/icons/). The local map wins on
+	 *  a name clash, keeping the stroke style for the glyphs drawn for it. */
+	icon?: keyof typeof ICONS | StarlightIcon;
 }
 
 import { withBase } from '../lib/base';
 
 const { title, href, description, icon = 'page' } = Astro.props;
+const local = icon in ICONS ? ICONS[icon as keyof typeof ICONS] : undefined;
 
 // `href` arrives as a JSX prop from MDX (<DocCard href="/suite/..."/>), which
 // the rehype link plugin cannot reach -- it only sees real HTML elements, and
@@ -50,18 +56,24 @@ const { title, href, description, icon = 'page' } = Astro.props;
 
 <a class="ts-doc-card" href={withBase(href)}>
 	<span class="ts-doc-card-art">
-		<svg
-			width="20"
-			height="20"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="1.6"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-			aria-hidden="true"
-			set:html={ICONS[icon]}
-		/>
+		{
+			local ? (
+				<svg
+					width="20"
+					height="20"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.6"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+					set:html={local}
+				/>
+			) : (
+				<Icon name={icon as StarlightIcon} size="20px" />
+			)
+		}
 	</span>
 	<span class="ts-doc-card-body">
 		<span class="ts-doc-card-title">{title}</span>

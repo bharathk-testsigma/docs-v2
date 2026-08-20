@@ -358,7 +358,7 @@ async function main() {
     const { title, description, body, data } = parseFrontmatter(raw);
     if (data.draft === true) continue;   // drafts are excluded from the site too
     const url     = fileToUrl(file);
-    const product = file.includes('/arcus/') ? 'arcus' : 'suite';
+    const product = 'suite';
     // Fold the frontmatter description and any `api:` block into the indexable
     // content. API reference pages have an empty body, so the api block is the
     // only thing that makes them findable by endpoint, params, or fields.

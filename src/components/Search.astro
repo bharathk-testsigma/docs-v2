@@ -51,20 +51,15 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 			<button data-close-modal class="sl-flex md:sl-hidden">
 				{Astro.locals.t('search.cancelLabel')}
 			</button>
-			<div class="ts-sa-toggle" role="tablist" aria-label="Search mode">
-				<button type="button" class="ts-sa-tab" data-sa-mode="search" role="tab" aria-selected="true">
-					<Icon name="magnifier" size="0.85rem" />
-					Search
-				</button>
-				<button type="button" class="ts-sa-tab" data-sa-mode="ask" role="tab" aria-selected="false">
-					<svg class="ts-sa-spark" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>
-					Ask Assistant
-				</button>
-			</div>
+			{
+				/* No mode switcher: this dialog only searches. The Ask Assistant row
+				   below appears as soon as something is typed, and hands the query to
+				   the right-hand panel. */
+			}
 			<div class="search-container">
 				<div id="starlight__search" />
 			</div>
-			{/* Empty state: shown in Search mode while no query is typed. */}
+			{/* Empty state: shown while no query is typed. */}
 			<div class="ts-sa-empty" id="ts-sa-empty">
 				<div class="ts-sa-eyebrow">Popular questions</div>
 				<div id="ts-sa-sugs"></div>
@@ -76,44 +71,65 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 				<span class="ts-sa-row-q" id="ts-sa-row-q"></span>
 				<span class="ts-sa-row-cta">Start conversation <kbd>↵</kbd></span>
 			</button>
-			<div class="ts-sa-view" id="ts-sa-view" hidden>
-				<div class="ts-sa-label">Ask Assistant</div>
-				<div class="ts-sa-thread" id="ts-sa-thread">
-					<div class="ts-sa-msg" id="ts-sa-greeting">
-						<span class="ts-sa-avatar ts-sa-spark" aria-hidden="true">
-							<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>
-						</span>
-						<div class="ts-sa-msg-body">
-							<p><strong>Hey.</strong></p>
-							<p>Ask anything.</p>
-							<p>I'll find the answer across Testsigma's product knowledge.</p>
-						</div>
-					</div>
-				</div>
-				<div class="ts-sa-foot">
-					<form class="ts-sa-form" id="ts-sa-form">
-						<input
-							class="ts-sa-input"
-							id="ts-sa-input"
-							placeholder="How do I get started?"
-							autocomplete="off"
-						/>
-						<button type="submit" class="ts-sa-send" aria-label="Send">
-							<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>
-						</button>
-					</form>
-				</div>
-			</div>
 			<div class="ts-sa-dialogfoot">
 				<span class="ts-sa-hints" id="ts-sa-hints">
 					<span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span>
 					<span><kbd>↵</kbd> to select</span>
 					<span><kbd>esc</kbd> to close</span>
 				</span>
-				<button type="button" class="ts-sa-clear" id="ts-sa-clear" hidden>Clear</button>
 			</div>
 		</div>
 	</dialog>
+
+	{
+		/* Answers land here, not in the dialog: the panel is docked to the right
+		   edge and does not take the top layer, so the page stays readable and
+		   scrollable beside the conversation. Every Ask entry point (the header
+		   button, the dialog's Ask tab, its Ask row, the suggestions) closes the
+		   dialog and opens this.
+		   The thread is in-memory only -- following a source link is a full page
+		   load, which drops it. Persist to sessionStorage if that becomes the
+		   common path. */
+	}
+	<aside class="ts-ask-panel" id="ts-ask-panel" hidden aria-label="Ask Assistant">
+		<div class="ts-ask-panel-head">
+			<span class="ts-sa-spark ts-ask-panel-mark" aria-hidden="true">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>
+			</span>
+			<span class="ts-ask-panel-title">Ask Assistant</span>
+			<button type="button" class="ts-sa-clear" id="ts-sa-clear">Clear</button>
+			<button type="button" class="ts-ask-panel-close" id="ts-ask-close" aria-label="Close Ask Assistant">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+			</button>
+		</div>
+		<div class="ts-sa-view" id="ts-sa-view">
+			<div class="ts-sa-thread" id="ts-sa-thread">
+				<div class="ts-sa-msg" id="ts-sa-greeting">
+					<span class="ts-sa-avatar ts-sa-spark" aria-hidden="true">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>
+					</span>
+					<div class="ts-sa-msg-body">
+						<p><strong>Hey.</strong></p>
+						<p>Ask anything.</p>
+						<p>I'll find the answer across Testsigma's product knowledge.</p>
+					</div>
+				</div>
+			</div>
+			<div class="ts-sa-foot">
+				<form class="ts-sa-form" id="ts-sa-form">
+					<input
+						class="ts-sa-input"
+						id="ts-sa-input"
+						placeholder="How do I get started?"
+						autocomplete="off"
+					/>
+					<button type="submit" class="ts-sa-send" aria-label="Send">
+						<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>
+					</button>
+				</form>
+			</div>
+		</div>
+	</aside>
 </site-search>
 
 {
@@ -139,26 +155,18 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 
 <script>
 	import { pagefindUserConfig } from 'virtual:starlight/pagefind-config';
-	import { streamAsk, sendFeedback, renderMarkdown, escapeHtml, bindCopyHandlers, product, IC_COPY, IC_CHECK } from '../scripts/ask-shared';
+	import { streamAsk, sendFeedback, renderMarkdown, escapeHtml, bindCopyHandlers, IC_COPY, IC_CHECK } from '../scripts/ask-shared';
 	// Retrieval-index URLs are stored base-free ('/suite/...'), so each source
 	// link needs prefixing before it goes into the DOM or it 404s under the base.
 	import { withBase } from '../lib/base';
 
-	// Suggested questions for the empty state, per product (first 4 are shown).
-	const SUGGESTIONS: Record<string, string[]> = {
-		suite: [
-			'How do I create a test case?',
-			'What is Auto-Healing and how does it work?',
-			'How do I trigger a Test Plan via API?',
-			'How do I set up test data profiles?',
-		],
-		arcus: [
-			'How do I create a test case?',
-			'How do I create a test run?',
-			'How do I invite users and assign roles?',
-			'How do I set up custom fields?',
-		],
-	};
+	// Suggested questions for the empty state (first 4 are shown).
+	const SUGGESTIONS: string[] = [
+		'How do I create a test case?',
+		'What is Auto-Healing and how does it work?',
+		'How do I trigger a Test Plan via API?',
+		'How do I set up test data profiles?',
+	];
 
 	class SiteSearch extends HTMLElement {
 		constructor() {
@@ -169,18 +177,16 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 			const dialogFrame = this.querySelector('.dialog-frame')!;
 
 			// ── Ask Assistant mode ─────────────────────────────────────────────
-			const searchContainer = this.querySelector<HTMLElement>('.search-container')!;
 			const askRow = this.querySelector<HTMLButtonElement>('#ts-sa-row')!;
 			const askRowQ = this.querySelector<HTMLElement>('#ts-sa-row-q')!;
-			const askView = this.querySelector<HTMLElement>('#ts-sa-view')!;
+			const panel = this.querySelector<HTMLElement>('#ts-ask-panel')!;
+			const panelClose = this.querySelector<HTMLButtonElement>('#ts-ask-close')!;
 			const askThread = this.querySelector<HTMLElement>('#ts-sa-thread')!;
 			const askForm = this.querySelector<HTMLFormElement>('#ts-sa-form')!;
 			const askInput = this.querySelector<HTMLInputElement>('#ts-sa-input')!;
 			const emptyState = this.querySelector<HTMLElement>('#ts-sa-empty')!;
 			const sugsWrap = this.querySelector<HTMLElement>('#ts-sa-sugs')!;
-			const hintsEl = this.querySelector<HTMLElement>('#ts-sa-hints')!;
 			const footBtn = this.querySelector<HTMLButtonElement>('#ts-sa-clear')!;
-			const tabs = [...this.querySelectorAll<HTMLButtonElement>('.ts-sa-tab')];
 
 			// In-flight stream state: the footer button is Stop while streaming,
 			// Clear otherwise.
@@ -193,41 +199,30 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 			const pfQuery = () =>
 				this.querySelector<HTMLInputElement>('.pagefind-ui__search-input')?.value.trim() ?? '';
 			const syncEmptyState = () => {
-				emptyState.hidden = !(searchContainer.hidden === false && !pfQuery());
+				emptyState.hidden = !!pfQuery();
 			};
 
-			let mode: 'search' | 'ask' = 'search';
-			const setMode = (m: 'search' | 'ask') => {
-				mode = m;
-				searchContainer.hidden = m === 'ask';
-				askView.hidden = m !== 'ask';
-				hintsEl.hidden = m !== 'search';
-				footBtn.hidden = m !== 'ask';
-				syncEmptyState();
-				for (const t of tabs) t.setAttribute('aria-selected', String(t.dataset.saMode === m));
-				setTimeout(() => {
-					(m === 'ask' ? askInput : this.querySelector<HTMLInputElement>('.pagefind-ui__search-input'))?.focus();
-				}, 0);
+			/** Open the right panel, and ask `q` if one came with the click. */
+			const startAsk = (q?: string) => {
+				closeModal();
+				panel.hidden = false;
+				if (q) {
+					ask(q);
+				} else {
+					askInput.focus();
+				}
 			};
-			for (const t of tabs)
-				t.addEventListener('click', () => {
-					if (t.dataset.saMode === 'ask' && mode !== 'ask') {
-						const q = pfQuery();
-						if (q) askInput.value = q;
-					}
-					setMode(t.dataset.saMode as 'search' | 'ask');
-				});
-
-			const startAsk = (q: string) => {
-				setMode('ask');
-				if (q) ask(q);
-			};
+			panelClose.addEventListener('click', () => {
+				// Abort an in-flight answer rather than leave it streaming unseen.
+				controller?.abort();
+				panel.hidden = true;
+			});
 
 			// Empty-state suggestion rows: click switches to Ask Assistant and
 			// submits the question immediately.
 			const SPARK_SM =
 				'<svg class="ts-sa-spark" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>';
-			for (const q of (SUGGESTIONS[product()] ?? SUGGESTIONS.suite).slice(0, 4)) {
+			for (const q of SUGGESTIONS.slice(0, 4)) {
 				const b = document.createElement('button');
 				b.type = 'button';
 				b.className = 'ts-sa-sug';
@@ -410,7 +405,7 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 						back.className = 'ts-sa-fallback';
 						back.textContent = 'Search the docs instead';
 						back.addEventListener('click', () => {
-							setMode('search');
+							openModal();
 							const pfInput = document.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
 							if (pfInput) {
 								pfInput.value = query;
@@ -438,23 +433,58 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 				}
 			};
 
-			// Always opens in Search mode, regardless of the last used tab; the
-			// Ask button in the header opens straight into Ask Assistant.
 			let lastTrigger: HTMLElement | null = null;
-			const openModal = (event?: MouseEvent, m: 'search' | 'ask' = 'search') => {
+			const openModal = (event?: MouseEvent) => {
 				lastTrigger = document.activeElement as HTMLElement;
 				dialog.showModal();
 				document.body.toggleAttribute('data-search-modal-open', true);
-				setMode(m);
+				syncEmptyState();
+				setTimeout(() => {
+					this.querySelector<HTMLInputElement>('.pagefind-ui__search-input')?.focus();
+				}, 0);
 				event?.stopPropagation();
 				window.addEventListener('click', onClick);
 			};
 
 			const closeModal = () => dialog.close();
 
-			openBtn.addEventListener('click', (e) => openModal(e, 'search'));
+			openBtn.addEventListener('click', (e) => openModal(e));
 			openBtn.disabled = false;
 			closeBtn.addEventListener('click', closeModal);
+
+			// The top bar's "Ask Assistant" button opens the panel directly, with no
+			// dialog in between. Bound by attribute rather than by id so any surface
+			// can offer the entry point without this component knowing about it.
+			// An optional data-ask-q carries a preset question (the docs-home
+			// "Try asking" chips); without it the panel just opens for typing.
+			for (const btn of document.querySelectorAll<HTMLElement>('[data-open-ask]')) {
+				btn.addEventListener('click', () => startAsk(btn.dataset.askQ));
+			}
+
+			// A page can also ship its own field (the docs-home hero). Submitting
+			// it -- Enter or the arrow -- asks whatever was typed, and the answer
+			// streams into the same panel. The field keeps its text, so the reader
+			// can see what they asked; the panel owns follow-ups from there.
+			for (const form of document.querySelectorAll<HTMLFormElement>('form[data-ask-form]')) {
+				const field = form.querySelector('input');
+				const send = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+				// Send is live only with something to ask -- same rule as the panel's
+				// own send button. The markup ships it disabled, so this only ever
+				// relaxes it.
+				if (field && send) {
+					const syncSend = () => {
+						send.disabled = !field.value.trim();
+					};
+					field.addEventListener('input', syncSend);
+					syncSend();
+				}
+				form.addEventListener('submit', (e) => {
+					e.preventDefault();
+					const q = field?.value.trim();
+					if (!q) return;
+					startAsk(q);
+				});
+			}
 
 			dialog.addEventListener('close', () => {
 				document.body.toggleAttribute('data-search-modal-open', false);
@@ -468,6 +498,11 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 				if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'k') {
 					dialog.open ? closeModal() : openModal();
 					e.preventDefault();
+				} else if (e.key === 'Escape' && !dialog.open && !panel.hidden) {
+					// The dialog gets Escape for free; the panel is not modal, so it
+					// has to close itself -- and only when the dialog is not on top.
+					controller?.abort();
+					panel.hidden = true;
 				}
 			});
 
@@ -509,49 +544,13 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 					const pfDrawer = pfForm?.querySelector('.pagefind-ui__drawer') ?? null;
 					const pfInput = this.querySelector<HTMLInputElement>('.pagefind-ui__search-input');
 
-					// Product chips: All / Suite / Arcus. They drive Pagefind UI's own
-					// (visually hidden) filter checkboxes, fed by each page's
-					// data-pagefind-filter="product" meta — so both the filtering and
-					// the counts are Pagefind's real numbers.
-					const chipRow = document.createElement('div');
-					chipRow.className = 'ts-sa-chiprow';
-					chipRow.hidden = true;
-					chipRow.setAttribute('role', 'group');
-					chipRow.setAttribute('aria-label', 'Filter results by product');
-					chipRow.innerHTML =
-						'<button type="button" class="ts-sa-chip" data-product="" aria-pressed="true">All</button>' +
-						'<button type="button" class="ts-sa-chip" data-product="Suite" aria-pressed="false">Suite</button>' +
-						'<button type="button" class="ts-sa-chip" data-product="Arcus" aria-pressed="false">Arcus</button>';
-					const chips = [...chipRow.querySelectorAll<HTMLButtonElement>('.ts-sa-chip')];
-
-					// Pagefind renders one checkbox per filter value once results exist.
-					const filterCheckbox = (value: string) =>
-						[...this.querySelectorAll<HTMLInputElement>('.pagefind-ui__form input[type="checkbox"]')].find(
-							(c) => (c.value || c.id || '').includes(value)
-						);
-
-					const applyProduct = (product: string) => {
-						for (const value of ['Suite', 'Arcus']) {
-							const box = filterCheckbox(value);
-							if (box && box.checked !== (value === product)) box.click();
-						}
-						for (const c of chips)
-							c.setAttribute('aria-pressed', String((c.dataset.product || '') === product));
-					};
-					chipRow.addEventListener('click', (e) => {
-						const chip = (e.target as HTMLElement).closest<HTMLButtonElement>('.ts-sa-chip');
-						if (chip) applyProduct(chip.dataset.product || '');
-					});
-
 					if (pfForm) {
 						pfForm.insertBefore(askRow, pfDrawer);
-						pfForm.insertBefore(chipRow, pfDrawer);
 					}
 
 					const syncSearchUi = () => {
 						const q = pfQuery();
 						askRow.hidden = !q;
-						if (!q) chipRow.hidden = true;
 						syncEmptyState();
 					};
 
@@ -588,24 +587,6 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 								const strong = document.createElement('strong');
 								strong.textContent = mark.textContent;
 								mark.replaceWith(strong);
-							}
-							const msg = pfDrawer.querySelector('.pagefind-ui__message')?.textContent || '';
-							const total = msg.match(/\d+/)?.[0];
-							if (total !== undefined && pfQuery()) {
-								// "All" shows the unfiltered total, so only refresh it while no
-								// product filter is active (the message reflects the filter).
-								const active =
-									chips.find((c) => c.getAttribute('aria-pressed') === 'true')?.dataset.product || '';
-								if (active === '') chips[0].textContent = `All (${total})`;
-								// Pagefind's filter-value labels carry per-product counts
-								// ("Suite (123)") — mirror them onto the chips.
-								for (const label of this.querySelectorAll('.pagefind-ui__filter-value')) {
-									const text = (label.textContent || '').trim();
-									for (const c of chips) {
-										if (c.dataset.product && text.startsWith(c.dataset.product)) c.textContent = text;
-									}
-								}
-								chipRow.hidden = false;
 							}
 						};
 						new MutationObserver(decorate).observe(pfDrawer, { childList: true, subtree: true });
@@ -940,55 +921,9 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 			max-width: 46rem;
 			border-radius: 0.75rem;
 		}
-		/* Make room for the mode toggle inside the search input. */
-		#starlight__search .pagefind-ui__search-input {
-			padding-inline-end: 11.5rem;
-		}
 		#starlight__search .pagefind-ui__search-clear {
 			display: none;
 		}
-	}
-
-	/* Mode toggle (Search | Ask Assistant) */
-	.ts-sa-toggle {
-		position: absolute;
-		top: calc(1.5rem + 8px);
-		inset-inline-end: 2rem;
-		z-index: 2;
-		display: none;
-		gap: 4px;
-		padding: 3px;
-		border-radius: 0.5rem;
-		background: var(--sl-color-gray-6);
-	}
-	@media (min-width: 50rem) {
-		.ts-sa-toggle {
-			display: flex;
-		}
-	}
-	.ts-sa-tab {
-		display: inline-flex;
-		align-items: center;
-		gap: 6px;
-		border: 1px solid transparent;
-		background: transparent;
-		font: inherit;
-		font-size: var(--sl-text-xs);
-		font-weight: 500;
-		color: var(--sl-color-gray-2);
-		border-radius: 0.4rem;
-		padding: 4px 11px;
-		cursor: pointer;
-	}
-	.ts-sa-tab:hover {
-		color: var(--sl-color-white);
-	}
-	.ts-sa-tab[aria-selected='true'] {
-		background: var(--sl-color-black);
-		border-color: var(--sl-color-gray-5);
-		color: var(--sl-color-white);
-		font-weight: 600;
-		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 	}
 
 	/* "Ask Assistant <query> — Start conversation" row between input and results.
@@ -1050,43 +985,6 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 		background: transparent;
 	}
 
-	/* Chip row above the result cards: All / Suite / Arcus product filters.
-	   The pressed chip carries the AI wash; the rest are plain outline chips. */
-	.ts-sa-chiprow {
-		display: flex;
-		gap: 8px;
-		margin-top: 0.9rem;
-	}
-	.ts-sa-chiprow[hidden] {
-		display: none;
-	}
-	.ts-sa-chip {
-		font-size: 12px;
-		font-weight: 500;
-		padding: 3px 10px;
-		border-radius: 999px;
-		background: transparent;
-		border: 1px solid var(--ts-bd);
-		color: var(--ts-tx2);
-		font-family: inherit;
-		cursor: pointer;
-	}
-	.ts-sa-chip:hover {
-		color: var(--ts-tx);
-	}
-	.ts-sa-chip[aria-pressed='true'] {
-		background: var(--ts-ai-wash);
-		border-color: var(--ts-ai-bd);
-		color: var(--ts-ai);
-		font-weight: 600;
-	}
-
-	/* Pagefind's native filter panel is driven by the chip row instead. */
-	#starlight__search .pagefind-ui__filter-panel,
-	#starlight__search .pagefind-ui__filter-block {
-		display: none;
-	}
-
 	/* Empty state: POPULAR QUESTIONS + suggestion rows (search mode, no query) */
 	.ts-sa-empty[hidden] {
 		display: none;
@@ -1118,6 +1016,66 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 		background: var(--ts-hover);
 	}
 
+	/* ---- Ask panel: the docked right column the answers stream into ----
+	   Deliberately NOT a <dialog>: the top layer would trap focus and dim the
+	   page, and the whole point of the panel is that the docs stay usable while
+	   an answer sits beside them. It therefore also does not lock body scroll. */
+	/* A floating card rather than a full-height dock: capped height, inset
+	   from the corner, rounded. The thread inside owns the scrolling. */
+	.ts-ask-panel {
+		position: fixed;
+		bottom: 20px;
+		inset-inline-end: 20px;
+		z-index: 40;
+		display: flex;
+		flex-direction: column;
+		width: min(26rem, calc(100vw - 40px));
+		height: min(60dvh, calc(100dvh - var(--sl-nav-height) - 40px));
+		background: var(--ts-bg);
+		border: 1px solid var(--ts-bd);
+		border-radius: 14px;
+		overflow: hidden;
+		box-shadow: var(--ts-shadow-pop);
+	}
+	.ts-ask-panel[hidden] {
+		display: none;
+	}
+	.ts-ask-panel-head {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex: none;
+		padding: 12px 12px 12px 16px;
+		border-bottom: 1px solid var(--ts-bd);
+	}
+	.ts-ask-panel-mark {
+		display: inline-flex;
+	}
+	.ts-ask-panel-title {
+		flex: 1;
+		min-width: 0;
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--ts-tx);
+	}
+	.ts-ask-panel-close {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 26px;
+		height: 26px;
+		padding: 0;
+		border: none;
+		border-radius: 6px;
+		background: transparent;
+		color: var(--ts-tx3);
+		cursor: pointer;
+	}
+	.ts-ask-panel-close:hover {
+		background: var(--ts-hover);
+		color: var(--ts-tx);
+	}
+
 	/* Conversation view */
 	.ts-sa-view {
 		display: flex;
@@ -1126,6 +1084,16 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 	}
 	.ts-sa-view[hidden] {
 		display: none;
+	}
+	/* In the panel the view owns the remaining height, so the thread scrolls
+	   against the panel rather than against the modal's capped max-height. */
+	.ts-ask-panel .ts-sa-view {
+		flex: 1;
+		min-height: 0;
+		padding: 0 16px 12px;
+	}
+	.ts-ask-panel .ts-sa-thread {
+		max-height: none;
 	}
 	.ts-sa-label {
 		font-size: var(--sl-text-sm);

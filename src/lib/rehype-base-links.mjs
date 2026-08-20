@@ -23,22 +23,34 @@ const PREFIXABLE = { a: 'href', img: 'src' };
 export function rehypeBaseLinks(base = '') {
 	const clean = base.replace(/\/+$/, '');
 
+	const prefix = (value) => {
+		// Site-absolute only: skips 'https://…', '//cdn…', '#anchor',
+		// 'mailto:', and plain relative links.
+		if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) return value;
+		// Idempotent, so a re-run or an already-prefixed link is untouched.
+		if (value === clean || value.startsWith(clean + '/')) return value;
+		return clean + value;
+	};
+
 	return () => (tree) => {
 		if (!clean) return; // mounted at the root -- nothing to do
 		visit(tree, 'element', (node) => {
 			const attr = PREFIXABLE[node.tagName];
 			if (!attr) return;
-
-			const value = node.properties?.[attr];
-			if (typeof value !== 'string') return;
-
-			// Site-absolute only: skips 'https://…', '//cdn…', '#anchor',
-			// 'mailto:', and plain relative links.
-			if (!value.startsWith('/') || value.startsWith('//')) return;
-			// Idempotent, so a re-run or an already-prefixed link is untouched.
-			if (value === clean || value.startsWith(clean + '/')) return;
-
-			node.properties[attr] = clean + value;
+			node.properties[attr] = prefix(node.properties?.[attr]);
+		});
+		// Raw <a>/<img> written as JSX inside MDX (the home page hero and topic
+		// grid) never become hast 'element' nodes -- they stay mdxJsxTextElement /
+		// mdxJsxFlowElement with an attributes ARRAY, so the visitor above walks
+		// straight past them. Same prefixing, different shape.
+		visit(tree, ['mdxJsxFlowElement', 'mdxJsxTextElement'], (node) => {
+			const attr = PREFIXABLE[node.name];
+			if (!attr) return;
+			for (const a of node.attributes ?? []) {
+				if (a.type === 'mdxJsxAttribute' && a.name === attr && typeof a.value === 'string') {
+					a.value = prefix(a.value);
+				}
+			}
 		});
 	};
 }
