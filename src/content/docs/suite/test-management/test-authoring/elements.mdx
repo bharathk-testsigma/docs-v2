@@ -1,147 +1,338 @@
 ---
-title: Web elements
-description: Create elements manually or from the recorder, pick a locator type, set locator precedence, and handle Shadow DOM.
-pageType: task
-verified: 2026-07
+title: Elements
+description: Create elements by recording them or entering locators by hand, pick locator types, set precedence, and handle Shadow DOM, iframes, and dynamic locators.
+pageType: guide
+verified: 2026-08
 covers:
+  - Locator types
   - Create an element manually
-  - Create an element while adding a step
-  - Supported locator types
+  - Record elements on web, Android, iOS, and mobile web
   - Set locator precedence
-  - Verify a locator before you trust it
-  - Locate an element inside Shadow DOM
+  - Verify and update elements
+  - Image-based elements
+  - Shadow DOM and iframe elements
+  - Dynamic locators
+  - Flutter applications
+  - Find and organize elements
+  - Import and export elements
+searchTerms:
+  - elements
+  - locators
+  - xpath
+  - css selector
+  - record element
+  - locator precedence
+  - shadow dom
+  - iframe element
+  - dynamic locator
+  - image element
+  - import export elements
+  - flutter semantics
 sidebar:
   order: 50
   label: Elements
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
-import Prerequisites from '~/components/Prerequisites.astro';
 
-An element is an item on screen that a step acts on, stored in the project's object repository with the locators used to find it. The recorder creates most of them. This page covers creating them manually, which dynamic pages often force.
+An element is a UI component a test step acts on, such as a field, a button, or a link. Testsigma stores elements in a repository, so a step refers to an element by name and every step using it picks up a change at once.
 
-<Prerequisites>
+Create elements by recording them from the running application, or by entering the locator yourself.
 
-- You have a web project.
-- For the recorder routes, the Testsigma Recorder extension is installed on Chrome.
-- For hand-written locators, you are comfortable with XPath and CSS selectors.
+## Locator types
 
-</Prerequisites>
+A locator tells Testsigma how to find the element on screen. Web applications support 7 types.
+
+| Locator | What it matches | Example |
+|---|---|---|
+| XPath | A path through the page's structure, using elements and attributes. Any element can be written several ways, and most other locators can be expressed as an XPath | `//input[@id="email"]` |
+| CSS Selector | A pattern combining tag, id, class, and attributes. The only locator that reaches inside a Shadow DOM | `input#email` or `input.inputtext` |
+| Link Text and Partial Link Text | The visible text of a link, in full or in part | `Forgot password?`, or `Forgot` for partial |
+| ID | The `id` attribute, which the W3C standard expects to be unique | `email` |
+| Name | The `name` attribute, which is not strictly unique | `userName` |
+| Class Name | The `class` attribute | `inputtext` |
+| Tag Name | The tag itself, useful for pulling the content inside it | `input` |
+
+ID is the first choice when an element has a unique one. Link text has to be unique on the page: when several links share it, such as repeated header and footer menus, the step acts on the first match.
+
+Android and iOS applications support 5 types, in this order of preference:
+
+- **Accessibility ID**: the first choice. The same value carries across Android and iOS, which makes a test easier to port, and it is the least likely to change when the source is restructured
+- **ID**: the second choice. Every element is supposed to have a unique one
+- **XPATH**: parses the source to reach the referred element
+- **Class Name**: the value of the element's Class Name attribute
+- **Name**: the value of the element's Name attribute
+
+If you cannot find IDs for your elements, ask your developer to add them.
 
 ## Create an element manually
 
+Manual creation suits dynamic applications, where an element's attributes change between sessions and a recorded locator stops matching.
+
+Go to **Create Tests > Elements**, click **Create Element**, fill in the fields, and click **Create element**. The element is saved to the elements list.
+
+- **Name**: what you call the element in test steps
+- **Screen Name**: the screen or page the element sits on, used to group elements
+- **Element Type**: **XPATH**, **ID**, **Name**, **Class Name**, or **Accessibility ID**. These are the 5 types the dropdown offers
+- **Enter Value**: the locator value for the type you selected
+
+<Aside type="tip">
+Click **Record Element** on the **Create Element** page to capture the element instead of typing its locator.
+</Aside>
+
+You can also create an element while writing a step. Open a test case, add a step that takes an element, hover over the element placeholder, and select **Create Element** from the dropdown.
+
+Writing a locator by hand needs a working knowledge of XPath and CSS selectors.
+
+### Read a locator off the page
+
+Right-click the element in Chrome and select **Inspect**. The **Elements** panel opens with your element highlighted in blue, showing its HTML.
+
+HTML elements follow this shape, where the tag name, the attribute names, and the values in quotes are all candidates for a locator:
+
+```html
+<input type="submit" name="Submit" class="button" id="btnLogin" value="LOGIN">
+```
+
+Here the tag name is `input`, and the attributes are `type`, `name`, `class`, `id`, and `value`. Build the element from a single attribute whose value is unique, from a link's visible text, or from an XPath or CSS selector you write against that HTML. ID is the preferred single attribute.
+
+## Record elements on web
+
+Recording needs the Testsigma Chrome extension and an application you can reach.
+
 <Steps>
 
-1. **Open the element list** — Go to **Create Tests > Elements**.
+1. Go to **Create Tests > Elements** and click **Record**.
 
-2. **Start a new element** — Click **Create Element**.
+2. Enter the URL to capture from in the new tab. The recorder opens and waits.
 
-3. **Describe it** — Enter a **Name** and the **Screen Name** it appears on.
+3. Hover over an element until it highlights in green.
 
-4. **Choose how to find it** — Select an **Element Type**, then enter the matching value in **Enter Value**.
+4. Click it and wait for it to appear in the recorder.
 
-5. **Save** — Click **Create element**. It joins the element list.
+5. Repeat for every element you want.
+
+6. Click **Stop**.
 
 </Steps>
 
-**Record Element** on the same page captures one from the live application instead.
+The recorder returns you to the **Elements** page with everything you captured.
 
 <Aside type="note">
-The **Element Type** dropdown offers a narrower set than the locators Suite supports overall, listing **XPATH**, **ID**, **Name**, **Class Name**, and **Accessibility ID**. {/* UNVERIFIED: three sources disagree on this dropdown's contents -- confirm the current list in the product */}
+The recorder stores a page image with each element, highlighting the element on it, so you keep the visual context alongside the locator. The Testsigma gear icon blinks while recording and stops when you pause.
 </Aside>
 
-## Create an element while adding a step
+## Record elements on Android and iOS
 
-You do not have to leave the test case. Add a step that needs an element, hover the element placeholder, then select **Create Element** from the dropdown and fill the same fields.
+<Steps>
 
-## Supported locator types
+1. Go to **Create Tests > Elements** and click **Record**.
 
-Seven locator mechanisms are available. Which one you pick decides how brittle the element is.
+2. In the **Record Elements** overlay, select the **Test Lab** and **Test Machine**, supply the app under **Upload App Source**, and click **Record**.
 
-| Locator | Notes |
-| --- | --- |
-| XPath | The most flexible. Most other locators can be expressed as one |
-| CSS Selector | Matches on tag, id, class, and attributes. The only locator that reaches inside Shadow DOM |
-| Link Text and Partial Link Text | Simple, but only safe when the text is unique on the page |
-| ID | Stable when the application sets it deliberately |
-| Name | Common on form fields |
-| Class Name | Often shared across many elements |
-| Tag Name | Broadest, and rarely unique on its own |
+3. Wait for the app to load fully.
 
-<Aside type="note">
-With duplicate link text, such as the same link in a header and a footer, the action lands on the first match. That is a test that passes for the wrong reason.
+4. Click the element you want to capture.
+
+5. Check the **Name**, **Screen Name**, **Element Type**, and **Value** in the **Create Element** section.
+
+6. Click **Create**.
+
+</Steps>
+
+To change a captured element, hover over it and click the edit icon, change the details, and click **Update**.
+
+## Record elements on mobile web
+
+Mobile web recording pairs the recorder with Chrome DevTools.
+
+<Steps>
+
+1. Go to **Create Tests > Elements** and click **Record**.
+
+2. Enter the URL in the new window.
+
+3. Select **Companion Mode** in the action bar.
+
+4. Press **F12** to open Chrome DevTools, and dock it to the right of the window.
+
+5. Click **>>** and select **Testsigma Recorder**. The recorder opens inside DevTools.
+
+6. Select the device dimension to record at.
+
+7. Click the elements to capture them, and click **Stop** when you are done.
+
+</Steps>
+
+<Aside type="tip">
+If the device you test on is not in the list, select **Edit** in the **Dimensions** dropdown and click **Add custom device**. A device's own characteristics can change how an element displays and behaves, so recording at the right dimension matters.
 </Aside>
 
 ## Set locator precedence
 
-The recorder tries locator types in an order you control, stopping at the first static and unique one it finds.
+Locator precedence tells the recorder which locator type to reach for first, across Link Text, Name, ID, CSS Selector, and XPath. The recorder works down your order and takes the first locator that is static and unique.
 
 <Steps>
 
-1. **Open the recorder** — Go to **Create Tests > Elements** and click **Record**, then enter your URL.
+1. Go to **Create Tests > Elements** and click **Record**.
 
-2. **Open the setting** — Click **Locator precedence** in the recorder.
+2. Click **Locator precedence** in the recorder.
 
-3. **Reorder** — Drag the handles into the priority you want.
+3. Drag the handles into the order you want.
 
-4. **Save** — Click **Save**.
+4. Click **Save**.
 
 </Steps>
 
 <Aside type="note">
-Precedence reverts to the default unless you click **Save**. It is also scoped to one user and one application, so it is a personal setting rather than a project-wide one, and a colleague recording the same app gets their own order.
+Testsigma reverts to the default order if you leave without saving.
 </Aside>
 
-## Verify a locator before you trust it
+<Aside type="note">
+A precedence applies only to the user who set it, and only to the application it was set for.
+</Aside>
 
-An XPath that matches four elements produces a test that fails intermittently, which costs more to diagnose than to prevent.
+## Verify an element while recording
+
+Verify an element during recording rather than waiting for a run to fail on it.
 
 <Steps>
 
-1. **Open DevTools** — Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> in Chrome and select the **Elements** tab.
+1. Open a test case and click **Record**.
 
-2. **Find the element** — Hover it in the page and watch the highlighted HTML.
+2. Hover over the element in a step, click it, and select **Edit Element**.
 
-3. **Count the matches** — Press <kbd>Ctrl</kbd> + <kbd>F</kbd>, paste your XPath, and check how many elements it matches. You want one.
+3. Click **Verify** in the **Update Element** screen. The element highlights on the page.
+
+4. If the element does not exist, a message says so. Correct the locator and verify again until it highlights.
 
 </Steps>
 
-## Locate an element inside Shadow DOM
+## Update an element
 
-Shadow DOM hides markup from the main document, so a shadow element does not exist in the DOM the recorder normally searches.
+Go to **Create Tests > Elements**, click the ellipsis icon (⋮) next to the element, and click **Edit**. Change the **Name**, **Screen Name**, **Element Type**, or **Element Value** in the **Update Element** overlay, and click **Update**. Clicking the element opens **Element Details**, where **Edit** opens the same overlay.
 
-To check whether a page uses it, right-click and select **Inspect**, expand the `<body>` tag, and look for `#shadow-root`. If it is there, use a CSS selector: it is the only supported locator that crosses the shadow boundary.
+To update many elements at once, export them, change the fields you need, and import the file back. See [Import and export elements](#import-and-export-elements).
 
-## FAQs
+## Image-based elements
 
-**The recorder shows a blank screen.**
+An image element identifies a control by pixel recognition instead of the DOM, which helps when dynamic behavior keeps breaking an XPath.
 
-Chrome's cookie settings are blocking it. In **Settings > Privacy and security > Third-party cookies**, enable **Block third-party cookies in Incognito mode** (not the blanket block), then record again.
+<Steps>
 
-**A step fails because the captured link text differs from what I see.**
+1. Go to **Create Tests > Elements** and click **Create Element**.
 
-The UI may render text in a different case than the HTML carries it (`SUBMIT` on screen, `Submit` in the source). The recorder captures from the HTML. Compare the captured text against the page source and correct the element to match the HTML.
+2. Click **Record Element** to open the recorder.
 
-**I cannot capture or select from a dropdown.**
+3. Enter the **Name** and **Screen Name**, and select **Image** as the **Element Type**.
 
-It depends on how the dropdown is built. A real `<select>` tag works with the *Select option...* NLPs — by value, text, or index, single or multiple. A dropdown built from `div`, `a`, or `span` is not a select at all: capture the elements it is made of and drive it with *Click* steps.
+4. Click **Capture** to take the element from the screen, or **Upload** to supply a screenshot.
 
-**Check/uncheck fails on something that looks like a checkbox.**
+5. Select the part of the screen that holds the element, and click **Capture**.
 
-The check/uncheck NLPs verify the element's `type` attribute is `checkbox`, and fail when a different tag is doing the visual work. Find the tag actually receiving the click, capture an element for it, and use the *Click* NLP instead. The same applies to radio buttons and the select/unselect NLPs: no `type="radio"`, no select — click it.
+</Steps>
 
-**Element not found — what are the usual causes?**
+The element is saved to the elements list. You can also do this from a test case: click **Record**, create a step that takes an element, click the element, and select **Create Element**.
 
-Three: the element is not on the current page (an earlier step passed but did not do what you expected — check its screenshot), the locator has a typo, or the element sits inside a frame — switch first with *Switch to the frame UI identifier* (or by index or name).
+## Shadow DOM elements
 
-**The step passes but acts on the wrong element.**
+A Shadow DOM attaches a hidden DOM tree to an element, keeping its styles and markup separate from the main page. Those elements do not exist in the main DOM, so ordinary locators cannot reach them. Only a CSS selector can.
 
-Your locator matches more than one element, and the first match wins. `//input[@type='password']` on a page with two password fields always hits the first. Make the XPath unique.
+To check whether a page uses one, right-click the page, select **Inspect**, expand the `<body>` tag on the **Elements** tab, and look for `#shadow-root`.
 
-**The element is hidden, disabled, or not there yet.**
+| Term | What it is |
+|---|---|
+| Shadow host | The HTML element the shadow DOM is attached to |
+| Shadow tree | The hidden tree of DOM elements inside the shadow DOM |
+| Shadow boundary | The line separating the shadow DOM from the main DOM |
+| Shadow root | The root node of the hidden tree |
 
-Dynamically created elements may not exist at the moment the step runs. Add a wait step for the element before acting on it.
+Capture one from **Create Tests > Elements**: click **Create Element**, click **Record Element** in the overlay, open the page in a new tab, click the element, and click **Capture**.
 
-**How do applications disable, hide, and check elements?**
+## iframe elements
 
-Knowing the mechanism tells you what a step can and cannot do. Disabled: the `disabled` attribute (button, input, select, textarea...) makes an element unclickable, and `readonly` (input, textarea) allows focus and copy but not modification. Hidden: `display: none`, the `hidden` attribute, or zero width and height. Checked/selected: the `checked` attribute on checkboxes and radios, `selected` on options — which is what the check/select NLPs verify before acting.
+The recorder captures the iframe details with the element, so a test case works without the `switch to the frame` NLP.
+
+If you do use `switch to the frame`, edit every iframe element in that test case and clear **present inside nested content**.
+
+<Aside type="note">
+Turning on **Present inside nested content** while already inside an iframe fails the test, because Testsigma starts looking for nested iframes.
+</Aside>
+
+## Dynamic locators
+
+When part of a locator changes between runs, put the changing part in test data and reference it from the locator. Testsigma accepts parameterized XPath and CSS selectors, taking the variable from a test data profile parameter, from environment data, or from a runtime variable. This is what makes a data-driven test work against elements whose attributes shift.
+
+Reference an environment parameter in the locator with `*|parameter_name|`. If the username on screen is `dev-admin` on Dev and `qa-admin` on QA, store it as an environment parameter and write the locator as `//button[text()='*|username|']`. Testsigma substitutes the environment's value at runtime.
+
+For a value that only exists mid-run, store it into a runtime variable with an NLP first, then reference that variable in the locator. Recording a dynamic element is unreliable, so create these elements manually.
+
+For an element in a table, copy a working XPath first: right-click the element, select **Inspect**, then right-click the highlighted HTML and select **Copy > Copy XPath**. Generalize the row or column position from there.
+
+A date widget marks today's date with its own class, and the class differs by date library but follows a pattern. In a JQuery UI date picker, today carries `ui-state-highlight`, so today, tomorrow, and any later day are:
+
+```text
+//td/a[@class='ui-state-default ui-state-highlight']
+//td/a[@class='ui-state-default ui-state-highlight']/following::td[1]
+//td/a[@class='ui-state-default ui-state-highlight']/following::td[7]
+```
+
+An overlay that closes the moment you inspect it can be frozen. Open DevTools, go to the **Sources** tab, bring the application to the state you need, and click **Pause script execution**. When clicking the page closes the overlay first, trigger the click from the console on a delay instead:
+
+```javascript
+element1 = document.querySelector("#gbwa");
+setTimeout(function() {
+  element1.click();
+}, 3000);
+```
+
+Disabling JavaScript temporarily also works, but not reliably.
+
+## Flutter applications
+
+Mobile automation on Flutter reads the app's semantics tree, not its widget tree. An element is identifiable only when its widget carries a semantic label.
+
+Most built-in Flutter widgets set semantic properties already. Custom widgets often do not, and semantics for several widgets can be merged into one, which hides the individual elements. When an element cannot be identified, the app developer has to set the semantic label on that widget.
+
+## Find and organize elements
+
+Search by name from the search bar on the **Elements List** page.
+
+Sort by **Title**, **Created Date**, or **Updated Date**.
+
+To filter, click **Show Filters > Add Filter** and pick from **Element Value**, **Name**, **Linked to Test Case**, **Labels**, **Screen Name**, **Element Type**, **Created By**, **Created Date**, and **Updated Date**, along with any custom field. Filters stack. Click **Reset** or **All** to clear them.
+
+To keep a filter, click **Save Filter > As New**, name it in **Config Name**, and select **Public** to share it with everyone who can access the project. Saved filters sit under **Saved Filters**, split into Custom and Predefined, where you can edit or delete each one.
+
+Click **View** in an element's affected list to see the test cases, step groups, test suites, and test plans a change to it would reach.
+
+Larger teams can turn on review management for elements, so an element is reviewed before it joins a regression suite, the same way a test case is.
+
+## Import and export elements
+
+Import and export move elements between application versions, in the same project or a different one. They also handle bulk edits: export the elements, change them in the file, and import the file back.
+
+To import, go to **Create Tests > Elements**, click **Import**, click **Browse File** and select your file, choose **Overwrite** or **Ignore** for duplicates, then click **Import**.
+
+To export, go to **Create Tests > Elements** and click **Export**.
+
+Both run in the background, and Testsigma emails you when they finish.
+
+| Column | What it holds |
+|---|---|
+| UUID | The element's unique identifier, present only on exported elements |
+| Name / fieldName | The element's name |
+| Screen Name / screenName | The screen the element sits on, used for grouping |
+| Locator Type / locatorType | The type of locator |
+| Value / fieldDefintion | The locator value for that type |
+| Created Using / createType | How the element was created |
+
+<Aside type="note">
+To update elements, keep the UUID column intact so each row updates the right element, and change the other fields as needed. To create elements in bulk, clear both UUID columns.
+</Aside>
+
+<Aside type="tip">
+A sample import template is available in the Element Import dialog.
+</Aside>
+
+A development team can use the same route to hand over locators for UAT, adding custom attributes to the application to make it more testable and supplying them as a spreadsheet.

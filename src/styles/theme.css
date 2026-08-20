@@ -209,7 +209,7 @@ html {
    screenshot on a white panel frames nothing. The gradient tones are the
    light theme's ink (#091e42) family, so the frame reads as the site's own
    navy rather than a foreign black. */
-.sl-markdown-content img:not(.ts-hero img) {
+.sl-markdown-content img:not(.ts-hero img, .ov-art img) {
 	display: block;
 	max-width: 100%;
 	padding: 20px;
@@ -297,12 +297,13 @@ html {
 /* Chain-link anchor beside each heading: body-text colour, darkening on
    hover. Visibility (hover-reveal) is Starlight's own.
    Per spec (Bharath, 2026-08-19): two spaces of gap (a space ~0.25em), icon
-   2pt smaller than Starlight's default, centred on the heading's line. The
+   2pt smaller than Starlight's default, centred on the heading's line.
+   Halved again per Bharath, 2026-08-20. The
    centring transform in Starlight's anchor-links.css keys on
    --sl-line-height-headings, so it is restated per level to match the actual
    line-heights set on h2/h3 above -- otherwise the icon rides high. */
 .sl-markdown-content .sl-heading-wrapper {
-	--sl-anchor-icon-size: calc(0.8275em - 2pt);
+	--sl-anchor-icon-size: calc((0.8275em - 2pt) * 0.8);
 	--sl-anchor-icon-gap: 0.5em;
 }
 .sl-markdown-content .sl-heading-wrapper.level-h2 {
@@ -939,7 +940,9 @@ mobile-starlight-toc {
 	   is wider than V2's ui-monospace, so PATCH and DELETE outgrew the gutter
 	   and every label after them started at a different x. 48px fits the
 	   longest verb, so all labels share one left edge. */
-	width: 3rem; /* 48px */
+	width: 3.25rem; /* 52px -- 48px wrapped DELETE mid-word when the mono
+	   resolved wider than Courier New; nowrap below guards the general case */
+	white-space: nowrap;
 	padding: 1px 5px;
 	border: 1px solid transparent;
 	border-radius: 4px;
@@ -1283,8 +1286,7 @@ starlight-toc nav > ul > li:first-child:has(a[aria-current='true']) + li > a::be
 }
 .sl-markdown-content tr:last-child td {
 	border-bottom: none;
-}
-.sl-markdown-content td:first-child {
+}.sl-markdown-content td:first-child {
 	color: var(--ts-tx);
 	font-weight: 500;
 }
@@ -1632,6 +1634,7 @@ starlight-toc nav > ul > li:first-child {
 	padding: 1px 5px;
 	border-radius: 4px;
 	flex-shrink: 0;
+	white-space: nowrap;
 	text-transform: uppercase;
 }
 .sidebar-content .sl-badge.tip {

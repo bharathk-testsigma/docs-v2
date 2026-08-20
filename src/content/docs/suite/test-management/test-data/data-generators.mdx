@@ -1,13 +1,212 @@
 ---
-title: Data Generators
-description: Data Generators — this page is being written.
-pageType: guide
+title: Data generator functions
+description: Reference for all 115 built-in data generator functions, grouped by function type, with the inputs each one takes.
+pageType: reference
+verified: 2026-08
+covers:
+  - All 15 function types and their functions
+  - The inputs each function takes
 sidebar:
   order: 30
+  label: Data Generators
 ---
 
 import { Aside } from '@astrojs/starlight/components';
 
+Every built-in data generator, grouped by function type. Select the function type and the function in the **Data Generators** overlay, then supply the inputs listed here. Click the arrow before **Show Examples** in the overlay to see sample inputs and outputs for the function you selected.
+
 <Aside type="note">
-This page is being written. Content lands here in an upcoming update.
+A function whose inputs read None generates its value without any configuration.
 </Aside>
+
+Some functions appear twice, once per set of inputs they accept. `randomEmail`, `randomDouble`, `emailAddress`, `safeEmailAddress`, `streetAddress`, `fileName`, `future`, and `past` each have 2 forms.
+
+## Email
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `username` | EmailFunctions | A username | Length |
+| `randomAlphanumaricEmail` | EmailFunctions | A random email with both numbers and letters | Length |
+| `randomAlphaNumericEmailWithDomain` | EmailFunctions | A random email string with both alphabet and numbers | Length, Domain |
+| `randomEmail` | EmailFunctions | A random email with a given domain | Length, Domain |
+| `randomEmail` | EmailFunctions | A random email | Length |
+
+## Mail box
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `getEmailOTP` | MailBoxFunctions | Fetches OTP from the email | Regex, Mailbox, Timeout in seconds |
+| `getLinkFromContent` | MailBoxFunctions | Fetches link from a piece of content | Regex, Mailbox, Timeout in seconds |
+| `subjectVerification` | MailBoxFunctions | Verifies the subject of email | Regex, Mailbox, Timeout in seconds |
+| `contentVerification` | MailBoxFunctions | Verifies the content of email | Regex, Mailbox, Compare String, Timeout in seconds |
+| `getEmailContent` | MailBoxFunctions | Stores the entire email content in a variable | Runtime Variable, Timeout in seconds |
+| `getEmailSubject` | MailBoxFunctions | Stores the subject of the email into a variable by fetching it | Runtime Variable, Timeout in seconds |
+| `urlWithText` | MailBoxFunctions | Fetches the URL of the Element containing the provided text | Text, Runtime Variable, Timeout in seconds |
+| `urlWhichContains` | MailBoxFunctions | Fetches the URL that contains some required parameters | Substring, Runtime Variable, Timeout in seconds |
+| `urlMatchingRegex` | MailBoxFunctions | Retrieve the URL that matches the required regular expression | Regex, Runtime Variable, Timeout in seconds |
+| `mailbox` | Email | Not described in the source | None |
+
+## Mail box alias
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `generateMailBoxAlias` | MailBoxAliasFunctions | A unique mailbox every time it is executed during test execution | Mailbox - Select Linked Mailbox |
+| `getEmailContent` | MailBoxAliasFunctions | Fetches the entire email content into a variable | Runtime Variable, Timeout in seconds |
+| `getEmailSubject` | MailBoxAliasFunctions | Fetches the subject of the email in to a variable | Runtime Variable, Timeout in seconds |
+| `getOTP` | MailBoxAliasFunctions | Fetches OTP from the email | Regex, Runtime Variable, Timeout in seconds |
+| `urlWithText` | MailBoxAliasFunctions | Fetches the URL that contains some required text | Text, Runtime Variable, Timeout in seconds |
+| `urlWhichContains` | MailBoxAliasFunctions | Fetches the URL that contains some required parameters | Substring, Runtime Variable, Timeout in seconds |
+| `urlMatchingRegex` | MailBoxAliasFunctions | Fetches the URL that contains a URL matching the required regular expression | Regex, Runtime Variable, Timeout in seconds |
+
+## Test data from profile
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `getTestDataBySetName` | TestDataFromProfile | Fetches the test data by set name from test data profiles | Test Data Profile, Data Set Name, Parameter |
+| `getTestDataByRowNumber` | TestDataFromProfile | Fetches the test data by row number from test data profiles | Test Data Profile, Row Number, Parameter |
+
+## Number
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `Custom Calculation` | NumberFunctions | Performs multiple mathematic calculations | Any test data type: plain text, parameter, runtime, or environment |
+| `random number` | Number | A random number between a given range | Min - minimum value of range of numbers, max - maximum value of range of numbers |
+| `randomDigit` | Number | Random digits between 0-9 | None |
+| `randomDigitNotZero` | Number | Random digits between 1-9 | None |
+| `number of digits` | Number | N number of digits | Number of digits, Boolean - True/ False |
+| `randomNumber` | Number | A random number between a minimum and a maximum | None |
+| `randomDouble` | Number | A random decimal number between a minimum and a maximum | Max No of Decimals, Min - Minimum value, Max - Maximum value |
+| `randomDouble` | Number | A random decimal number between a minimum and a maximum | Max No of Decimals, Min - Minimum value, Max - Maximum value |
+| `digits` | Number | A random number | Count - Number of digits |
+| `digit` | Number | A random single digit | None |
+
+## Name
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `uniqueUsername` | NameFunctions | A unique username | None |
+| `name` | Name | A random name | None |
+| `nameWithMiddle` | Name | A name with Middle Name | None |
+| `fullName` | Name | A Full Name | None |
+| `firstName` | Name | A random name that can be used as First Name | None |
+| `lastName` | Name | A random name that can be used as Last Name | None |
+| `prefix` | Name | A random Prefix | None |
+| `suffix` | Name | A random Suffix | None |
+| `title` | Name | Random Title | None |
+| `username` | Name | A random Username | None |
+
+## Phone number
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `getOTP` | PhoneNumberFunctions | Fetches OTP from an SMS | Regex, Phone number, Timeout in seconds |
+| `cellPhone` | PhoneNumber | A random Mobile Number | None |
+| `phoneNumber` | PhoneNumber | A random Phone Number | None |
+
+## Internet
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `domainName` | Internet | Random domain name | None |
+| `domainWord` | Internet | Random domain | None |
+| `domainSuffix` | Internet | Random domain suffix | None |
+| `emailAddress` | Internet | Random email address | None |
+| `emailAddress` | Internet | Random email address with the local part you supply | Localpart |
+| `safeEmailAddress` | Internet | Random email | None |
+| `safeEmailAddress` | Internet | Random safe email address with the local part you supply | Localpart |
+| `url` | Internet | Random URL | None |
+| `image` | Internet | Random image file URL | None |
+| `password` | Internet | Random password | None |
+| `uuid` | Internet | A random UUID | None |
+
+## File
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `mimeType` | File | A random two-part MIME type | None |
+| `fileName` | File | Random file name | None |
+| `fileName` | File | File name using given data | 4 arguments, not named in the source |
+
+## Friends
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `character` | Friends | A random character name | None |
+| `location` | Friends | A random location | None |
+
+## ID number
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `valid` | IdNumber | A random ID | None |
+| `invalid` | IdNumber | A random ID | None |
+| `ssnValid` | IdNumber | Not described in the source | None |
+| `validSvSeSsn` | IdNumber | Not described in the source | None |
+| `invalidSvSeSsn` | IdNumber | Not described in the source | None |
+
+## Address
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `streetName` | Address | Random street name | None |
+| `streetAddressNumber` | Address | Random street address | None |
+| `streetAddress` | Address | Random street address | None |
+| `streetAddress` | Address | Street address with given data | 1 argument, not named in the source |
+| `secondaryAddress` | Address | Random address | None |
+| `zipCode` | Address | Random zipcode | None |
+| `zipCodeByState` | Address | Not described in the source | 1 argument, not named in the source |
+| `streetSuffix` | Address | Random street Suffix | None |
+| `streetPrefix` | Address | Random street Prefix | None |
+| `citySuffix` | Address | Random Street City Suffix | None |
+| `cityPrefix` | Address | Random Street City Prefix | None |
+| `city` | Address | Random city | None |
+| `cityName` | Address | Not described in the source | None |
+| `state` | Address | Not described in the source | None |
+| `stateAbbr` | Address | Not described in the source | None |
+| `firstName` | Address | Not described in the source | None |
+| `lastName` | Address | Not described in the source | None |
+| `latitude` | Address | Not described in the source | None |
+| `longitude` | Address | Not described in the source | None |
+| `timeZone` | Address | Not described in the source | None |
+| `country` | Address | Not described in the source | None |
+| `countryCode` | Address | Not described in the source | None |
+| `buildingNumber` | Address | Not described in the source | None |
+| `fullAddress` | Address | Random full address | None |
+
+## Company
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `name` | Company | Not described in the source | None |
+| `suffix` | Company | Not described in the source | None |
+| `industry` | Company | Not described in the source | None |
+| `buzzword` | Company | Not described in the source | None |
+| `catchphrase` | Company | Not described in the source | None |
+| `bs` | Company | Not described in the source | None |
+| `logo` | Company | Not described in the source | None |
+| `joinSampleOfEachList` | Company | Not described in the source | 2 arguments, not named in the source |
+
+## Date
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `future` | DateFunctions | A future date, at most x units of time ahead | Atmost - the maximum number of units, as an integer, Unit - day, hours, minutes, or seconds, Reference dates - any date, Format - the date format |
+| `future` | DateFunctions | A future date, at most x units of time ahead | Atmost - the maximum number of units, as an integer, Unit - day, hours, minutes, or seconds, Format - the date format |
+| `current` | DateFunctions | The current date | Format |
+| `between` | DateFunctions | Dates in between two dates | From - Starting date, To - Ending date, Format - the date format |
+| `past` | DateFunctions | A past date, at most x units of time back | Atmost - the maximum number of units, as an integer, Unit - day, hours, minutes, or seconds, Reference dates - any date, Format - the date format |
+| `past` | DateFunctions | A past date, at most x units of time back | Atmost - the maximum number of units, as an integer, Unit - day, hours, minutes, or seconds, Format - the date format |
+| `birthday` | DateFunctions | A random birthday | Format |
+| `dateBeforeToday` | DateFunctions | A date which is before today's date | NoOfDays - number of days after the present date in integer Format, Format - Date Format |
+| `dateAfterToday` | DateFunctions | A date which is after today's date | NoOfDays - number of days after the present date in integer Format, Format - Date Format |
+| `daysBeforeGivenDate` | DateFunctions | A date the given number of days before the date you supply | Date, noOfDays - the number of days, as an integer, Format - Date Format |
+| `daysAfterGivenDate` | DateFunctions | A date the given number of days after the date you supply | Date, noOfDays - the number of days, as an integer, Format - Date Format |
+
+## Other
+
+| Function | Class | Generates | Inputs |
+|---|---|---|---|
+| `emailWithDomain` | DomainFunction | An email with a domain | Preferred Domain name |
+| `randomStringFromGivenCharactersWithLength` | RandomStringFunctions | A random string from the given set of characters | Stringlength - the length to generate, as an integer, List - list of characters |
+| `phrases` | Random Text | Random text phrases | Stringlength - the length to generate, as an integer, List - list of characters |
+| `Concat` | StringFunctions | Concatenates two or more strings | Any test data type in the Test-Data0 and Test-Data1 fields: plain text, parameter, runtime, or environment |

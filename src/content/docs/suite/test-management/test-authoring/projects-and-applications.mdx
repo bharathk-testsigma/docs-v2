@@ -53,25 +53,21 @@ To switch projects, click the current project on the Dashboard, select the **Pro
 
 ## Supported application types
 
-The application type decides what you test, which authoring tools appear, and which execution engines are available. Nine types are supported, matching the **Application type** picker in the product.
-
 | Application type |
 | --- |
-| Web application |
-| Salesforce (New) |
+| Web |
+| Mobile Web |
 | Android |
 | iOS |
-| Mobile web |
-| Rest API |
-| Windows (Lite) |
-| Windows (Beta) |
-| Unified Mobile (New) |
+| Unified Mobile |
+| REST API |
+| Salesforce |
+| Windows |
 
-The type is set per application when you create it and cannot be changed later; a project with multiple applications can mix types. The per-platform sections under Cloud and Desktop cover creating tests for each type.
 
 ## Execution engines
 
-Test cases runs tests on 2 engines, Classic and Modern. Modern waits for elements and for the page state before it interacts with them, which reduces timing-related failures, and it handles Shadow DOM and web components more natively than Classic.
+Test cases runs tests on 2 engines, `Classic` and `Modern`. Modern waits for elements and for the page state before it interacts with them, which reduces timing-related failures, and it handles Shadow DOM and web components more natively than Classic.
 
 You select the engine when you create an application, and the engines on offer depend on the application type.
 
@@ -114,7 +110,7 @@ To edit one, select it from the dropdown, make the changes, and click **Update**
 To delete one, select it from the dropdown, click **Delete Application**, enter `DELETE`, and click **Delete**.
 
 <Aside type="note">
-Deleting an application destroys every version in it, along with the test cases, test data, and uploads in those versions.
+Deleting an application erases every version in it, along with the test cases, test data, and uploads in those versions.
 </Aside>
 
 ## Manage application versions
