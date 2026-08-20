@@ -23,12 +23,33 @@ Defined in `devops-helm` on the **`prod`** branch:
 | Deployment | `website/templates/httpd-docs-new-deployment.yaml`, values under `Deployments.docsNew` |
 | Image tag | `Deployments.docsNew.containers.version` in `production-values.yaml` / `staging-values.yaml` |
 
-Both environments read from the `prod` branch — staging from
-`staging-values.yaml`, production from `production-values.yaml`. This differs
-from the blog and website workflows in the website repo, which push staging to a
-`staging` branch. The `docsNew` keys exist **only on `prod`**, so a deploy
-pointed at the `staging` branch would fail the "not found in values" guard in the
-workflow rather than deploy anything.
+**Each environment deploys to the devops-helm branch its ArgoCD app tracks** —
+staging to **`staging`**, production to **`prod`**. Same convention as blog and
+website. Verify before changing either:
+
+```
+kubectl -n argocd get app website-staging \
+  -o jsonpath='{.spec.source.targetRevision}'      # -> staging
+```
+
+This is the single most important fact on this page, because getting it wrong
+fails **silently**. Commit `c6d2cfe` set staging's `HELM_BRANCH` to `prod`, and
+from then on every staging deploy committed its image tag to
+`prod/website/staging-values.yaml` — a file `website-staging` never reads. The
+workflow went green, ArgoCD showed no docs-new resources, and
+`https://website.testsigma.com/docs-new/` served the website's own 404 page,
+because with no `/docs-new` rule on the ALB the request falls through the
+catch-all `/` rule to the website. Nothing anywhere reported an error.
+
+A quick way to tell which branch an app really reads, without cluster access:
+compare how fresh the *other* services' image tags are in the same values file.
+In `prod/website/staging-values.yaml` the last blog bump was 2025-06-13; on
+`staging` blog is bumped daily. The running blog pod has the recent tag.
+
+**Never sync `website-staging` with `revision: prod`.** It renders
+`prod/staging-values.yaml`, whose blog and website tags are 14 months stale, and
+silently rolls those two workloads back. It will appear to fix the docs — the
+docs-new resources do get created — which is what makes it tempting.
 
 ## Deploying
 
@@ -123,7 +144,7 @@ Until one of those happens, the ~9MB retrieval index is dead weight in the image
 and the Dockerfile deletes it (it is server-side input for `api/ask.ts`, never
 fetched by the browser).
 
-## The 2026-08-20 silent failure — and the gate that now catches it
+## The 2026-08-20 silent failure: green deploys, nothing served
 
 A staging deploy went **fully green** while serving no docs at all. Worth reading
 before trusting a green run.
@@ -172,24 +193,107 @@ healthy targets, because `production-values.yaml` still pins
 devops-helm commit reads "to staging"), so there is no such tag in
 `docs-v2-production` to pull.
 
-### The two infra changes needed
+### Verified cluster state, 2026-08-20
 
-Neither is in this repo, and neither is in Terraform — the distribution serving
-`website.testsigma.com` is `d2v4zpi756k6b5.cloudfront.net`
-(`envs/prod/_global/route53__route53_record.tf` in `testsigma-terraform`), and it
-does not appear in either `envs/*/_global/cloudfront__cloudfront_distribution.tf`.
-`docs-new` appears nowhere in that repo.
+Both environments run in **one** cluster and namespace:
+`testsigma-website-cluster`, namespace `website` (there is a single kubeconfig
+context; staging is not a separate cluster). The two environments are two
+Ingresses in that namespace.
 
-1. **Staging — the blocker.** Add a cache behaviour for path pattern
-   `/docs-new/*` on that distribution, origin = the
-   `testsigma-website-staging-us` ALB, caching off or origin-honouring, **ordered
-   ahead of** the default behaviour that sends path-style URLs to S3. Behaviour
-   precedence is the entire fix. Also confirm ArgoCD really created the
-   Deployment, Service and ingress rule — `vpa.enabled` was set to `false` on
-   2026-08-17 (`29f0c85`) precisely because missing VPA CRDs were aborting the
-   whole Application sync, and the docs resources were collateral damage.
-2. **Production.** Run the workflow once against `production` so
-   `docs-v2-production` gets a real image and the tag stops being `latest`.
+**Production — resources exist, image does not.**
+
+```
+kubectl -n website describe ingress testsigma-website-production-ingress
+  /docs-new   httpd-docs-new-production-service:80 ()          <- no endpoints
+  /docs       httpd-website-production-service:80 (80.0.7.143:80,80.0.8.211:80)
+```
+
+The ingress rule is there; the empty `()` is the failure. The Deployment is
+`0/2` in `ImagePullBackOff`:
+
+```
+Failed to pull image ".../docs-v2-production:latest": … not found
+```
+
+`production-values.yaml` pins `docsNew.containers.version: latest` and **no
+production deploy has ever run** (every devops-helm commit reads "to staging"), so
+that tag was never pushed. Fix: run the workflow once against `production` — it
+pushes a real image and rewrites `version` off the floating tag.
+
+Production needs **no CloudFront change**: `https://testsigma.com/docs-new/`
+returns `503` from `awselb`, which proves CloudFront already forwards `/docs-new`
+to the ALB.
+
+**Staging — the resources do not exist.**
+
+```
+kubectl -n website get deploy | grep -iE 'staging|docs-new'
+  httpd-blog-wp-staging-deployment       1/1
+  httpd-website-staging-deployment       1/1
+  vertex-staging-deployment              1/1
+  httpd-docs-new-production-deployment   0/2     <- only production
+```
+
+No `httpd-docs-new-staging-deployment`, no `-service`, and no `/docs-new` rule on
+`testsigma-website-staging-ingress`. This is **not** a chart problem — the chart
+provably renders all three from `prod`, which is worth re-checking with one
+command before blaming anything else:
+
+```
+git clone --depth 1 -b prod git@github.com:TestsigmaInc/devops-helm.git
+cd devops-helm/website && helm template website . -f staging-values.yaml \
+  | grep -E 'httpd-docs-new|path: /docs-new'
+```
+
+That emits the Service, the Deployment and the ingress rule, into the same
+namespace and with the same scheduling constraints as the blog and website
+workloads that do work. So the desired state is correct and the cluster has simply
+never been made to match it: the staging ArgoCD Application has not applied them.
+Check its source, since it must be `prod`:
+
+```
+kubectl -n argocd get applications \
+  -o custom-columns='NAME:.metadata.name,REV:.spec.source.targetRevision,PATH:.spec.source.path'
+```
+
+Then sync. Note that production's docs resources appeared ~2026-08-10, right after
+docs-new landed on `prod` (`63932d9`, 08-07) — so the production Application does
+track `prod` and did sync. The staging one did not.
+
+Also live in this cluster, affecting **every** service and not just docs:
+
+```
+Warning FailedNetworkReconcile targetgroupbinding/k8s-website-httpdweb-…
+  expected exactly one securityGroup tagged with
+  kubernetes.io/cluster/ts-website-cluster for eni eni-…, got: []
+```
+
+The AWS Load Balancer Controller cannot register pod IPs into target groups while
+that tag is missing. Expect targets to stay unregistered — and a `503` to persist —
+even once a pod is Ready. Devops-side: tag the security group on those ENIs.
+
+**CloudFront needs no change — this was a wrong turn worth recording.** While the
+docs were unreachable, every `/docs-new/*` path came back `server: AmazonS3` with
+`cache-control: max-age=2592000`, which looks exactly like CloudFront serving those
+paths from an S3 origin and never forwarding to the ALB. It is not. The moment the
+ingress rule existed, `/docs-new/` answered with `server: Apache` and this repo's
+own `x-robots-tag: noindex, nofollow` and `max-age=0, must-revalidate` headers, with
+no CloudFront change at all.
+
+What was really happening: with no `/docs-new` rule on the ALB, the request fell
+through the catch-all `/` rule to the website, and the website's static origin
+answers 200 with its own Next.js 404 document for any path it does not hold. The
+`server:` header of a *fallback* response tells you nothing about where the path
+was *supposed* to go — so do not infer routing from it. Confirm the ALB rule first:
+
+```
+kubectl -n website get ingress testsigma-website-staging-ingress -o yaml | grep -c docs-new
+```
+
+What CloudFront *does* need is an invalidation, because those fallback 404s were
+cached with a 30-day TTL. The deploy workflow's last step already invalidates
+`/docs-new/*`; a page that still 404s after a good deploy is usually that cache,
+or a URL the deployed build genuinely does not contain.
 
 ### How to tell whether a deploy is actually live
 

@@ -64,7 +64,18 @@ jobs:
             echo "SITE_URL=https://testsigma.com/docs-new/" >> $GITHUB_ENV
           elif [[ "${{ inputs.Environment }}" == "staging" ]]; then
             echo "AWS_ROLE_ARN=${{ secrets.WEBSITE_AWS_GITHUB_OIDC_ROLE_ARN }}" >> $GITHUB_ENV
-            echo "HELM_BRANCH=prod" >> $GITHUB_ENV
+            # `staging`, NOT `prod`. The ArgoCD app that owns staging is
+            # `website-staging`, and its spec.source.targetRevision is `staging`:
+            #
+            #   kubectl -n argocd get app website-staging \
+            #     -o jsonpath='{.spec.source.targetRevision}'   ->  staging
+            #
+            # Commit c6d2cfe changed this line to `prod`, and from then on every
+            # staging deploy wrote its image tag into a file the app never reads.
+            # The deploy went green, ArgoCD showed nothing, and /docs-new/ served
+            # the website's 404 page. Blog and website deploy staging from
+            # `staging` too — docs was the odd one out.
+            echo "HELM_BRANCH=staging" >> $GITHUB_ENV
             echo "VALUES_FILE=staging-values.yaml" >> $GITHUB_ENV
             echo "CLOUD_FRONT_DISTRIBUTION_ID=${{ secrets.WEBSITE_CLOUD_FRONT_DISTRIBUTION_ID_ELB_V1 }}" >> $GITHUB_ENV
             echo "SITE_URL=https://website.testsigma.com/docs-new/" >> $GITHUB_ENV
