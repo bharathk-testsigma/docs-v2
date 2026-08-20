@@ -1,99 +1,156 @@
 ---
-title: Create and reuse step groups
-description: Build a step group once, reuse it across web test cases, and make it data-driven with a test data profile.
+title: Step groups
+description: Save a sequence of steps once and call it from any test case, make it data-driven, nest groups up to 3 levels, and reuse groups across projects.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 covers:
   - Create a step group
-  - Make a step group data-driven
-  - Nest a step group
-  - Edit a step group
-  - Delete a step group
+  - Create a step group from a test case
+  - Use a step group in a test case
+  - Use a step group from another project
+  - Create a data-driven step group
+  - Nest step groups
+  - Edit, label, and delete a step group
+searchTerms:
+  - step group
+  - reusable steps
+  - create and replace
+  - data driven step group
+  - nested step group
+  - reuse step group
+  - step group labels
 sidebar:
   order: 40
   label: Step Groups
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
-import Prerequisites from '~/components/Prerequisites.astro';
 
-A step group is a sequence of steps you maintain in one place and reuse across test cases. Logging in is the usual example. Three test cases that each begin with a login share one group, not three copies.
+A step group is a sequence of steps saved once and called from any test case. Logging in comes before a fund transfer, before deleting a beneficiary, and before downloading a statement, so the login steps belong in a step group rather than in all three test cases.
 
-<Prerequisites>
-
-- You have a project with at least one test case.
-- You know which steps repeat across those test cases.
-
-</Prerequisites>
+Editing the group changes every test case that calls it.
 
 ## Create a step group
 
 <Steps>
 
-1. **Open the list** — Go to **Create Tests > Step Groups**, then click **Create Step Group**.
+1. Go to **Create Tests > Step Groups** and click **Create Step Group**.
 
-2. **Name it** — Enter a **Name** for the group.
+2. Enter a **Name**.
 
-3. **Add the steps** — Click **Add new step** to write each step, or **Record** to capture them.
-
-</Steps>
-
-The group is available project-wide once its steps are saved. Insert it with the `/stepgroup` step type.
-
-## Make a step group data-driven
-
-A data-driven group runs its steps once per row of a test data profile. One login group then covers several user roles.
-
-<Steps>
-
-1. **Open the group settings** — Open the step group and click **Step Group Settings**.
-
-2. **Link the data** — Select the **Test Data Profile** you want the group to read.
-
-3. **Turn on data driving** — Enable the **Data Driven** toggle, then add the steps that use those values.
+3. Click **Add new step** and write the steps, or click **Record** to record them.
 
 </Steps>
 
-## Nest a step group
+The group is ready to use in any test case as soon as its steps exist.
 
-A step group can contain another step group, up to three levels deep. You build one by promoting steps you already have rather than creating an empty group.
+## Create a step group from a test case
+
+Select the steps in an open test case, and click **Create Step Group** in the option bar that appears above them. Enter a name, then choose what happens to the steps you selected:
+
+- **Create** builds the group and leaves the test case as it is
+- **Create and Replace** builds the group and swaps the selected steps for a call to it
+
+<Aside type="note">
+**Create and Replace** appears only when the steps you selected are consecutive.
+</Aside>
+
+## Use a step group in a test case
 
 <Steps>
 
-1. **Select the steps** — In a test case or an open step group, tick the steps you want to group.
+1. Open the test case.
 
-2. **Promote them** — Click **Create Step Group**.
+2. Click the option on the left of a step and select **Step Group**.
 
-3. **Name and swap** — Enter a **Name**, then click **Create and Replace**. The selected steps collapse into the new group in place.
+3. Select the group from the **Step Group** list overlay.
+
+4. Click **Create Step**.
+
+</Steps>
+
+## Use a step group from another project
+
+<Steps>
+
+1. Open the test case, click the option next to a step, and select **Step Group**.
+
+2. Click **Reuse Step Group** in the list overlay.
+
+3. Select the **project**, **application**, and **version**.
+
+4. Select the group from the **Reuse Step Group** dropdown.
+
+5. Click **Create Step**.
 
 </Steps>
 
 <Aside type="note">
-Three levels is the hard limit, in both test cases and step groups. A fourth level is refused rather than silently flattened.
+A step group reused across application types can carry element locators that do not match the target application. Check and update the locators before you run the test case.
 </Aside>
+
+## Create a data-driven step group
+
+A data-driven step group iterates a test data profile of its own, separately from the test case that calls it.
+
+<Steps>
+
+1. Create the step group and click **Step Group Settings**.
+
+2. Select the **Test Data Profile** to associate with the group.
+
+3. Turn on **Data Driven**.
+
+4. Create the steps.
+
+</Steps>
+
+A data-driven step group can be called from a data-driven test case. The group then iterates its own data sets on every iteration of the test case.
+
+Two more things work on the iteration count inside a group. The `Store` NLP saves the current iteration count into a variable for later use. Data set values from the iterated profile can be compared inside an if condition, through the String Compare add-on.
+
+## Nest step groups
+
+A step group can contain another step group, up to 3 levels, in both a test case and a step group.
+
+In a test case, select the steps, click **Create Step Group**, enter a **Name**, and click **Create and Replace**.
+
+In a step group, create the steps first, select the ones to nest, then enter a **Name** and click **Create and Replace**.
 
 ## Edit a step group
 
-Open the group from **Create Tests > Step Groups** and change the steps.
+Go to **Create Tests > Step Groups**, open the group, and make the changes.
 
 <Aside type="note">
-An edit applies everywhere the group is used. A fix for one test case can break another. Check the affected cases before saving.
+The changes reach every test case that uses the group.
+</Aside>
+
+To change a group for one test case only, open that test case, expand the step group, and edit the test data or the element on a step. Click **Update Step** to save.
+
+<Aside type="note">
+Inside a test case you can edit test data and elements, but not the NLP. These edits stay in that test case and leave the original group untouched.
+</Aside>
+
+## Label a step group
+
+Open the group and select the labels under **Manage Step Group > Labels**.
+
+<Aside type="tip">
+To create a label, go to **Settings > Labels**, click **Add New Label**, enter a name, and click the tick mark icon. For more details on labels, see [Label test cases](/suite/test-management/test-authoring/create-test-cases/#label-test-cases).
 </Aside>
 
 ## Delete a step group
 
 <Steps>
 
-1. **Start the deletion** — Click the kebab menu beside the group, then click **Delete**.
+1. On the **Step Groups** list page, click the ellipsis icon (⋮) next to the group and click **Delete**.
 
-2. **Read the affected list** — The **Deletion Warning** dialog lists every test case that uses the group. Deleting removes the group from all of them.
+2. Read the affected test cases listed in **Deletion Warning**.
 
-3. **Confirm** — Type `DELETE`, then click **I understand, delete this Step Group**.
+3. Enter `DELETE` and click **I understand, delete this Step Group**.
 
 </Steps>
 
-{/* SCREENSHOT NEEDED: the Deletion Warning dialog showing the list of affected test cases and the DELETE confirmation field */}
-
 <Aside type="note">
-Deletion is not reversible and it is not scoped to one test case. Every linked test case loses those steps.
+Deleting a group removes it from every test case linked to it.
 </Aside>
