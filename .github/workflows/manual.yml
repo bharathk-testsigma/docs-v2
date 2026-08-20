@@ -105,18 +105,37 @@ jobs:
       # `npm run build` chains prebuild (clears public/pagefind), the Astro build
       # (dist/ + dist/pagefind for search) and postbuild. Only dist/ is shipped.
       - name: Build static site
-        run: npm run build
+        run: |
+          set -eu
+          npm run build
+          # Stamp the build with the commit it came from. This is what makes the
+          # "Verify the deploy is live" step below able to tell "the new docs are
+          # serving" from "something else is answering on this URL" -- which is
+          # exactly the failure that went undetected on 2026-08-20 (see that
+          # step). A short SHA, served as a plain text file at
+          # <SITE_URL>build-id.txt.
+          git rev-parse --short HEAD > dist/build-id.txt
 
+      # scripts/verify-dist.mjs, not inline greps. The checks used to live here,
+      # and one of them named a content path:
+      #
+      #   grep -q '"/docs-new/' dist/index.html \
+      #                         dist/suite/get-started/introduction/index.html
+      #
+      # The v7 IA rewrite renamed that page to get-started/overview, so the second
+      # file stopped existing -- and the check went on PASSING, because GNU grep
+      # -q exits 0 on the first match and never opens the rest. (BSD grep returns
+      # 2, so this failed locally and passed in CI: worse than either.) A check
+      # that silently stops checking is the failure mode to avoid here.
+      #
+      # The script names no content path. It follows the root redirect to find
+      # home, and follows every other redirect stub in dist/ to confirm it still
+      # points at a page that was built -- so an IA rename fails loudly, naming
+      # the dangling redirect, instead of quietly verifying nothing.
       - name: Verify build output
         run: |
           set -eu
-          test -f dist/index.html || { echo "dist/index.html missing"; exit 1; }
-          test -d dist/pagefind  || { echo "dist/pagefind missing — search would break"; exit 1; }
-          # The site is served under /docs-new/, so every emitted link must carry
-          # that prefix. Without `base` set in astro.config.mjs the links come out
-          # root-relative and every one of them 404s behind the website's Apache.
-          grep -q '"/docs-new/' dist/index.html dist/suite/get-started/introduction/index.html \
-            || { echo "links are not /docs-new/-prefixed — check \`base\` in astro.config.mjs"; exit 1; }
+          npm run verify:dist
           du -sh dist
 
       - name: Login to Amazon ECR
@@ -175,6 +194,66 @@ jobs:
         run: |
           aws cloudfront create-invalidation \
             --distribution-id "$CLOUD_FRONT_DISTRIBUTION_ID" --paths '/docs-new/*'
+
+      # ── THE POINT OF THIS STEP ───────────────────────────────────────────────
+      # On 2026-08-20 this workflow went fully green -- built 143 pages, pushed
+      # docs-v2-staging:tag-a137ce3, bumped devops-helm, invalidated CloudFront --
+      # while https://website.testsigma.com/docs-new/ served the website's Next.js
+      # marketing homepage from S3. Every docs URL returned the same 28,703-byte
+      # page with zero docs content. Nothing in the pipeline noticed, because
+      # every step it checked really had succeeded: the image was correct, and
+      # nothing was routing to it.
+      #
+      # A deploy that cannot be observed at its own URL is not a deploy. This
+      # fetches the stamp written above and fails if the site is not serving THIS
+      # commit, so a routing or rollout gap shows up here instead of as someone
+      # noticing the docs look old.
+      - name: Verify the deploy is live
+        run: |
+          set -eu
+          SHA=$(git rev-parse --short HEAD)
+          STAMP="${SITE_URL}build-id.txt"
+          echo "Waiting for $STAMP to report $SHA"
+
+          # ArgoCD syncs and rolls out asynchronously -- this workflow does not
+          # drive it -- so poll rather than check once. 40 x 15s = 10 minutes,
+          # comfortably longer than a 1-2 minute rollout of a static-site pod.
+          for i in $(seq 1 40); do
+            LIVE=$(curl -fsS --max-time 10 "$STAMP" 2>/dev/null | tr -d '[:space:]' || true)
+            if [ "$LIVE" = "$SHA" ]; then
+              echo "✓ live after $((i * 15))s — ${SITE_URL} is serving $SHA"
+              exit 0
+            fi
+            # Truncated, and deliberately so: a 200 here does NOT mean the file
+            # exists. The S3 website origin answers 200 with its 28KB homepage
+            # for any path it does not have, so `curl -f` never trips and $LIVE
+            # can be a whole HTML document. Logging it raw would put 28KB x 40
+            # attempts in the job log.
+            if [ -n "$LIVE" ]; then
+              echo "  attempt $i: got '$(printf '%.20s' "$LIVE")'... (want '$SHA')"
+            else
+              echo "  attempt $i: no response"
+            fi
+            sleep 15
+          done
+
+          # ── Diagnose, do not just fail ────────────────────────────────────────
+          # Which of these three it is decides who fixes it, so name it here
+          # rather than leaving the next person to re-derive it from curl output.
+          echo "::error::${SITE_URL} is not serving $SHA after 10 minutes."
+          HDRS=$(curl -sS -o /tmp/body -D- --max-time 10 "$SITE_URL" || true)
+          SRV=$(printf '%s' "$HDRS" | tr -d '\r' | awk 'tolower($1)=="server:"{print $2}' | head -1)
+          CODE=$(printf '%s' "$HDRS" | awk '/^HTTP/{c=$2} END{print c}')
+          echo "  $SITE_URL -> HTTP $CODE, served by ${SRV:-unknown}"
+
+          if grep -q 'data-next-head' /tmp/body 2>/dev/null; then
+            echo "::error::That is the WEBSITE's Next.js page, not the docs. CloudFront is not routing /docs-new/* to the ALB origin — it is falling through to the S3 website origin. Needs a cache behaviour for /docs-new/* on the distribution behind $SITE_URL, ordered ahead of the default. Infra change; the image in ECR is fine."
+          elif [ "$CODE" = "503" ]; then
+            echo "::error::503 from the load balancer: the /docs-new target group has no healthy targets. Check the httpd-docs-new-${{ inputs.Environment }} pod (ImagePullBackOff if the ECR tag does not exist) and that ArgoCD synced the Deployment, Service and ingress rule."
+          else
+            echo "::error::Reached something, but not this build. Check whether ArgoCD synced the devops-helm commit, and whether CloudFront still holds a cached copy."
+          fi
+          exit 1
 
       - name: Summary
         if: always()

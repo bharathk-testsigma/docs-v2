@@ -34,6 +34,18 @@ export default defineConfig({
 		// Overview moved into get-started/ when the sidebar became folder-driven
 		// (2026-08-17) and each rail section became one content folder.
 		'/suite/overview/': withDocsBase('/suite/get-started/overview/'),
+		// URLs that were LIVE on staging before the v7 IA rewrite. The rewrite
+		// dropped both the Introduction page and the redirects that pointed at it,
+		// so every one of these went from a 200 to a 404 -- including the target of
+		// the old root redirect, which is where anyone's bookmark of /docs-new/
+		// leads. Kept here rather than deleted: a redirect stub is ~400 bytes and
+		// the alternative is silently breaking links that already exist.
+		'/suite/get-started/introduction/': withDocsBase('/suite/get-started/overview/'),
+		'/suite/get-started/what-is-testsigma/': withDocsBase('/suite/get-started/overview/'),
+		// Terminology and Execution stacks were sections of Introduction; that
+		// material is now Concepts.
+		'/suite/get-started/terminology/': withDocsBase('/suite/get-started/concepts/'),
+		'/suite/get-started/execution-stacks/': withDocsBase('/suite/get-started/concepts/#where-tests-run'),
 	},
 	// Authors write in-site links as '/suite/...'; this re-prefixes them with
 	// `base` at build time. See the plugin for why it is not done in content.

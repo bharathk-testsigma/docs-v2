@@ -123,6 +123,91 @@ Until one of those happens, the ~9MB retrieval index is dead weight in the image
 and the Dockerfile deletes it (it is server-side input for `api/ask.ts`, never
 fetched by the browser).
 
+## The 2026-08-20 silent failure — and the gate that now catches it
+
+A staging deploy went **fully green** while serving no docs at all. Worth reading
+before trusting a green run.
+
+What the workflow did, correctly: built 143 pages, pushed
+`docs-v2-staging:tag-a137ce3`, bumped `staging-values.yaml` (devops-helm commit
+`7939144`), invalidated CloudFront. Every step it checked had genuinely
+succeeded.
+
+What was actually being served at `https://website.testsigma.com/docs-new/`:
+
+```
+HTTP/2 200
+server: AmazonS3
+content-length: 28703
+cache-control: max-age=2592000
+```
+
+That is the website's Next.js marketing homepage (`data-next-head` in the body,
+zero occurrences of `docs-new/_astro`). Every path under `/docs-new/` returned
+the identical 28,703 bytes — `/home/`, `/suite/get-started/overview/`, all of it.
+
+Two things prove the docs pod was never in the request path:
+
+- The response headers are the **website's**, not this image's.
+  `apache2/docs-new.conf` sets `Cache-Control: max-age=0, must-revalidate` and
+  `X-Robots-Tag: noindex` on staging; neither was present, and the CSP that came
+  back whitelists mux, hubilo, vwo, freshchat and storylane — none of which are
+  in the CSP in this repo.
+- `/docs-new/index.html` answered with `server: Apache` and a 301 to
+  `http://…/docs-new/index`. So an extension-based CloudFront behaviour *does*
+  reach the ALB — and the **website's** Apache answered it, not
+  `httpd-docs-new-staging-service`. There is no `.html`-stripping rule in
+  `docs-new.conf`.
+
+So `/docs-new/*` directory URLs never leave CloudFront's S3 website origin, which
+answers 200-with-homepage for any key it does not hold. The ingress rule and the
+pod are irrelevant until that is fixed — and both were configured correctly the
+whole time (`docsNewEnabled: true`, `docsNew.enabled: true`,
+`version: tag-a137ce3`).
+
+Production fails differently: `https://testsigma.com/docs-new/` returns
+**503 from `awselb/2.0`** — the ALB rule exists but the target group has no
+healthy targets, because `production-values.yaml` still pins
+`docsNew.containers.version: latest` and no production deploy has ever run (every
+devops-helm commit reads "to staging"), so there is no such tag in
+`docs-v2-production` to pull.
+
+### The two infra changes needed
+
+Neither is in this repo, and neither is in Terraform — the distribution serving
+`website.testsigma.com` is `d2v4zpi756k6b5.cloudfront.net`
+(`envs/prod/_global/route53__route53_record.tf` in `testsigma-terraform`), and it
+does not appear in either `envs/*/_global/cloudfront__cloudfront_distribution.tf`.
+`docs-new` appears nowhere in that repo.
+
+1. **Staging — the blocker.** Add a cache behaviour for path pattern
+   `/docs-new/*` on that distribution, origin = the
+   `testsigma-website-staging-us` ALB, caching off or origin-honouring, **ordered
+   ahead of** the default behaviour that sends path-style URLs to S3. Behaviour
+   precedence is the entire fix. Also confirm ArgoCD really created the
+   Deployment, Service and ingress rule — `vpa.enabled` was set to `false` on
+   2026-08-17 (`29f0c85`) precisely because missing VPA CRDs were aborting the
+   whole Application sync, and the docs resources were collateral damage.
+2. **Production.** Run the workflow once against `production` so
+   `docs-v2-production` gets a real image and the tag stops being `latest`.
+
+### Why it now cannot happen silently again
+
+`npm run build` writes the commit into `dist/build-id.txt`, and the final
+workflow step polls `<SITE_URL>build-id.txt` for up to 10 minutes and **fails the
+job** unless the site reports that exact commit. It then names which of the three
+failure modes it hit, because which one it is decides who fixes it.
+
+Note the trap that step is written around: a 200 does **not** mean the file
+exists. The S3 origin returns 200 with its homepage for any missing key, so
+`curl -f` never trips — the check has to compare the body to the expected SHA,
+never just the status code. Any future health check on this service needs the same
+care.
+
+This gate will stay red on staging until change 1 above is made. That is the
+intended behaviour: the docs are not reachable, and a green tick saying otherwise
+is what caused this.
+
 ## Health checks
 
 The Kubernetes probes target `/docs-new/`. The ALB target group has no
