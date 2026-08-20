@@ -191,22 +191,34 @@ does not appear in either `envs/*/_global/cloudfront__cloudfront_distribution.tf
 2. **Production.** Run the workflow once against `production` so
    `docs-v2-production` gets a real image and the tag stops being `latest`.
 
-### Why it now cannot happen silently again
+### How to tell whether a deploy is actually live
 
-`npm run build` writes the commit into `dist/build-id.txt`, and the final
-workflow step polls `<SITE_URL>build-id.txt` for up to 10 minutes and **fails the
-job** unless the site reports that exact commit. It then names which of the three
-failure modes it hit, because which one it is decides who fixes it.
+Nothing in CI checks this. The deploy workflow ends at "devops-helm commit
+pushed"; ArgoCD is what turns that into running pods, and it is not driven by this
+workflow — so there is nothing in the job worth waiting on. Checking is a manual
+step after the rollout.
 
-Note the trap that step is written around: a 200 does **not** mean the file
-exists. The S3 origin returns 200 with its homepage for any missing key, so
-`curl -f` never trips — the check has to compare the body to the expected SHA,
-never just the status code. Any future health check on this service needs the same
-care.
+`npm run build` stamps the commit into `dist/build-id.txt`, so the running site
+can be asked which build it is:
 
-This gate will stay red on staging until change 1 above is made. That is the
-intended behaviour: the docs are not reachable, and a green tick saying otherwise
-is what caused this.
+```
+curl -s https://website.testsigma.com/docs-new/build-id.txt   # expect the short SHA
+```
+
+Two traps when reading that:
+
+- **A 200 does not mean the file exists.** The S3 website origin returns 200 with
+  its homepage for any missing key, so `curl -f` never trips and a
+  status-code-only check passes while nothing is served. Compare the body.
+- **Some failures a sync cannot fix.** If `/docs-new/` comes back
+  `server: AmazonS3` with the website's homepage, the request never reached the
+  cluster — syncing ArgoCD or rolling the pod changes nothing, only change 1 above
+  does. A genuine sync-or-rollout problem looks different: a 503 from `awselb`, or
+  an older build-id served by `server: Apache`.
+
+(Run `32340803053` shows a red 10-minute `Verify the deploy is live` step. That
+was a short-lived attempt to gate the deploy on this check; it was removed because
+rollout is not this workflow's to wait for.)
 
 ## Health checks
 
