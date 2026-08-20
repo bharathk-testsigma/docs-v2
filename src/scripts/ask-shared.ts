@@ -6,6 +6,11 @@
 //  added, and link hrefs are scheme-validated.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { stripBase, withBase } from '../lib/base';
+
+// The API routes are serverless functions at the DOMAIN root, not inside the
+// docs base path (vercel.json maps api/ask.ts to /api/ask), so these two are
+// deliberately NOT run through withBase().
 export const ASK_API_URL = '/api/ask';
 
 export const IC_COPY =
@@ -174,7 +179,9 @@ function inlineMd(text: string): string {
       // Links [label](url) — only safe schemes, else fall back to the label
       .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_m, label, url) =>
         /^(https?:\/\/|\/|#|mailto:)/i.test(url)
-          ? `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`
+          // withBase is a no-op for external and anchor URLs; site-absolute doc
+          // links written by the model need it or they 404 under the base.
+          ? `<a href="${withBase(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`
           : label)
       .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
       .replace(/\*([^*]+)\*/g, '<em>$1</em>')

@@ -32,7 +32,11 @@ import Search from './Search.astro';
 // "| Documentation" label beside the logo. The <Search /> dialog still mounts
 // (hidden) because the home hero's "try asking" chips open it via
 // data-open-ask.
-const isHome = Astro.url.pathname.replace(/\/+$/, '') === '/home';
+import { stripBase, withBase } from '../lib/base';
+
+// stripBase: under /docs-new the pathname carries the base, so the bare
+// comparison would never match and home would lose its header treatment.
+const isHome = stripBase(Astro.url.pathname).replace(/\/+$/, '') === '/home';
 ---
 
 <div class:list={['ts-bar', { 'ts-bar-home': isHome }]}>
@@ -63,14 +67,14 @@ const isHome = Astro.url.pathname.replace(/\/+$/, '') === '/home';
 				    generated from the light one by `npm run logo:dark`. */}
 				<img
 					class="ts-logo ts-logo-light"
-					src="/testsigma-logo.png"
+					src={withBase('/testsigma-logo.png')}
 					alt="Testsigma"
 					width="103"
 					height="24"
 				/>
 				<img
 					class="ts-logo ts-logo-dark"
-					src="/testsigma-logo-dark.png"
+					src={withBase('/testsigma-logo-dark.png')}
 					alt=""
 					width="103"
 					height="24"

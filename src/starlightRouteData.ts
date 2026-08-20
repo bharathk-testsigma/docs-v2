@@ -1,5 +1,6 @@
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
 import type { SidebarEntry } from '@astrojs/starlight/route-data';
+import { stripBase } from './lib/base';
 
 /**
  * Two left navs out of one sidebar config.
@@ -22,8 +23,10 @@ import type { SidebarEntry } from '@astrojs/starlight/route-data';
 /** The API reference section: its URL prefix and the group holding it. */
 const API_SECTION = { path: '/suite/api/', group: 'REST APIs' } as const;
 
-/** Pages served by the API-only nav. Header.astro keys the "API reference" tab off this too. */
-export const isApiReferencePath = (pathname: string) => pathname.startsWith(API_SECTION.path);
+/** Pages served by the API-only nav. Header.astro keys the "API reference" tab off this too.
+ *  stripBase: pathnames carry the /docs-new base in every environment that sets one. */
+export const isApiReferencePath = (pathname: string) =>
+	stripBase(pathname).startsWith(API_SECTION.path);
 
 type Group = Extract<SidebarEntry, { type: 'group' }>;
 
@@ -58,7 +61,8 @@ const prettifyGroups = (entries: SidebarEntry[]): SidebarEntry[] =>
 
 export const onRequest = defineRouteMiddleware((context) => {
 	const { starlightRoute } = context.locals;
-	const { pathname } = context.url;
+	// Base-free, so it can be matched against the literal prefixes below.
+	const pathname = stripBase(context.url.pathname);
 
 	// ── 1. split the API reference out ──
 	const apiGroup = starlightRoute.sidebar.find(

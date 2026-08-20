@@ -2,21 +2,43 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { suite } from './src/data/sidebar-suite.mjs';
+import { DOCS_BASE, withDocsBase } from './src/lib/site-config.mjs';
+import { rehypeBaseLinks } from './src/lib/rehype-base-links.mjs';
 
 // https://astro.build/config
 export default defineConfig({
-	// No compatibility redirects: this site is staging/local only, never
-	// published anywhere a link could exist to an old slug. Just the root
-	// and the home/overview slugs that moved during development.
+	// The site is served under a sub-path, not the domain root:
+	//   production  https://testsigma.com/docs-new/
+	//   staging     https://website.testsigma.com/docs-new/
+	//
+	// This cannot be done at the Apache layer instead: a proxy can rewrite the
+	// REQUEST path, but the built HTML and JS carry absolute URLs, and some are
+	// constructed at runtime from import.meta.env.BASE_URL (Pagefind's
+	// bundlePath in Search.astro) where no response rewriting can reach them.
+	//
+	// Astro re-prefixes the links it generates; hand-written paths go through
+	// withBase()/stripBase() in src/lib/base.ts.
+	base: DOCS_BASE,
+	// Redirects for the root and the home/overview slugs that moved during
+	// development.
+	//
+	// NOTE the asymmetry: Astro applies `base` to the KEYS (the route each
+	// redirect is emitted at) but NOT to the VALUES. Without withDocsBase() here
+	// every redirect would land outside the docs, on the website's own 404.
 	redirects: {
-		// Docs home lives at the site root.
-		'/': '/home/',
-		'/suite/home/': '/home/',
-		'/suite/get-started/home/': '/home/',
-		'/suite/get-started/': '/suite/get-started/overview/',
+		// Docs home lives at the site root (of the docs base).
+		'/': withDocsBase('/home/'),
+		'/suite/home/': withDocsBase('/home/'),
+		'/suite/get-started/home/': withDocsBase('/home/'),
+		'/suite/get-started/': withDocsBase('/suite/get-started/overview/'),
 		// Overview moved into get-started/ when the sidebar became folder-driven
 		// (2026-08-17) and each rail section became one content folder.
-		'/suite/overview/': '/suite/get-started/overview/',
+		'/suite/overview/': withDocsBase('/suite/get-started/overview/'),
+	},
+	// Authors write in-site links as '/suite/...'; this re-prefixes them with
+	// `base` at build time. See the plugin for why it is not done in content.
+	markdown: {
+		rehypePlugins: [rehypeBaseLinks(DOCS_BASE)],
 	},
 	integrations: [
 		starlight({
@@ -34,11 +56,11 @@ export default defineConfig({
 			head: [
 				{
 					tag: 'link',
-					attrs: { rel: 'icon', href: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+					attrs: { rel: 'icon', href: withDocsBase('/favicon-32.png'), sizes: '32x32', type: 'image/png' },
 				},
 				{
 					tag: 'link',
-					attrs: { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
+					attrs: { rel: 'apple-touch-icon', href: withDocsBase('/apple-touch-icon.png'), sizes: '180x180' },
 				},
 				// Preload the header logos: on a full-page navigation the fetch starts
 				// with the HTML instead of after layout, so the wordmark doesn't pop in
@@ -46,11 +68,11 @@ export default defineConfig({
 				// late which one shows.
 				{
 					tag: 'link',
-					attrs: { rel: 'preload', as: 'image', href: '/testsigma-logo.png' },
+					attrs: { rel: 'preload', as: 'image', href: withDocsBase('/testsigma-logo.png') },
 				},
 				{
 					tag: 'link',
-					attrs: { rel: 'preload', as: 'image', href: '/testsigma-logo-dark.png' },
+					attrs: { rel: 'preload', as: 'image', href: withDocsBase('/testsigma-logo-dark.png') },
 				},
 			],
 			// The wordmark and the "Docs" chip are rendered by the SiteTitle

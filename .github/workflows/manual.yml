@@ -1,0 +1,194 @@
+name: 'Docs - Manual'
+run-name: 'Docs - ${{ inputs.Environment }} (${{ github.ref_name }})'
+
+# Same shape as the website repo's website-cd-eks-nextjs-manual.yml, because the
+# deployment target is the same: an httpd image in ECR, rolled out to EKS by
+# ArgoCD watching the devops-helm repo. The website's Apache proxies /docs-new
+# to this service.
+#
+# Flow:  build static site -> bake into httpd image -> push to ECR
+#        -> bump the image tag in devops-helm -> ArgoCD syncs -> invalidate CDN
+
+on:
+  workflow_dispatch:
+    inputs:
+      Environment:
+        description: 'Environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+# OIDC federation into AWS needs id-token. Contents stays read-only: the push to
+# devops-helm authenticates as a GitHub App, not with this token.
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  # Two concurrent deploys to one environment race on the devops-helm commit.
+  group: docs-${{ inputs.Environment }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set environment variables
+        run: |
+          set -eu
+          echo "Branch      : ${GITHUB_REF##*/}"
+          echo "Environment : ${{ inputs.Environment }}"
+
+          echo "AWS_DEFAULT_REGION=us-east-1" >> $GITHUB_ENV
+          echo "AWS_DEFAULT_OUTPUT=json" >> $GITHUB_ENV
+          echo "ECR_URL=479726090251.dkr.ecr.us-east-1.amazonaws.com" >> $GITHUB_ENV
+
+          # NOTE: `inputs.Environment` — capital E. The website repo's workflow
+          # reads `github.event.inputs.environment` in places, which is always
+          # empty and silently produces a repo name ending in "-". Not copied.
+          # Must match the ECR repository names that exist in AWS
+          # (docs-v2-staging / docs-v2-production) AND the image in
+          # devops-helm website/*-values.yaml under .Deployments.docsNew.
+          echo "REPO_NAME=docs-v2-${{ inputs.Environment }}" >> $GITHUB_ENV
+
+          if [[ "${{ inputs.Environment }}" == "production" ]]; then
+            echo "AWS_ROLE_ARN=${{ secrets.WEBSITE_AWS_GITHUB_OIDC_ROLE_ARN }}" >> $GITHUB_ENV
+            echo "HELM_BRANCH=prod" >> $GITHUB_ENV
+            echo "VALUES_FILE=production-values.yaml" >> $GITHUB_ENV
+            echo "CLOUD_FRONT_DISTRIBUTION_ID=${{ secrets.PROD_CLOUD_FRONT_DISTRIBUTION_ID_ELB }}" >> $GITHUB_ENV
+            echo "SITE_URL=https://testsigma.com/docs-new/" >> $GITHUB_ENV
+          elif [[ "${{ inputs.Environment }}" == "staging" ]]; then
+            echo "AWS_ROLE_ARN=${{ secrets.WEBSITE_AWS_GITHUB_OIDC_ROLE_ARN }}" >> $GITHUB_ENV
+            echo "HELM_BRANCH=prod" >> $GITHUB_ENV
+            echo "VALUES_FILE=staging-values.yaml" >> $GITHUB_ENV
+            echo "CLOUD_FRONT_DISTRIBUTION_ID=${{ secrets.WEBSITE_CLOUD_FRONT_DISTRIBUTION_ID_ELB_V1 }}" >> $GITHUB_ENV
+            echo "SITE_URL=https://website.testsigma.com/docs-new/" >> $GITHUB_ENV
+          else
+            echo "environment not supported"
+            exit 1
+          fi
+
+      # Scoped to the one repo this workflow writes to. A PAT would grant far
+      # more; the App token is short-lived and repo-scoped.
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CI_CD_APP_ID }}
+          private-key: ${{ secrets.CI_CD_APP_PRIVATE_KEY }}
+          owner: TestsigmaInc
+          repositories: devops-helm
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      # astro@7 requires Node ^20.19 || >=22.12. The website repo pins 18, which
+      # would fail this build.
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # `npm run build` chains prebuild (clears public/pagefind), the Astro build
+      # (dist/ + dist/pagefind for search) and postbuild. Only dist/ is shipped.
+      - name: Build static site
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          set -eu
+          test -f dist/index.html || { echo "dist/index.html missing"; exit 1; }
+          test -d dist/pagefind  || { echo "dist/pagefind missing — search would break"; exit 1; }
+          # The site is served under /docs-new/, so every emitted link must carry
+          # that prefix. Without `base` set in astro.config.mjs the links come out
+          # root-relative and every one of them 404s behind the website's Apache.
+          grep -q '"/docs-new/' dist/index.html dist/suite/get-started/introduction/index.html \
+            || { echo "links are not /docs-new/-prefixed — check \`base\` in astro.config.mjs"; exit 1; }
+          du -sh dist
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag and push image to ECR
+        run: |
+          set -eux
+          GIT_HASH=$(git rev-parse --short HEAD)
+
+          docker build -t "$REPO_NAME" -f Dockerfile .
+          docker tag "$REPO_NAME:latest" "$ECR_URL/$REPO_NAME:latest"
+          docker tag "$REPO_NAME:latest" "$ECR_URL/$REPO_NAME:tag-$GIT_HASH"
+          docker push "$ECR_URL/$REPO_NAME:latest"
+          docker push "$ECR_URL/$REPO_NAME:tag-$GIT_HASH"
+
+      # ArgoCD watches devops-helm; bumping the tag here is what triggers the
+      # rollout. Nothing in this workflow talks to the cluster directly.
+      - name: Bump image tag in devops-helm
+        run: |
+          set -eu
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
+
+          GIT_HASH=$(git rev-parse --short HEAD)
+          git clone --depth 1 --branch "$HELM_BRANCH" \
+            "https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/TestsigmaInc/devops-helm.git"
+          cd devops-helm/website
+
+          PREV=$(yq '.Deployments.docsNew.containers.version' "$VALUES_FILE")
+          echo "previous: $PREV   current: tag-$GIT_HASH"
+
+          # `yq` prints the string "null" for a missing key. Without this check
+          # the next step would happily create the key and ArgoCD would render a
+          # Deployment nobody configured.
+          if [[ "$PREV" == "null" ]]; then
+            echo "::error::.Deployments.docsNew not found in $VALUES_FILE on branch $HELM_BRANCH."
+            echo "The devops-helm entry must exist before the first deploy — see deploy/README.md."
+            exit 1
+          fi
+
+          if [[ "$PREV" == "tag-$GIT_HASH" ]]; then
+            echo "Image tag unchanged — nothing to roll out."
+            exit 0
+          fi
+
+          yq e -i '.Deployments.docsNew.containers.version = "tag-'"$GIT_HASH"'"' "$VALUES_FILE"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git config user.name "${{ github.actor }}"
+          git commit -am "docs-v2: deploy tag-$GIT_HASH to ${{ inputs.Environment }}"
+          git push origin "$HELM_BRANCH"
+
+      - name: Invalidate CloudFront cache
+        if: ${{ env.CLOUD_FRONT_DISTRIBUTION_ID != '' }}
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "$CLOUD_FRONT_DISTRIBUTION_ID" --paths '/docs-new/*'
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Docs V2 deploy"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Environment | ${{ inputs.Environment }} |"
+            echo "| Branch | ${GITHUB_REF##*/} |"
+            echo "| Image | \`${{ env.ECR_URL }}/${{ env.REPO_NAME }}:tag-$(git rev-parse --short HEAD)\` |"
+            echo "| Helm | \`devops-helm@${{ env.HELM_BRANCH }}\` → \`${{ env.VALUES_FILE }}\` |"
+            echo "| URL | ${{ env.SITE_URL }} |"
+            echo ""
+            echo "ArgoCD rolls this out; the workflow does not wait for it."
+          } >> $GITHUB_STEP_SUMMARY

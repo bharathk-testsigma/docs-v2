@@ -22,10 +22,11 @@ import CopyPage from './CopyPage.astro';
  * the table of contents links to lives on this component's <h1> instead.
  */
 import { regionsForHost } from '../data/regions';
+import { withBase } from '../lib/base';
 
 const { entry } = Astro.locals.starlightRoute;
 
-const authHref = '/suite/api/overview/#authentication';
+const authHref = withBase('/suite/api/overview/#authentication');
 const api = (entry.data as any).api as
 	| {
 			method: string;
