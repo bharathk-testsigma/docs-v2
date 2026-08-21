@@ -14,10 +14,11 @@ const { entry } = Astro.locals.starlightRoute;
 
 // API reference pages render their own title (and the `#_top` anchor) inside
 // ApiMarkdownContent.astro, so that it sits in the left spec column rather
-// than spanning both columns. Splash pages (the changelogs) likewise render
-// their own hero title, and "Copy page" makes no sense on a feed.
+// than spanning both columns. Splash pages likewise render their own hero
+// title, and "Copy page" makes no sense on a feed -- as on the changelog,
+// which is a regular doc page (it needs the rail) whose feed owns the h1.
 const isApiPage = !!entry.data.api;
-const isSplash = entry.data.template === 'splash';
+const isSplash = entry.data.template === 'splash' || entry.id === 'suite/changelog';
 ---
 
 {

@@ -6,10 +6,10 @@
  *
  * One 64px row (the old 49px tab strip is gone — wasted height):
  *
- *   [logo | Documentation] ·· [Search…  ⌘K] [Ask Assistant] ·· [◐] [Book a demo]
+ *   [logo | Docs] ·· [Search…  ⌘K] [Ask Assistant] ·· [◐] [Book a demo]
  *
- * The "| Documentation" label renders on the docs home only; every other page
- * shows just the logo. API Reference and Changelog used to sit in the right
+ * The whole "logo | Docs" lock-up is one link to Get Started > Overview on
+ * every page. API Reference and Changelog used to sit in the right
  * cluster; they are top-of-rail rows in the left nav now (see the sidebar data
  * files), so the bar carries neither.
  *
@@ -60,7 +60,7 @@ const isHome = stripBase(Astro.url.pathname).replace(/\/+$/, '') === '/home';
 			</button>
 
 			<span class="ts-brand">
-				<a href="https://testsigma.com/" class="ts-brand-site" aria-label="Testsigma home page">
+				<a href={withBase('/suite/get-started/overview/')} class="ts-brand-site" aria-label="Testsigma docs">
 				{/* Two files, not one filtered file: the brand lock-up is a teal gear
 				    beside a near-black wordmark, and no CSS filter can lighten the
 				    word without dragging the gear off-brand with it. The dark one is
@@ -80,9 +80,9 @@ const isHome = stripBase(Astro.url.pathname).replace(/\/+$/, '') === '/home';
 					height="24"
 					aria-hidden="true"
 				/>
+				<span class="ts-brand-sep" aria-hidden="true" />
+				<span class="ts-brand-docs">Docs</span>
 				</a>
-				{isHome && <span class="ts-brand-sep" aria-hidden="true" />}
-				{isHome && <span class="ts-brand-docs">Documentation</span>}
 			</span>
 		</div>
 
@@ -207,6 +207,8 @@ const isHome = stripBase(Astro.url.pathname).replace(/\/+$/, '') === '/home';
 	.ts-brand-site {
 		display: flex;
 		align-items: center;
+		gap: 10px;
+		text-decoration: none;
 	}
 	/* Starlight is dark-first: the root carries `data-theme="dark"` unless the
 	   reader picks light, so the dark lock-up is the default and the light one

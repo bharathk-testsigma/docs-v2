@@ -61,14 +61,24 @@ const L1_ICONS: Record<string, string> = {
 	'Test Management':
 		"<path d='M12 20h9'/><path d='M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z'/>",
 	Cloud: "<path d='M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z'/>",
+	'Run Tests': "<polygon points='6 3 20 12 6 21 6 3'/>",
+	Releases:
+		"<path d='M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z'/><circle cx='7.5' cy='7.5' r='.5'/>",
+	'Reports & Analytics':
+		"<path d='M3 3v16a2 2 0 0 0 2 2h16'/><path d='M13 17V9'/><path d='M18 17V5'/><path d='M8 17v-3'/>",
+	'Application Types':
+		"<rect width='7' height='7' x='3' y='3' rx='1'/><rect width='7' height='7' x='14' y='3' rx='1'/><rect width='7' height='7' x='14' y='14' rx='1'/><rect width='7' height='7' x='3' y='14' rx='1'/>",
 	Desktop:
 		"<rect width='20' height='14' x='2' y='3' rx='2'/><path d='M8 21h8'/><path d='M12 17v4'/>",
 	'Other Testing Types':
 		"<path d='m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z'/><path d='m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65'/><path d='m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65'/>",
 	'Atto AI':
 		"<path d='M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z'/><path d='M20 3v4'/><path d='M22 5h-4'/><path d='M4 17v2'/><path d='M5 18H3'/>",
-	'Create & Manage Tests':
+	'Create & Manage':
 		"<path d='M12 20h9'/><path d='M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z'/>",
+	Windows:
+		"<rect width='20' height='14' x='2' y='3' rx='2'/><path d='M8 21h8'/><path d='M12 17v4'/>",
+	'REST APIs': "<polyline points='16 18 22 12 16 6'/><polyline points='8 6 2 12 8 18'/>",
 	Web: "<circle cx='12' cy='12' r='10'/><path d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'/><path d='M2 12h20'/>",
 	Mobile: "<rect width='14' height='20' x='5' y='2' rx='2' ry='2'/><path d='M12 18h.01'/>",
 	Salesforce: "<path d='M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z'/>",
@@ -117,20 +127,22 @@ const glyphRule = (selector: string, shape: string) => {
 	return `${selector} > span::before{content:'';position:absolute;left:12px;top:50%;width:22px;height:22px;transform:translateY(-50%);opacity:.8;background:currentColor;-webkit-mask:center / 12px no-repeat;mask:center / 12px no-repeat;-webkit-mask-image:${url};mask-image:${url};}`;
 };
 
-const navIconCss = isApiReference
-	? ''
-	: Astro.locals.starlightRoute.sidebar
-			.flatMap((entry, i) => {
+const navIconCss = Astro.locals.starlightRoute.sidebar
+	.flatMap((entry, i) => {
 				const at = `#starlight__sidebar ul.top-level > li:nth-child(${i + 1})`;
 				const rules: string[] = [];
 
+				// The utility rows opt into the framed treatment via their own attr,
+				// set in the sidebar data: their glyph floats over a bordered box
+				// instead of sitting inline as a bare 16px mark. They ride every
+				// tree, so on the API nav they are the ONLY entries that get icons
+				// (an entity group sharing a name with a docs section must not).
+				const utility =
+					entry.type === 'link' && entry.attrs?.['data-nav-utility'] !== undefined;
+				if (isApiReference && !utility) return rules;
+
 				const l1 = L1_ICONS[entry.label];
 				if (l1) {
-					// The utility rows opt into the framed treatment via their own attr,
-					// set in the sidebar data: their glyph floats over a bordered box
-					// instead of sitting inline as a bare 16px mark.
-					const utility =
-						entry.type === 'link' && entry.attrs?.['data-nav-utility'] !== undefined;
 					if (utility) {
 						rules.push(glyphRule(`${at} > a.large`, l1));
 					} else {
@@ -145,9 +157,25 @@ const navIconCss = isApiReference
 					}
 				}
 
+				// L2 icons, Application Types only: each app row (group or leaf link)
+				// gets the glyph keyed off its own label in the same map.
+				if (entry.type === 'group' && entry.label === 'Application Types') {
+					entry.entries.forEach((child, j) => {
+						const icon = L1_ICONS[child.label];
+						if (!icon) return;
+						const childAt = `${at} > details > ul > li:nth-child(${j + 1})`;
+						rules.push(
+							iconRule(
+								`${childAt} ${child.type === 'group' ? '> details > summary .group-label' : '> a'}`,
+								icon
+							)
+						);
+					});
+				}
+
 				return rules;
-			})
-			.join('\n');
+	})
+	.join('\n');
 ---
 
 <div class="ts-rail" data-api-nav={isApiReference ? 'true' : undefined}>
@@ -214,6 +242,11 @@ const navIconCss = isApiReference
 					sessionStorage.setItem(KEY, JSON.stringify({ hash, top: nav.scrollTop }));
 				} catch {}
 			};
+			// The pinned utility cluster casts its shadow only while the tree is
+			// actually scrolled under it (theme.css keys off this attribute).
+			const mark = () => nav.toggleAttribute('data-scrolled', nav.scrollTop > 0);
+			nav.addEventListener('scroll', mark, { passive: true });
+			mark();
 			// A click inside the nav IS the navigation, so record the offset then.
 			nav.addEventListener('click', save);
 			// Covers keyboard activation and anything else that leaves the page.
