@@ -815,6 +815,54 @@ mobile-starlight-toc {
 	margin-bottom: 22px;
 }
 
+/* The cluster PINS: each row is sticky at its own offset, so all three stay
+   put while the section tree scrolls beneath them. Offsets are the row pitch:
+   28px row (22px framed box + 2*3px padding) + the 2px cluster gap above.
+   Painted with the rail's own background so tree rows vanish under them. */
+#starlight__sidebar ul.top-level > li:has(> a.large[data-nav-utility]) {
+	position: sticky;
+	z-index: 2;
+	background: var(--ts-bg);
+	/* The 2px gap between rows must be PAINTED like the box itself, or the
+	   scrolling tree peeks through the seams -- padding, not margin. */
+	margin-bottom: 0;
+	padding-bottom: 2px;
+	/* Rows extend 12px LEFT of their li box (the hover-chip bleed, see the
+	   row rules). The pinned background must cover that strip too, or the
+	   scrolled-under rows stay visible AND clickable through it. The pair is
+	   visually a no-op for the pinned row's own content. */
+	margin-inline-start: -12px;
+	padding-inline-start: 12px;
+}
+#starlight__sidebar ul.top-level > li:has(> a.large[data-nav-utility]):nth-child(1) {
+	top: 0;
+}
+#starlight__sidebar ul.top-level > li:has(> a.large[data-nav-utility]):nth-child(2) {
+	top: 30px;
+}
+#starlight__sidebar ul.top-level > li:has(> a.large[data-nav-utility]):nth-child(3) {
+	top: 60px;
+	/* The 22px breathing room below the cluster must be PAINTED, or the tree
+	   would show through the gap while pinned -- padding instead of margin.
+	   21px + the hairline keeps the pitch at 22. The hairline marks the edge
+	   rows slide under, so a half-clipped row reads as scrolled-away, not
+	   broken. */
+	margin-bottom: 0;
+	padding-bottom: 21px;
+	border-bottom: 1px solid var(--ts-bd);
+	/* Bottom-only shadow (negative spread swallows the other sides): the tree
+	   visibly slides UNDER the cluster instead of being cut by a bare line.
+	   Cast only while scrolled -- Sidebar.astro stamps data-scrolled on the
+	   scroller; at rest the cluster sits flush with no shadow. */
+	transition: box-shadow var(--ts-t) var(--ts-ease);
+}
+#starlight__sidebar
+	.sidebar-content[data-scrolled]
+	ul.top-level
+	> li:has(> a.large[data-nav-utility]):nth-child(3) {
+	box-shadow: 0 6px 8px -6px rgb(16 24 40 / 0.18);
+}
+
 /* Section icons are emitted per-section by Sidebar.astro (one nth-child rule
    carrying `content`, the mask AND its geometry).
    Deliberately NO blanket `::before` rule here: a top-level entry can also be
@@ -886,7 +934,7 @@ mobile-starlight-toc {
    otherwise identical rows ("List test case results" vs "List test case
    results (v2)"), so truncating it is the one place a lost word costs a
    reader real time. */
-#starlight__sidebar [data-api-nav] a {
+#starlight__sidebar [data-api-nav] a:not([data-nav-utility]) {
 	align-items: flex-start;
 	justify-content: flex-start;
 	/* Keeps the base rule's -12px margin: that is what puts the method chip on
@@ -911,7 +959,7 @@ mobile-starlight-toc {
    12px left of the entity headings and the method chips below it, and its own
    hover highlight (which bleeds 12px further left, from the base -12px margin)
    started flush against the label. */
-#starlight__sidebar [data-api-nav] ul.top-level > li > a.large {
+#starlight__sidebar [data-api-nav] ul.top-level > li > a.large:not([data-nav-utility]) {
 	font-size: 0.875rem; /* 14px */
 	font-weight: 400;
 	letter-spacing: normal;
@@ -919,12 +967,43 @@ mobile-starlight-toc {
 	color: var(--ts-tx2);
 	padding: 7px 8px 7px 12px;
 }
-#starlight__sidebar [data-api-nav] ul.top-level > li > a.large:hover {
+#starlight__sidebar [data-api-nav] ul.top-level > li > a.large:not([data-nav-utility]):hover {
 	color: var(--ts-tx);
 }
 #starlight__sidebar [data-api-nav] a > span:not(.sl-badge) {
 	flex: 1;
 	min-width: 0;
+}
+
+/* ---- changelog release rows ----
+   starlightRouteData.ts stamps each release link with data-date (short month)
+   and a Latest badge on the newest. The row lays out version · chip ·· month,
+   with the month living in ::after so the rail needs no extra markup. */
+#starlight__sidebar a[data-release] {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+#starlight__sidebar a[data-release]::after {
+	content: attr(data-date);
+	margin-left: auto;
+	font-size: 11.5px;
+	font-variant-numeric: tabular-nums;
+	color: var(--ts-tx3);
+	white-space: nowrap;
+}
+#starlight__sidebar a[data-release] .sl-badge.success {
+	padding: 1px 6px;
+	border: 1px solid #a8e6cf;
+	border-radius: 999px;
+	background: #d4f5e9;
+	color: #007a4d;
+	font-size: 9.5px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	line-height: 1.4;
+	text-transform: uppercase;
+	white-space: nowrap;
 }
 
 /* ---- HTTP method chips ----

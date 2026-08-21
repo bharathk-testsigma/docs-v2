@@ -1,0 +1,72 @@
+---
+title: Create Unified Test Case
+description: Author a test case once in a Unified project and run it on both Android and iOS, with dual-locator elements resolved per device at run time.
+pageType: guide
+sidebar:
+  order: 40
+  label: Unified
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+A unified test case is authored once and runs on both Android and iOS. Its elements carry a locator for each platform, and the platform-aware engine resolves the right one for the device at run time, so you maintain one test case instead of a suite per platform.
+
+## Prerequisites
+
+- A Unified project and application exist. See [Projects and applications](/suite/get-started/projects-and-applications/).
+- The feature and scenario for the test case exist. See [Create test cases](/suite/create-and-manage/create-test-cases/).
+- Testsigma Terminal is installed, and a local device is connected and available as a test machine. See [Testsigma Terminal](/suite/get-started/installation/testsigma-terminal/).
+- The application file is available: an APK or AAB for Android, or an IPA or APP for iOS.
+
+## Create a test case with the recorder
+
+<Steps>
+
+1. Go to **Create Tests > Test Cases**.
+
+2. In the **Test Case Explorer** section, expand a feature and click the **+** icon next to the scenario. A dialog opens.
+
+3. Validate the target feature and scenario, enter the name in **Test Case Name**, and click **Create**.
+
+4. On the **Test Case Details** page, click **Record** at the top right.
+
+5. In the **Record test steps** overlay, select a **Test Lab** and a **Test Machine**, and supply the app under **App Source**: paste an external public link, or click **Upload** and browse to the application file.
+
+6. Click **Record** and wait for the application to load completely.
+
+7. Perform the actions in the application. The recorder captures the interactions and converts them into test steps.
+
+8. Click **Stop**, and confirm in the **Stop Recorder** dialog. The recorded steps are saved on the **Test Case Details** page.
+
+</Steps>
+
+<Aside type="note">
+Record the test case on one platform, either an Android or an iOS device. During execution, the same test case runs on both platforms.
+</Aside>
+
+When uploading an IPA, two options appear under **Supported Device**:
+
+- **Enable iOS Keychain Support**: clears iOS Keychain data after each test session, which prevents failures caused by credentials or tokens stored from previous sessions. Use it when the application cannot access keychain groups after the Bundle Seed ID or Team ID changes during app signing.
+- **Skip App Re-signing**: installs the application without re-signing it, for apps already signed through the Apple Developer Enterprise Program. This lets you test features that need the original signature, such as push notifications on Testsigma devices.
+
+## Create a test case with NLP steps
+
+<Steps>
+
+1. Go to **Create Tests > Test Cases**, create the test case from the **Test Case Explorer** as above, and open it.
+
+2. On the **Test Case Details** page, the first step is created by default as **Launch App**.
+
+3. Click **Add New Step**.
+
+4. Select the NLP step, then provide the required test data and elements.
+
+5. Repeat the last two steps until the workflow is complete.
+
+</Steps>
+
+A Unified project stores separate Android and iOS locators under a single element, so the step maps to whichever locator matches the device the test runs on. How the dual-locator elements are created and maintained is covered in [Elements](/suite/create-and-manage/elements/). A step or NLP that applies to only one platform is skipped on the other platform and reported with the reason.
+
+## Run the test case on both platforms
+
+Run the same test case on an Android device and on an iOS device from the **Ad-Hoc Run** panel. If locators recorded on one platform do not match the other platform during execution, Testsigma auto-heals them at run time.

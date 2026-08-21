@@ -29,11 +29,11 @@ searchTerms:
   - import export elements
   - flutter semantics
 sidebar:
-  order: 50
+  order: 4
   label: Elements
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
 An element is a UI component a test step acts on, such as a field, a button, or a link. Testsigma stores elements in a repository, so a step refers to an element by name and every step using it picks up a change at once.
 
@@ -65,6 +65,8 @@ Android and iOS applications support 5 types, in this order of preference:
 
 If you cannot find IDs for your elements, ask your developer to add them.
 
+A unified mobile element stores an Android locator and an iOS locator under one name, and the types can differ per platform: XPath on Android with Accessibility ID on iOS works, as long as each value uniquely identifies the element on its platform.
+
 ## Create an element manually
 
 Manual creation suits dynamic applications, where an element's attributes change between sessions and a recorded locator stops matching.
@@ -84,6 +86,14 @@ You can also create an element while writing a step. Open a test case, add a ste
 
 Writing a locator by hand needs a working knowledge of XPath and CSS selectors.
 
+### Unified mobile elements
+
+For a Unified Mobile application, the **Create Element** overlay carries an **Android** tab and an **iOS** tab. Select the **Element Type** and enter the value on each tab, for one platform or both: an element with a locator for only one platform is usable when a test case runs on that platform.
+
+Leave **Auto heal element during execution** checked to let Testsigma recover this element's locator if it changes, or clear it to opt out.
+
+Each platform's locator updates independently in the **Update Element** overlay: changing one never touches the other.
+
 ### Read a locator off the page
 
 Right-click the element in Chrome and select **Inspect**. The **Elements** panel opens with your element highlighted in blue, showing its HTML.
@@ -96,7 +106,12 @@ HTML elements follow this shape, where the tag name, the attribute names, and th
 
 Here the tag name is `input`, and the attributes are `type`, `name`, `class`, `id`, and `value`. Build the element from a single attribute whose value is unique, from a link's visible text, or from an XPath or CSS selector you write against that HTML. ID is the preferred single attribute.
 
-## Record elements on web
+## Record elements
+
+The recorder flow depends on the application type.
+
+<Tabs syncKey="app-type">
+<TabItem label="Web">
 
 Recording needs the Testsigma Chrome extension and an application you can reach.
 
@@ -122,7 +137,8 @@ The recorder returns you to the **Elements** page with everything you captured.
 The recorder stores a page image with each element, highlighting the element on it, so you keep the visual context alongside the locator. The Testsigma gear icon blinks while recording and stops when you pause.
 </Aside>
 
-## Record elements on Android and iOS
+</TabItem>
+<TabItem label="Android & iOS">
 
 <Steps>
 
@@ -142,7 +158,8 @@ The recorder stores a page image with each element, highlighting the element on 
 
 To change a captured element, hover over it and click the edit icon, change the details, and click **Update**.
 
-## Record elements on mobile web
+</TabItem>
+<TabItem label="Mobile web">
 
 Mobile web recording pairs the recorder with Chrome DevTools.
 
@@ -167,6 +184,89 @@ Mobile web recording pairs the recorder with Chrome DevTools.
 <Aside type="tip">
 If the device you test on is not in the list, select **Edit** in the **Dimensions** dropdown and click **Add custom device**. A device's own characteristics can change how an element displays and behaves, so recording at the right dimension matters.
 </Aside>
+
+</TabItem>
+<TabItem label="Unified">
+
+Recording captures one platform at a time. Recording the same element on the second platform adds that platform's locator to the existing element instead of creating a duplicate.
+
+<Steps>
+
+1. Go to **Create Tests > Elements** and click **Record**.
+
+2. In the **Record Elements** overlay, select the **Test Machine** (Android or iOS) to record on, along with the **Test Lab** and **Upload App Source**, and click **Record**. Upload an IPA when the test machine's OS is iOS, or an APK when it is Android; the overlay does not show the app source uploaded for the other OS, even from earlier in the same session.
+
+3. Wait for the app to load fully.
+
+4. Click the element you want to capture.
+
+5. In the **Create Element** panel, confirm the **Name**, **Screen Name**, **Element Type**, and **Value** for the platform you are recording on, and click **Create**.
+
+6. Repeat for every element you want to capture, then click **Stop Recording**. You return to the **Elements** page with everything you captured.
+
+</Steps>
+
+To add the other platform's locator to an element you already captured, open it from the elements list, click **Edit**, select the tab for the platform you have not captured yet, click **Record**, and record it the same way.
+
+</TabItem>
+<TabItem label="Windows">
+
+The desktop Element Recorder captures elements into a hierarchical tree with their properties. It needs a Desktop project and application, Testsigma Terminal installed on the Windows system, the **WinTest Automation** folder present in the Testsigma Agent directory, and the application open on your device.
+
+<Steps>
+
+1. Go to **Create Tests > Elements** and click **Record**.
+
+2. In the **Select application** window, select the desktop application to record against. Only applications running on your device are listed; filter with the search field, or click the refresh icon after opening a new application.
+
+3. Click **Start recording**. The Element Recorder opens on the **Selective** tab, with the application name in the recorder header.
+
+4. Capture in either mode:
+   - **Selective**: hover over an element until it highlights in green, then click it. To capture elements that disappear on hover, such as menus and dropdowns, click **Freeze** (Ctrl+Shift+F) to hold the current UI state first.
+   - **Batch**: click the **Batch** tab to capture every element in the currently open window at once. Switching windows within the same application captures the new window and clears the previous one.
+
+5. Select a captured element in the tree to check it in the **Element properties** panel (Name, Type, Class, AutomationId, FrameworkId), and click **Locate** to highlight it in the application window.
+
+6. Click **Save**. The elements are listed under **Create Tests > Elements**.
+
+</Steps>
+
+**Pause** keeps the application open and retains what you recorded; **Stop** ends the session; **Expand all**, **Collapse all**, and the search field manage the tree, and the footer shows a running count such as **78 elements recorded**. Keyboard shortcuts: **Alt+R** records, **Alt+S** stops, **Ctrl+Shift+F** freezes.
+
+<Aside type="note">
+Batch capture records the full control tree of the window, including containers such as the title bar and tab groups. Use the search field to narrow the tree to the elements you need before saving.
+</Aside>
+
+</TabItem>
+<TabItem label="Salesforce">
+
+Salesforce elements are learned automatically when the metadata connection syncs (see [Setup](/suite/application-types/salesforce/setup/)), so there is nothing to record or create for standard objects. Auto-learned elements cannot be edited.
+
+Learned elements follow two naming conventions, and names must stay unique:
+
+- **Field names**: **ObjectName_FieldName**, so **Account_CreatedDate** is the **CreatedDate** field on the **Account** object.
+- **Screen names**: the object name as displayed on the UI screen, so a screen of account details is **Account**.
+
+To browse the repository, open a test case, add a step, hover over the element and click **Select Element**; the **Elements** overlay lists everything learned. Clicking an element that follows the naming convention and selecting **View/Edit Element** in the **Testsigma Debugger & Recorder** shows an overlay confirming it is a standard, pre-learned Salesforce element.
+
+For an element the sync did not learn, capture it live from a step:
+
+<Steps>
+
+1. Open the test case and click **Copilot**.
+
+2. In the **Debug & Record** overlay, verify that Copilot is live, select a connection under **Salesforce Metadata connection**, and click **Launch**.
+
+3. In the **Testsigma Debugger & Recorder**, click the element in the NLP step and select **Create Element** from the dropdown.
+
+4. Click the UI element to capture. The recorder captures the element details.
+
+5. Verify the element and click **Create**.
+
+</Steps>
+
+</TabItem>
+</Tabs>
 
 ## Set locator precedence
 

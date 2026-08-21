@@ -8,7 +8,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { getCollection } from 'astro:content';
 
-const copy = { sub: "What's new in Suite — features, improvements, and fixes in every release." };
+const copy = { sub: 'A full rundown of our latest releases, improvements and fixes in Testsigma Suite' };
 
 type Item = { title: string; desc: string };
 type Section = { type: string; items: Item[] };
@@ -53,9 +53,12 @@ function monthOf(date: string): string {
 const entries = await getCollection('changelog');
 const releases: Release[] = entries
 	.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-	.map((e) => ({
+	.map((e, i) => ({
 		version: e.data.version,
-		latest: e.data.latest,
+		// Newest release by date IS the latest -- computed, so no one has to
+		// flip per-file frontmatter flags on every release (they drift; two
+		// files carried latest:true when this replaced the flag).
+		latest: i === 0,
 		date: e.data.date,
 		headline: e.data.headline,
 		month: monthOf(e.data.date),
@@ -99,7 +102,7 @@ const iconSvg = (paths: string) =>
     surfaces it; generic feature queries no longer do. */}
 <div class="ts-cl-feed not-content" data-pagefind-weight="0.1">
 	<header class="ts-cl-header">
-		<h1 class="ts-cl-title">Changelog</h1>
+		<h1 class="ts-cl-title">Product updates</h1>
 		<p class="ts-cl-sub">{copy.sub}</p>
 	</header>
 

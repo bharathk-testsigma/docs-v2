@@ -7,8 +7,8 @@ covers:
   - Capture SAP elements
   - Build a test case
 sidebar:
-  order: 20
-  label: Create Project
+  order: 61
+  label: "Advanced: Create Project"
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
@@ -18,7 +18,7 @@ SAP testing runs through the same desktop tooling as any Windows (Beta) applicat
 
 <Prerequisites>
 
-- [Testsigma Terminal](/suite/installation/testsigma-terminal/) is installed, with the **WinTest Automation** folder in the agent directory, on a machine with 8 GB memory and 20 GB free disk.
+- [Testsigma Terminal](/suite/get-started/installation/testsigma-terminal/) is installed, with the **WinTest Automation** folder in the agent directory, on a machine with 8 GB memory and 20 GB free disk.
 - **SAP Logon** (64-bit) is installed, with your system connection details: System ID (SID), instance number, and application server host.
 - SAP's ports are open — 3200 and 5000 are typical, but confirm with your IT team.
 - The SAP application is open, connected, and focused on the screen under test.
@@ -27,7 +27,7 @@ SAP testing runs through the same desktop tooling as any Windows (Beta) applicat
 
 ## Capture SAP elements
 
-Both [desktop recorders](/suite/windows-beta/elements/) work unchanged on SAP: in **Create Tests > Elements**, click **Record** and pick one.
+Both [desktop recorders](/suite/create-and-manage/elements/#record-elements) work unchanged on SAP: in **Create Tests > Elements**, click **Record** and pick one.
 
 - **Batch Element Recorder** captures every accessible element in the focused SAP window at once.
 - **Selective Element Recorder** captures one control at a time — hover a textbox, dropdown, or button until it highlights green, click, then confirm with **Locate Element** and **Save Element**.

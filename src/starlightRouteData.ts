@@ -1,5 +1,6 @@
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
 import type { SidebarEntry } from '@astrojs/starlight/route-data';
+import { getCollection } from 'astro:content';
 import { stripBase } from './lib/base';
 
 /**
@@ -42,6 +43,7 @@ const isGroup = (entry: SidebarEntry): entry is Group => entry.type === 'group';
 const LABEL_EXCEPTIONS: Record<string, string> = {
 	'ci-cd': 'CI/CD',
 	ios: 'iOS',
+	'rest-apis': 'REST APIs',
 };
 
 const prettifyLabel = (label: string) =>
@@ -59,10 +61,16 @@ const prettifyGroups = (entries: SidebarEntry[]): SidebarEntry[] =>
 			: entry
 	);
 
-export const onRequest = defineRouteMiddleware((context) => {
+export const onRequest = defineRouteMiddleware(async (context) => {
 	const { starlightRoute } = context.locals;
 	// Base-free, so it can be matched against the literal prefixes below.
 	const pathname = stripBase(context.url.pathname);
+
+	// The top-of-rail utility rows (Home / API Reference / Changelog) appear on
+	// EVERY tree, including the swapped-in API and changelog navs below.
+	const utilityRows = starlightRoute.sidebar.filter(
+		(e) => e.type === 'link' && e.attrs?.['data-nav-utility'] !== undefined
+	);
 
 	// ── 1. split the API reference out ──
 	const apiGroup = starlightRoute.sidebar.find(
@@ -71,9 +79,47 @@ export const onRequest = defineRouteMiddleware((context) => {
 	if (apiGroup) {
 		starlightRoute.sidebar = pathname.startsWith(API_SECTION.path)
 			? // Unwrap the group so each entity (Projects, Test Cases, ...) becomes a
-				// top-level section.
-				apiGroup.entries
+				// top-level section, keeping the utility rows above them.
+				[...utilityRows, ...apiGroup.entries]
 			: starlightRoute.sidebar.filter((e) => e !== apiGroup);
+	}
+
+	// ── 1b. changelog nav: utility rows + one link per release ──
+	// The page renders every release as a card (ChangelogFeed.astro); the rail
+	// mirrors it as anchors, newest first, using the same id the feed stamps on
+	// each headline.
+	if (pathname.startsWith('/suite/changelog')) {
+		const releases = (await getCollection('changelog')).sort(
+			(a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+		);
+		starlightRoute.sidebar = [
+			...utilityRows,
+			{
+				type: 'group',
+				label: 'Releases',
+				collapsed: false,
+				badge: undefined,
+				entries: releases.map((r, i) => ({
+					type: 'link',
+					label: r.data.version,
+					href: `${context.url.pathname}#${r.data.version.replace(/[^\w.]+/g, '-')}`,
+					isCurrent: false,
+					// The newest release wears a chip; every row carries its month
+					// (rendered by CSS from data-date) and the headline as a tooltip.
+					// Computed from the sort, not the frontmatter `latest` flag -- the
+					// flag goes stale the moment a new release file is added.
+					badge: i === 0 ? { text: 'Latest', variant: 'success' } : undefined,
+					attrs: {
+						'data-release': '',
+						'data-date': new Date(r.data.date).toLocaleString('en', {
+							month: 'short',
+							year: 'numeric',
+						}),
+						title: r.data.headline,
+					},
+				})),
+			},
+		];
 	}
 
 	// ── 2. top-level sections start open, nested groups stay closed ──
