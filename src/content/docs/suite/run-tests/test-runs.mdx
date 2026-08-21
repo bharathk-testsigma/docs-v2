@@ -10,7 +10,7 @@ covers:
   - Run part of a test plan
 sidebar:
   order: 30
-  label: Test Runs
+  label: Run Tests
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
@@ -68,7 +68,7 @@ With a saved config loaded, the footer offers **Update configuration** as well, 
 Open the plan and click **Run Now**. Suites and their test cases execute in the order the plan defines. Serial or parallel depends on its configuration.
 
 <Aside type="note">
-Cloud machines reach your application over the public internet. Behind a firewall, either whitelist the [Testsigma IP addresses](/suite/settings/testsigma-ip-info/) or use [Testsigma Tunnel](/suite/installation/testsigma-tunnel/). A plan that passes locally and fails in the lab is usually this.
+Cloud machines reach your application over the public internet. Behind a firewall, either whitelist the [Testsigma IP addresses](/suite/settings/ip-whitelisting/) or use [Testsigma Tunnel](/suite/get-started/installation/testsigma-tunnel/). A plan that passes locally and fails in the lab is usually this.
 </Aside>
 
 ## Run part of a test plan
@@ -91,7 +91,7 @@ A partial run executes a subset without editing the plan. That is what you want 
 
 **My tests sit in Queued for a long time.**
 
-Usually every parallel your licence allows is already in use. Click **Usage details** on the **Dashboard**: `Parallel Tests 2/2` means both slots are busy, and queued runs wait until one frees. Wait, stop something, or ask support about more parallels. On a local run, check the agent first — see [Testsigma Agent](/suite/installation/testsigma-agent/#faqs).
+Usually every parallel your licence allows is already in use. Click **Usage details** on the **Dashboard**: `Parallel Tests 2/2` means both slots are busy, and queued runs wait until one frees. Wait, stop something, or ask support about more parallels. On a local run, check the agent first — see [Testsigma Agent](/suite/get-started/installation/testsigma-agent/#faqs).
 
 **Pages load slowly only in cloud executions.**
 
@@ -113,4 +113,4 @@ Rendering differences on cloud machines can stall a page. Add the step *Click on
 
 **A test plan takes far longer than its tests should.**
 
-**Reset session for every test case** is on in the machine profile, so every test case waits for a fresh machine. Edit the test plan's machine profile in **Add Test Suites & Link Machine Profiles**, untick it, and update — the same setting that splits the [execution video](/suite/web/results/#faqs).
+**Reset session for every test case** is on in the machine profile, so every test case waits for a fresh machine. Edit the test plan's machine profile in **Add Test Suites & Link Machine Profiles**, untick it, and update — the same setting that splits the [execution video](/suite/run-tests/results/#faqs).

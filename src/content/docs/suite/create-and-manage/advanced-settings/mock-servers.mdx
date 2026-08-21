@@ -1,0 +1,103 @@
+---
+title: Mock servers
+description: Return simulated API responses during a run with a mock server, from creating an endpoint to mock rules and reviewing what was mocked.
+pageType: guide
+covers:
+  - Create a mock server
+  - Use a mock server in a dry run
+  - Use a mock server in a test plan
+  - Review what was mocked
+  - Add a mock rule
+sidebar:
+  order: 70
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+A mock server returns simulated API responses during a run, so a test does not have to call the real backend service. Mock servers work in dry runs, test plan executions, and local executions.
+
+<Aside type="note">
+Mock servers are off until Testsigma support enables them for your account.
+</Aside>
+
+## Create a mock server
+
+<Steps>
+
+1. Go to **Test Data > Mock Servers**. The **Endpoints** page of the Mock Server application opens.
+
+2. Click **Create Endpoint**.
+
+3. Enter a subdomain for the endpoint on the **Create New Endpoint** page.
+
+4. Click **Create**.
+
+</Steps>
+
+## Use a mock server in a dry run
+
+<Steps>
+
+1. Go to **Create Tests > Test Cases** and open the test case.
+
+2. Click **Run** in the action panel.
+
+3. In the **Ad-Hoc Run** overlay, configure **Test Lab**, **Machine**, and **Environment**.
+
+4. Expand **Additional Settings** and select the server from the **Mock Server** dropdown.
+
+   ![Selecting a mock server in the Ad-Hoc Run overlay](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Select_Mock_Servers_in_AdHoc_Runs.png)
+
+5. Click **Run Now**.
+
+</Steps>
+
+<Aside type="tip">
+While the test runs, open the endpoint in the Mock Server application to watch the API calls arrive in real time.
+</Aside>
+
+## Use a mock server in a test plan
+
+<Steps>
+
+1. Go to **Test Plans** and open the plan.
+
+2. Go to **Test Plan Settings**.
+
+3. Select the server from the **Mock Server** dropdown under **Additional Settings**.
+
+4. Click **Update**, or **Create** for a new plan.
+
+5. Click **Run Now**.
+
+</Steps>
+
+## Review what was mocked
+
+After a run, open the results page, click **More Details**, go to **Machine Details**, and select the mock server used. The **Mock Server History** section lists the rules that matched.
+
+![The Mock Server History section on the run results page](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Mock_Server_History.png)
+
+## Add a mock rule
+
+A mock rule decides which API calls the server intercepts and what it returns. Rules are created from the calls a real run made, so run the test once first.
+
+<Steps>
+
+1. Open the test case results page and click **More Details**.
+
+2. Go to **Machine Details** and select the mock server used.
+
+3. Find the API call you want to mock in the **API Results** table, and click **Create Rule** in its **Action** column.
+
+4. Update the rule details in the **Mock Rules** dialog.
+
+5. Click **Save**.
+
+</Steps>
+
+The server returns the configured response for matching calls from the next execution onward.
+
+<Aside type="note">
+Request matching and response configuration are documented by the mock server application itself, under Mock Rules and API Routes at `https://app.mockserver-us.testsigma.com/docs/beeceptor-features/`.
+</Aside>

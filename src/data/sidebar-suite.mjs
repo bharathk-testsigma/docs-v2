@@ -40,12 +40,12 @@ export const suite = [
 
 	section('Get Started', 'suite/get-started', { collapsed: false }),
 	section('Atto AI', 'suite/atto'),
-	section('Test Management', 'suite/test-management'),
-	section('Cloud', 'suite/cloud'),
-	section('Desktop', 'suite/desktop'),
+	section('Create & Manage', 'suite/create-and-manage'),
+	section('Application Types', 'suite/application-types'),
+	section('Run Tests', 'suite/run-tests'),
+	section('Reports & Analytics', 'suite/analytics'),
 	section('On-Prem', 'suite/on-prem'),
 	section('Other Testing Types', 'suite/testing-types'),
-	section('Reports', 'suite/reports'),
 	section('Add-ons', 'suite/addons'),
 	section('Integrations', 'suite/integrations'),
 
