@@ -1,15 +1,16 @@
 ---
 title: Projects and applications
-description: Create and manage the projects, applications, and versions that hold your tests, pick an execution engine, and map requirements.
+description: Create and manage the projects, applications, and versions that hold your tests, pick an execution engine, map requirements, and use save points.
 pageType: guide
 verified: 2026-08
 covers:
   - Create a project
-  - Supported application types
   - Execution engines
   - Manage applications
   - Manage application versions
   - Requirements
+  - Project settings
+  - Save points
   - Delete a project
 searchTerms:
   - create project
@@ -20,6 +21,7 @@ searchTerms:
   - execution engine
   - classic modern
   - requirements
+  - save points
   - delete project
 sidebar:
   order: 30
@@ -28,7 +30,7 @@ sidebar:
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 
-A project holds the applications you test, and each application in it holds its own versions. Test cases, elements, test data, and everything else you author belong to one application version.
+A project holds the applications you test, and each application holds its versions. Test cases, elements, test data, and everything else you author belong to one application version.
 
 ## Create a project
 
@@ -38,45 +40,32 @@ A project holds the applications you test, and each application in it holds its 
 
 2. Enter the **Project Name** and an optional **Description**.
 
-3. To create more than one application, select **Allow adding multiple applications in this project**. Click **Add Application**, select the **Application Type**, and enter a **Name**. A project holds a single application by default.
+3. To hold more than one application, select **Allow adding multiple applications in this project**. Click **Add Application**, select the **Application Type**, and enter a **Name**. A project holds a single application by default.
 
-4. To create more than one version per application, select **Allow multiple versions for applications**.
+4. To hold more than one version per application, select **Allow multiple versions for applications**.
 
 5. Click **Create**.
 
 </Steps>
 
+<Aside type="note">
+Custom fields defined under **Settings > Custom Fields > Projects** appear on this dialog.
+</Aside>
 
 To edit a project, go to **Project > Project Settings**. The **Edit Project** dialog updates the project details, the multiple applications and versions settings, the project members, the test case types, and the requirement types. Click **Update** to save.
 
 To switch projects, click the current project on the Dashboard, select the **Project**, **Application**, and **Version**, then click **Go to project**.
 
-## Supported application types
-
-| Application type |
-| --- |
-| Web |
-| Mobile Web |
-| Android |
-| iOS |
-| Unified Mobile |
-| REST API |
-| Salesforce |
-| Windows |
-
-
 ## Execution engines
 
-Test cases runs tests on 2 engines, `Classic` and `Modern`. Modern waits for elements and for the page state before it interacts with them, which reduces timing-related failures, and it handles Shadow DOM and web components more natively than Classic.
+Testsigma runs tests on 2 engines, Classic and Modern. Modern waits for elements and for the page state before it interacts with them, which reduces timing-related failures, and it handles Shadow DOM and web components more natively than Classic.
 
 You select the engine when you create an application, and the engines on offer depend on the application type.
-
-![Engine version selection while creating a project](https://s3.amazonaws.com/static-docs.testsigma.com/new/projects/applications/Engine_version_in_Project_Selection.png)
 
 | Application type | Available engines |
 |---|---|
 | Web application | Classic and Modern |
-| Unified (Android + iOS) | Modern |
+| Unified (Android and iOS) | Modern |
 | Android | Classic |
 | iOS | Classic |
 | Mobile Web | Classic |
@@ -86,7 +75,7 @@ You select the engine when you create an application, and the engines on offer d
 | Windows | Classic |
 
 <Aside type="note">
-The engine cannot be changed after you create the application. To use a different engine, create a new application.
+The engine cannot be changed after you create the application. To use a different engine, create a new application. Your existing tests stay as they are.
 </Aside>
 
 <Aside type="note">
@@ -110,7 +99,7 @@ To edit one, select it from the dropdown, make the changes, and click **Update**
 To delete one, select it from the dropdown, click **Delete Application**, enter `DELETE`, and click **Delete**.
 
 <Aside type="note">
-Deleting an application erases every version in it, along with the test cases, test data, and uploads in those versions.
+Deleting an application destroys every version in it, along with the test cases, test data, and uploads in those versions.
 </Aside>
 
 ## Manage application versions
@@ -163,7 +152,43 @@ Requirements are created from a test case, not from project settings.
 
 To edit one, expand the **Requirement** field in **Manage Test Case** and click **Edit**.
 
+## Project settings
+
+Three lists in **Project > Project Settings** classify test cases. Each is per project, and Testsigma supplies defaults for all of them. They feed the filters on the test case library and the grouping in run results, which is what makes them worth maintaining.
+
+| List | Defaults | What you can change |
+|---|---|---|
+| Requirement types | Customer Requirements, User Interface Requirements, Functional Requirements, Non-Functional Requirements | Add, rename, and delete |
+| Test case types | Functional, non-functional, integration, and others | Add, rename, and delete |
+| Test case priorities | Critical, Major, Medium, Minor | Nothing. The defaults are fixed |
+
+<Aside type="note">
+New priorities can no longer be added. The 4 defaults remain available.
+</Aside>
+
+To add a requirement type or test case type, open **Project Settings**, click **Requirement Types** or **Test Case Types**, click **Add Type**, type the name in the blank row, and press **Enter**. To rename one, hover over it, click **Edit**, change the text, and press **Enter**. To delete one, hover over it and click **Delete**.
+
+<Aside type="note">
+A type cannot be deleted while a test case still uses it. Click **View Test Case** in the confirmation dialog and reassign those test cases to another type first, then delete the type by entering `DELETE`.
+</Aside>
+
+## Save points
+
+A save point stores the state of a whole project: its test cases, elements, test data profiles, and step groups. Restore one to roll the project back to that state. Testsigma stores a maximum of 10 save points at a time, and importing test cases creates one automatically.
+
+To create a save point, go to **Save Points**, click **Create Save Point**, enter a name, and click **Create**. A save point opens in a new tab, so you can check its contents before you use it. From its ellipsis icon `⋮`, you can edit its note or delete the save point by entering `DELETE`.
+
+<Aside type="note">
+Restoring a save point replaces the project's current test cases, elements, test data profiles, and step groups with the versions the save point holds.
+</Aside>
+
+To restore a save point, click **Restore** on it, enter `RESTORE`, and confirm.
+
 ## Delete a project
+
+<Aside type="note">
+Deleting a project destroys every application and application version in it, along with all of its test cases, elements, test data profiles, custom functions, uploads, requirements, test suites, test plans, run results, and environments.
+</Aside>
 
 <Steps>
 
@@ -177,6 +202,28 @@ To edit one, expand the **Requirement** field in **Manage Test Case** and click 
 
 </Steps>
 
-<Aside type="note">
-Deleting a project destroys every application and application version in it, along with all of its test cases, elements, test data profiles, custom functions, uploads, requirements, test suites, test plans, run results, and environments.
-</Aside>
+## Frequently asked questions
+
+### Can I use both engines in the same account?
+
+Yes. Each application carries its own engine, so Classic and Modern applications run side by side. The choice is permanent per application, not per account.
+
+### Is the Classic engine being discontinued?
+
+No. Classic has no planned end date, and some application types run on Classic only.
+
+### Is the Modern engine a beta?
+
+No. Modern is a production engine. Its coverage is still expanding across application types, which is why some types run on Classic today.
+
+### What do I gain from the Modern engine?
+
+Modern waits for elements and for the page state before it interacts with them, which reduces timing-related failures. It also handles Shadow DOM and web components more natively than Classic.
+
+### Does the engine change how I author tests?
+
+No. The low-code editor, the recorder, and AI-assisted generation work the same on both engines. The engine affects execution only. The one exception is AI Step, which is available on Classic and not currently on Modern.
+
+### Do my Classic addons work on the Modern engine?
+
+No. Classic addons are written in Java and Modern addons in TypeScript, and the 2 are not interchangeable. Moving an addon to Modern means rebuilding it in TypeScript.

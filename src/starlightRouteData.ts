@@ -101,20 +101,18 @@ export const onRequest = defineRouteMiddleware(async (context) => {
 				badge: undefined,
 				entries: releases.map((r, i) => ({
 					type: 'link',
-					label: r.data.version,
-					href: `${context.url.pathname}#${r.data.version.replace(/[^\w.]+/g, '-')}`,
+					// Releases are identified by date, not version: only a handful
+					// ever had a vX.Y.Z. The entry id IS the date (YYYY-MM-DD.md),
+					// which is the anchor the feed stamps on each headline.
+					label: r.data.date,
+					href: `${context.url.pathname}#${r.id}`,
 					isCurrent: false,
-					// The newest release wears a chip; every row carries its month
-					// (rendered by CSS from data-date) and the headline as a tooltip.
-					// Computed from the sort, not the frontmatter `latest` flag -- the
-					// flag goes stale the moment a new release file is added.
+					// The newest release wears a chip, computed from the sort rather
+					// than a frontmatter flag -- a flag goes stale the moment a new
+					// release file is added. The headline is the row's tooltip.
 					badge: i === 0 ? { text: 'Latest', variant: 'success' } : undefined,
 					attrs: {
 						'data-release': '',
-						'data-date': new Date(r.data.date).toLocaleString('en', {
-							month: 'short',
-							year: 'numeric',
-						}),
 						title: r.data.headline,
 					},
 				})),

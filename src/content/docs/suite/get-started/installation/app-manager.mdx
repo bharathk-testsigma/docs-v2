@@ -2,133 +2,119 @@
 title: App manager
 description: Roll out Testsigma Agent and Terminal to managed Windows devices at scale with PatchMyPC and Intune.
 pageType: task
-verified: 2026-08
 covers:
-  - How the apps are supported
-  - Deploy Testsigma Agent
-  - Deploy Testsigma Terminal
+  - How the apps are onboarded
+  - Add an app
+  - Install commands
   - Add a new version
+  - Weekly releases
 sidebar:
   order: 45
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 
-An app manager deploys Testsigma Agent and Testsigma Terminal to managed Windows devices at scale. Testsigma supports enterprise rollouts through PatchMyPC, which packages each installer and publishes it to Microsoft Intune for automatic delivery to managed devices.
-
-## How the apps are supported
-
-For a manual, single-device install, see [Testsigma Agent](/suite/get-started/installation/testsigma-agent/) or [Testsigma Terminal](/suite/get-started/installation/testsigma-terminal/) instead.
-
-Testsigma Agent and Testsigma Terminal are not in PatchMyPC's built-in catalog, so PatchMyPC onboards them as **Custom Apps**. PatchMyPC packages the installer and publishes it to Intune as a Win32 app, and Intune delivers it to managed devices.
+PatchMyPC and Microsoft Intune deliver Testsigma Agent and Testsigma Terminal to managed Windows devices, instead of someone installing them one machine at a time. This is IT admin work. For a single device, see [Testsigma Agent](/suite/get-started/installation/testsigma-agent/) and [Testsigma Terminal](/suite/get-started/installation/testsigma-terminal/).
 
 <Aside type="note">
 PatchMyPC deployment covers Windows `.exe` installers only. macOS `.dmg`, Linux, and the agent's raw ZIP are not supported through it.
 </Aside>
 
-Testsigma provides the installer for each build. Your IT team owns everything in PatchMyPC: adding the custom app, setting the install command and detection rule, and publishing to Intune.
+Before you start:
 
-Before you begin, confirm that PatchMyPC Publisher is installed and connected to your Intune tenant. Testsigma must also have provided the current Windows `.exe` installer for each app you deploy. You need access to **Local Content > Custom Apps** in the Publisher.
+- PatchMyPC Publisher is installed and connected to your Intune tenant.
+- Testsigma has supplied the current Windows installer for each app you are deploying.
+- You have access to **Local Content > Custom Apps** in the Publisher.
 
-A custom app installer must meet three conditions:
+## How the apps are onboarded
 
-- **Silent install**: it installs with no UI or user interaction.
-- **Matching install context**: a machine-wide install deploys in Intune SYSTEM context, and a per-user install deploys in Intune user context.
-- **Stable detection**: a reliable way to confirm whether a version is installed, using a file path that does not change between builds.
+Neither app is in PatchMyPC's built-in catalog, so both are onboarded as **Custom Apps**. PatchMyPC packages the installer, publishes it to Intune as a Win32 app, and Intune delivers it. Testsigma supplies the installer for each build; your IT team owns everything in PatchMyPC.
 
-Custom apps get no catalog-style URL monitoring and no automatic version detection. Each new version needs a manual **Add Version** upload.
+An installer qualifies as a custom app when it meets 3 conditions: it installs silently with no user interaction, its install context matches the Intune deployment context, and it offers a stable way to detect the installed version from a file path that does not change between builds.
 
-## Deploy Testsigma Agent
+<Aside type="note">
+Custom apps get no URL monitoring and no automatic version detection. Every new version needs a manual **Add Version** upload.
+</Aside>
 
-Testsigma Agent installs per user (HKCU and the user profile), so deploy it in Intune **user context**, not SYSTEM context.
+## Add an app
+
+Testsigma Agent installs per-user only, into the user profile and HKCU. Testsigma Terminal installs machine-wide or per-user, chosen by the install switch.
+
+The onboarding steps are the same for both, with different values.
 
 <Steps>
 
-1. **Add the app**: in the PatchMyPC Publisher, go to **Local Content > Custom Apps** and click **Add**.
+1. Go to **Local Content > Custom Apps** in the PatchMyPC Publisher and click **Add**.
 
-2. **Enter the metadata**: set **Name** to **TestsigmaAgent**, **Vendor** to **Testsigma**, **Version** to the value of **agent.version** in **agent.properties**, and **Architecture** to x64. Type the name exactly. A typo breaks the auto-generated DisplayName detection.
+2. Enter the metadata:
+   - **Name**: **TestsigmaAgent** or **TestsigmaTerminal**, typed exactly. A typo breaks the auto-generated DisplayName detection.
+   - **Vendor**: Testsigma.
+   - **Version**: the installer version, from `agent.version` in `agent.properties` for the agent, or from `package.json` for the Terminal.
+   - **Architecture**: x64.
 
-3. **Upload the installer**: upload **TestsigmaAgent-Windows.exe**.
+3. Upload the installer, `TestsigmaAgent-Windows.exe` or `TestsigmaTerminal-Setup-<version>.exe`.
 
-4. **Enter the install command**: use the commands below.
+4. Enter the install command for that app. See [Install commands](#install-commands).
 
-5. **Confirm the detection rule**: PatchMyPC's auto-generated detection works for Testsigma Agent without changes.
+5. Confirm the detection rule. PatchMyPC's auto-generated detection works as-is for both apps.
 
-6. **Publish**: publish the app to Intune, then create the assignment groups on the Intune side.
+6. Publish to Intune, then create the assignment groups on the Intune side.
 
-7. **Verify on one device**: deploy to a single managed test device and confirm the install before rolling out broadly.
+7. Deploy to one managed test device and confirm the install works before rolling it out further.
 
 </Steps>
 
-```text
+## Install commands
+
+```bash
+# Testsigma Agent, per-user only
 Install:   TestsigmaAgent-Windows.exe /S
 Uninstall: <install-dir>\Uninstall.exe /S
-```
 
-## Deploy Testsigma Terminal
+# Testsigma Terminal, machine-wide
+Install:   TestsigmaTerminal-Setup-<version>.exe /S /allusers
 
-Testsigma Terminal supports a machine-wide or a per-user install at runtime. The install switch decides which.
+# Testsigma Terminal, current user
+Install:   TestsigmaTerminal-Setup-<version>.exe /S /currentuser
 
-<Steps>
-
-1. **Add the app**: in the PatchMyPC Publisher, go to **Local Content > Custom Apps** and click **Add**.
-
-2. **Enter the metadata**: set **Name** to **TestsigmaTerminal**, **Vendor** to **Testsigma**, **Version** to the value in **package.json**, and **Architecture** to x64. Type the name exactly. A typo breaks the auto-generated DisplayName detection.
-
-3. **Upload the installer**: upload **TestsigmaTerminal-Setup-\<version\>.exe**.
-
-4. **Enter the install command**: use the command for the scope you want, from the block below.
-
-5. **Confirm the detection rule**: PatchMyPC's auto-generated detection works for Testsigma Terminal without changes.
-
-6. **Publish**: publish the app to Intune, then create the assignment groups on the Intune side.
-
-7. **Verify on one device**: deploy to a single managed test device and confirm the install before rolling out broadly.
-
-</Steps>
-
-```text
-System-level (all users):  TestsigmaTerminal-Setup-<version>.exe /S /allusers
-User-level (current user): TestsigmaTerminal-Setup-<version>.exe /S /currentuser
-Uninstall:                 "C:\Program Files\TestsigmaTerminalBlackpearl\Uninstall TestsigmaTerminalBlackpearl.exe" /S
+Uninstall: "C:\Program Files\TestsigmaTerminalBlackpearl\Uninstall TestsigmaTerminalBlackpearl.exe" /S
 ```
 
 <Aside type="note">
-Match the install switch to the Intune deployment context. Use `/S /allusers` in SYSTEM context and `/S /currentuser` in user context. A mismatch installs the app where the assigned user cannot see it, and Intune reports the deployment as failed.
+The install context has to match the Intune deployment context. Testsigma Agent installs per-user, so it deploys in Intune user context. Testsigma Terminal takes `/S /allusers` in SYSTEM context and `/S /currentuser` in user context. A mismatch installs the app where the assigned user cannot see it, and Intune reports the deployment as failed.
 </Aside>
 
 ## Add a new version
 
-Custom apps need a manual upload for each version. PatchMyPC monitors no URL and detects no new builds.
-
 <Steps>
 
-1. **Get the installer**: Testsigma builds it and provides it to your IT team. The version comes from **agent.version** in **client/src/main/resources/agent.properties** for the agent, and from **package.json** for Terminal.
+1. Testsigma builds the new installer and provides it. The agent's version comes from `agent.version` in `client/src/main/resources/agent.properties`, and the Terminal's from `package.json`.
 
-2. **Upload it**: in the PatchMyPC portal, open the app, select **Add Version**, upload the new installer, set the **Version**, confirm the install command and detection rule, and select **Create**.
+2. Open the app in the PatchMyPC portal, select **Add Version**, upload the installer, set the **Version**, confirm the install command and detection rule, and select **Create**.
 
-3. **Sync**: the update deploys on the next daily sync, or immediately if you select **Sync Now**. Assigned devices upgrade automatically.
+3. The update deploys on the next daily sync, or immediately with **Sync Now**. Assigned devices upgrade themselves.
 
 </Steps>
 
-On the device, Terminal's electron-builder NSIS installer handles the in-place upgrade through its stable appId, **com.testsigma.testsigmaterminal**. The agent's **.onInit** block silently uninstalls the previous version before installing the new one, and data in `%APPDATA%\Testsigma` survives the upgrade.
+On the device, the Terminal's electron-builder NSIS installer upgrades in place through its stable appId, `com.testsigma.testsigmaterminal`. The agent's `.onInit` block silently uninstalls the previous version first, and data in `%APPDATA%\Testsigma` survives the upgrade.
 
-A weekly release cadence turns that upload into a weekly manual task unless you offload it:
+## Weekly releases
 
-- **Rely on each app's built-in auto-update (recommended)**: both apps self-update independently of PatchMyPC. Let PatchMyPC and Intune handle the initial install only, and re-upload just for major or breaking changes that need a fresh install baseline.
-- **Automate the upload**: script **Add Version** against the PatchMyPC Cloud API as part of your release pipeline, if your plan includes it. Confirm the API exposes custom-app version creation before relying on it.
+A weekly release cadence makes that upload a weekly manual task for both apps. Two ways to avoid it:
+
+- **Rely on each app's own auto-update**: both apps self-update independently of PatchMyPC, so Intune only handles the first install and every later version flows through the app's own updater. Re-upload only for a major or breaking change that needs a fresh initial-install baseline. This is the recommended route.
+- **Automate the upload**: script **Add Version** against the PatchMyPC Cloud API as part of your release pipeline. Confirm your plan's API exposes custom-app version creation first.
 
 <Aside type="note">
-Disabling an app's built-in auto-update makes PatchMyPC and Intune the only update path. Every new version then needs an upload, and skipping one leaves devices on the old version.
+Turning off an app's built-in auto-update makes PatchMyPC and Intune the only update path. Every new version then has to be uploaded, and a skipped upload leaves devices on the old version.
 </Aside>
 
 ## Troubleshooting
 
-### Deployment reports as failed, but the app appears installed
+### The deployment reports as failed but the app appears installed
 
-The install context does not match the Intune deployment context. Terminal's `/S /allusers` must run in SYSTEM context. Terminal's `/S /currentuser` and the agent's `/S` must run in user context.
+The install context does not match the Intune deployment context. `/S /allusers` runs in SYSTEM context, and `/S /currentuser` and the agent's `/S` run in user context.
 
-### Reinstall fails with "specified path does not exist"
+### A reinstall fails with "specified path does not exist"
 
-A stale uninstall key from a prior install points to a path that no longer exists. Remove the stale uninstall key, then retry the install.
-
+A stale uninstall key from an earlier install points to a path that no longer exists. Remove the key and retry.

@@ -4,8 +4,6 @@ description: Per-step behavior during a run, from wait times and retries to scre
 pageType: guide
 covers:
   - The step settings reference
-  - Visual testing on a step
-  - Accessibility testing on a step
   - Global step timeout
   - Step options
   - Change several steps at once
@@ -33,25 +31,13 @@ The recorder offers 6 of the settings below: **Max wait time**, shown without th
 | Stop Test Case execution on Test Step | Ends the run when this step fails. Selected by default |
 | Ignore this step result in Test Case Result | Leaves this step's outcome out of the test case result |
 | Disable Step | Skips the step during execution. Cleared by default |
-| Enable Visual Testing for the Step | Captures the UI on this step and compares it between builds or versions. Off by default |
+| Enable Visual Testing for the Step | Captures the UI on this step and compares it against a baseline. Off by default. See [Visual testing](/suite/testing-types/visual-testing/) |
 | Enable Accessibility Testing for the step | Validates the step against accessibility standards. Needs **Web Accessibility Testing - Step Level** turned on under **Settings > Preferences > Web Accessibility Testing** |
 | Highlight element in screenshot | Marks the acted-on element in each screenshot |
 
 <Aside type="note">
 **Highlight element in screenshot** is off until Testsigma support enables it for your account. It then appears under **Settings > Preferences**.
 </Aside>
-
-## Visual testing on a step
-
-Turn on visual testing from the step's ellipsis icon (⋮) by selecting **Enable Visual Testing**, then click **Update Step**. For several steps at once, select them, click **Update Settings**, select **Enable Visual Testing** in the **Bulk Update Settings** overlay, and click **Update**. [Visual testing](/suite/testing-types/visual-testing/) covers the comparisons themselves.
-
-<Aside type="note">
-Visual testing needs a baseline image for the step, so it starts working only after the next successful run, which produces that baseline. Update the baseline whenever you change the UI on purpose.
-</Aside>
-
-## Accessibility testing on a step
-
-Select the steps on the **Test Case Details** page, click **Update Settings**, select **Enable Accessibility Testing for the step** in the **Bulk Update Settings** overlay, and click **Update**. A single step can also be set from its own step settings. [Accessibility testing](/suite/testing-types/accessibility-testing/) covers the checks.
 
 ## Global step timeout
 
@@ -70,14 +56,14 @@ Two more run-level timeouts sit in the same **Additional Settings** section and 
 
 Click a step to reach its inline controls, or the ellipsis icon (⋮) for the rest.
 
-- **Clear Step**: empties the step's action and data. The eraser icon does the same.
-- **Clone Step**: makes an identical copy of the step.
-- **Delete Step**: removes the step from the test case permanently.
-- **Step Above** and **Step Below**: add a step on either side of this one.
-- **Disable Step**: deactivates the step so it does not run.
-- **Ignore Step Result**: excludes this step's outcome from the test case result.
-- **Enable Visual Testing**: captures and compares the UI on this step.
-- **Step Settings**: opens the full per-step configuration.
+- **Clear Step**: empties the step's action and data. The eraser icon does the same
+- **Clone Step**: makes an identical copy of the step
+- **Delete Step**: removes the step from the test case permanently
+- **Step Above** and **Step Below**: add a step on either side of this one
+- **Disable Step**: deactivates the step so it does not run
+- **Ignore Step Result**: excludes this step's outcome from the test case result
+- **Enable Visual Testing**: captures and compares the UI on this step
+- **Step Settings**: opens the full per-step configuration
 
 In the recorder, click an element on a step to reach **Edit**, **Change**, and **Create Element**. **Disable Step**, **Ignore Step Result**, and **Enable Visual Testing** are applied by selecting the option and then clicking **Update Step**.
 
@@ -87,10 +73,10 @@ To reorder steps, hover over the drag handle (⋮⋮) before a step, drag the st
 
 Hover over a step number on the **Test Case Details** page, and the number becomes a checkbox. Select the steps you want, or click **Select All** in the menu bar to take every step on the page. The menu bar then offers 4 actions:
 
-- **Update Settings**: changes settings across all the selected steps at once.
-- **Create Block**: builds a block from the selected steps.
-- **Create Step Group**: builds a step group from them.
-- **Delete**: removes them.
+- **Update Settings**: changes settings across all the selected steps at once, which is how visual and accessibility testing are usually turned on. See [Visual testing](/suite/testing-types/visual-testing/) and [Accessibility testing](/suite/testing-types/accessibility-testing/)
+- **Create Block**: builds a block from the selected steps
+- **Create Step Group**: builds a step group from them
+- **Delete**: removes them
 
 The same 4 actions work on recorded steps in the recorder.
 

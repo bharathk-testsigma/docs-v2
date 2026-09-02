@@ -1,101 +1,146 @@
 ---
 title: Dashboards
-description: Build a dashboard from the widget library, filter every widget at once, and share it with stakeholders read-only.
-pageType: task
-verified: 2026-07
+description: The fixed Legacy dashboard and the Advanced dashboards you build from a 40-widget library, filter as a whole, and share by link.
+pageType: guide
 covers:
-  - Create a dashboard
-  - Filter every widget at once
+  - Legacy dashboard
+  - Create an advanced dashboard
+  - Filter a dashboard
   - Edit a dashboard
   - Share a dashboard
+  - Widgets
 sidebar:
   order: 80
   label: Dashboards
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
-import Prerequisites from '~/components/Prerequisites.astro';
 
-A custom dashboard shows test data through widgets you choose. You build as many as you need, point each at the projects and dates that matter, and the widgets refresh themselves as runs complete. A dashboard of five to seven widgets takes minutes.
+A dashboard is the landing view for a project. The **Legacy** dashboard is fixed and shows the project's test case and execution summary. An **Advanced** dashboard is one you build from widgets, filter as a whole, and share by link.
 
-<Prerequisites>
+<Aside type="note">
+Advanced dashboards are off until Testsigma support enables them for your account.
+</Aside>
 
-- Dashboard access is enabled on your account — ask Testsigma support if it is not.
-- At least one [project](/suite/get-started/projects-and-applications/) exists, with an application added.
-- At least one run has completed, so the widgets have data to show.
+## Legacy dashboard
 
-</Prerequisites>
+The Legacy dashboard reports on the project selected in the project switcher, in 7 sections.
 
-## Create a dashboard
+- **Test Case Overview**: the total number of test cases, with counts for Passed, Failed, and Not Executed.
+- **Latest Runs**: the latest executions for the project, filterable by Today, This week, This month, and This quarter.
+- **Test Case Execution Trend**: a chart of the execution trend over the last 30 days.
+- **Review Management**: test cases and elements under **Submitted for review**, with the reviewer's name and the submission date, and those under **Assigned for your review**.
+- **Test Case Status**: a donut chart by Draft, Inreview, Ready, Obsolete, and Rework.
+- **Test Case Type**: a donut chart by Unit Test, Integration, Functional, Non Functional, and User Experience.
+- **Test Case Priority**: a donut chart by Critical, Major, Medium, and Minor.
+
+## Create an advanced dashboard
+
+The project needs at least one application and one completed test run before you start, or the widgets have no data to show.
 
 <Steps>
 
-1. **Switch to Advanced** — On the **Dashboard**, click **Advanced** next to **Legacy**. Existing dashboards appear as tabs.
+1. Click **Advanced** next to **Legacy** on the Dashboard. Existing dashboards appear as tabs, and the list is empty the first time.
 
-2. **Start a new one** — Click **Create Dashboard**. You can also click **Create New +** in the top-right corner and select **Dashboard**.
+2. Click **Create Dashboard**, or click **Create New +** and select **Dashboard**.
 
-3. **Name it** — Enter a name that says who it is for, such as `Release Readiness - Q2 2026`. Keep it searchable but short enough for a navigation menu.
+3. Enter a name that conveys the dashboard's purpose and audience, such as `Release Readiness - Q2 2026` or `Team Velocity Tracker`.
 
-4. **Pick widgets** — Select from the library, which is grouped into six categories. Click the eye icon beside a widget to preview it first.
+4. Select the widgets from the library. You can mix categories, and clicking the eye icon on a widget previews it first.
 
-5. **Build it** — Click **Create Dashboard**.
+5. Click **Create Dashboard**.
 
 </Steps>
 
-The dashboard goes live immediately, and its widgets update in real time as executions finish.
+The dashboard opens with its widgets in place, and they update as test executions complete.
 
-The six categories are Executive Insights & Release Readiness, Reliability & Stability, Test Design & Team Productivity, AI Intelligence & Agentic ROI, Infrastructure & Performance, and Accessibility. You can mix widgets from any of them. [Widgets reference](/suite/analytics/widgets/) describes all 40.
+<Aside type="tip">
+A dashboard of 5 to 7 widgets is enough to start with. Names that are specific enough to search but short enough to fit the navigation menu work best.
+</Aside>
 
-## Filter every widget at once
+## Filter a dashboard
 
-The filters sit at the top of the dashboard and apply to every widget together, so one change updates the whole view.
+The filter controls sit at the top of the dashboard and apply to every widget at once.
 
-| Filter | What it accepts |
-| --- | --- |
-| Project | A specific project, application, and version, or **All Projects** for aggregated data |
-| Date range | Recent hours (3–24), current periods (Today, This Week, This Month, This Quarter), longer ranges (Last 3–60 days), or **Custom Date** |
-| Interval | How data is grouped: Hourly, Daily, Weekly, Monthly, Quarterly, or Yearly |
+- **Project**: scopes the data to a project, application, and version, or to **All Projects** for an aggregated view.
+- **Date range**: recent hours from 3 to 24, current periods for Today, This Week, This Month, and This Quarter, longer ranges from the last 3 to 60 days, or **Custom Date**.
+- **Interval**: groups the data Hourly, Daily, Weekly, Monthly, Quarterly, or Yearly.
 
 ## Edit a dashboard
 
 <Steps>
 
-1. **Open it** — On the **Advanced** dashboard, click the one you want to change.
+1. Click **Advanced** on the Dashboard and open the dashboard you want to change.
 
-2. **Enter edit mode** — Click **Edit** in the top-right corner.
+2. Click **Edit**.
 
-3. **Add widgets** — Click **Add Widgets** to reopen the library. Your current selections are highlighted.
+3. Click **Add Widgets** to open the library. Widgets already on the dashboard are highlighted.
 
-4. **Remove or move one** — Hover a widget, then click the delete icon to remove it, or drag its handle to reposition it.
+4. Hover over a widget to remove it with the **Delete** icon, or to drag it into a new position.
 
-5. **Commit** — Click **Save Changes**.
+5. Click **Save Changes**.
 
 </Steps>
 
 <Aside type="note">
-Removing a widget deletes it from the dashboard rather than hiding it. You can add it back from the library afterwards, but its position is not remembered.
+Removing a widget takes it off the dashboard permanently, though you can add it back later.
 </Aside>
 
 ## Share a dashboard
 
-<Steps>
+Go to **More Options > Share** on the dashboard, click **Create shareable link**, then click **Copy link**.
 
-1. **Open the menu** — On the dashboard you want to share, go to **More Options > Share**.
+Anyone with the link can view the dashboard in read-only mode.
 
-2. **Create the link** — In the **Share Dashboard** dialog, click **Create shareable link**.
+## Widgets
 
-3. **Hand it over** — Click **Copy link**.
+The library holds 40 widgets in 6 categories. Selecting one shows its description, what it is for, and how to read what it displays.
 
-</Steps>
+### Executive insights and release readiness
 
-Anyone holding the link sees the dashboard read-only, which is what makes it safe to send to stakeholders outside the team.
+**All Statuses Summary**, **Pass Fail Trends**, **Latest Runs**, **Consolidated Project Health**, **Total Test Plan Runs**, **Test Plan Execution Analytics**, **Pass Fail Percent Trend**, and **Project Level Stats**.
 
-## When to reach for one
+This category answers whether a release is safe to ship. A high pass count with a low fail count is healthy. A high Error count points at infrastructure rather than at the application. On **Test Plan Execution Analytics**, a low success rate means flakiness and a high duration means a bottleneck, so sorting by duration finds the slowest plans.
 
-| Situation | What to watch |
-| --- | --- |
-| Release decisions | Check the dashboard daily during a release cycle for a go or no-go signal |
-| Quality improvement | Track flaky tests and error patterns to decide what to stabilise first |
-| Team performance | Monitor authoring velocity and see who is growing the suite |
-| Infrastructure planning | Watch utilisation and find bottlenecks before they cause delays |
-| Accessibility compliance | Follow WCAG conformance, open issues by severity, and remediation progress |
+### Reliability and stability
+
+**Test Health Snapshot**, **Flaky Test List**, **Top Failing Tests By User**, **Top Failing Tests By Day**, **Error Statistics**, **Top Error Types**, **Time To Fix Test KPI**, and **Stability Ratios**.
+
+Reliability widgets find what to stabilize first. **Test Health Snapshot** classifies suites as Consistent, Flaky, or Unexecuted, and a Consistent share above 80% is the target, while a high Unexecuted share points at coverage gaps rather than instability. **Flaky Test List** ranks tests by flake score, and a high score usually means a timing or resource dependency, so the top of that list is where stabilization starts.
+
+### Test design and team productivity
+
+**Tests Authored Over Time**, **New Tests Per User**, **Fixed Failed Tests Per User**, **Fixed Failed Tests KPI**, **Tests Authored Vs Executed**, **Stale Assets By Category**, **Distribution By Priority / Status / Type**, **Authored By App Type**, and **Test Cases Submitted/Assigned For Review**.
+
+Productivity widgets track authoring velocity, who is contributing, and which assets have gone stale. Flat or declining columns on **Tests Authored Over Time** mean either saturation or a resource constraint, and low fix counts across the whole team on **Fixed Failed Tests Per User** mean flaky tests are accumulating.
+
+### AI intelligence and agentic ROI
+
+**AI Vs Manual Composition**, **Auto Healing Trend**, and **NLP Usage Ranked List**.
+
+AI widgets show what AI-assisted authoring and Auto Healing are returning. **Auto Healing Trend** compares failed steps against auto-healed ones, and each healed step is manual effort avoided.
+
+### Infrastructure and performance
+
+**Concurrency Utilization Sessions**, **Execution Duration Trend**, **Environment Coverage**, and **App Coverage By Type**.
+
+Infrastructure widgets show resource use and where the bottlenecks are, before they cause delays. On **Concurrency Utilization Sessions**, the gap between sessions used and your configured limit is spare capacity, and running near the limit constantly means it is time to expand. **Execution Duration Trend** carries average, median, and p95 durations, so a sudden spike is a performance regression rather than a slow drift.
+
+### Accessibility
+
+**Compliance Score**, **Issues by Severity**, **Issues by WCAG Criterion**, **Trend Over Time**, **Top Issues**, **Page-Level Health**, **VPAT Readiness**, and **Remediation Progress**.
+
+Accessibility widgets track WCAG conformance, how many issues remain open by severity, and remediation progress. **Compliance Score** breaks conformance down by level, and a low A-level score means critical gaps that block basic accessibility requirements, whatever the overall figure looks like.
+
+Every accessibility widget reads from the **Standard Selector** at the top of the dashboard, which maps your existing test data to the standard you pick without needing new runs. The available standards are WCAG 2.2, ADA, Section 508, EAA, and EN 301 549. The default is WCAG 2.2 AA, and the selection persists per application.
+
+### Starting combinations
+
+| Dashboard | Widgets |
+|---|---|
+| Release readiness | All Statuses Summary, Pass Fail Trends, Latest Runs, Consolidated Project Health |
+| Quality improvement | Flaky Test List, Top Failing Tests By User, Error Statistics, Time To Fix Test KPI |
+| Team productivity | Tests Authored Over Time, New Tests Per User, Fixed Failed Tests Per User, Stale Assets By Category |
+| AI investment | AI Vs Manual Composition, Auto Healing Trend, NLP Usage Ranked List |
+| Infrastructure planning | Concurrency Utilization Sessions, Execution Duration Trend, Environment Coverage, App Coverage By Type |
+| Accessibility compliance | Compliance Score, Issues by Severity, Trend Over Time, Remediation Progress |

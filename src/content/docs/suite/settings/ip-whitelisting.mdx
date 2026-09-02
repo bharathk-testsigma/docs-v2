@@ -1,50 +1,66 @@
 ---
 title: IP whitelisting
-description: Allow Testsigma domains and IP ranges through your network so restricted environments and firewalled applications stay testable.
+description: Allow Testsigma's IPs and domains through your firewall so cloud executions reach a private-network application, and know when Tunnel is the right tool instead.
 pageType: task
 verified: 2026-08
 covers:
-  - Allow access to Testsigma
-  - Allow Testsigma to reach your application
+  - Find the addresses
+  - Domains to allow
+  - What does not need whitelisting
+  - Choose the right option
 sidebar:
   order: 90
   label: IP Whitelisting
 ---
 
-Restricted access works in two directions. If your administrator blocks outbound traffic, Testsigma's domains need a network exception before you can open the application. If your application sits behind a firewall, Testsigma's cloud IP ranges need one too.
+import { Aside } from '@astrojs/starlight/components';
 
-## Allow access to Testsigma
+Testsigma's cloud runs tests from its own infrastructure, so an application behind a firewall rejects those requests unless the firewall knows to allow them. Whitelisting adds Testsigma's addresses to that allowed list.
 
-Ask your network administrator to whitelist these domains:
+<Aside type="note">
+Whitelisting reaches an application on a private network. It cannot reach one hosted on `localhost` or a developer's own machine. For that, use [Testsigma Tunnel](/suite/get-started/installation/testsigma-tunnel/) or run on local devices.
+</Aside>
 
-| Domain | What it unblocks |
-| --- | --- |
-| `*.testsigma.com` | The Testsigma application itself |
-| `*.freshchat.com` | Testsigma Chat Support, for live chat with the support team |
-| `*.freshdesk.com` | Testsigma Help Desk, for creating tickets and checking their status |
+## Find the addresses
 
-## Allow Testsigma to reach your application
+Go to **Settings > Testsigma IP**. Two sets are listed, and both matter:
 
-Cloud test machines reach your application from Testsigma's own IP ranges. The **Testsigma IP** info screen under **Settings** publishes them for your account:
+- **Testsigma Server IP**: the server where executions run on Testsigma's device cloud
+- **Testsigma Lab IPs**: the labs holding your account's test assets and data
 
-- **Testsigma Server IP**: the address of the Testsigma server, where executions on Testsigma's device cloud run.
-- **Testsigma Lab IPs**: the ranges for Testsigma Labs, where the account's test assets and data are hosted.
+Give both to your network administrator or infosec team to add to the firewall's allowed list.
 
-Share the listed ranges with your network administrator or infosec team to allow them.
+<Aside type="note">
+Whitelisting applies to ad-hoc runs and test plan executions alike, since both originate from those addresses.
+</Aside>
 
-Allowlisting is one of three routes to a private application. [Testsigma Tunnel](/suite/get-started/installation/testsigma-tunnel/) opens a secure outbound connection instead. The [Testsigma Agent](/suite/get-started/installation/testsigma-agent/) runs tests on your own machines, so traffic never leaves your network.
+## Domains to allow
 
-## Troubleshooting
+An IP allowlist is not always enough. Where outbound traffic is filtered by domain, these have to be reachable as well.
 
-### You cannot open the Testsigma application
+| Purpose | Domain |
+|---|---|
+| Local agent and cloud services | `app.testsigma.com` |
+| Testsigma Tunnels | `connect.testsigma.com` |
+| Mobile Recorder | `mobilerecorder.testsigma.com` |
+| Asset Proxy | `asset-proxy.testsigma.com` |
+| Identity | `id.testsigma.com` and `static-id.testsigma.com` |
 
-Network restrictions are blocking the domain. Request that your administrator whitelist `*.testsigma.com`.
+The agent also downloads browser drivers on demand, from `googlechromelabs.github.io`, `chromedriver.storage.googleapis.com`, `storage.googleapis.com`, `registry.npmmirror.com`, and `raw.githubusercontent.com` for Chrome and Firefox, and `msedgewebdriverstorage.blob.core.windows.net` for Edge and Internet Explorer.
 
-### Chat support or the Help Desk does not load
+## What does not need whitelisting
 
-Whitelist `*.freshchat.com` and `*.freshdesk.com` to reach the customer support portals.
+The Testsigma Agent needs no inbound rule at all. It queries Testsigma's servers and receives responses, and Testsigma never initiates a connection to it, so nothing has to be opened inward. Outgoing connections to `*.testsigma.com` on port 443 do have to be allowed.
 
-### Tests pass on a local device but fail in Testsigma Lab
+Testsigma Tunnel works the same way. It opens an outbound connection and accepts none, which is why it reaches an application that whitelisting cannot.
 
-The cloud machines cannot reach an application behind your firewall. Allow the ranges from the **Testsigma IP** info screen, or route around the firewall with Testsigma Tunnel or the Testsigma Agent.
+## Choose the right option
 
+| Your application is | Use |
+|---|---|
+| Reachable from the internet | Nothing. Cloud execution works as it is |
+| On a private network, reachable by IP | IP whitelisting, then cloud execution |
+| On `localhost` or a developer machine | Testsigma Tunnel, or the agent on local devices |
+| Needing a specific physical device | The agent on local devices |
+
+See [Run tests](/suite/run-tests/test-runs/) and [Testsigma Tunnel](/suite/get-started/installation/testsigma-tunnel/).

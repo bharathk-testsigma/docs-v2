@@ -1,8 +1,15 @@
 ---
-title: On-premise architecture
-description: How the containers, database, and agents fit together on your own infrastructure, and which port each one uses.
+title: On-premise prerequisites
+description: What the host server needs, what the network has to allow, and the domain, SMTP, and agent decisions to make before installation.
 pageType: reference
-verified: 2026-07
+covers:
+  - Host machine
+  - Database
+  - Machine configuration
+  - Network pre-checks
+  - Architecture
+  - Storage and backups
+  - Decisions to make before installation
 sidebar:
   order: 10
   label: Prerequisites
@@ -10,50 +17,67 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-An on-premise deployment runs Suite inside your own network. Client machines hold the agents, a load balancer fronts a set of service containers, and every container reads and writes one MySQL database. This page lists the pieces and their ports.
+Testsigma On-Premise runs the whole product inside your own infrastructure, as a set of Docker containers on one host server with a MySQL database behind them. This page covers what that host needs, what the network has to allow, and what to decide before installation starts.
 
-## The three layers
+<Aside type="note">
+Testsigma On-Premise is not a hypervisor-based installation.
+</Aside>
 
-| Layer | What sits there |
-| --- | --- |
-| Client systems | The [agents](/suite/get-started/installation/testsigma-agent/) that create and execute tests, plus the browsers people use to reach the web interface |
-| Central server | The container set that processes and stores everything the agents send, and serves the web interface |
-| Database | MySQL, holding test results, user data, and everything else |
+## Host machine
 
-Traffic flows one way in. Client systems with the agent installed connect to the load balancer, which distributes requests across the service containers by role. Every container talks to the central database, and each has its own ports for internal communication.
+| Component | Minimum |
+|---|---|
+| CPU | 16 core |
+| RAM | 64 GB and above |
+| Storage | 512 GB to 2 TB single storage, or 256 GB plus a mounted disk of 1 TB and above |
 
-### Client systems
+<Aside type="note">
+Schedule image backups for either storage option.
+</Aside>
 
-Agents are installed per client machine. They drive test browsers and mobile devices, using ports **8383**, **8484**, **8100**, and **5037**, plus the range **10000–65535**. They send results back to the central server.
+## Database
 
-### Central server
+| Component | Minimum |
+|---|---|
+| CPU | 4 core |
+| RAM | 32 GB |
+| RDBMS | MySQL |
+| Version | 8.0.x |
 
-The central server is the hub. It processes and stores the data agents send, serves the web interface, and communicates with the database to store and retrieve it. It also provides storage for data and test results.
+Testsigma provides a MySQL Docker container. A hosted MySQL works instead, as long as it meets these specifications.
 
-### Database
+Confirm the memory and vCPU counts with your vendor before sizing the machine, so the figures match what you will actually run.
 
-MySQL is the backbone of storage, holding test results, user data, and the rest. It talks to the central server over TCP on port **3307**.
+## Machine configuration
 
-## Services and ports
+- **OS**: install Ubuntu at the root, on a 256 GB machine. RHEL 9.x is the recommended alternative, and RHEL 8 is supported.
+- **Additional storage**: mount a hard disk of 2 TB or more, sized to your usage.
+- **Mount point**: mount the external disk at `/data`.
+- **Software installation**: all required software installs at the root, with storage configured to use the mounted disk.
+- **File system**: any file system your team is comfortable with.
+- **Hard disk performance**: a RAID configuration improves disk performance, and is optional.
 
-| Service | Role | Ports |
-| --- | --- | --- |
-| Load balancer | The entry point, spreading incoming traffic so no single server becomes a bottleneck | — |
-| ID server | User identity, authentication, and authorisation | 8084, 9095, 4203 |
-| App server | The main application logic and user requests | 8080, 9096, 4211 |
-| Addon server | Addons and plugins that extend the application | 8082, 9097, 4201 |
-| Audit server | Logging, monitoring, and auditing of activity | 9090, 4230 |
-| Visual testing server | Visual testing, UI validation, and visual regression | 7010 |
-| MySQL | All application data, reachable by every server | 3307 |
+## Network pre-checks
 
-The load balancer routes to the ID, App, Addon, Audit, and Visual Testing servers. Each of those reads and writes MySQL as it needs to.
+The server needs an active internet connection.
 
-## Ports by container name
+If a firewall is enabled, whitelist these domains:
 
-These are the names as they appear in the compose file, which is what you match against when a port conflict comes up.
+```text
+*.docker.com
+*.amazon.com
+*.amazonaws.com
+*.maven.org
+```
 
-| Container | Ports |
-| --- | --- |
+To use Testsigma's mail service, whitelist `*.sendgrid.com` as well.
+
+### Ports
+
+Unblock these ports if they are blocked. Testsigma's services use them for internal communication.
+
+| Service | Ports |
+|---|---|
 | `testsigma_mysql` | 3307 |
 | `testsigma_id_server` | 8084, 9095 |
 | `testsigma_id_server_ui` | 4203 |
@@ -65,6 +89,91 @@ These are the names as they appear in the compose file, which is what you match 
 | `testsigma_audit_ui` | 4230 |
 | `testsigma_visual_testing_server` | 7010 |
 
+An agent uses a different set: 8383, 8484, 8100, 5037, and the range 10000 to 65535, for talking to browsers and mobile devices.
+
+## Architecture
+
+Three parts make up the deployment.
+
+**Client systems** run the Testsigma agent, which drives the browsers and mobile devices, and sends results back. Users reach the application through a browser on the same systems.
+
+**The central server** processes and stores everything the agents send, serves the web interface, and holds the screenshots, apps, and other permanent files. A load balancer sits in front of it and routes traffic to the containers by role.
+
+**The database** stores test results, user data, and the rest. Every server communicates with it over TCP on port 3307.
+
+| Container | Role | Ports |
+|---|---|---|
+| Load Balancer | The entry point, distributing incoming traffic across servers | |
+| ID Server | User identity, authentication, and authorization | 8084, 9095, 4203 |
+| App Server | The main application logic and user requests | 8080, 9096, 4211 |
+| Addon Server | Add-ons that extend the application | 8082, 9097, 4201 |
+| Audit Server | Logging, monitoring, and auditing of system activity | 9090, 4230 |
+| Visual Testing Server | Visual testing, including UI validation and visual regression | 7010 |
+| MySQL Database | All application data, accessed by every server | 3307 |
+
+## Storage and backups
+
+The host server where the containers run is the final storage location for screenshots, apps, and other permanent files.
+
+- **Frequency**: back up every 24 hours.
+- **Retention**: keep backups for 1 week.
+- **Cleanup**: clear old data periodically to keep disk space healthy. Longer retention may need additional hardware, which attaches to the existing mount point through LVM.
+
 <Aside type="note">
-The port count surprises people. Each one belongs to a distinct micro-service running as its own container, so the list grows with the service set rather than representing redundancy. Note that MySQL is reached on 3307 externally while using 3306 inside its container.
+Your IT team owns the backups. Testsigma does not take them for you. Run them as regular disk backups or as backups of specific data folders.
 </Aside>
+
+Temporary files such as screenshots also need periodic clearing, depending on usage and available disk space.
+
+## Decisions to make before installation
+
+### Domain name
+
+By default you receive URLs ending in `testsigmaprivate.com`, such as `https://cx.testsigmaprivate.com`. To use your own domain instead, tell Testsigma before the on-premise build is generated, and copy your SSL certificates to the installation server.
+
+Six services need a URL and a matching `.crt` certificate:
+
+| Service | Subdomain |
+|---|---|
+| Identity | `id-testsigma.<your-domain>` |
+| App | `app-testsigma.<your-domain>` |
+| Kibbutz, the addon service | `kibbutz-testsigma.<your-domain>` |
+| Visual | `visual-testsigma.<your-domain>` |
+| Audit | `audit-testsigma.<your-domain>` |
+| Mobile Recorder | `mobilerecorder-testsigma.<your-domain>` |
+
+A wildcard certificate covers all six. For `lowcode.com`, the individual subdomains would be `id-testsigma.lowcode.com`, `app-testsigma.lowcode.com`, and so on.
+
+<Aside type="note">
+Never share your SSL certificate key files. Testsigma asks only for the `.crt` files, and will not ask for a `.key` file at any point.
+</Aside>
+
+### SMTP
+
+Testsigma's own mail service works out of the box. To use your internal SMTP instead, have those settings ready.
+
+### Recorder installation
+
+Installing the Testsigma Recorder on Chrome needs the ability to enable developer mode and load the recorder unpacked.
+
+### Agent operating system
+
+The agent runs on Linux, Windows, or macOS, whichever your team prefers.
+
+<Aside type="note">
+These recommendations adjust to your requirements, and installation costs vary with the adjustments.
+</Aside>
+
+## Frequently asked questions
+
+### Why does Testsigma need so many ports?
+
+Each micro-service runs as its own Docker container and uses its own ports. The service-to-port mapping is in the ports table above. MySQL is the one exception worth noting: 3306 is the standard MySQL port, and Testsigma uses 3307 internally.
+
+### Which operating system should the host run?
+
+Ubuntu is preferred. RHEL 9.x is the recommended alternative, and RHEL 8 is supported. On RHEL, follow Docker's own installation documentation for that distribution.
+
+### Do I need Windows machines for the server?
+
+No. The server operation needs none. The agent, which is separate, runs on Linux, Windows, or macOS.

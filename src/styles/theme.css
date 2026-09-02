@@ -47,6 +47,14 @@
 	--ts-dang-bg: #2c2727;
 	--ts-dang-bd: #473d3a;
 
+	/* v1/v2 notice bar (Header.astro, row 0). The one blue in an otherwise
+	   monochrome shell -- an announcement bar has to read as a notice, not as
+	   more chrome. Dark values are the light ones sunk onto the dark ground. */
+	--ts-banner-bg: #101c2e;
+	--ts-banner-bd: #1e2f47;
+	--ts-banner-tx: #c3ccd8;
+	--ts-banner-lk: #7ab3ff;
+
 	/* AI surface (Ask Assistant). Pink→purple marks the AI surface ONLY -- it is
 	   the one place colour is allowed in a monochrome shell. */
 	--ts-ai: #e58086;
@@ -90,6 +98,11 @@
 	--ts-dang: #9c4038;
 	--ts-dang-bg: #fcf7f6;
 	--ts-dang-bd: #ecdedb;
+
+	--ts-banner-bg: #eff5ff;
+	--ts-banner-bd: #d6e4fb;
+	--ts-banner-tx: #1f2d44;
+	--ts-banner-lk: #1a6ae0;
 
 	/* AI surface (Ask Assistant) -- light. */
 	--ts-ai: #b2506a;
@@ -173,10 +186,14 @@
 	--sl-color-gray-6: var(--ts-bd);
 	--sl-color-gray-7: var(--ts-bd-soft);
 
-	/* The header is ONE 64px row (the section-tab strip was removed 2026-08-14;
-	   products switch from the dropdown in the brand cluster). Every sticky
-	   offset -- rail, ToC, scroll padding -- derives from this. */
-	--sl-nav-height: 4rem; /* 64px */
+	/* The header is the 40px v1/v2 notice plus ONE 64px row (the section-tab
+	   strip was removed 2026-08-14; products switch from the dropdown in the
+	   brand cluster). Every sticky offset -- rail, ToC, scroll padding --
+	   derives from this, so the notice is paid for here and nowhere else --
+	   dismissing it zeroes the variable (below) and the whole shell moves up.
+	   Drop the notice for good: delete .ts-v1note and set --ts-banner-h to 0. */
+	--ts-banner-h: 2.5rem; /* 40px */
+	--sl-nav-height: calc(4rem + var(--ts-banner-h)); /* 64px + notice */
 	--sl-sidebar-width: var(--ts-rail-w); /* 288px left rail */
 	--sl-sidebar-pad-x: 0px;
 	--sl-content-width: 50rem; /* 800px prose column */
@@ -188,6 +205,14 @@
 	   and its hairline strokes made chip text read pale at any colour. Matches
 	   the expressiveCode block stack in astro.config.mjs. */
 	--sl-font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+/* Notice dismissed (Header.astro writes the flag; its inline script restores
+   this attribute before first paint). Zeroing the variable is the whole reflow:
+   the header shrinks to its 64px row and the rail, ToC and heading-anchor
+   scroll padding follow it up, because all three are calc()s off it. */
+:root[data-ts-banner='off'] {
+	--ts-banner-h: 0px;
 }
 
 /* Short pages have no scrollbar while long ones do; without a stable gutter the
@@ -976,21 +1001,13 @@ mobile-starlight-toc {
 }
 
 /* ---- changelog release rows ----
-   starlightRouteData.ts stamps each release link with data-date (short month)
-   and a Latest badge on the newest. The row lays out version · chip ·· month,
-   with the month living in ::after so the rail needs no extra markup. */
+   starlightRouteData.ts stamps each release link with data-release and a Latest
+   badge on the newest. The row lays out release date · chip. */
 #starlight__sidebar a[data-release] {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-}
-#starlight__sidebar a[data-release]::after {
-	content: attr(data-date);
-	margin-left: auto;
-	font-size: 11.5px;
 	font-variant-numeric: tabular-nums;
-	color: var(--ts-tx3);
-	white-space: nowrap;
 }
 #starlight__sidebar a[data-release] .sl-badge.success {
 	padding: 1px 6px;
@@ -1311,29 +1328,108 @@ starlight-toc nav > ul > li:first-child:has(a[aria-current='true']) + li > a::be
    Linear-fashion: quiet labels, a 2px accent bar under the active one, and a
    hairline that ends with the tabs instead of running the content width
    (inline-flex makes the list shrink-wrap its items). */
-.sl-markdown-content starlight-tabs [role='tablist'] {
+/* Icon-only download buttons (class set on plain <a> tags in the content,
+   e.g. the agent download table). The column header carries the file type,
+   so the cell needs only the glyph; each link still carries an aria-label. */
+.sl-markdown-content a.ts-dlbtn {
 	display: inline-flex;
-	width: max-content;
-	gap: 22px;
-	border-bottom: 1px solid var(--ts-bd);
+	align-items: center;
+	justify-content: center;
+	vertical-align: middle;
+	width: 30px;
+	height: 30px;
+	border: 1px solid var(--ts-bd);
+	border-radius: 7px;
+	color: var(--ts-tx2);
+	transition:
+		background var(--ts-t) var(--ts-ease),
+		color var(--ts-t) var(--ts-ease);
+}
+.sl-markdown-content a.ts-dlbtn::before {
+	content: '';
+	width: 15px;
+	height: 15px;
+	background: currentColor;
+	-webkit-mask: center / contain no-repeat;
+	mask: center / contain no-repeat;
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='7 10 12 15 17 10'/%3E%3Cline x1='12' x2='12' y1='15' y2='3'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='7 10 12 15 17 10'/%3E%3Cline x1='12' x2='12' y1='15' y2='3'/%3E%3C/svg%3E");
+}
+.sl-markdown-content a.ts-dlbtn:hover {
+	background: var(--ts-hover);
+	color: var(--ts-tx);
+}
+/* Rows holding download chips centre vertically against the chip height, so
+   the OS name and the icons sit on one line. Alignment and widths stay the
+   standard table treatment. */
+.sl-markdown-content table:has(a.ts-dlbtn) td,
+.sl-markdown-content table:has(a.ts-dlbtn) th {
+	vertical-align: middle;
+}
+/* A cell holding only a chip collapses its line-height: measured renders
+   showed a phantom empty line box under the chip (chip + ~23px strut),
+   which parked the chip ~12px above the row's centre line. With the strut
+   gone the chip IS the cell content, and middle alignment lands exactly. */
+.sl-markdown-content table td:has(> a.ts-dlbtn:only-child) {
+	line-height: 0;
+}
+
+/* Browser-tab treatment: the strip and the panel are one box. The strip is a
+   panel-tinted band fused to the top of the content frame (rounded top, no
+   bottom border), and the active tab is page-coloured with rounded top
+   corners only, so it flows straight into the content below -- no divider
+   line runs between strip and panel, the colour change IS the divider. */
+.sl-markdown-content starlight-tabs .tablist-wrapper {
+	margin: 0;
+}
+.sl-markdown-content starlight-tabs [role='tablist'] {
+	display: flex;
+	max-width: 100%;
+	overflow-x: auto;
+	gap: 2px;
+	padding: 6px 8px 0;
+	border: 1px solid var(--ts-bd);
+	border-bottom: none;
+	border-radius: 10px 10px 0 0;
+	background: var(--ts-panel);
 }
 .sl-markdown-content starlight-tabs .tab > [role='tab'] {
-	padding: 4px 2px 8px;
-	margin-bottom: -1px; /* the active bar sits ON the hairline, not above it */
-	border-bottom: 2px solid transparent;
+	padding: 6px 14px;
+	margin-bottom: 0;
+	border: none;
+	border-radius: 7px 7px 0 0;
 	box-shadow: none;
 	text-decoration: none;
 	font-size: 0.844rem; /* 13.5px, matches body */
 	font-weight: 450;
 	color: var(--ts-tx2);
+	white-space: nowrap;
+	transition:
+		background var(--ts-t) var(--ts-ease),
+		color var(--ts-t) var(--ts-ease);
 }
 .sl-markdown-content starlight-tabs .tab > [role='tab']:hover {
+	background: var(--ts-hover);
 	color: var(--ts-tx);
 }
 .sl-markdown-content starlight-tabs .tab > [role='tab'][aria-selected='true'] {
-	border-bottom-color: var(--ts-ac);
+	background: var(--ts-bg);
+	border: 1px solid var(--ts-bd);
+	border-bottom: none;
+	padding: 5px 13px 6px; /* the border eats 1px; keep the chip the same size */
 	color: var(--ts-tx);
 	font-weight: 550;
+}
+/* The panel completes the box the strip opens: side and bottom borders only,
+   rounded bottom corners, flush against the strip. A quiet hairline, not a
+   filled card -- panels hold tables, code blocks, and asides that carry
+   their own frames. */
+.sl-markdown-content starlight-tabs [role='tabpanel'] {
+	margin-top: 0;
+	padding: 8px 18px 18px;
+	border: 1px solid var(--ts-bd);
+	border-top: none;
+	border-radius: 0 0 10px 10px;
 }
 
 /* ----------------------------------------------------------------- tables --

@@ -1,87 +1,89 @@
 ---
-title: Agentic Execution
-description: How Agentic Learning and Run with Copilot differ, what each takes as input, and which one to reach for.
+title: Agentic execution
+description: Agentic Learning explores your application to complete a generated test case — how it differs from Run with Copilot, and how to run a learning session in the Live Editor.
 pageType: task
 verified: 2026-08
 covers:
-  - How Agentic Learning works
-  - How Run with Copilot works
+  - Run a learning session
+  - The Live Editor
 sidebar:
   order: 30
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside, Steps } from '@astrojs/starlight/components';
 
-Atto has two ways to put an agent on your live application, and they are not interchangeable. Agentic Learning (Beta) starts from manual steps and writes the automation. Run with Copilot starts from automation that already exists and verifies it.
+Agentic Learning turns a generated test case into a working one by exploring your application. Where **Run with Copilot** executes the steps you already have, Agentic Learning finds the steps you are missing. See [AI agents](/suite/atto/ai-agents/) for the Generator agent and [Run with Copilot](/suite/atto/ai-agents/#run-with-copilot).
 
-## Choosing between them
+| Question | Agentic Learning | Run with Copilot |
+|---|---|---|
+| What is it for? | Discovering and correcting the test flow | Executing and validating the generated steps |
+| How does it work? | Explores the application to find missing or incorrect steps | Runs the defined steps to check they work |
+| What does it focus on? | The accuracy of the test flow | Reliable step execution |
+| When does it run? | During generation and learning | After generation, before you save |
+| What do you do? | Little. It runs mostly on its own | Debug and validate interactively |
+| What do you end up with? | A refined, complete test flow | A test case ready to automate and execute |
 
-The input decides which one you want. If you have prose steps a human wrote, you need Agentic Learning (Beta). If you have generated steps that need checking, you need Run with Copilot.
+Agentic Learning works like an exploratory tester. It learns how the application behaves and adjusts the test case to match the real user journey, rather than assuming the generated steps were correct. It identifies navigation paths, finds and adds missing steps, corrects steps that deviate from the expected workflow, and learns behavior patterns in the application.
 
-| | Agentic Learning (Beta) | Run with Copilot |
-| --- | --- | --- |
-| Primary goal | Discover and correct the test flow | Execute and validate the generated steps |
-| Input | Manual steps | Automated NLP steps |
-| What the agent does | Explores the application, then generates automation from what it observed | Executes the steps, verifies they work, and updates locators |
-| When it runs | During test generation and learning | After generation, before the test case is saved |
-| Your role | Mostly autonomous; record manual steps when the agent gets stuck | Interactive debugging and validation |
-| Output | A refined, complete flow as a new automated test case | A verified or updated test case, ready for execution |
-
-Both open a Copilot window beside the test case, and both drive Chrome for Testing rather than your everyday browser.
-
-## How Agentic Learning works
-
-Agentic Learning identifies the correct test flow when information is missing or incorrect. It behaves like an exploratory tester: it learns the application's behavior and adjusts the test case to match the actual user journey. Use it to:
-
-- Identify application navigation paths.
-- Locate and add missing steps to the test flow.
-- Correct steps that deviate from the expected workflow.
-- Learn common behavior patterns within the application.
-
-Reach for it when generated flows are incomplete, steps are missing or in the wrong order, or the navigation path is unclear.
-
-You start the agent, and it works through your manual steps against the running application. The chat log records each step with its verdict, and a green tick marks the ones that passed.
-
-The agent is not locked to its own session. You keep full access to the application in the browser throughout, so when the agent stalls you can drive the application yourself and let it pick up from there. **Record Manual Steps** is the control for that.
-
-When the manual steps are done, you ask Atto to generate the automated test case. It produces NLP steps bound to Testsigma element names, which you then save to the library.
+Reach for it when the generated flow is incomplete, when steps are missing or out of order, or when the navigation path through the application is unclear.
 
 <Aside type="note">
-Agentic Learning is Beta as of July 2026. Verify the flow in the product before you build a process around it.
+Agentic Learning needs [Testsigma Terminal](/suite/get-started/installation/testsigma-terminal/) installed, because the learning session drives a real browser on your machine.
 </Aside>
 
-## How Run with Copilot works
+## Run a learning session
 
-Run with Copilot validates a generated test case through real-time execution in a selected environment. Use it to:
+Turn on **Generator (Live App)** under **Settings > Preferences > Agentic AI > Generator** before you start.
 
-- Execute generated test steps and identify failures.
-- Identify issues with element detection.
-- Validate that assertions and test data are correct.
-- Debug steps before saving the test case to the library.
+### Start the session
 
-Reach for it to confirm a test runs from start to finish: no errors, every page element identified, and the test data working in that specific environment.
+<Steps>
 
-It executes the automated steps Atto generated and repairs them as it goes. Its distinguishing control is **Generate Steps** in the Copilot panel header, which fills in automation mid-session when a locator is missing or a step fails.
+1. Expand a subfolder in the generated test case list and select a test case.
 
-After the run, a banner reports that the steps may have changed and offers a refresh. Take it: the test case in front of you is stale until you do.
+2. Open the **Automated Steps** tab in **Test Case Details**.
 
-## Where Copilot fits
+3. Hover over **Agentic Learning (Beta)** and select an environment. Atto's Live Editor opens with the manual steps preloaded.
 
-Plain Copilot is the third member of this family and the one people confuse with the other two. It executes the steps of a test case you already have, pauses at debug points, and records new steps live while paused. It does not generate a test case from scratch. [Copilot](/suite/atto/copilot/) documents that session end to end.
+4. Click **Start Learning Live App**. A Chrome browser opens, and the Live Editor executes the manual steps to learn the UI elements.
 
-All three need Testsigma Terminal running locally. Copilot cannot start without it, and the product says so rather than failing quietly.
+5. Click **Start Generating Automated Test Case** once the steps have run, and review what was learned.
 
+</Steps>
 
-## FAQs
+### Control the session
 
-**Can I run the old Java agent and Testsigma Terminal on the same machine?**
+The Live Editor carries these controls while it learns.
 
-Only one agent can be active at a time. Testsigma Terminal detects an existing Java agent and uses it for Copilot and for test execution.
+- **Reset**: clears every in-progress action and stops the browser learning session
+- **Pause** and **Play**: stop the learning temporarily and resume it
+- **Stop**: ends the session and closes it
+- **Record Manual Steps**: captures steps by hand and adds them to the test case
 
-**Which agent handles remote executions and ad-hoc runs?**
+To record manual steps, click **Record Manual Steps**, perform the actions, and click **Stop Recording**. Select the steps you want under **Manual Recorded Steps**, choose where they go in **Add Step(s) After**, and click **Add Steps**.
 
-The same one. Testsigma Terminal integrates with the existing agent, and that agent serves remote executions, ad-hoc runs, and Copilot alike.
+### Finish the session
 
-**Can I start, stop, or restart the agent from Suite?**
+Click **Run Now** in the Live Editor to execute the test case locally, then click **Accept** to save it to the test case library.
 
-Not yet. The agent is managed from the Testsigma Terminal desktop application only.
+<Aside type="note">
+A session launched through Agentic Learning consumes an Atto session rather than a Copilot parallel.
+</Aside>
+
+## The Live Editor
+
+Agentic Learning runs in Atto's Live Editor, which also debugs and modifies a test case while it executes. Testsigma Terminal has to be installed and Copilot ready.
+
+<Steps>
+
+1. Go to **Create Tests > Test Cases** and open or create a test case.
+
+2. Click **Copilot** in the action panel.
+
+3. Select a step from the **Select Step** dropdown in the **Copilot** overlay to set the debug point.
+
+4. Click **Launch**. Copilot executes every step up to that point.
+
+</Steps>
+
+When execution pauses at a debug point or on a failure, the global debug toolbar becomes active, with **Resume**, **Step Over**, **Skip Over**, and **Restart Execution**. See [Copilot](/suite/atto/copilot/#use-the-debug-toolbar) for what each control does.

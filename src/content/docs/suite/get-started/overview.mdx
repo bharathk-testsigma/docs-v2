@@ -1,120 +1,131 @@
 ---
 title: Overview
-description: What Suite is, the four parts of it, what needs installing, and which application types run on which engine.
+description: The four decisions that shape everything in Testsigma — what you test, how you write it, where it runs, and how a test becomes a result — plus the shortest path to a first passing test.
 pageType: guide
 verified: 2026-08
 covers:
-  - What Suite is
-  - The four parts
-  - What you need installed
-  - Projects and application types
-  - Classic or Modern
-  - Where Atto fits
+  - What you can test
+  - How you write a test
+  - Where tests run
+  - From a test to a result
+  - Your first test
 sidebar:
   order: 1
   label: Overview
 ---
 
-import { Aside, CardGrid } from '@astrojs/starlight/components';
-import DocCard from '~/components/DocCard.astro';
+import { Aside, Steps } from '@astrojs/starlight/components';
 
-Suite is Testsigma's agentic test automation product. You say what needs testing, Atto's agents plan, build, run, and maintain the tests, and you review what they produce. Testsigma hosts the execution infrastructure, so there is no grid to stand up and no test framework of your own to maintain.
+Testsigma automates tests you describe rather than code. A test step reads `Click on Login Button`, and a whole test case can come from a Jira ticket or a Figma frame, so the people who know the application are the ones who automate it.
 
-<CardGrid>
-	<DocCard
-		icon="layers"
-		title="The four parts"
-		href="#the-four-parts"
-		description="Authoring, Atto, execution, and results, and which nav entry each one is."
-	/>
-	<DocCard
-		icon="download"
-		title="What you need installed"
-		href="#what-you-need-installed"
-		description="Nothing for cloud runs. Three things for everything else."
-	/>
-	<DocCard
-		icon="list-format"
-		title="Projects and application types"
-		href="#projects-and-application-types"
-		description="The nine types a project can target, and what Unified does differently."
-	/>
-	<DocCard
-		icon="box"
-		title="Classic or Modern"
-		href="#classic-or-modern"
-		description="Which engine each application type supports, and why the choice is permanent."
-	/>
-</CardGrid>
+This page covers the decisions that shape everything else: what you are testing, how you write the test, where it runs, and how a test becomes a result. Then the quickest route to a first passing test.
 
-{/* SCREENSHOT NEEDED: the Suite left navigation at full height, expanded so Create Tests and Test Data show their child items, light and dark */}
+## What you can test
 
-## The four parts
+The application type is chosen when you create the application, and it cannot be changed afterwards. Pick it against what you are testing, not what you plan to test later.
 
-A test case is an ordered list of steps in the order a user would perform them. Each step is an NLP step, Testsigma's human-readable step syntax, so you read a test case as sentences rather than code. Four parts of Suite take that test case from idea to answer.
+| Application type | Covers |
+|---|---|
+| Web | Any browser-based application |
+| Mobile web | A web application at a device's dimensions |
+| Android | Native and hybrid Android apps, from an `.apk` |
+| iOS | Native and hybrid iOS apps, from an `.ipa` |
+| Unified | One test case running on both Android and iOS |
+| Salesforce | A Salesforce org, through its metadata |
+| Windows | Desktop applications, including SAP |
+| Rest API | APIs, with no UI involved |
 
-| Part | What it does | Where it lives |
-| --- | --- | --- |
-| Authoring | Record steps off your app, write NLP steps, or have Atto draft them | **Create Tests**, **Test Data** |
-| Atto | Plans coverage, builds test cases, runs them, and repairs them when the app changes | **Atto's Home**, and inside the recorder and editor |
-| Execution | Decides what runs, on which browsers, devices, and machines, and on what schedule | **Test Suites**, **Test Plans** |
-| Results | Step-level outcomes, screenshots, and the reports you send on | **Run Results**, **Dashboard** |
-
-Suite covers web and mobile applications, mobile web, desktop, Windows, Rest API, Salesforce, and SAP. Visual testing, accessibility testing, and cross-browser and cross-device runs come with it rather than as addons. Jenkins, GitHub, GitLab, Azure DevOps, Bitbucket, and CircleCI are among 30+ native integrations, and anything else can trigger a test plan and poll its status over the REST API.
-
-Three nav entries sit outside those four parts: **Settings** for integrations, Gen AI Keys, and preferences, plus **Save Points** and **Command Center**.
-
-## What you need installed
-
-Running a test on Testsigma Lab needs nothing installed. You sign in, build a test case, and run it from the browser. Three things do need an install.
-
-| Install | Needed for |
-| --- | --- |
-| Testsigma Recorder extension | Recording steps off a web app in your own browser. Chrome, Edge, and Firefox |
-| Testsigma Terminal | Copilot mode, agentic sessions, and recording or running on local devices |
-| SAP Logon | SAP applications, on the machine that runs the tests |
-
-Terminal is a desktop application for macOS, Windows, and Linux. It downloads its own recorder for local sessions, so the two recorders coexist: which one you get depends on where you are recording, not on a setting you choose. A Terminal login stays valid for 24 hours, after which you sign in again.
+The execution engine is the second fixed choice. A web application can run on Classic or Modern, and every other type runs on the engine Testsigma assigns. Modern waits for elements and page state before interacting, which reduces timing failures, and it handles Shadow DOM more natively. See [Projects and applications](/suite/get-started/projects-and-applications/).
 
 <Aside type="note">
-Copilot and agentic sessions open Chrome for Testing, a dedicated Chrome build, rather than your everyday browser.
+A project holds one application by default. Turn on **Allow adding multiple applications** to hold more.
 </Aside>
 
-## Projects and application types
+## How you write a test
 
-A project targets one application type. The type decides what you record, which step types you get, and where tests run. There are nine: **Web application**, **Unified**, **Salesforce**, **Android**, **iOS**, **Mobile web**, **Rest API**, **Desktop (Beta)**, and **Windows (Lite)**.
+Four routes produce the same thing, a test case made of steps. They differ in how much you supply.
 
-**Unified** runs one test case on both Android and iOS. Each element stores a separate Android locator and iOS locator, and Testsigma uses the one that matches the device. You author **Unified** test cases by hand, since Atto does not support the type yet, and you run them on the cloud lab rather than a local device.
+| Route | Start from | Reach for it when |
+|---|---|---|
+| Atto | A Jira ticket, a Figma frame, a document, or a prompt | You are covering a feature rather than one flow |
+| Copilot | A live session on the application | You want to author, run, and debug in one place |
+| Recorder | The application in front of you | The flow is quicker to perform than to describe |
+| NLPs | Nothing | You know the flow and want exact control |
 
-SAP applications run under **Desktop**, the advanced Windows path, rather than **Windows (Lite)**.
+The routes mix inside a single test case, so a generated step sits beside a recorded one and a hand-written one.
 
-Your account comes with four sample projects, for Web, Mobile web, Android, and iOS, that you can run and edit.
+### What the agents do
 
-
-## Classic or Modern
-
-Suite runs tests on two execution engines, **Classic** and **Modern**. **Modern** waits automatically for elements and page state before interacting with them, which cuts timing-related failures, and it handles Shadow DOM and web components more natively than **Classic**. Eight of the nine application types run on **Classic** today. **Web application** offers both, and **Unified** is **Modern** only.
-
-<Aside type="note">
-You pick the engine when you create an application and the choice is permanent. To use a different engine, create a new application. Your existing tests stay as they are.
-</Aside>
-
-The selector only appears when the application type supports more than one engine and engine selection is enabled for your account. **AI Step** and the loop and conditional addons run on **Classic** and are not available on **Modern** yet.
-
-## Where Atto fits
-
-Atto works as a set of agents rather than one assistant, and it is not available for **Unified** applications yet. Each agent owns one job, and you do not invoke them by name.
+Atto's agents cover the work either side of authoring, not just the writing.
 
 | Agent | What it does |
-| --- | --- |
-| Generator | Generates test cases from requirements, files, recordings, and prompts |
-| Runner | Drives Copilot and Agentic Learning (Beta) execution |
-| Healer | Corrects element locators that fail during execution |
-| Analyzer | Diagnoses failed steps, and reports patterns and risk signals |
-| Bug Reporter | Files bugs into your tracker from the analysis panel |
-| Coverage Planner | Analyses test coverage across your application |
-| Optimizer | Reports on test suite efficiency |
+|---|---|
+| Generator | Turns requirements, designs, and prompts into test cases, then automates them against your live application |
+| Test Data Generator | Builds a test data profile for a data-driven test case |
+| Analyzer | Explains why a step failed and proposes fixes you apply in a click |
+| Bug Reporter | Files the failure as a bug, carrying the analysis and screenshots into the ticket |
 
-Two preferences control Atto, both under **Settings > Preferences**. **Generative AI features** covers generation and Copilot. **Auto Healing** is separate, and it governs the locator repair that happens during a run.
+Two more run without being asked. **Agentic Learning** drives your application to discover the steps a generated test case is missing. **Auto-healing** repairs a locator mid-run when the UI has moved, and reports what it changed.
 
----
+<Aside type="note">
+The agents propose, and you decide. A generated test case is a draft until you accept it, a suggested fix is applied by you, and every heal is listed in the run result.
+</Aside>
+
+See [AI agents](/suite/atto/ai-agents/) and [Agentic execution](/suite/atto/agentic-execution/).
+
+## Where tests run
+
+Two things decide this: where your application is reachable from, and whether you need a specific machine.
+
+**Testsigma's cloud** runs tests on hosted browsers and devices, and needs nothing installed beyond the recorder extension for authoring. It reaches an application that is reachable from the internet.
+
+**Your own machines** run tests through the Testsigma Agent, for an application inside your network, a specific device, or a Windows desktop application.
+
+**Testsigma Tunnel** is the third option, and the one people miss. It keeps the test on a cloud machine and routes its traffic through your network, so a firewalled application can still be tested on the full browser and device matrix. IP whitelisting cannot do this.
+
+## From a test to a result
+
+Four things, in this order:
+
+1. A **test case** holds the steps that test one flow
+2. A **test suite** groups the test cases you want to run together
+3. A **test plan** decides which suites run, on which machines, with which settings
+4. A **run result** reports what happened, with screenshots, logs, and video
+
+An **ad-hoc run** skips the middle two. It executes one test case immediately, which is how you check a test case works before it joins a suite.
+
+## Your first test
+
+On a web application reachable from the internet:
+
+<Steps>
+
+1. Install the recorder extension. See [Recorder extensions](/suite/get-started/installation/recorder-extensions/).
+
+2. Create a project and a web application. See [Projects and applications](/suite/get-started/projects-and-applications/).
+
+3. Create a test case and enter the URL as the first step. See [Test cases](/suite/create-and-manage/create-test-cases/).
+
+4. Click **Record**, perform the flow, and click **Stop**.
+
+5. Click **Run**, pick a browser, and click **Run Now**.
+
+6. Read the result. See [Results](/suite/run-tests/results/).
+
+</Steps>
+
+Nothing in that path needs an agent, a plan, or a suite.
+
+To start from a requirement instead, connect Jira under **Settings > Integrations**, go to **Atto's Home**, and generate. That route needs Testsigma Terminal, because automating the generated steps drives a real browser. See [AI agents](/suite/atto/ai-agents/).
+
+## Where to go next
+
+- **Generating tests from requirements or designs**: [AI agents](/suite/atto/ai-agents/), then [Agentic execution](/suite/atto/agentic-execution/)
+- **Automating your first real feature by hand**: [Test cases](/suite/create-and-manage/create-test-cases/), then [Step types](/suite/create-and-manage/step-types/) and [Elements](/suite/create-and-manage/elements/)
+- **Testing an app behind a firewall, or on your own devices**: [Installation overview](/suite/get-started/installation/)
+- **Running on a schedule or in CI**: [Test suites](/suite/run-tests/test-suite/), then [Test plans](/suite/run-tests/test-plan/)
+- **Extending Testsigma with your own actions**: [Addons overview](/suite/addons/)
+
+<Aside type="tip">
+Press **Cmd + K** on macOS or **Ctrl + K** on Windows anywhere in Testsigma to open the command center, which navigates and runs common actions from the keyboard.
+</Aside>

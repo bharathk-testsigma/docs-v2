@@ -1,72 +1,198 @@
 ---
-title: Create Unified Test Case
-description: Author a test case once in a Unified project and run it on both Android and iOS, with dual-locator elements resolved per device at run time.
+title: Create a Unified mobile test case
+description: Author a test case once in a Unified application and run it on both Android and iOS, with dual-locator elements resolved per device at run time.
 pageType: guide
 sidebar:
   order: 40
   label: Unified
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
-A unified test case is authored once and runs on both Android and iOS. Its elements carry a locator for each platform, and the platform-aware engine resolves the right one for the device at run time, so you maintain one test case instead of a suite per platform.
+A Unified application holds one test case that runs on both Android and iOS, instead of 2 sets of test cases covering the same scenarios. You author the steps once, on either platform, and the platform-aware engine resolves the right locator for each device at execution time.
 
-## Prerequisites
+<Aside type="note">
+Unified Mobile runs on the Modern execution engine only. It is not available on Classic.
+</Aside>
 
-- A Unified project and application exist. See [Projects and applications](/suite/get-started/projects-and-applications/).
-- The feature and scenario for the test case exist. See [Create test cases](/suite/create-and-manage/create-test-cases/).
-- Testsigma Terminal is installed, and a local device is connected and available as a test machine. See [Testsigma Terminal](/suite/get-started/installation/testsigma-terminal/).
-- The application file is available: an APK or AAB for Android, or an IPA or APP for iOS.
+<Aside type="note">
+An application's type and engine are fixed when you create it, so an existing Android or iOS application cannot be converted. Testing both platforms with one test case means creating a new Unified application.
+</Aside>
 
-## Create a test case with the recorder
+Before you start, you need a Unified project and application, the application file, and a device available as a Test Machine. Android takes an `.apk` or `.aab`; iOS takes an `.ipa` or `.app`. A local device also needs [Testsigma Terminal](/suite/get-started/installation/testsigma-terminal/) installed.
+
+## Create the test case
 
 <Steps>
 
 1. Go to **Create Tests > Test Cases**.
 
-2. In the **Test Case Explorer** section, expand a feature and click the **+** icon next to the scenario. A dialog opens.
+2. Expand a folder in Test Case Explorer and click the **+** icon next to a subfolder.
 
-3. Validate the target feature and scenario, enter the name in **Test Case Name**, and click **Create**.
+3. Confirm the folder and subfolder, enter a name, and click **Create**.
 
-4. On the **Test Case Details** page, click **Record** at the top right.
+</Steps>
 
-5. In the **Record test steps** overlay, select a **Test Lab** and a **Test Machine**, and supply the app under **App Source**: paste an external public link, or click **Upload** and browse to the application file.
+The first step is created for you as **Launch App**.
 
-6. Click **Record** and wait for the application to load completely.
+## Add the steps
 
-7. Perform the actions in the application. The recorder captures the interactions and converts them into test steps.
+<Tabs>
 
-8. Click **Stop**, and confirm in the **Stop Recorder** dialog. The recorded steps are saved on the **Test Case Details** page.
+<TabItem label="Recorder">
+
+1. Click **Record** on the Test Case Details page.
+2. In the **Record test steps** overlay, select a **Test Lab** and a **Test Machine**.
+3. Supply the application under **App Source**, either by pasting an external public link or by clicking **Upload** and browsing to the file.
+4. Click **Record** and wait for the application to load fully.
+5. Perform the actions you want as test steps. The recorder converts each interaction into a step.
+6. Click **Stop**, then **Stop** again in the **Stop Recorder** dialog.
+
+<Aside type="note">
+Record on one platform only, Android or iOS. The same test case runs on both at execution time.
+</Aside>
+
+An `.ipa` upload carries 2 options an `.apk` does not. **Enable iOS Keychain Support** clears Keychain data after each session, so credentials stored by a previous session cannot fail the next. **Skip App Re-signing** installs the build without re-signing it, for an app already signed under the Apple Developer Enterprise Program and for features that need the original signature, such as push notifications.
+
+</TabItem>
+
+<TabItem label="NLPs">
+
+1. Click **Add New Step** on the Test Case Details page.
+2. Select the NLP for the action you want, then supply its test data and elements.
+3. Repeat until the flow is complete.
+
+Mobile NLPs use `Tap on` rather than `Click on`. See [Create test cases](/suite/create-and-manage/create-test-cases/) for the full action list and the step types.
+
+</TabItem>
+
+</Tabs>
+
+<Aside type="note">
+A step or NLP that applies to one platform only is skipped on the other, and the run reports the reason.
+</Aside>
+
+## Elements with a locator per platform
+
+An element in a Unified application holds locator details for Android, iOS, or both, under one name. A step referencing that element uses the Android locator on Android and the iOS locator on iOS, so one element library serves both platforms.
+
+<Aside type="note">
+An element with details for one platform only works when the test runs on that platform. Testsigma does not require both before you can use it.
+</Aside>
+
+The same 5 locator types apply, and you can choose a different one per platform on the same element:
+
+- **Accessibility ID**: the most reliable across platforms, since the value tends to stay the same on Android and iOS
+- **ID**: the second most reliable. Every element typically has a unique one
+- **XPath**: parses the source to locate the element by its path
+- **Class Name**: the value of the element's Class Name attribute
+- **Name**: the value of the element's Name attribute
+
+<Aside type="tip">
+XPath for Android and Accessibility ID for iOS on the same element is fine, as long as each identifies it uniquely on its own platform.
+</Aside>
+
+### Create an element manually
+
+<Steps>
+
+1. Go to **Create Tests > Elements** and click **Create Element**.
+
+2. Enter a **Name** and a **Screen Name**.
+
+3. Select the **Android** tab, choose an **Element Type**, and enter the locator in **Enter Value**.
+
+4. Select the **iOS** tab and do the same for iOS.
+
+5. Leave **Auto heal element during execution** selected to let Testsigma recover this element's locator when it changes, or clear it to opt out.
+
+6. Click **Create element**.
+
+</Steps>
+
+To change one later, hover over it on the **Elements** page, click the ellipsis icon `⋮`, select **Edit**, and update the **Name**, **Screen Name**, or either platform's type and value. Click **Update**.
+
+<Aside type="note">
+Updating one platform's locator leaves the other platform's locator on that element unchanged.
+</Aside>
+
+### Record an element
+
+Recording captures one platform at a time, and needs the Testsigma Recorder extension installed. See [Recorder extension](/suite/get-started/installation/recorder-extensions/).
+
+<Steps>
+
+1. Go to **Create Tests > Elements** and click **Record**.
+
+2. In the **Record Elements** overlay, select the **Test Machine** for the platform you are recording, along with the **Test Lab** and **Upload App Source**.
+
+3. Click **Record** and wait for the app to load fully.
+
+4. Click the element you want to capture.
+
+5. Confirm the **Name**, **Screen Name**, **Element Type**, and **Value** in the **Create Element** panel.
+
+6. Click **Create**. The element saves to the elements list and appears in the **Create Element** panel.
+
+7. Repeat steps 4 to 6 for every element you want from this application, then click **Stop Recording**. You are returned to the **Elements** page with everything you captured.
 
 </Steps>
 
 <Aside type="note">
-Record the test case on one platform, either an Android or an iOS device. During execution, the same test case runs on both platforms.
+Upload an `.ipa` when the Test Machine runs iOS, and an `.apk` when it runs Android. An app source uploaded for the other operating system does not appear, even within the same session.
 </Aside>
 
-When uploading an IPA, two options appear under **Supported Device**:
+To add the second platform's locator to an element you already captured, open it on the **Elements** page, click **Edit**, select the tab for the platform you have not captured, click **Record**, and capture it there. That adds to the existing element rather than creating a duplicate.
 
-- **Enable iOS Keychain Support**: clears iOS Keychain data after each test session, which prevents failures caused by credentials or tokens stored from previous sessions. Use it when the application cannot access keychain groups after the Bundle Seed ID or Team ID changes during app signing.
-- **Skip App Re-signing**: installs the application without re-signing it, for apps already signed through the Apple Developer Enterprise Program. This lets you test features that need the original signature, such as push notifications on Testsigma devices.
+## Run it on both platforms
 
-## Create a test case with NLP steps
+Run the same test case on an Android device and on an iOS device from the **Ad-Hoc Run** panel.
 
-<Steps>
+Locators recorded on one platform will not always match the other. Where they do not, auto-healing corrects them at run time rather than failing the step.
 
-1. Go to **Create Tests > Test Cases**, create the test case from the **Test Case Explorer** as above, and open it.
+### An auto-healing example
 
-2. On the **Test Case Details** page, the first step is created by default as **Launch App**.
+Take a login test case authored in a Unified project by recording on an iOS device:
 
-3. Click **Add New Step**.
+```text
+Launch App
+Tap on Log In
+Tap on Email Address or Username
+Enter brandon@bryant.com in the Email Address or Username field
+Enter the password in the Password field
+Tap on Forgot Password
+Enter brandon@bryant.com in the Email Address or Username field
+Tap on Reset Password
+```
 
-4. Select the NLP step, then provide the required test data and elements.
+It runs on iOS with the recorded locators. On Android, those locators do not match the UI. With auto-healing enabled, Testsigma detects each failed locator during execution and replaces it with a new XPath, using the element context from both platforms, so the test lab finds the element and the step continues.
 
-5. Repeat the last two steps until the workflow is complete.
+A summary banner at the end of the run reports how many steps were healed, and the run completes as **Passed**.
 
-</Steps>
+To see what changed, open the step in the run result. **Autoheal Details** shows the updated locator and **Affected Test cases** shows what else uses it, and you can mark whether the result was helpful. See [Elements](/suite/create-and-manage/elements/) for auto-healing.
 
-A Unified project stores separate Android and iOS locators under a single element, so the step maps to whichever locator matches the device the test runs on. How the dual-locator elements are created and maintained is covered in [Elements](/suite/create-and-manage/elements/). A step or NLP that applies to only one platform is skipped on the other platform and reported with the reason.
+## Frequently asked questions
 
-## Run the test case on both platforms
+### Can I test both Android and iOS with a single test case?
 
-Run the same test case on an Android device and on an iOS device from the **Ad-Hoc Run** panel. If locators recorded on one platform do not match the other platform during execution, Testsigma auto-heals them at run time.
+Yes. Create a Unified application and author one test case. Testsigma runs it on both platforms.
+
+### Which execution engine does Unified Mobile use?
+
+The Modern engine only. It is not available on Classic.
+
+### Do I record the test case twice, once per platform?
+
+No. Record on one platform, and the same test case runs on both. Elements are the exception: recording an element captures one platform's locator, and you add the second platform's locator to the same element afterwards.
+
+### How does Testsigma handle elements that differ between Android and iOS?
+
+Each element stores a separate Android and iOS locator, and Testsigma uses the one matching the device under test. Where a locator differs at run time, auto-healing corrects it.
+
+### What happens to a step that only applies to one platform?
+
+It is skipped on the other platform, and the run reports the reason.
+
+### Can I convert an existing Android or iOS application to Unified?
+
+No. The application type and engine are set when you create the application and cannot be changed. Create a new Unified application instead.

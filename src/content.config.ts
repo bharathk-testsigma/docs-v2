@@ -11,9 +11,10 @@ export const collections = {
 	changelog: defineCollection({
 		loader: glob({ pattern: '**/*.md', base: './src/content/changelog' }),
 		schema: z.object({
-			version: z.string(),
+			// Filename IS the release date (YYYY-MM-DD.md); `date` is its display
+			// form. No version field: only a handful of releases ever had a
+			// vX.Y.Z, so the date is the one identifier every release has.
 			date: z.string(), // e.g. "June 16, 2026"
-			latest: z.boolean().default(false),
 			headline: z.string(),
 		}),
 	}),

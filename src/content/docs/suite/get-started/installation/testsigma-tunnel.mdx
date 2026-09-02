@@ -1,67 +1,430 @@
 ---
 title: Testsigma Tunnel
-description: Install the Testsigma Tunnel client and use a tunnel in a run to test applications the public internet cannot reach.
+description: Test a private server URL or a locally hosted application from Testsigma's cloud, with the tunnel client on a machine, in Docker, or on Kubernetes.
 pageType: guide
-verified: 2026-08
 covers:
-  - Architecture
-  - Install and start the client
-  - Use a tunnel in a run
+  - How the tunnel works
+  - System requirements
+  - Install the tunnel
+  - Client settings
+  - Run a test through the tunnel
 sidebar:
   order: 43
 ---
 
-import { Steps } from '@astrojs/starlight/components';
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
-Tunnel tests a private server URL or a locally hosted application on real browsers and devices. It needs no IP allowlisting and exposes nothing to the internet. The client opens a secure connection to the Testsigma cloud over WebSocket, HTTPS, and SSH.
+Testsigma Tunnel runs tests against a private server URL or a locally hosted application, using the operating systems, browsers, and screen resolutions available in Testsigma's cloud. It opens a secure connection from your machine to Testsigma over WebSocket, HTTPS, and SSH, so a corporate firewall or proxy does not have to be opened up, and no public internet access is needed.
 
-Five pieces make up the architecture:
+<Aside type="note">
+Whitelisting Testsigma's IP addresses cannot reach a locally hosted application. The tunnel is the only route to one.
+</Aside>
 
-- **Tunnel client** — A binary you install on a machine that can reach your application.
-- **Authentication server** — Processes the client's authentication request and assigns a tunnel server.
-- **Tunnel server** — A virtual machine or container in a Testsigma data centre, running an HTTP and TCP proxy.
-- **Automation environment** — The browser or REST API client running your test, which uses the tunnel server as a proxy.
-- **Remote address** — The URL under test, whether localhost, a privately hosted site, or a public site.
+## How the tunnel works
 
-## Install and start the client
+Five parts make up the connection.
 
-<Steps>
+| Component | What it does |
+|---|---|
+| Testsigma Tunnel Client | The binary you install on a machine that can reach your application. It authenticates with the key you supply when it starts |
+| Authentication Server | Processes the client's authentication request and assigns it a tunnel connect server |
+| Testsigma Tunnel Server | A virtual machine or container in a Testsigma data center. It carries an HTTP and TCP proxy that forwards requests from test executors, and the TCP server the client connects to |
+| REST API client or browser | The automation environment, which uses the tunnel server as its proxy |
+| Remote address | The server URL you are testing, whether `localhost`, a privately hosted site, or a public one |
 
-1. **Open the download** — Go to **Settings** > **Testsigma Tunnel**.
+The client holds a bidirectional tunnel open between Testsigma and the remote address.
 
-2. **Pick your architecture** — Select the download icon in the top-right corner and choose the file for your machine.
+## System requirements
 
-3. **Extract it** — Extract the ZIP file to a directory of your choice.
+| Requirement | Specification |
+|---|---|
+| Operating system | Windows XP or later, macOS 10.10 or later, or Ubuntu 12.04 or later |
+| CPU | x64, or ARM in 32-bit and 64-bit |
+| Memory | 2 GB or more |
+| Disk space | 100 MB free to install, 500 MB recommended |
+| Network | A stable internet connection |
+| Firewall | Nothing restricting the client's outbound traffic. The tunnel accepts no inbound connections, so no ingress rule is needed |
 
-4. **Copy your API key** — Go to **Settings** > **API Keys** and copy the key.
+## Install the tunnel
 
-5. **Run the binary** — In the extracted folder, run `TestsigmaConnect` with your key.
+Go to **Settings > Testsigma Tunnel**, which walks through 3 steps: install the tunnel, run it in a terminal, and verify the connection.
 
-</Steps>
+Click the **Download** icon beside **Documentation Link** and select your platform and architecture. Mac, Windows, Linux, Debian, and RPM each offer **amd64** and **arm64**; Docker links to its own instructions.
 
-```bash
-./TestsigmaConnect --key <your-authentication-key>
+The authentication key comes from **Settings > API Keys**.
+
+<Tabs>
+
+<TabItem label="macOS">
+
+1. Extract the ZIP to a directory of your choice.
+
+2. Go to that directory and start the client, passing the key on the command line:
+
+   ```bash
+   ./TestsigmaTunnel --key="<API_KEY>" --tunnel-name "<TUNNEL_NAME>"
+   ```
+
+Or set the key and the other parameters in the `args.yaml` file beside the binary, then start it with `./TestsigmaTunnel`:
+
+```yaml
+key: "<your-authentication-key>"
+tunnel-name: ""
+connections: 10
+inactive-timeout: 300
+verbose: false
 ```
 
-Set the key and other parameters in the `args.yaml` file in the same directory instead, if you prefer not to pass them on the command line.
+The client prints a success message and the tunnel name when it starts. Use that name when you set up a live or automated test. Press **Ctrl+C** to stop it.
 
-To run Tunnel in a container, create a `docker-compose.yml` using the `testsigmainc/testsigma-tunnel` image. Set `KEY` to your API key and `TUNNEL_NAME` to the tunnel's name.
+</TabItem>
 
-## Use a tunnel in a run
+<TabItem label="Windows">
 
-<Steps>
+1. Extract the ZIP to a directory of your choice.
 
-1. **Start the run** — On the test case details page, select **Run**.
+2. Go to that directory and start the client, passing the key on the command line:
 
-2. **Open the capabilities** — In the **Ad-Hoc Run** overlay, select the **Test Lab** and **Test Machine**, then select **Desired Capabilities**.
+   ```bash
+   TestsigmaTunnel.exe --key="<API_KEY>" --tunnel-name "<TUNNEL_NAME>"
+   ```
 
-3. **Name the tunnel** — Add the capability below.
+Or set the key and the other parameters in the `args.yaml` file beside the binary, then start it with `TestsigmaTunnel.exe`. See [Client settings](#client-settings) for the fields.
 
-</Steps>
+The client prints the tunnel name when it starts. Press **Ctrl+C** to stop it.
+
+</TabItem>
+
+<TabItem label="Linux">
+
+Run the binary directly, or install it as a service so it starts on boot.
+
+<Aside type="note">
+The Debian and RPM packages, and the systemd service they install, are named `testsigma-connect`, while the binary is `TestsigmaTunnel`. Confirm the package name against your download before running the commands below.
+</Aside>
+
+To run it directly, extract the ZIP, go to that directory, and start the client:
+
+```bash
+./TestsigmaTunnel --key="<API_KEY>" --tunnel-name "<TUNNEL_NAME>"
+```
+
+The `args.yaml` file beside the binary holds the same settings. See [Client settings](#client-settings).
+
+**As a service, on Debian:**
+
+1. Download the DEB file for your architecture.
+2. Install it with `sudo apt install ./testsigma-connect-<version>.deb`.
+3. Set the key and parameters in `/etc/testsigma-connect/args.yaml`.
+4. Enable it on boot with `sudo systemctl enable testsigma-connect`.
+5. Start it with `sudo systemctl start testsigma-connect`.
+
+To remove it, disable the service, stop it, run `sudo apt remove testsigma-connect`, delete `/etc/systemd/system/testsigma-connect.service` if it remains, and run `sudo systemctl daemon-reload`.
+
+**As a service, on RPM:**
+
+1. Download the RPM file for your architecture.
+2. Install it with `sudo rpm -ivh testsigma-connect-<version>.rpm`.
+3. Set the key and parameters in `/etc/testsigma-connect/args.yaml`.
+4. Enable it on boot with `sudo systemctl enable testsigma-connect.service`.
+5. Start it with `sudo systemctl start testsigma-connect.service`.
+
+To remove it, disable the service, stop it, run `sudo rpm -e testsigma-connect`, delete `/etc/systemd/system/testsigma-connect.service` if it remains, and run `sudo systemctl daemon-reload`.
+
+</TabItem>
+
+<TabItem label="Docker">
+
+Create a `docker-compose.yml` in your project directory. The image name carries the region, and the tag carries the architecture:
+
+```yaml
+services:
+  testsigma-tunnel:
+    image: testsigmainc/testsigma-tunnel:<arm64/amd64>-latest
+    container_name: testsigma-tunnel
+    environment:
+      - KEY=<API_KEY>
+      - TUNNEL_NAME=<NAME_OF_TUNNEL>
+      - CONNECTIONS=<NUMBER>
+      - INACTIVE_TIMEOUT=<NUMBER in seconds>
+      - VERBOSE=true/false
+```
+
+| Region | Image |
+|---|---|
+| US | `testsigmainc/testsigma-tunnel` |
+| EU | `testsigmainc/testsigma-tunnel-eu` |
+| IN | `testsigmainc/testsigma-tunnel-in` |
+
+Then run `docker compose up -d`. The logs confirm the tunnel is active and give the tunnel name to use in your tests. Stop it with `docker compose down`.
+
+</TabItem>
+
+<TabItem label="Kubernetes">
+
+The chart runs the tunnel client as a StatefulSet, a Secret holding the authentication key, and a headless Service that gives the pods stable identities and routes no traffic.
+
+All replicas share one tunnel name. The first pod registers the tunnel and the rest join that registration, which is why they start in sequence. The client keeps nothing that has to survive a restart, since its mTLS certificates are fetched again at each registration, so there is no volume to manage.
+
+The pod runs as a non-root user from a distroless image and needs no elevated privileges.
+
+### Check the cluster prerequisites
+
+1. A Kubernetes cluster running 1.21 or later.
+2. Helm 3.8 or later, for OCI chart support.
+3. `kubectl` configured with access to the cluster.
+4. An authentication key from **Settings > Tunnels**.
+5. Outbound access from the cluster to your Testsigma address and to the registry serving the chart and image. The tunnel accepts no inbound connections, so no ingress or firewall change is needed.
+
+The same chart sits in 2 public registries, and neither needs credentials.
+
+| Registry | Chart location | Container image |
+|---|---|---|
+| Azure Container Registry | `oci://testsigmaregistry.azurecr.io/charts/testsigma-tunnel` | Mirrored into the same registry |
+| GitHub Container Registry | `oci://ghcr.io/testsigmainc/charts/testsigma-tunnel` | Pulled from Docker Hub |
+
+Choose based on what your cluster is allowed to reach. Azure Container Registry with `global.imageRegistry` suits restricted egress, because the chart and the image come from one host. GitHub Container Registry suits a cluster that already reaches Docker Hub, and `global.imageRegistry` does not apply there.
+
+### Install the chart
+
+1. Copy the authentication key from **Settings > Tunnels**.
+
+2. Create a namespace and store the key in a secret, writing it to a temporary file so it stays out of your shell history and the process list.
+
+   ```bash
+   kubectl create namespace testsigma
+   umask 077 && cat > tunnel-key.txt    # paste the key, then press Ctrl+D
+   kubectl -n testsigma create secret generic testsigma-tunnel-auth \
+     --from-file=KEY=./tunnel-key.txt
+   rm tunnel-key.txt
+   ```
+
+3. Install the chart.
+
+   ```bash
+   helm install ts-tunnel oci://testsigmaregistry.azurecr.io/charts/testsigma-tunnel \
+     --version 0.1.0 -n testsigma \
+     --set global.imageRegistry=testsigmaregistry.azurecr.io \
+     --set tunnel.auth.existingSecret=testsigma-tunnel-auth \
+     --set tunnel.tunnelName=my-tunnel
+   ```
+
+4. Wait for the pod with `kubectl -n testsigma rollout status statefulset/ts-tunnel-testsigma-tunnel`.
+
+5. The tunnel appears under **Settings > Tunnels** once it registers.
+
+For GitHub Container Registry, use the same command against `oci://ghcr.io/testsigmainc/charts/testsigma-tunnel` without the `global.imageRegistry` flag.
+
+<Aside type="note">
+Set `tunnel.tunnelName` to something recognizable. Left empty, the client generates a random name at startup that changes on every pod restart, which makes the tunnel hard to identify.
+</Aside>
+
+<Aside type="tip">
+Managing secrets with External Secrets Operator or Sealed Secrets? Create `testsigma-tunnel-auth` through that tool.
+</Aside>
+
+### Select your Testsigma region
+
+The image is built against a fixed Testsigma address, so the 3 regional builds are different images rather than copies. Set `tunnel.region` to match the address you sign in to.
+
+| Sign-in address | `tunnel.region` |
+|---|---|
+| `app.testsigma.com` | `us`, the default |
+| `app-eu.testsigma.com` | `eu` |
+| `app-in.testsigma.com` | `in` |
+
+Add `--set tunnel.region=eu` to the install command, or apply it to an existing release with `helm upgrade --reuse-values`.
+
+<Aside type="note">
+A mismatched region leaves the pod running but unable to register, because it contacts the wrong Testsigma address.
+</Aside>
+
+### Verify the Kubernetes installation
+
+Confirm the cluster can reach Testsigma, which is the one thing the tunnel cannot work without:
+
+```bash
+helm test ts-tunnel -n testsigma
+```
+
+Then check the client registered with `kubectl -n testsigma logs ts-tunnel-testsigma-tunnel-0 -f`, and confirm the tunnel is listed under **Settings > Tunnels**.
+
+### Helm configuration reference
+
+Pass these with `--set`, or collect them in a values file and use `-f values.yaml`. `helm show values` on the chart lists every available setting.
+
+| Setting | Default | What it does |
+|---|---|---|
+| `tunnel.region` | `us` | Testsigma region: `us`, `eu`, or `in` |
+| `tunnel.auth.existingSecret` | | Secret holding the authentication key |
+| `tunnel.auth.key` | `""` | The key inline, for a quick trial instead of a secret |
+| `tunnel.tunnelName` | `""` | Name shown in Testsigma. Empty means randomly generated |
+| `tunnel.replicaCount` | `1` | Replicas sharing one tunnel. `0` stops it without uninstalling |
+| `tunnel.verbose` | `false` | Debug logging |
+| `tunnel.delegateSslValidation` | `false` | Accept certificates from an SSL inspection appliance |
+| `tunnel.image.tag` | `latest` | Pin to a release such as `2.1.0` for a fixed baseline |
+| `tunnel.resources` | 500m and 256Mi to 2 CPU and 1Gi | Pod requests and limits |
+| `tunnel.extraArgs` | `[]` | Extra command-line flags, which outrank the settings above |
+| `global.imageRegistry` | `""` | Pull the chart's images from one registry |
+| `proxy.enabled` | `false` | Set with `proxy.url` |
+| `networkPolicy.enabled` | `false` | Restricts egress to DNS and 443. Add rules for your own applications first |
+| `imagePullSecrets` | `[]` | For registries that require authentication |
+
+For a proxy, set `proxy.enabled=true` and `proxy.url=http://proxy.internal.example.com:8080`. Where your network re-signs TLS with its own certificate authority, set `tunnel.delegateSslValidation=true`.
+
+### Scale the tunnel on Kubernetes
+
+Raise `tunnel.replicaCount` for more concurrent test traffic. Pods start one at a time, the first registers the tunnel, and the rest join it. Scaling to zero stops the tunnel without uninstalling it.
+
+```bash
+kubectl -n testsigma scale statefulset/ts-tunnel-testsigma-tunnel --replicas=3
+```
+
+<Aside type="note">
+Scaling with `kubectl` is temporary, and the replica count reverts to the Helm value on the next `helm upgrade`. Set `tunnel.replicaCount` through Helm to make it permanent.
+</Aside>
+
+### Upgrade and uninstall the chart
+
+<Aside type="note">
+The client deregisters the tunnel by name when it shuts down. With one replica that is harmless, because the replacement pod registers again. With more than one, replacing the first pod deregisters the tunnel all of them share, so scale to zero and wait for every pod to terminate before upgrading.
+</Aside>
+
+With one replica, run `helm upgrade ts-tunnel oci://testsigmaregistry.azurecr.io/charts/testsigma-tunnel --version <version> -n testsigma --reuse-values`. Remove the release with `helm uninstall ts-tunnel -n testsigma`.
+
+### Rotate an authentication key
+
+1. Get a new key from **Settings > Tunnels**.
+
+2. Update the secret.
+
+   ```bash
+   kubectl -n testsigma create secret generic testsigma-tunnel-auth \
+     --from-file=KEY=./tunnel-key.txt --dry-run=client -o yaml | kubectl apply -f -
+   ```
+
+3. Restart the tunnel with `kubectl -n testsigma rollout restart statefulset/ts-tunnel-testsigma-tunnel`.
+
+### Install the chart using Argo CD
+
+Argo CD does not detect OCI registries automatically, so register the repository first.
+
+1. Go to **Settings > Repositories > CONNECT REPO > VIA HTTPS** and enter the details below.
+
+   | Field | Value |
+   |---|---|
+   | Type | `helm` |
+   | Name | `testsigma-charts` |
+   | Repository URL | `testsigmaregistry.azurecr.io/charts`, or `ghcr.io/testsigmainc/charts` |
+   | Enable OCI | Selected |
+   | Username and Password | Leave empty |
+
+2. Create the key secret in the destination namespace, as in [Install the chart](#install-the-chart).
+
+3. Create the application.
+
+   ```yaml
+   apiVersion: argoproj.io/v1alpha1
+   kind: Application
+   metadata:
+     name: testsigma-tunnel
+     namespace: argocd
+   spec:
+     project: default
+     source:
+       repoURL: testsigmaregistry.azurecr.io/charts
+       chart: testsigma-tunnel
+       targetRevision: 0.1.0
+       helm:
+         releaseName: ts-tunnel
+         values: |
+           tests:
+             enabled: false
+           global:
+             imageRegistry: testsigmaregistry.azurecr.io
+           tunnel:
+             region: us
+             tunnelName: my-tunnel
+             auth:
+               existingSecret: testsigma-tunnel-auth
+     destination:
+       server: https://kubernetes.default.svc
+       namespace: testsigma
+     syncPolicy:
+       syncOptions:
+         - CreateNamespace=true
+   ```
+
+4. Sync the application, with **SYNC** in the UI or `argocd app sync testsigma-tunnel` from the CLI.
+
+Four things catch people out:
+
+- `CreateNamespace=true` changes how a sync behaves rather than starting one, so a new application stays **OutOfSync** until you trigger it.
+- `repoURL` holds the registry path only. The chart name belongs in `chart`, and there is no `oci://` prefix.
+- `targetRevision` is the chart version, not the tunnel client version.
+- Argo CD does not run Helm test hooks, so set `tests.enabled` to `false` and verify manually.
+
+<Aside type="note">
+Manage the release with whichever tool installed it. `helm upgrade` and `helm uninstall` do not apply to an application deployed by Argo CD.
+</Aside>
+
+### Troubleshoot the Kubernetes install
+
+| Symptom | Cause and resolution |
+|---|---|
+| Pod stays `Pending` | No node has enough free CPU or memory. Run `kubectl -n testsigma describe pod` |
+| `ImagePullBackOff` | Confirm `tunnel.region`, and remove `global.imageRegistry` to pull from Docker Hub. A per-architecture tag such as `amd64-latest` fails on nodes of any other architecture, so use `latest` or a version |
+| `CreateContainerConfigError` | The secret named in `tunnel.auth.existingSecret` does not exist in that namespace |
+| The pod restarts repeatedly | Usually an invalid or expired key. Check the logs and get a fresh key from **Settings > Tunnels** |
+| The pod runs but no tunnel appears | Usually the wrong `tunnel.region`, or a key issued for a different region. Check the logs |
+| `helm test` fails | The cluster cannot reach your Testsigma address. Check egress rules, and set `proxy.enabled` with `proxy.url` if a proxy is required |
+| Connection timeouts during a test | The tunnel reached Testsigma but cannot reach your application. With `networkPolicy.enabled` on, add egress rules through `networkPolicy.extraEgress` |
+| SSL errors during a test | The application's certificate is not trusted, or an inspection appliance re-signs traffic. Set `tunnel.delegateSslValidation=true` |
+
+</TabItem>
+
+</Tabs>
+
+## Client settings
+
+The binary takes the same 5 settings on macOS, Windows, and Linux, as command-line flags or in `args.yaml`. Docker passes them as environment variables, and Kubernetes as Helm values.
+
+| Setting | Default | What it does |
+|---|---|---|
+| `key` | | Your authentication key, from **Settings > API Keys** |
+| `tunnel-name` | Generated | The name you reference when running tests |
+| `connections` | `10` | Connections the client establishes |
+| `inactive-timeout` | `300` | Seconds of inactivity before the tunnel closes |
+| `verbose` | `false` | Debug logging |
+
+## Run a test through the tunnel
+
+For an automated test, open the test case, click **Run**, select the **Test Lab** and **Test Machine** in the **Ad-Hoc Run** overlay, click **Desired Capabilities**, and add the tunnel name:
 
 | Key | Data type | Value |
-| --- | --- | --- |
+|---|---|---|
 | `testsigmaLab.tunnelName` | String | `<tunnel_name>` |
 
-For a REST API step, set the tunnel in the step's **Settings**, under the advanced API settings.
+For live REST API testing, open the REST API step, go to **Settings**, and enter the tunnel name in **Tunnel Name**.
 
+<Aside type="note">
+A REST API test saved with a tunnel name uses that tunnel during automation, unless `testsigmaLab.tunnelName` in the run form overrides it. Setting up the tunnel is not enough on its own: without the capability or the tunnel name on the step, the run goes to the cloud lab and never uses the tunnel.
+</Aside>
+
+## Frequently asked questions
+
+### Why can't a cloud device reach my application?
+
+Cloud labs run outside your network, so an application on a local development server is unreachable through a proxy, a VPN, or a firewall. To check, open the application URL on a workstation outside your company network, without a VPN. If it loads there, cloud devices can run against it. If it does not, use the tunnel, or run on local devices instead.
+
+### Do I need to whitelist Testsigma's IP addresses?
+
+Not for the tunnel. It opens an outbound connection and accepts none inbound, so no ingress rule is needed. Whitelisting is a separate route that works for an internet-reachable application but cannot reach a locally hosted one.
+
+### Why does my test go to the cloud when the tunnel is running?
+
+The tunnel name is missing from the run. Add `testsigmaLab.tunnelName` under **Desired Capabilities**, or enter the name in the REST API step's **Settings**.
+
+### Why does the tunnel name keep changing?
+
+`tunnel-name` was left empty, so the client generates one at startup. Set it in `args.yaml`, on the command line, or through `tunnel.tunnelName` on Kubernetes.

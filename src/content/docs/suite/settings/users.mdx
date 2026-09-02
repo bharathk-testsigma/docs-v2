@@ -1,122 +1,110 @@
 ---
-title: Team management
-description: The six roles, how to invite users, assign them to projects, change their role, and remove them.
+title: Users
+description: The six roles, how to invite users and assign projects, change roles, remove users, and control who can stop executions.
 pageType: guide
-verified: 2026-07
+verified: 2026-08
 sidebar:
   order: 20
   label: Users
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
-import Prerequisites from '~/components/Prerequisites.astro';
 
-A user's role decides what they can reach, and their project assignments decide where. Both are set in two places: globally under **Settings > Users**, and per project under **Project Settings > Project Members**. You can add as many team members as you need.
+A user's role decides what they can do, and it is assigned per project. The same person can be a Test Lead on one project and read-only on another.
 
-<Prerequisites>
+## Roles
 
-- A [project](/suite/get-started/projects-and-applications/) exists to assign people to.
-- You hold a role that can invite — **Super Administrator** for the full set.
+| Role | Can do |
+|---|---|
+| Account Administrator | Everything a Super Administrator can, plus billing information for the account |
+| Super Administrator | Complete control over a project, without account or billing information |
+| Test Manager | Manage several projects, including assigning users, and adding applications and versions in each |
+| Test Lead | Manage everything in the assigned project, including its applications and versions |
+| Automation Engineer/Developer | Write, view, and update test cases, and everything test cases need: test data profiles, elements, custom functions |
+| Read Only | View a project's contents without changing anything |
 
-</Prerequisites>
+## Add a user
 
-## The six roles
+There are 2 routes. Settings assigns several projects at once, and project settings adds someone to the project you are in.
 
-| Role | What it can do |
-| --- | --- |
-| **Account Administrator** | Everything a Super Administrator can, plus billing information for the account |
-| **Super Administrator** | Complete control over the project, but no access to account or billing information |
-| **Test Manager** | Manages multiple projects, including assigning users and adding applications and versions in each |
-| **Test Lead** | Manages everything in the assigned project, including its applications and versions |
-| **Automation Engineer/Developer** | Writes, views, and updates test cases, plus the test data profiles, elements, and custom functions behind them |
-| **Read Only** | Views the project's contents and changes nothing |
+- **From Settings**: go to **Settings > Users**, click **Add new user**, enter the **Email**, select the projects to assign and the role for each, and click **Send Invite**
+- **From a project**: go to **Project > Project Settings > Project Members**, click **Invite**, enter the **Email**, select the **Role**, and click **Invite**
 
 <Aside type="note">
-Account Administrator and Super Administrator differ on one thing only: billing. If someone needs full control but should not see billing, Super Administrator is the role.
+The project route offers only **Test Manager**, **Test Lead**, and **Automation Engineer/Developer**. Assigning a Super Administrator or an Account Administrator has to happen from **Settings > Users**.
 </Aside>
 
-## Invite a user to a project
+The invited user gets an email and has to join through its link before the role takes effect. Until then they are listed on the **Users** page with the status **Invited**, and **Resend Invite** beside their name sends it again.
+
+### Invite a read-only user
+
+A read-only user sees a project without being able to change it, which suits a stakeholder who wants visibility rather than involvement.
 
 <Steps>
 
-1. **Open the members list** — Go to **Project > Project Settings** and click **Project Members**.
+1. Go to **Settings > Users** and click **Add new user**.
 
-2. **Start the invitation** — Click **Invite**.
+2. Enter the user's address in **Email**.
 
-3. **Address it** — In **Invite New Member**, enter the **Email** and select a **Role**.
+3. Select the **Read Only** checkbox.
 
-4. **Send it** — Click **Invite**.
-
-</Steps>
-
-The user gets an invitation email and joins through its link. Once joined, they can work on the project at the role you gave them.
-
-<Aside type="note">
-This route offers only **Test Manager**, **Test Lead**, and **Automation Engineer/Developer**. Assigning **Super Administrator** has to be done from **Settings > Users** instead.
-</Aside>
-
-## Invite a user and assign projects at once
-
-Use this when someone needs more than one project, or a role the project-level invite does not offer.
-
-<Steps>
-
-1. **Open the users list** — Go to **Settings > Users**.
-
-2. **Start the invitation** — Click **Add new user**.
-
-3. **Fill it in** — Enter the **Email**, tick the projects to assign, and set the role for each.
-
-4. **Send it** — Click **Send Invite**.
+4. Click **Send Invite**.
 
 </Steps>
 
-## Invite a read-only user
-
-<Steps>
-
-1. **Open the users list** — Go to **Settings > Users**.
-
-2. **Start the invitation** — Click **Add new user** in the top-right corner.
-
-3. **Address it** — Enter the **Email**, then tick **Read Only**.
-
-4. **Send it** — Click **Send Invite**.
-
-</Steps>
-
-`Invite sent successfully` confirms it, and the person appears on **Users** with the status **Invited**.
-
-<Aside type="note">
-The status stays **Invited** until they accept. **Resend Invite** beside their name is there for the invitation that went to a spam folder.
-</Aside>
+**Invite sent successfully** confirms it, and the user appears under **Users** as **Invited**.
 
 ## Change a user's role or projects
 
 <Steps>
 
-1. **Find the user** — Go to **Settings > Users**.
+1. Go to **Settings > Users**.
 
-2. **Open the menu** — Hover the user and click the kebab menu.
+2. Hover over the user and click the ellipsis icon `⋮`.
 
-3. **Edit** — Click **Edit User Role**.
+3. Click **Edit User Role**.
 
-4. **Set it** — In **Edit User Role / Assign Projects**, change the roles and projects, then click **Update**.
+4. Select the roles and projects in the **Edit User Role / Assign Projects** dialog, and click **Update**.
 
 </Steps>
+
+This is also how you assign an existing user to another project, rather than inviting them again.
 
 ## Remove a user from a project
 
-A Super Administrator can remove project members.
+Only a Super Administrator can remove users.
 
 <Steps>
 
-1. **Open the members list** — Go to **Project > Project Settings** and click **Project Members**.
+1. Go to **Project > Project Settings > Project Members**.
 
-2. **Pick the user** — Hover them and click **Delete**.
+2. Hover over the user and click **Delete**.
 
-3. **Confirm** — Type `DELETE` in the **Delete Member** dialog and click **Delete**.
+3. Enter `DELETE` in the **Delete Member** dialog and click **Delete**.
 
 </Steps>
 
-You can also remove someone globally from **Settings > Users**.
+The same can be done from **Settings > Users** for a user across the account.
+
+## Review management
+
+Reviewers are assigned per test case and per element rather than by role, so any user can be a reviewer. See [Review management](/suite/settings/review-management/).
+
+## Control who can stop executions
+
+By default anyone can stop any run, which makes an accidental stop easy and disruptive. **Control Who Can Stop Executions**, under **Settings > Preferences**, restricts that.
+
+With it on:
+
+- **Account Administrators** and **Super Administrators** can stop any execution, from **Usage Details** or **Run Results**
+- **Test Managers**, **Test Leads**, and **Automation Engineers** see every execution but can stop only the ones they started themselves
+
+Anyone else has to ask a Super Administrator to halt a run.
+
+<Aside type="note">
+The toggle is off by default and may not appear at all. Contact support@testsigma.com or use instant chat to have it enabled for your account.
+</Aside>
+
+## Guest access
+
+The Testsigma support team can be given temporary access to the account, and it is granted separately from user roles. See [Guest access](/suite/settings/guest-access/).

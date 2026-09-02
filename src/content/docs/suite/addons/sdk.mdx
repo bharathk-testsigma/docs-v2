@@ -1,8 +1,8 @@
 ---
 title: Addon SDK reference
-description: Read and write runtime data from an addon, and read the metadata of the run your action executes inside.
+description: The Modern addon execution context — adapters, runtime variables, AI, OCR, the underlying Playwright and WebdriverIO objects, and what is refused.
 pageType: reference
-verified: 2026-07
+verified: 2026-08
 sidebar:
   order: 30
   label: SDK Reference
@@ -10,121 +10,147 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-The Testsigma SDK lets addon code reach back into the run around it. Two classes carry most of that. `RunTimeData` reads and writes runtime variables, and `RunMetaData` reports facts about the execution itself.
+The second argument to `execute()` is the execution context. Which fields it carries depends on the platforms declared in `applicationType` and the permissions requested. Requesting nothing still gives you logging, a scratch directory, runtime variables, and an abort signal.
 
-## Get the dependency
+This reference covers the Modern (TypeScript) SDK. Classic addons use Java and Selenium directly.
 
-An addon template already depends on the current SDK. A project generated from Suite needs nothing added.
+## Context fields
 
-For a project you assemble yourself, take the Maven dependency from the [testsigma-java-sdk repository](https://github.com/testsigmahq/testsigma-java-sdk#testsigma-sdk-dependency). You can also generate the project from the [addon archetype](https://github.com/Testsigmahq/testsigma-addon-archetype#testsigma-maven-archetype-for-creating-addon-project).
+| Field | Available | Purpose |
+|---|---|---|
+| `ctx.ui.browser` | Platforms include **WEB** or **MOBILE_WEB** | Drive the page under test |
+| `ctx.ui.mobile` | Platforms include **ANDROID** or **IOS** | Drive the app under test |
+| `ctx.runtime` | Always | Read and write runtime variables by name |
+| `ctx.logger` | Always | Structured logging: `debug`, `info`, `warn`, `error` |
+| `ctx.tmpDir` | Always | Per-step scratch directory, auto-cleaned, always readable and writable |
+| `ctx.signal` | Always | `AbortSignal` that fires if the run is cancelled |
+| `ctx.execution` | Always | Read-only metadata: `sessionId`, `applicationType`, result identifiers |
+| `ctx.ai` | With `permissions.ai` | Platform-brokered LLM generation |
+| `ctx.ocr` | With `permissions.ocr` | Platform-brokered OCR and image finding |
+| `ctx.spawn` | With `permissions.spawn` | Host-brokered subprocess, local agent only |
 
-## Runtime data
+<Aside type="tip">
+Honor `ctx.signal` in loops and long waits, so a cancelled run stops promptly.
+</Aside>
 
-Runtime variables are how one step hands a value to a later step. To reach them, declare a `RunTimeData` field and annotate it.
+## What differs from a normal test
 
-```java
-@RunTimeData
-private com.testsigma.sdk.RunTimeData runTimeData;
-```
+Your addon runs in a worker while the browser lives in the host process. That has 3 consequences, and each one produces a bug that looks like something else.
 
-The class exposes getters and setters for a key and a value. Setting a runtime property is three lines.
+- **Await everything**, including calls that are synchronous in Playwright, such as `page.url()`. Composing without awaiting is still free, so `page.getByRole("form").locator("input")` reaches the host only once, when you finally await it
+- **Await every assertion**: generic matchers return a promise here. An un-awaited failing assertion becomes an unhandled rejection, and the step passes when it should not
+- **No closures**: function arguments are rejected. Anything evaluating in the browser or on the device takes a string instead, including `evaluate("el => el.textContent")`, `waitForFunction`, `$$eval`, and WebdriverIO's `execute`
 
-```java
-runTimeData = new com.testsigma.sdk.RunTimeData();
-runTimeData.setKey("tokenKey");
-runTimeData.setValue("token_value");
-```
+## Browser adapter
 
-### A complete action
+| Method | Notes |
+|---|---|
+| `locate(elementRef \| selector)` | Returns a locator handle for a declared element or an ad-hoc selector |
+| `goto(url, opts?)` | `waitUntil: "load" \| "domcontentloaded" \| "networkidle"` |
+| `screenshot(opts?)` | `{ fullPage?: boolean }`, returns a Buffer |
+| `title()` and `url()` | Current page title and URL |
+| `evaluate(scriptString, args?)` | Has to be a string. Function values cannot be transferred |
+| `waitForSelector(sel, opts?)` | `{ state?: "attached" \| "visible" \| "hidden", timeout? }` |
 
-This addon reads the text of a PDF the browser is displaying. It stores that text in a runtime variable, named from the step's test data.
+A locator handle supports `click()`, `fill(text)`, `textContent()`, `getAttribute(name)`, `isVisible()`, `count()`, `boundingBox()`, and string-based `evaluate()`.
 
-```java
-package com.testsigma.addons.pdf.web;
+## Mobile adapter
 
-@Data
-@Action(actionText = "Read the content from pdf and store the text into a runtime-variable variable",
-       description = "Extracts the text from the PDF and stores the extracted text into a run time variable",
-       applicationType = ApplicationType.WEB)
-public class ReadpdfContent extends WebAction {
-   @TestData(reference = "variable")
-   private com.testsigma.sdk.TestData testData;
+`locate()` accepts a declared `ElementRef` or an ad-hoc `{ strategy, value }` literal. The strategies are `accessibilityId`, `id`, `xpath`, `className`, `androidUiAutomator` for Android, and `iosPredicate` or `iosClassChain` for iOS.
 
-   @RunTimeData
-   private com.testsigma.sdk.RunTimeData runTimeData;
-
-   @Override
-   public Result execute() {
-       Result result = Result.SUCCESS;
-       logger.info("Initiating execution");
-       logger.debug("test-data: " + this.testData.getValue());
-       URL url;
-       BufferedInputStream fileParse;
-       if (driver.getCurrentUrl().contains(".pdf")) {
-           setSuccessMessage("pdf file detected");
-       } else {
-           setErrorMessage("Not a pdf file");
-           return Result.FAILED;
-       }
-       try {
-           url = new URL(driver.getCurrentUrl());
-           InputStream is = url.openStream();
-           fileParse = new BufferedInputStream(is);
-           PDDocument doc = null;
-           doc = PDDocument.load(fileParse);
-           String st = new PDFTextStripper().getText(doc);
-           runTimeData = new com.testsigma.sdk.RunTimeData();
-           runTimeData.setKey(testData.getValue().toString());
-           runTimeData.setValue(st.trim());
-           setSuccessMessage("The Stored content in PDF is : " + st.trim()
-               + "and stored in the runtime variable :" + testData.getValue());
-       } catch (IOException e) {
-           e.printStackTrace();
-           setErrorMessage("Cause of Exception:" + e.getCause().toString());
-           return Result.FAILED;
-       }
-       return result;
-   }
-}
-```
-
-## Run metadata
-
-Sometimes an action needs to know about the execution it belongs to, not just the page in front of it. `RunMetaData` carries that.
-
-An instance called `runMetaData` is already in the template, for every addon NLP. You do not create one, and you can reach it anywhere in the addon. It is populated for dry test case executions and test plan executions alike.
-
-| Method | What it returns |
-| --- | --- |
-| `getTestDataId()` | The test data profile ID available to the executing step, as a `long` |
-| `getRunId()` | The dry test case result ID for a dry execution, or the test plan result ID for a plan execution, as a `long` |
-| `getIsAdHocRun()` | `true` for a dry test case execution, `false` for a test plan execution |
-| `getTriggeredType()` | How the execution was triggered, as an enum: `MANUAL`, `SCHEDULED`, or `API` |
-| `getTriggeredByEmail()` | The email of the user who started the execution, as a `String` |
-| `getStartTime()` | When the execution started, as a `String` |
-
-### Reading it
-
-```java
-package com.kasyap.testsigma.addons.web;
-
-import.com.testsigma.sdk.Result;
-
-@Action(actionText = "Verifying RunMetadata", applicationType = ApplicationType.WEB)
-public class CustomNLP extends WebAction {
-@Override
-    protected Result execute() throws NoSuchElementException {
-        logger.info("Triggered By : " + runMetaData.getTriggeredByEmail());
-        logger.info("TestDataProfile ID available to step" + runMetaData.getTestDataId());
-        logger.info("Execution Result ID: " + runMetaData.getRunId());
-        logger.info("Is Dry Execution? : " + runMetaData.getIsAdHocRun());
-        logger.info("TriggeredType (Manual/Scheduled/API) ? " + runMetaData.getTriggerType());
-        logger.info("Execution Started at (UTC format) : " + runMetaData.getStartTime());
-        return Result.SUCCESS;
-    }
-}
-```
+| Surface | Methods |
+|---|---|
+| Element handle | `tap()`, `longPress({ms?})`, `fill(text)`, `clear()`, `text()`, `getAttribute(name)`, `isVisible()`, `boundingBox()`, `swipe(direction)`, `count()` |
+| Device | `screenshot()`, `getContexts()`, `getCurrentContext()`, `switchContext(name)`, `getOrientation()`, `setOrientation(...)`, `hideKeyboard()` |
 
 <Aside type="note">
-`getStartTime()` returns UTC. Compare it against a local timestamp without converting, and the addon's time arithmetic comes out hours wrong.
+A platform-specific strategy used on the other platform fails at run time. Coordinates from `boundingBox()` are device pixels, so divide by the device pixel ratio for density-independent units.
 </Aside>
+
+Prefer `ctx.ui.mobile.locate(...)` over `driver.$(...)` where it suffices. `locate()` applies UiAutomator `resourceId` wrapping, the iOS class-name predicate workaround, and xpath normalization that the raw driver does not.
+
+### Waiting on mobile
+
+WebdriverIO's `waitUntil` is unavailable, because its condition callback runs in Node and no string form can replace it. Use `ctx.ui.mobile.waitUntil`, which re-evaluates a driver expression on the device each interval.
+
+```ts
+await ctx.ui.mobile.waitUntil(driver.$("~ok").isDisplayed(), { timeout: 10_000 });
+```
+
+Pass the expression without awaiting it. Awaiting first would check it once, and is refused with an explanation. The options are WebdriverIO's `timeout`, `interval`, and `timeoutMsg`.
+
+## The underlying libraries
+
+`ctx.ui.browser` and `ctx.ui.browser.page` are the same object at 2 levels of abstraction. Where the adapter does not reach far enough, every session also exposes the real automation object and the real assertion library.
+
+| Platform | Automation | Assertions |
+|---|---|---|
+| Web | `ctx.ui.browser.page`, a Playwright `Page` | `ctx.ui.browser.expect` |
+| Mobile | `ctx.ui.mobile.driver`, a WebdriverIO driver | `ctx.ui.mobile.expect` |
+
+No permission declaration is needed for any of them. These are the genuine libraries rather than a curated subset, so every matcher, `.not`, `.soft`, and the generic value matchers work as documented.
+
+Reach for them for frames, keyboard and mouse, dialogs, downloads, and accessibility snapshots on web, or raw Appium commands on mobile.
+
+### Structural validation with aria snapshots
+
+Asserting the shape of a form or menu in one call beats a pile of per-element checks. Matching is a subset check, so unrelated markup can change freely, and it auto-retries like any Playwright assertion.
+
+```ts
+const page = ctx.ui.browser.page;
+const expect = ctx.ui.browser.expect;
+
+await expect(page.getByRole("form", { name: "Filters" })).toMatchAriaSnapshot(`
+  - heading "Filters"
+  - textbox "Search"
+  - button "Apply"
+`);
+
+const snapshot = await page.getByRole("form", { name: "Filters" }).ariaSnapshot();
+```
+
+## What is refused
+
+Your addon is one step inside someone else's session, so anything that outlives the step or hands over credentials is refused with a clear error.
+
+| Group | Members |
+|---|---|
+| Persistent callbacks | `on`, `once`, `route`, `exposeFunction`, `addInitScript` |
+| Session lifecycle | `close`, `pause`, `setDefaultTimeout`, `deleteSession`, `reloadSession`, `addCommand` |
+| Escapes that outlive the step | `newPage`, `newCDPSession`, `tracing`, `browser` |
+| Credentials, mobile | `options`, `requestedCapabilities` |
+
+What remains available is worth knowing. One-shot `waitForEvent(...)` covers dialogs, downloads, and popups. `capabilities` stays available, so you can branch on `platformVersion`. And `page.context()` and `page.request` both work, so cookies, `storageState()`, and API calls are all fine. Only the dangerous members inside them are refused.
+
+<Aside type="note">
+File paths passed to `screenshot({ path })`, `Download.saveAs()`, `setInputFiles()`, or WebdriverIO's savers have to sit under `ctx.tmpDir`. Anywhere else is refused.
+</Aside>
+
+## Runtime variables
+
+```ts
+const v = await ctx.runtime.get("orderId");   // undefined when unset
+await ctx.runtime.set("orderId", "ORD-1042");
+await ctx.runtime.set("token", jwt, { isEncrypted: true });
+```
+
+## AI
+
+```ts
+const answer = await ctx.ai.invoke("Summarize this receipt", {
+  files: ["receipt.png"],
+});
+```
+
+File paths are relative to `ctx.tmpDir`, or within your `fs` allowlist.
+
+## OCR
+
+| Method | Returns |
+|---|---|
+| `extractTextFromPage()` | Recognized text spans with bounding boxes for the current page |
+| `extractTextFromImage(path)` | The same, for an image file you supply |
+| `extractTextFromElement(elementRef)` | The same, for one element. Web only |
+| `findImage(refImage, opts?)` | `{ isFound, x1, y1, x2, y2 }` |
+
+`findImage` accepts `threshold`, `scale`, and `occurrence` options.

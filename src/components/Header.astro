@@ -2,9 +2,10 @@
 /**
  * Header override -- the top bar.
  *
- * Two rows inside one sticky bar, each constrained to the 1680px shell:
+ * Two rows inside one sticky bar:
  *
- * One 64px row (the old 49px tab strip is gone — wasted height):
+ * A 40px full-bleed v1/v2 notice, then one 64px row constrained to the 1680px
+ * shell (the old 49px tab strip is gone — wasted height):
  *
  *   [logo | Docs] ·· [Search…  ⌘K] [Ask Assistant] ·· [◐] [Book a demo]
  *
@@ -21,6 +22,12 @@
  * <Search /> instance per page, or two dialogs would register on the same
  * document. The Ask button opens that same dialog in Ask Assistant mode via
  * `data-open-ask`.
+ *
+ * The v1 notice rides INSIDE this bar rather than above it: the bar is the
+ * page's only fixed element, and every sticky offset in the shell (rail top,
+ * ToC top, scroll padding) is derived from --sl-nav-height. Adding a row here
+ * and paying for it in that one variable pins the notice with no new
+ * positioning; a separate fixed strip would have to re-offset all four.
  */
 import ThemeSelect from './ThemeSelect.astro';
 import Search from './Search.astro';
@@ -40,6 +47,39 @@ const isHome = stripBase(Astro.url.pathname).replace(/\/+$/, '') === '/home';
 ---
 
 <div class:list={['ts-bar', { 'ts-bar-home': isHome }]}>
+	{/* is:inline and placed BEFORE the notice, so a reader who dismissed it
+	    never sees it flash: a bundled module script is deferred and would run
+	    after first paint, i.e. after 40px of banner had already been drawn and
+	    the shell laid out around it. Same trick Starlight uses for the theme. */}
+	<script is:inline>
+		try {
+			if (localStorage.getItem('ts-v1note') === 'off')
+				document.documentElement.dataset.tsBanner = 'off';
+		} catch {}
+	</script>
+
+	<div class="ts-v1note">
+		<span>You're viewing the v2 docs. Looking for v1?</span>
+		{/* Absolute, and NOT withBase(): v1 is the Gatsby site at /docs/, a
+		    different app on the same domain. */}
+		<a href="https://testsigma.com/docs/"
+			>Go to v1 docs <span aria-hidden="true">&#8594;</span></a
+		>
+		<button type="button" class="ts-v1note-x" data-ts-note-dismiss>
+			<span class="sr-only">Dismiss</span>
+			<svg
+				width="14"
+				height="14"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg
+			>
+		</button>
+	</div>
+
 	<div class="ts-bar-row">
 		<div class="ts-brandcol">
 			{/* Mobile only: Starlight's own menu button is hidden (see theme.css) and
@@ -122,6 +162,19 @@ const isHome = stripBase(Astro.url.pathname).replace(/\/+$/, '') === '/home';
 	// The rail toggle drives Starlight's own mobile disclosure, so the sidebar
 	// keeps its focus handling and `aria-expanded` contract -- this button is
 	// only a second, better-placed trigger for it.
+	// Dismissing the notice sets the flag the inline script above reads on the
+	// next page load; the 40px it occupied is reclaimed by the
+	// :root[data-ts-banner='off'] rule in theme.css, so the rail, ToC and
+	// scroll padding all move up with it.
+	document.querySelectorAll<HTMLButtonElement>('[data-ts-note-dismiss]').forEach((btn) => {
+		btn.addEventListener('click', () => {
+			document.documentElement.dataset.tsBanner = 'off';
+			try {
+				localStorage.setItem('ts-v1note', 'off');
+			} catch {}
+		});
+	});
+
 	document.querySelectorAll<HTMLButtonElement>('[data-ts-rail-toggle]').forEach((btn) => {
 		const native = document.querySelector<HTMLButtonElement>('starlight-menu-button button');
 		if (!native) return;
@@ -140,6 +193,67 @@ const isHome = stripBase(Astro.url.pathname).replace(/\/+$/, '') === '/home';
 		/* The tab strip used to draw the bar's only hairline; with it gone the
 		   bar carries its own. */
 		border-bottom: 1px solid var(--ts-bd);
+	}
+
+	/* ---- row 0: the v1 notice ----
+	   Full-bleed (no shell max-width) with centred text, the way an
+	   announcement bar reads. Height is spent in --sl-nav-height, so it must
+	   stay in sync with --ts-banner-h in theme.css. */
+	.ts-v1note {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 8px;
+		height: var(--ts-banner-h);
+		flex: none;
+		padding-inline: var(--ts-gutter);
+		background: var(--ts-banner-bg);
+		border-bottom: 1px solid var(--ts-banner-bd);
+		color: var(--ts-banner-tx);
+		font-size: 13.5px;
+		font-weight: 500;
+		line-height: 1.3;
+		text-align: center;
+	}
+	.ts-v1note a {
+		color: var(--ts-banner-lk);
+		font-weight: 600;
+		text-decoration: underline;
+		text-underline-offset: 2px;
+		white-space: nowrap;
+	}
+	.ts-v1note a:hover {
+		text-decoration-thickness: 2px;
+	}
+	/* Absolute, so the notice text stays centred on the VIEWPORT -- an in-flow
+	   button would shove it left by half the button's width. */
+	.ts-v1note-x {
+		position: absolute;
+		inset-inline-end: calc(var(--ts-gutter) - 6px);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		padding: 0;
+		border: none;
+		border-radius: 6px;
+		background: none;
+		color: var(--ts-banner-tx);
+		opacity: 0.6;
+		cursor: pointer;
+		transition:
+			opacity var(--ts-t) var(--ts-ease),
+			background var(--ts-t) var(--ts-ease);
+	}
+	.ts-v1note-x:hover {
+		opacity: 1;
+		background: var(--ts-banner-bd);
+	}
+	:root[data-ts-banner='off'] .ts-v1note {
+		display: none;
 	}
 
 	/* ---- row 1 ---- */

@@ -1,13 +1,13 @@
 ---
-title: Enable visual testing
-description: Turn on visual testing for web test steps, run to capture a baseline, then review and accept visual differences.
+title: Visual testing
+description: Compare a run's screenshots against stored baselines or a Figma frame, tune the comparison with modes and ignore regions, and update the baseline.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 covers:
-  - Enable it on one step
-  - Enable it on several steps
-  - Review the differences
-  - Accept a new baseline
+  - Enable visual testing on a step
+  - Read a comparison
+  - Update the baseline
+  - Ignore regions and comparison modes
   - Compare against a Figma design
 sidebar:
   order: 10
@@ -15,148 +15,95 @@ sidebar:
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
-import Prerequisites from '~/components/Prerequisites.astro';
 
-Visual testing compares how a screen looks against a stored baseline image. It is off by default, and you turn it on per step rather than per test case. That keeps the comparison to the screens where appearance actually matters.
-
-<Prerequisites>
-
-- You have a test case with steps that reach the screens you want compared.
-- You know which steps are worth comparing. Every enabled step stores an image.
-
-</Prerequisites>
-
-## Enable it on one step
-
-<Steps>
-
-1. **Open the step options** — Click the ellipsis icon on the test step.
-
-2. **Turn it on** — Select **Enable Visual Testing**.
-
-3. **Save** — Click **Update Step**.
-
-</Steps>
-
-## Enable it on several steps
-
-<Steps>
-
-1. **Select the steps** — Tick the checkbox beside each step you want compared.
-
-2. **Open bulk settings** — Click **Update Settings** in the menu bar.
-
-3. **Apply** — In the **Bulk Update Settings** overlay, tick **Enable Visual Testing** and click **Update**.
-
-</Steps>
+Visual testing compares a screenshot taken during a run against a stored baseline, so a layout change shows up as a failed comparison rather than going unnoticed. It is off by default and switched on per step.
 
 <Aside type="note">
-Nothing is compared on the first run. Testsigma needs a baseline image for each enabled step, so visual testing starts reporting from the next successful run onward.
+A step with visual testing enabled needs a baseline image before it can compare anything. That baseline comes from the next successful run, so visual testing produces results from the second run onward.
 </Aside>
 
-## Review the differences
+## Enable visual testing on a step
 
-Run the test case, then open the result. Each enabled step carries a camera icon: green means the current image matches the baseline, red means it does not.
+Click the ellipsis icon `⋮` on the step, select **Enable Visual Testing**, and click **Update Step**. This works on the Test Case Details page and in the test step recorder.
 
-Click the camera icon to open the **Visual Difference** overlay. It carries five controls.
+To enable it on several steps at once, select their checkboxes, click **Update Settings** in the menu bar, select **Enable Visual Testing** in the **Bulk Update Settings** overlay, and click **Update**.
 
-| Control | What it does |
-| --- | --- |
-| **Highlight Differences** | Marks what changed, which is faster than comparing two images by eye |
-| **Hide Visual Differences** | Conceals the markers again |
-| **Select region to ignore from visual comparison** | Excludes an area from the comparison |
-| **Merge base image and current image** | Overlays the two so you can see the shift |
-| **Zoom in** and **Zoom out** | Inspect a detail closely |
+Run the test case once to create the baselines, then run it again to see comparisons.
 
-**AI Insights** produces a UI Difference Analysis Report whenever differences are found. It names the likely cause of the mismatch and suggests a resolution, and you can copy the insight into a bug report.
+## Read a comparison
 
-## Tune the comparison
+The Test Case Result page marks each visual step with a camera icon. Green means the current image matches the baseline. Red means it does not.
 
-A pixel-exact comparison flags things you do not care about. Two settings fix that: how strictly images are compared, and which regions are skipped.
+Click the icon to open **Visual Difference**. To reach it from a past run, click **Ad-hoc Runs** in the utility panel, click **View Details**, then click the camera icon on the step.
 
-### Set the comparison mode
+The overlay offers:
 
-| Mode | How it compares |
-| --- | --- |
-| **Strict** | Full pixel-by-pixel comparison, requiring an exact match |
-| **Lenient** | Pixel-by-pixel against a threshold — at 70%, it passes when 70% of pixels match and ignores the other 30% |
+- **Highlight Differences**: marks the variations
+- **Hide Visual Differences**: conceals them
+- **Select region to ignore from visual comparison**: excludes areas from the comparison
+- **Merge base image and current image**: overlays the two
+- **Zoom in** and **Zoom out**
 
-<Steps>
+<Aside type="tip">
+**AI Insights** produces a UI Difference Analysis Report whenever a difference is found, naming the likely cause and suggesting a fix. The insights can be copied for debugging.
+</Aside>
 
-1. **Open the result** — Click **Ad-hoc Runs** in the **Utility Panel**, then **View Details**.
+## Update the baseline
 
-2. **Open the overlay** — Click the camera icon.
+A deliberate UI change makes every baseline for that screen wrong, so replace it rather than letting the comparison fail.
 
-3. **Pick a mode** — Expand **Visual Testing Mode** and select **Strict** or **Lenient**.
+In the **Visual Difference** overlay, select **Mark as base image** on the current image. Later runs then compare against the new baseline.
 
-4. **Set a threshold** — For **Lenient**, enter the percentage in **Threshold**.
+## Fail the test case on a difference
 
-</Steps>
+A visual difference does not fail a test case by itself. To make it fail, open **Test Case Settings** in the utility panel and turn on **Fail Test Case if Visual Testing Fails**.
 
-To apply **Lenient** to one area rather than the whole image, click **Select region to highlight for visual comparison**, then expand the option and choose **Select selection**.
+## Ignore parts of the screen
 
-### Ignore a region
+Dynamic content produces differences that are not defects, such as advertisements, timestamps, and user-specific data. Excluding those regions cuts the false positives, so only meaningful changes are flagged.
 
-Ignoring a region keeps dynamic content out of the comparison — ads, timestamps, and user-specific data are the usual culprits behind false positives.
+Open **Visual Difference** on the step, select **Select region to ignore from visual comparison**, choose the areas to exclude, and click **Save ignore region**.
 
-<Steps>
+## Choose a comparison mode
 
-1. **Open the result** — Click **Ad-hoc Runs**, then **View Details**.
+Two modes are available, and both compare pixel by pixel. **Strict** requires an exact match. **Lenient** takes a threshold, so a threshold of 70% passes when 70% of pixels are identical and ignores the rest.
 
-2. **Open the overlay** — Click the camera icon.
-
-3. **Draw the region** — Select **Select region to ignore from visual comparison** and mark the areas to exclude.
-
-4. **Save it** — Click **Save ignore region**.
-
-</Steps>
-
-## Fail a test case on a visual difference
-
-By default a visual difference is reported but does not fail the test case. To change that, click **Test Case Settings** in the right navigation and enable **Fail Test Case if Visual Testing Fails**.
-
-Turn this on only once the baselines and ignore regions are settled. Enabling it against noisy baselines turns every dynamic timestamp into a failed run.
-
-## Accept a new baseline
-
-When a UI change is intentional, the baseline is now wrong and every run will keep failing against it.
-
-<Steps>
-
-1. **Open the difference** — Click the camera icon on the step.
-
-2. **Promote the current image** — At the top right, tick **Mark as base image** for the **Current Image**.
-
-</Steps>
-
-{/* SCREENSHOT NEEDED: the Visual Difference overlay with Highlight Differences on and the Mark as base image control visible */}
+Open **Visual Difference** on the step, expand **Visual Testing Mode**, and select **Strict** or **Lenient**. For **Lenient**, enter the percentage in **Threshold**.
 
 <Aside type="note">
-Promoting a baseline is how a real regression gets accepted permanently. Confirm the change was intended before you tick it.
+To apply **Lenient** mode to one area rather than the whole image, click **Select region to highlight for visual comparison**, expand the option, and choose **Select selection**.
 </Aside>
+
+A mode can be combined with the region features: **Select Region** narrows what is compared, and **Ignore Region** excludes areas from it.
 
 ## Compare against a Figma design
 
-Instead of comparing a run to a previous run, you can compare it to the design it was built from. The baseline becomes a Figma frame.
+Instead of comparing a screenshot to an earlier screenshot, you can compare it to the design itself, using a Figma frame as the baseline.
+
+<Aside type="note">
+This works on web and mobile applications, and is limited to enterprise accounts. Contact Testsigma support to have it enabled.
+</Aside>
 
 <Steps>
 
-1. **Enable visual testing** — Click the kebab menu on the step, select **Enable Visual Testing**, then click **Update Step**.
+1. Go to **Create Tests > Test Cases** and open the test case.
 
-2. **Open the Figma view** — Hover the step and click the camera icon to open **Visual Difference – Figma**.
+2. Click the ellipsis icon `⋮` next to the step, select **Enable Visual Testing**, and click **Update Step**.
 
-3. **Add the design** — Under **Base Line Image**, click **Add Figma Designs**.
+3. Hover over the step and click the camera icon. **Visual Difference - Figma** opens.
 
-4. **Set the target device** — In **Add Devices**, select the **Browser** and **Resolution** to compare at.
+4. Click **Add Figma Designs** in the **Base Line Image** section.
 
-5. **Link the frame** — Enter the Figma frame link in **Frame Link**, click **Refresh** to verify it, then click **Save**.
+5. Select the **Browser** and **Resolution** in **Add Devices**. For Android and iOS, select a mobile device with the resolution you need.
 
-6. **Run and review** — Execute the test case, click the camera icon on the step result, and open the **Visual Difference – Figma** tab.
+6. Enter the Figma frame link in **Frame Link** and click **Refresh** to verify it.
+
+7. Click **Save**.
+
+8. Run the test case, then click the camera icon on the step result and open the **Visual Difference - Figma** tab.
 
 </Steps>
 
 <Aside type="note">
-Three things have to line up or the comparison is meaningless. The Figma frame dimensions must match the target resolution, and the **Browser** and **Resolution** set here must match what you pick on the **Ad-Hoc Run**. For Android and iOS, choose a mobile device rather than a browser.
-
-Figma comparison covers web and mobile only, and it is limited to enterprise accounts. Contact Testsigma support to have it enabled.
+The browser and resolution set here have to match the ones selected for the run, and the Figma frame dimensions have to match the target device resolution. A mismatch produces differences that are not real.
 </Aside>
