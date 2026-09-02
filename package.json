@@ -12,12 +12,12 @@
     "postbuild": "cp -r dist/pagefind public/pagefind",
     "favicons": "node scripts/gen-favicons.mjs",
     "logo:dark": "node scripts/gen-logo-dark.mjs",
-    "build:ask-index": "node --env-file=.env scripts/build-ask-index.mjs",
-    "dev:ask": "node --import tsx --env-file=.env scripts/dev-server.mjs",
+    "build:ask-index": "node --env-file-if-exists=.env scripts/build-ask-index.mjs",
+    "dev:ask": "node --import tsx --env-file-if-exists=.env scripts/dev-server.mjs",
     "verify:dist": "node scripts/verify-dist.mjs",
     "//verify:dist": "Pre-deploy gate on dist/, run by the deploy workflow after `npm run build`. Names no content path on purpose -- see the header comment in the script.",
     "test": "node --test \"tests/*.test.mjs\"",
-    "test:ask": "node --import tsx --env-file=.env --test tests/ask-golden.test.mjs",
+    "test:ask": "node --import tsx --env-file-if-exists=.env --test tests/ask-golden.test.mjs",
     "astro": "astro"
   },
   "dependencies": {
