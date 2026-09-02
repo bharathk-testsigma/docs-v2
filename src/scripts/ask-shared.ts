@@ -18,8 +18,6 @@ export const IC_COPY =
 export const IC_CHECK =
   '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
 
-export const product = (): 'suite' => 'suite';
-
 export function escHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
@@ -61,7 +59,7 @@ export async function streamAsk(
   const resp = await fetch(ASK_API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question, product: product(), history }),
+    body: JSON.stringify({ question, history }),
     signal,
   });
   if (!resp.ok) throw new Error(`API responded ${resp.status}`);
@@ -376,7 +374,7 @@ export function sendFeedback(payload: {
   answerPreview: string;
 }): void {
   try {
-    const body = JSON.stringify({ ...payload, product: product() });
+    const body = JSON.stringify(payload);
     // keepalive so the request survives the modal closing right after a click.
     void fetch(FEEDBACK_API_URL, {
       method: 'POST',

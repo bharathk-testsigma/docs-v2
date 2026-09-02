@@ -1,36 +1,51 @@
 ---
-title: Manage access
-description: Grant Testsigma support temporary, logged, revocable access to your account for troubleshooting.
+title: Guest access
+description: Grant Testsigma support temporary, logged, revocable access to your account, and read what was done with it.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 sidebar:
   order: 70
   label: Guest Access
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
-import Prerequisites from '~/components/Prerequisites.astro';
 
-Manage Access lets an admin grant the Testsigma support team temporary account access for troubleshooting. Every support action is logged. The scope stays limited to the issue. You can revoke the access at any time.
+Guest access gives the Testsigma support team temporary, revocable access to your account, so they can diagnose an issue against your real data rather than asking you to reproduce it. Every action they take is logged under the user `guest@testsigma.com`, and shown as **Testsigma Guest** on the assets it touched.
 
-<Prerequisites>
-
-- You hold **Admin** access.
-
-</Prerequisites>
+<Aside type="note">
+Only a user with **Admin** access can authorize or revoke guest access.
+</Aside>
 
 ## Grant access
 
 <Steps>
 
-1. **Open the page** — Go to **Settings > Admin Settings > Manage Access**. Click **Allow Access**.
+1. Go to **Settings > Admin Settings > Manage Access**.
 
-2. **Scope it** — Select the **Access Type** and describe the issue. Tick the consent checkbox and click **Submit**.
+2. Click **Allow Access**.
 
-3. **Watch it** — The same page shows **Current Status** and **Access Expiry**. **Manage** updates or revokes the access.
+3. Select the **Access Type**.
+
+4. Describe the issue in **Describe the Issue**.
+
+5. Select the consent checkbox and click **Submit**.
 
 </Steps>
 
-## What the audit trail shows
+The same page shows the **Current Status** and the **Access Expiry**.
 
-Support actions log under the user `guest@testsigma.com`, stored for 3 years. **Activity** in the **Utility Panel** lists them. Each touched test case, element, suite, or plan also shows the **Testsigma Guest** actions in its own history.
+## Revoke or extend it
+
+Click **Manage** on the **Manage Access** page to update or revoke the access. You do not have to wait for it to expire.
+
+## What the access covers
+
+- Access is limited to what the issue requires
+- Every support action is logged under `guest@testsigma.com`, so each one is attributable to the session rather than to your own users
+- You can revoke it at any time
+
+## Read what was done
+
+Click **Activity** in the utility panel to see the access log. Logs are kept for 3 years.
+
+Actions by **Testsigma Guest** also appear on the individual test cases, elements, test suites, and test plans they touched, so you can check a specific asset rather than scanning the whole log.

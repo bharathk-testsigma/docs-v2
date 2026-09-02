@@ -1,98 +1,108 @@
 ---
-title: Run accessibility testing
-description: Enable accessibility checks on web test steps, pick a WCAG conformance level on the test plan, and read the report.
+title: Accessibility testing
+description: Scan web, Android, and iOS applications against WCAG guidelines per test step, read the report, and track compliance on a dashboard.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 covers:
-  - Enable it on test steps
-  - Set the conformance level
+  - Enable accessibility testing on test steps
+  - Enable it in the test plan
   - Read the report
-  - Work through All Issues
   - Compare and export
+  - Track accessibility on a dashboard
 sidebar:
   order: 20
   label: Accessibility Testing
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
-import Prerequisites from '~/components/Prerequisites.astro';
 
-Accessibility testing scans your application against WCAG criteria at the exact steps you choose. Enabling it takes two parts: the steps to scan, and a conformance level on the test plan. The report then groups what it found by severity and by WCAG principle.
+Accessibility testing scans the application against WCAG guidelines and reports what fails. Checks are enabled per test step, so the scan happens at the exact point in the flow you want validated rather than against the application as a whole.
 
-<Prerequisites>
+It works on web, Android, and iOS applications, and the workflow is the same for each. Salesforce behaves as a web application here, so every reference to web below covers it too.
 
-- **Web Accessibility Testing - Step Level** is enabled in **Settings > Preferences**.
-- You have a test case, a test suite, and a test plan with a test machine.
-
-</Prerequisites>
+Before you start, turn on **Web Accessibility Testing - Step Level** under **Settings > Preferences > Web Accessibility Testing**.
 
 <Aside type="note">
-Accessibility Testing does not support Safari or Firefox. Point the test plan's machine at a supported browser or the scan produces nothing.
+On web, accessibility testing runs on Safari and Firefox only.
 </Aside>
 
-## Enable it on test steps
+## Enable accessibility testing on test steps
+
+Go to **Create Tests > Test Cases** and open the test case, then take either route.
+
+- **Several steps at once**: select them, click **Update Settings**, select **Enable Accessibility Testing for the step** in the **Bulk Update Settings** overlay, and click **Update**
+- **One step**: hover over it, click the ellipsis icon `⋮`, select **Step Settings**, select **Enable Accessibility Testing for the Step**, and click **Update**
+
+In the recorder, go to **Test Step > Step Settings**, select **Enable Accessibility Testing for the Step**, and click **Update**.
+
+<Aside type="note">
+A step group takes the same settings, but only from the test authoring page. The recorder does not offer it for step groups.
+</Aside>
+
+Repeat for every step you want scanned, then add the test cases to a test suite and the suite to a test plan.
+
+## Enable it in the test plan
 
 <Steps>
 
-1. **Open the test case** — Go to **Create Tests > Test Cases**, expand a **Feature** and **Scenario**, then select the test case.
+1. Turn on the **Accessibility Testing** toggle under **Additional Settings** while creating the test plan.
 
-2. **Select the steps** — Tick the steps you want scanned, then click **Update Settings**.
+2. Expand **WCAG Versions & Conformance Level** and select the version you are testing against.
 
-3. **Apply** — In the **Bulk Update Settings** overlay, tick **Enable Accessibility Testing for the step** and click **Update**.
+3. Click **Run Now**.
 
-</Steps>
+4. Click **View Reports** for that test plan once execution finishes.
 
-You can also enable it on a single step from that step's own settings.
-
-## Set the conformance level
-
-<Steps>
-
-1. **Turn it on for the plan** — While creating the test plan, enable the **Accessibility Testing** toggle under **Additional Settings**.
-
-2. **Pick a standard** — Expand **WCAG Versions & Conformance Level** and select the version you are held to.
-
-3. **Run it** — Click **Run Now**.
+5. Click **View Report** on the report page to open the accessibility report.
 
 </Steps>
+
+<Aside type="note">
+Accessibility reports are also generated and shared through the test plan's notifications.
+</Aside>
 
 ## Read the report
 
-Once the plan finishes, click **View Reports** for that plan, then **View Report** at the bottom to open the detailed accessibility report. It has two tabs.
+The report has 2 tabs. **Overview** summarizes the run; **All Issues** lists every violation with the code behind it.
 
-**Overview** summarises the run. **Issue Overview** is a donut chart grouping findings as Critical, Serious, Moderate, Minor, or Success. **Issues by WCAG Principle** organises them under Perceivable, Operable, Understandable, and Robust, with the failed criteria under each. **Issues by Pages** lists every URL scanned and how many checks failed on it, which is the fastest way to find the worst page. **Issues by Components** groups by HTML element type, which is how you spot one component failing repeatedly.
+### Overview
 
-{/* SCREENSHOT NEEDED: the accessibility report Overview tab showing the severity donut and the Issues by WCAG Principle breakdown */}
+Four sections, each answering a different question about where the problems are.
 
-<Aside type="note">
-The **Best Practices** tab carries the remediation guidance. The report tells you what failed; that tab tells you what to do about it.
+- **Issue Overview**: a donut chart of every issue found, grouped by severity as **Critical**, **Serious**, **Moderate**, **Minor**, and **Success**
+- **Issues by WCAG Principle**: findings grouped as **Perceivable**, **Operable**, **Understandable**, and **Robust**, with the criteria violated and the failed check count for each
+- **Issues by Pages**: every URL scanned, with the number of failed checks on each. Use it to find the worst pages. Web only
+- **Issues by Components**: issues grouped by element type, HTML on web and native UI on Android and iOS, which shows whether one component is causing repeated failures
+
+<Aside type="tip">
+The **Best Practices** tab carries remediation steps for the issues found.
 </Aside>
 
-### Work through All Issues
+### All Issues
 
-**All Issues** is the full list of violations, and it is where you fix things rather than survey them. Three parts: the search bar, the list, and the detail pane.
+The tab has 3 parts: the search bar, the issues list, and the details pane.
 
-Narrow the list first. The dropdown filters take **All TestCases** or **All Pages**, or one specific case or page. **Filters** applies criteria, **Search** matches a keyword, and the status dropdown filters by issue status. A **Step Level** label confirms you are seeing step-level issues.
+Search and filter with the dropdowns, which take **All TestCases**, or a single test case, to narrow the list. On web they also take **All Pages** or a single page. **Filters** applies specific criteria and **Search** finds issues by keyword. The **Step Level** label confirms issues are shown at test step level, and the status dropdown filters by issue status.
 
-| List column | What it shows |
-| --- | --- |
-| **WCAG Criteria** | The rule ID. Sortable |
-| **Check Description** | A summary of the violation |
-| **Status** | The result of the check |
-| **No of Checks** | How many times this issue occurred |
-| **Severity** | A colour-coded impact label |
+The issues list carries the **WCAG Criteria** rule ID, which the list can be sorted by, a **Check Description**, the **Status**, the **No of Checks** for how many times the issue occurred, and a color-coded **Severity**.
 
-Selecting a row fills the detail pane on the right.
+Selecting a row opens the details pane:
 
-| Detail | What it gives you |
-| --- | --- |
-| **Previous** / **Next** | Cycles through every instance of the selected issue. Where **No of Checks** says 15, these walk all 15 |
-| **Description** | The full definition of the violation |
-| **Tags** | The WCAG version, conformance level, and rule ID |
-| **Affected Test Step** | The exact test case and step that failed |
-| **Element Details** | The HTML of the offending element |
-| **Screenshot** | The page element as it was when the error was detected |
+| Field | What it shows |
+|---|---|
+| Previous and Next | Cycles through every instance of the selected issue. An issue with 15 checks has 15 instances to inspect |
+| Description | The full definition of the violation |
+| Tags | The WCAG version and the conformance level, plus the rule ID on web |
+| Affected Test Step | The test case and step where the failure occurred |
+| Element Details | The code for the element causing the issue, HTML on web and native code on Android and iOS |
+| Screenshot | The page or screen element as it was when the error was detected |
 
 ### Compare and export
 
-The top-right corner carries two report-wide actions. **Compare Runs** sets this report against previous runs, which is how you show remediation is working. **Export** saves the report data.
+**Compare Runs** puts the current report against previous runs, so remediation progress is visible rather than inferred. The export icon saves the report data.
+
+## Track accessibility on a dashboard
+
+Eight accessibility widgets are available for an advanced dashboard: **Compliance Score**, **Issues by Severity**, **Issues by WCAG Criterion**, **Trend Over Time**, **Top Issues**, **Page-Level Health**, **VPAT Readiness**, and **Remediation Progress**.
+
+They all read from the dashboard's **Standard Selector**, which maps your existing test data to a chosen standard without needing new runs. See [Dashboards](/suite/analytics/dashboards/) for the standards available and how the selector behaves.

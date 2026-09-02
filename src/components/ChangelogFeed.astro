@@ -13,7 +13,7 @@ const copy = { sub: 'A full rundown of our latest releases, improvements and fix
 type Item = { title: string; desc: string };
 type Section = { type: string; items: Item[] };
 type Release = {
-	version: string;
+	id: string;
 	latest?: boolean;
 	month: string;
 	date: string;
@@ -54,7 +54,9 @@ const entries = await getCollection('changelog');
 const releases: Release[] = entries
 	.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
 	.map((e, i) => ({
-		version: e.data.version,
+		// The entry id is the filename, which IS the release date
+		// (YYYY-MM-DD) -- used as the heading anchor.
+		id: e.id,
 		// Newest release by date IS the latest -- computed, so no one has to
 		// flip per-file frontmatter flags on every release (they drift; two
 		// files carried latest:true when this replaced the flag).
@@ -116,14 +118,11 @@ const iconSvg = (paths: string) =>
 				{g.releases.map((r) => (
 					<article class="ts-cl-card">
 						<header class="ts-cl-card-head">
-							<div class="ts-cl-badges">
-								<span class="ts-cl-version">{r.version}</span>
-								{r.latest && <span class="ts-cl-latest">Latest</span>}
-							</div>
 							<span class="ts-cl-date">Released {r.date}</span>
+							{r.latest && <span class="ts-cl-latest">Latest</span>}
 						</header>
 
-						<h2 class="ts-cl-headline" id={r.version.replace(/[^\w.]+/g, '-')}>
+						<h2 class="ts-cl-headline" id={r.id}>
 							{r.headline}
 						</h2>
 						<hr class="ts-cl-hr" />
@@ -239,24 +238,8 @@ const iconSvg = (paths: string) =>
 	.ts-cl-card-head {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		gap: 12px;
-		margin-bottom: 14px;
-	}
-	.ts-cl-badges {
-		display: flex;
-		align-items: center;
 		gap: 10px;
-	}
-	.ts-cl-version {
-		font-family: var(--sl-font-mono);
-		font-size: 12.5px;
-		font-weight: 600;
-		color: var(--ts-ac);
-		background: var(--ts-ac-soft);
-		padding: 3px 9px;
-		border-radius: 6px;
-		letter-spacing: 0.02em;
+		margin-bottom: 14px;
 	}
 	.ts-cl-latest {
 		font-size: 11px;
@@ -269,7 +252,8 @@ const iconSvg = (paths: string) =>
 	}
 	.ts-cl-date {
 		font-size: 13px;
-		color: var(--ts-tx3);
+		font-weight: 600;
+		color: var(--ts-tx2);
 		white-space: nowrap;
 	}
 	.ts-cl-headline {
@@ -368,9 +352,7 @@ const iconSvg = (paths: string) =>
 			padding: 22px 18px 24px;
 		}
 		.ts-cl-card-head {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: 6px;
+			flex-wrap: wrap;
 		}
 	}
 </style>

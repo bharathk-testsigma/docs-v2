@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 /**
- * Reads every doc page, splits into small sections, embeds them with Voyage AI,
+ * Reads every doc page, splits into small sections, embeds them through the
+ * LiteLLM gateway (OpenAI text-embedding-3-small),
  * and writes two files the Ask Assistant API reads at runtime:
  *
  *   public/ask-index.bin        — packed Float32 vectors (1024 dims per chunk)
  *   public/ask-index.meta.json  — parallel array of { url, title, product, excerpt }
  *
  * Usage:
- *   VOYAGE_API_KEY=pa-xxx node scripts/build-ask-index.mjs
+ *   node --env-file=.env scripts/build-ask-index.mjs
  */
 
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, appendFileSync, unlinkSync } from 'fs';
@@ -21,18 +22,20 @@ const ROOT      = join(__dirname, '..');
 const DOCS_DIR  = join(ROOT, 'src', 'content', 'docs');
 const PUBLIC    = join(ROOT, 'public');
 
-const VOYAGE_API_KEY = process.env.VOYAGE_API_KEY;
+// Embeddings run through the company LiteLLM gateway (same key and base URL as
+// answer generation — direct provider keys are disabled).
+const GATEWAY_KEY = process.env.ANTHROPIC_API_KEY;
+const GATEWAY_URL = process.env.ANTHROPIC_BASE_URL;
 
-const VOYAGE_MODEL  = 'voyage-3.5';
-const DIMS          = 1024;   // voyage-3.5 default embedding dimension
+const EMBED_MODEL   = 'text-embedding-3-small-openai';
+const DIMS          = 1024;   // text-embedding-3-small, truncated via `dimensions`
 const CHUNK_MAX     = 900;    // characters per chunk before splitting further
 
-// Throughput knobs — defaults suit Voyage's standard tier (fast). To build on the
-// trial tier (3 RPM / 10K TPM, before a payment method is added) run with:
-//   VOYAGE_BATCH_SIZE=12 VOYAGE_CONCURRENCY=1 VOYAGE_REQ_MIN_MS=21000
-const BATCH_SIZE    = Number(process.env.VOYAGE_BATCH_SIZE)  || 128;  // texts per request
-const CONCURRENCY   = Number(process.env.VOYAGE_CONCURRENCY) || 4;    // parallel requests
-const REQ_MIN_MS    = Number(process.env.VOYAGE_REQ_MIN_MS)  || 0;    // min ms between request starts
+// Throughput knobs. The gateway has no trial-tier throttle, so the defaults
+// build the whole index in a couple of minutes; override if it rate-limits.
+const BATCH_SIZE    = Number(process.env.EMBED_BATCH_SIZE)  || 128;  // texts per request
+const CONCURRENCY   = Number(process.env.EMBED_CONCURRENCY) || 4;    // parallel requests
+const REQ_MIN_MS    = Number(process.env.EMBED_REQ_MIN_MS)  || 0;    // min ms between request starts
 
 // ── Walk docs directory ────────────────────────────────────────────────────────
 
@@ -185,26 +188,28 @@ function fileToUrl(filePath) {
   return `/${slug}/`;
 }
 
-// ── Voyage AI batch embed ──────────────────────────────────────────────────────
+// ── Batch embed (OpenAI embeddings via the LiteLLM gateway) ───────────────────
 
-// Embed a batch of texts in one request, with retry on 429
+// Embed a batch of texts in one request, with retry on 429.
+// `inputType` is kept in the signature because the caller distinguishes
+// document vs query embeddings; OpenAI models have no such parameter, so it
+// only affects nothing here — the same model embeds both sides.
 async function embedBatch(texts, inputType = 'document', attempt = 0) {
-  const res = await fetch('https://api.voyageai.com/v1/embeddings', {
+  const res = await fetch(`${GATEWAY_URL}/v1/embeddings`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${VOYAGE_API_KEY}`,
+      'Authorization': `Bearer ${GATEWAY_KEY}`,
     },
     body: JSON.stringify({
       input: texts,
-      model: VOYAGE_MODEL,
-      input_type: inputType,        // 'document' for the index, 'query' at search time
-      output_dimension: DIMS,
+      model: EMBED_MODEL,
+      dimensions: DIMS,
     }),
   });
 
   if (res.status === 429) {
-    if (attempt >= 6) throw new Error('Voyage rate limit: too many retries. Try again later.');
+    if (attempt >= 6) throw new Error('Gateway rate limit: too many retries. Try again later.');
     const retryAfter = parseInt(res.headers.get('retry-after') || '0') * 1000;
     const waitMs = retryAfter || Math.min(2000 * 2 ** attempt, 60000);
     process.stdout.write(`\n  Rate limited — waiting ${Math.round(waitMs / 1000)}s…\n`);
@@ -214,7 +219,7 @@ async function embedBatch(texts, inputType = 'document', attempt = 0) {
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Voyage Embedding API ${res.status}: ${body}`);
+    throw new Error(`Gateway Embedding API ${res.status}: ${body}`);
   }
 
   const json = await res.json();
@@ -236,7 +241,7 @@ const PARTIAL_META = join(PUBLIC, 'ask-index.partial.json');
 function chunkSignature(texts) {
   const h = createHash('sha1');
   for (const t of texts) h.update(t).update('\u0000');
-  return `${VOYAGE_MODEL}:${DIMS}:${BATCH_SIZE}:${texts.length}:${h.digest('hex').slice(0, 16)}`;
+  return `${EMBED_MODEL}:${DIMS}:${BATCH_SIZE}:${texts.length}:${h.digest('hex').slice(0, 16)}`;
 }
 
 // Returns the number of completed batches that were loaded into `results`,
@@ -340,10 +345,10 @@ async function embedAll(texts, inputType = 'document') {
 
 async function main() {
   // --meta-only just rewrites meta.json from local docs; no embedding, no key needed.
-  if (!VOYAGE_API_KEY && !process.argv.includes('--meta-only')) {
-    console.error('Error: VOYAGE_API_KEY environment variable is not set.');
-    console.error('Get a key at https://dashboard.voyageai.com, then run:');
-    console.error('  VOYAGE_API_KEY=pa-... node scripts/build-ask-index.mjs');
+  if ((!GATEWAY_KEY || !GATEWAY_URL) && !process.argv.includes('--meta-only')) {
+    console.error('Error: ANTHROPIC_API_KEY / ANTHROPIC_BASE_URL are not set.');
+    console.error('They carry the LiteLLM gateway key and host. Run:');
+    console.error('  node --env-file=.env scripts/build-ask-index.mjs');
     process.exit(1);
   }
 
@@ -377,12 +382,30 @@ async function main() {
   // src/data/ask-context/*.md. Chunks carry url: '' so they inform answers
   // but are never cited as sources. Optional frontmatter `product:` scopes a
   // file to one product; the default 'all' matches both at retrieval time.
+  // `--no-context` builds from doc pages alone, for judging how much the
+  // curated files are helping or hurting retrieval. The two indexes are not
+  // interchangeable at runtime, so note which one is on disk.
   const CONTEXT_DIR = join(ROOT, 'src', 'data', 'ask-context');
-  if (existsSync(CONTEXT_DIR)) {
+  const skipContext = process.argv.includes('--no-context');
+  if (skipContext) console.log('  --no-context: skipping src/data/ask-context/');
+  if (!skipContext && existsSync(CONTEXT_DIR)) {
     for (const name of readdirSync(CONTEXT_DIR)) {
       if (!/\.(md|mdx)$/.test(name)) continue;
       const raw = readFileSync(join(CONTEXT_DIR, name), 'utf-8');
       const { title, description, body, data } = parseFrontmatter(raw);
+      // `indexed: false` keeps a file in the folder as a human reference
+      // without embedding it. Used where a curated file outranks the real doc
+      // pages and its errors therefore become systemic.
+      //
+      // Read from the RAW frontmatter, not the parsed object: these files are
+      // hand-maintained and their YAML has broken before (an unquoted value
+      // containing `[...]` throws, and parseFrontmatter then falls back to a
+      // title-only parse that silently drops every other field). An exclusion
+      // that fails open would re-embed the file without anyone noticing.
+      if (/^indexed:\s*false\s*$/m.test(raw.split(/^---$/m)[1] ?? '') || data.indexed === false) {
+        console.log(`  skipping ${name} (indexed: false)`);
+        continue;
+      }
       const t = title || name.replace(/\.(md|mdx)$/, '');
       const content = [description, body].filter(Boolean).join('\n\n');
       if (!content.trim()) continue;

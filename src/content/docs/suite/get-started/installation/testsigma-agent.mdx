@@ -1,159 +1,803 @@
 ---
 title: Testsigma Agent
-description: Install, register, upgrade, and remove the Testsigma Agent, as a process, a service, or a Docker container.
+description: Install, register, configure, upgrade, and remove the Testsigma Agent, from a ZIP or executable to Docker, Kubernetes, and Argo CD.
 pageType: guide
-verified: 2026-08
 covers:
-  - Download and install
-  - Start the agent as a process or service
+  - What the agent makes possible
+  - System requirements
+  - Install the agent
+  - Start the agent
   - Register the agent
-  - Run the agent in Docker
-  - Upgrade the agent
-  - Make an agent obsolete or delete it
+  - Connect a local device
+  - Command-line arguments
+  - Configure logs
+  - Keep the agent up to date
+  - Trigger tests on a local agent from another machine
+  - Delete an agent
 sidebar:
   order: 41
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
-The agent registers one of your machines so test plans and ad-hoc runs execute on it. It needs 8 GB of memory dedicated to the tests, around 20 GB of disk space, and a dual-core or faster processor. The disk figure includes reserved space for screenshots and downloaded files.
+The Testsigma Agent is a Java utility that runs on a test machine and orchestrates local test execution: queueing tests, running them, and returning results. Install it wherever you want to run tests on your own machines and devices rather than on Testsigma Cloud.
 
-## Download and install
+The agent bundles everything a local run needs: a Java JRE, so you install no Java yourself, the browser drivers from each browser vendor, Appium for mobile tests, and the mobile test recorder with its Android and iOS libraries.
 
-The agent ships as a ZIP file, an executable, a DMG, and a Docker image.
+## What the agent makes possible
 
-<Steps>
+**Local applications.** A corporate firewall blocks outside communication into a private network, so Testsigma's cloud servers cannot reach an application deployed inside it. The agent sits on a machine inside that network and relays between the cloud and the local machine over HTTPS, without opening the network up.
 
-1. **Open the download list** — Go to **Agents** and select **Download Agent**.
+**The local mobile recorder.** Automating a mobile app needs the app's element attributes. With the device connected to the agent machine, the agent collects them and sends them to your browser, where you save them to Testsigma. The cloud recorder needs no local setup but runs with more delay.
 
-2. **Pick your platform** — Select the file for your machine: exe for Windows, dmg for macOS, or bin for Linux. To install from an archive instead, select the ZIP file.
+<Aside type="note">
+The agent communicates in a pull model. It queries Testsigma's servers and receives responses, and Testsigma never pushes data to it, so no incoming connections are accepted. You do not need to whitelist any IPs for this, though outgoing connections to `*.testsigma.com` on port 443 must be allowed.
+</Aside>
 
-3. **Run the installer** — Open the downloaded file, choose an install location, and let the installer finish. For the ZIP, extract the archive to your home directory.
+## System requirements
 
-</Steps>
+| Component | Requirement |
+|---|---|
+| Memory | 8 GB, dedicated to the tests |
+| Disk space | Around 20 GB, including reserved space for screenshots and downloaded files |
+| Processor | Dual-core or better |
 
-Install into your home directory rather than a system location. It avoids file permission problems, and it keeps the agent folder out of iCloud and Google Drive sync, which can corrupt files.
+## Install the agent
 
-The preferred location differs per operating system.
+Go to **Agents** and click **Download Agent**, or take the direct download for your machine:
 
-| Operating system | Preferred location |
-| --- | --- |
+| Operating system | Executable | ZIP |
+|---|---|---|
+| Windows | <a class="ts-dlbtn" href="DOWNLOAD_LINK_WINDOWS_EXE" aria-label="Download the Windows executable" /> | <a class="ts-dlbtn" href="DOWNLOAD_LINK_WINDOWS_ZIP" aria-label="Download the Windows ZIP" /> |
+| macOS (Apple silicon) | <a class="ts-dlbtn" href="DOWNLOAD_LINK_MAC_ARM_DMG" aria-label="Download the macOS Apple silicon DMG" /> | <a class="ts-dlbtn" href="DOWNLOAD_LINK_MAC_ARM_ZIP" aria-label="Download the macOS Apple silicon ZIP" /> |
+| macOS (Intel) | <a class="ts-dlbtn" href="DOWNLOAD_LINK_MAC_INTEL_DMG" aria-label="Download the macOS Intel DMG" /> | <a class="ts-dlbtn" href="DOWNLOAD_LINK_MAC_INTEL_ZIP" aria-label="Download the macOS Intel ZIP" /> |
+| Linux | <a class="ts-dlbtn" href="DOWNLOAD_LINK_LINUX_BIN" aria-label="Download the Linux binary" /> | <a class="ts-dlbtn" href="DOWNLOAD_LINK_LINUX_ZIP" aria-label="Download the Linux ZIP" /> |
+
+The agent comes in 4 forms: a ZIP file, an executable, a DMG, or a Docker image. A ZIP or an executable installs on the machine and is then started and registered separately. A Docker image does all three at once. It also runs on Kubernetes as a Helm release. Deploying to managed devices at scale goes through PatchMyPC rather than any of these.
+
+<Tabs>
+
+<TabItem label="ZIP file">
+
+1. Select the ZIP for your machine from the dropdown.
+2. Extract it to a location of your choice.
+
+Put the folder in your home directory, which avoids file permission and ownership problems, and avoids corruption from iCloud or Google Drive syncing:
+
+| OS | Location |
+|---|---|
 | Windows | `C:\Users\<your_username>\` |
 | macOS | `/Users/<your_username>/` |
-| Linux | `/home/<your_username>/` |
+| Linux | `/Users/<your_username>/` |
 
-## Start the agent as a process
+</TabItem>
 
-Run the agent as a process when you want it running only while you need it. On Windows, run `start.bat` from the installation folder. On macOS and Linux, open a terminal window, drag `start.sh` into it, and press **Return**.
+<TabItem label="Executable">
 
-Startup takes a few minutes. Testsigma then opens the agent registration page. Opening the executable in the installation folder starts the agent too — on Windows that file is `TestsigmaAgent.exe`.
+1. Select the file for your machine: `exe` for Windows, `dmg` for macOS, or `bin` for Linux.
+2. Double-click the download.
+3. Choose an installation path.
+4. Let the installer finish.
 
-## Start the agent as a service
+</TabItem>
 
-Run the agent as a service when a machine keeps the agent available without anyone starting it.
+<TabItem label="Docker">
+
+A Docker agent starts and registers itself when the container boots, so the next 2 sections do not apply to it.
+
+It registers 2 ways: with an activation key from an agent you created in Testsigma, or by creating and registering a new agent as the container boots.
+
+**With an activation key.** Register the agent with **Activate later**, go to **Agents**, select the agent, open **Config**, and copy the **Activation Key**. Then create a `docker-compose.yml` with `TS_ACTIVATION_KEY` set to it.
+
+**Registering as the container boots.** Set 4 variables instead of the activation key, and the container creates and registers its own agent:
+
+| Variable | What it holds |
+|---|---|
+| `TS_AUTO_REGISTRATION_KEY` | Your Testsigma API key |
+| `TS_AUTO_REGISTRATION_TITLE` | The name the agent appears under |
+| `TS_AUTO_REGISTRATION_HTTP_PORT` | HTTP port for agent-to-Testsigma communication |
+| `TS_AUTO_REGISTRATION_HTTPS_PORT` | HTTPS port for agent-to-Testsigma communication |
+
+Everything else in the compose file below stays the same, with those 4 lines replacing `TS_ACTIVATION_KEY`.
+
+This compose file uses the activation key, and starts the agent alongside headless Chrome, Firefox, and Edge:
+
+```yaml
+version: "3.9"
+services:
+  testsigma-agent:
+    image: testsigmainc/testsigma-agent:latest
+    container_name: testsigma-agent
+    depends_on:
+      - chrome
+      - firefox
+      - edge
+    volumes:
+      - ./data/agent_data:/var/ts/agent
+      - ./data/agent_temp:/tmp/agent_temp
+      - ./:/root/.testsigma/agent/logs
+    environment:
+      TS_ACTIVATION_KEY: "REPLACE_WITH_YOUR_ACTIVATION_KEY"
+      CHROME: "http://chrome:4444"
+      FIREFOX: "http://firefox:4444"
+      EDGE: "http://edge:4444"
+  chrome:
+    image: selenium/standalone-chrome:latest
+    shm_size: 1gb
+    ports:
+      - "4444:4444"
+    volumes:
+      - ./data/agent_temp:/tmp/agent_temp
+  firefox:
+    image: selenium/standalone-firefox:latest
+    shm_size: 1gb
+    ports:
+      - "4445:4444"
+    volumes:
+      - ./data/agent_temp:/tmp/agent_temp
+  edge:
+    image: selenium/standalone-edge:latest
+    shm_size: 1gb
+    ports:
+      - "4446:4444"
+    volumes:
+      - ./data/agent_temp:/tmp/agent_temp
+```
+
+</TabItem>
+
+<TabItem label="Kubernetes">
+
+Deploy the agent as a Helm release instead of installing it on a machine. The chart runs the agent together with the Selenium browsers it drives, so one install gives a working local execution environment. Like Docker, this route starts and registers the agent itself, so the next 2 sections do not apply.
+
+The chart deploys a single pod holding the Testsigma Agent and one or more Selenium browsers as sidecars, plus a PersistentVolumeClaim that keeps the agent registered across restarts.
+
+<Aside type="note">
+The agent and the browsers share a pod deliberately. They exchange files through a shared directory during upload and download steps, and the agent reaches each browser on `localhost`. Splitting them apart breaks file upload steps.
+</Aside>
+
+The same chart sits in 2 public registries, and neither needs credentials.
+
+| Registry | Chart location | Container images |
+|---|---|---|
+| Azure Container Registry | `oci://testsigmaregistry.azurecr.io/charts/testsigma-agent` | Mirrored into the same registry |
+| GitHub Container Registry | `oci://ghcr.io/testsigmainc/charts/testsigma-agent` | Pulled from Docker Hub |
+
+Choose based on what your cluster is allowed to reach. Azure Container Registry with `global.imageRegistry` suits restricted egress, because the chart and every image come from one host. GitHub Container Registry suits a cluster that already reaches Docker Hub, and `global.imageRegistry` does not apply there.
+
+The examples below use Azure Container Registry. For GitHub Container Registry, swap the chart address and drop the `global.imageRegistry` flag.
+
+### Check the cluster prerequisites
+
+1. A Kubernetes cluster running 1.23 or later. 1.29 or later is recommended, so the browsers start as native sidecars.
+2. Helm 3.8 or later, for OCI chart support.
+3. A default StorageClass, or the name of one you want to use. Check with `kubectl get storageclass`.
+4. A node with enough free capacity for the whole pod. Chrome alone requests 1 CPU and 3Gi; with Firefox and Edge it requests 2 CPU and 5Gi. The pod is scheduled as a unit, so it has to fit on one node.
+5. Outbound access from the cluster to your Testsigma instance and to the registry serving the chart and images.
+
+<Aside type="note">
+The agent image runs as root, so a namespace enforcing the `restricted` Pod Security Standard rejects the pod. Use `baseline` for that namespace.
+</Aside>
+
+### Install the chart with an activation key
+
+1. Go to **Agents** in Testsigma and create an agent with **Activate Later**. Select it, open the **Config** tab, and copy the **Activation Key**.
+
+2. Create a namespace and store the key in a secret. Write the key to a temporary file rather than passing it on the command line, so it stays out of your shell history and the process list.
+
+   ```bash
+   kubectl create namespace testsigma
+   umask 077 && cat > activation-key.txt   # paste the key, then press Ctrl+D
+   kubectl -n testsigma create secret generic testsigma-agent-auth \
+     --from-file=TS_ACTIVATION_KEY=./activation-key.txt
+   rm activation-key.txt
+   ```
+
+3. Install the chart.
+
+   ```bash
+   helm install ts-agent oci://testsigmaregistry.azurecr.io/charts/testsigma-agent \
+     --version 0.2.0 -n testsigma \
+     --set global.imageRegistry=testsigmaregistry.azurecr.io \
+     --set agent.auth.existingSecret=testsigma-agent-auth
+   ```
+
+4. Wait for the pod with `kubectl -n testsigma rollout status statefulset/ts-agent-testsigma-agent`.
+
+5. The agent appears under **Agents** once it registers.
+
+<Aside type="tip">
+Managing secrets with External Secrets Operator or Sealed Secrets instead? Create `testsigma-agent-auth` through that tool.
+</Aside>
+
+The first start takes a few minutes. Each browser image is over 1 GB, and the browsers pass their readiness checks before the agent container starts.
+
+For GitHub Container Registry, replace step 3 with the same command against `oci://ghcr.io/testsigmainc/charts/testsigma-agent`, without the `global.imageRegistry` flag. Every other flag applies to both registries.
+
+### Install the chart with auto registration
+
+The agent can register itself on startup instead, which suits environments where agents are created and destroyed often.
+
+1. Get an API key from Testsigma.
+
+2. Create the namespace and store the key in a secret, keeping it off the command line as above.
+
+   ```bash
+   kubectl create namespace testsigma
+   umask 077 && cat > api-key.txt          # paste the key, then press Ctrl+D
+   kubectl -n testsigma create secret generic testsigma-agent-auth \
+     --from-file=TS_AUTO_REGISTRATION_KEY=./api-key.txt
+   rm api-key.txt
+   ```
+
+3. Install with auto registration enabled.
+
+   ```bash
+   helm install ts-agent oci://testsigmaregistry.azurecr.io/charts/testsigma-agent \
+     --version 0.2.0 -n testsigma \
+     --set global.imageRegistry=testsigmaregistry.azurecr.io \
+     --set agent.auth.mode=autoRegistration \
+     --set agent.auth.existingSecret=testsigma-agent-auth
+   ```
+
+Each agent registers under its own pod name, so `--set agent.replicaCount=3` runs three at once. `agent.auth.autoRegistration.title` sets the name shown in the application.
+
+<Aside type="note">
+An activation key binds to one agent record, so `agent.replicaCount` stays at `1` in that mode. Auto registration is the only way to run more than one agent.
+</Aside>
+
+### Select your Testsigma region
+
+The agent image is built against a specific Testsigma region, and the 3 builds are not interchangeable. Set `agent.region` to match the address you sign in to.
+
+| Sign-in address | `agent.region` |
+|---|---|
+| `app.testsigma.com` | `us`, the default |
+| `app-eu.testsigma.com` | `eu` |
+| `app-in.testsigma.com` | `in` |
+
+Add it to the install command with `--set agent.region=eu`.
+
+### Enable more browsers on Kubernetes
+
+Chrome is enabled by default. Firefox and Edge are available and disabled.
+
+To enable them at install, add `--set browsers.firefox.enabled=true` and `--set browsers.edge.enabled=true` to the install command. To add them to an existing release:
+
+```bash
+helm upgrade ts-agent oci://testsigmaregistry.azurecr.io/charts/testsigma-agent \
+  --version 0.2.0 -n testsigma --reuse-values \
+  --set browsers.firefox.enabled=true \
+  --set browsers.edge.enabled=true
+```
+
+The pod is recreated, so the agent goes offline briefly and returns with the extra browsers registered.
+
+Each browser you enable is reported to Testsigma as available on that agent, and adds 0.5 CPU and 1Gi to the pod's requests. Enable only the browsers you plan to use.
+
+<Aside type="note">
+Edge is published for `amd64` only. On a cluster with `arm64` nodes, keep the pod on `amd64` with `--set nodeSelector."kubernetes\.io/arch"=amd64`.
+</Aside>
+
+### Install the chart using Argo CD
+
+Argo CD does not detect OCI registries automatically, so register the repository first.
+
+1. Go to **Settings > Repositories > CONNECT REPO > VIA HTTPS** and enter the details below.
+
+   | Field | Value |
+   |---|---|
+   | Type | `helm` |
+   | Name | `testsigma-charts` |
+   | Repository URL | `testsigmaregistry.azurecr.io/charts`, or `ghcr.io/testsigmainc/charts` |
+   | Enable OCI | Selected |
+   | Username and Password | Leave empty |
+
+2. Create the credential secret in the destination namespace, as in the activation key steps above.
+
+3. Create the application.
+
+   ```yaml
+   apiVersion: argoproj.io/v1alpha1
+   kind: Application
+   metadata:
+     name: testsigma-agent
+     namespace: argocd
+   spec:
+     project: default
+     source:
+       repoURL: testsigmaregistry.azurecr.io/charts
+       chart: testsigma-agent
+       targetRevision: 0.2.0
+       helm:
+         releaseName: ts-agent
+         values: |
+           tests:
+             enabled: false
+           global:
+             imageRegistry: testsigmaregistry.azurecr.io
+           agent:
+             region: us
+             auth:
+               mode: activationKey
+               existingSecret: testsigma-agent-auth
+     destination:
+       server: https://kubernetes.default.svc
+       namespace: testsigma
+     syncPolicy:
+       syncOptions:
+         - CreateNamespace=true
+   ```
+
+4. Sync the application, from the UI with **SYNC** or from the CLI with `argocd app sync testsigma-agent`.
+
+<Aside type="note">
+`CreateNamespace=true` changes how a sync behaves rather than starting one, so a new application stays **OutOfSync** until you trigger it. To have Argo CD deploy and self-heal without manual syncs, add `automated` with `prune: true` and `selfHeal: true` to `syncPolicy`.
+</Aside>
+
+Three things catch people out:
+
+- `repoURL` holds the registry path only. The chart name belongs in `chart`, and there is no `oci://` prefix.
+- `targetRevision` is the chart version, not the agent version.
+- Argo CD does not run Helm test hooks, so set `tests.enabled` to `false`.
+
+### Verify the Kubernetes installation
+
+After a Helm install, run the bundled checks, which confirm the agent and every enabled browser are responding:
+
+```bash
+helm test ts-agent -n testsigma
+```
+
+After an Argo CD install, check the application state with `argocd app get testsigma-agent` instead. **Synced** and **Healthy** means the chart is applied and the pod is ready.
+
+To inspect the agent directly, on either kind of install:
+
+```bash
+kubectl -n testsigma logs ts-agent-testsigma-agent-0 -c agent
+kubectl -n testsigma exec ts-agent-testsigma-agent-0 -c agent -- \
+  curl -sf http://127.0.0.1:8383/agent/health
+```
+
+Then confirm the agent is listed under **Agents** in Testsigma, and run a test against it.
+
+### Helm configuration reference
+
+Pass these with `--set`, or collect them in a values file and use `-f values.yaml`. `helm show values` on the chart lists every available setting.
+
+| Setting | Default | What it does |
+|---|---|---|
+| `agent.region` | `us` | Testsigma region: `us`, `eu`, or `in` |
+| `agent.auth.mode` | `activationKey` | `activationKey` or `autoRegistration` |
+| `agent.auth.existingSecret` | | Secret holding the activation or API key |
+| `agent.replicaCount` | `1` | Above 1 requires `autoRegistration` |
+| `agent.resources` | 2Gi and 500m CPU | Agent requests. The JVM heap derives from the memory limit |
+| `agent.persistence.enabled` | `true` | Keeps the agent registered across restarts |
+| `agent.persistence.size` | `10Gi` | Volume size |
+| `agent.persistence.storageClass` | | Leave empty to use the cluster default |
+| `browsers.chrome.enabled` | `true` | |
+| `browsers.firefox.enabled` | `false` | |
+| `browsers.edge.enabled` | `false` | |
+| `global.imageRegistry` | | Pull every image from one registry |
+| `proxy.enabled` | `false` | Set with `proxy.httpProxy` and `proxy.noProxy` |
+| `caBundle.existingConfigMap` | | Mounts a corporate CA certificate |
+| `imagePullSecrets` | `[]` | For registries that require authentication |
+
+<Aside type="note">
+Keep `agent.persistence.enabled` set to `true`. The agent stores its registration on that volume, so disabling it makes every restart create a new agent and leave the previous record unused in your account.
+</Aside>
+
+Manage the release with whichever tool installed it. Helm commands do not apply to an application deployed by Argo CD, and editing an Argo CD application by hand is reverted on the next sync.
+
+**Installed with Helm.** Upgrade with `helm upgrade ts-agent oci://testsigmaregistry.azurecr.io/charts/testsigma-agent --version <version> -n testsigma --reuse-values`, and remove it with `helm uninstall ts-agent -n testsigma`.
+
+**Installed with Argo CD.** Change `targetRevision` to the new chart version and sync, or remove it with `argocd app delete testsigma-agent`.
+
+The volume is kept, so the agent can be reinstalled with the same registration. To delete it, run `kubectl -n testsigma delete pvc data-ts-agent-testsigma-agent-0`.
+
+### Troubleshoot the Kubernetes install
+
+| Symptom | Cause and resolution |
+|---|---|
+| Pod stays `Pending` | No node has enough free CPU or memory, or the volume cannot be provisioned. Run `kubectl -n testsigma describe pod` and `kubectl -n testsigma get pvc` |
+| `ImagePullBackOff` | The image is not available at the configured registry. Confirm `agent.region`, and remove `global.imageRegistry` to pull from Docker Hub |
+| `CreateContainerConfigError` | The secret named in `agent.auth.existingSecret` does not exist in that namespace |
+| The pod runs but no agent appears in Testsigma | Usually the wrong `agent.region`, or an activation key from a different region. Check the agent logs |
+| The pod is rejected on creation | The namespace enforces the `restricted` Pod Security Standard. The agent image requires `baseline` |
+| A browser crashes mid test | The browser needs more shared memory. Raise `browsers.chrome.shmSize` and its memory limit together |
+
+For agent startup and registration errors themselves, see the [frequently asked questions](#frequently-asked-questions) at the end of this page.
+
+</TabItem>
+
+</Tabs>
+
+## Start the agent
+
+### As a process
+
+On Windows, go to the installation folder and double-click `start.bat`, or run it from the command line. On macOS and Linux, drag `start.sh` into a new terminal window and press **Return**.
+
+Startup takes a few minutes, and the agent registration page opens when it finishes.
+
+<Aside type="tip">
+Double-clicking the executable in the installation folder starts the agent directly. On Windows that file is `TestsigmaAgent.exe`.
+</Aside>
+
+### As a service
 
 <Steps>
 
-1. **Open a command line** — Use Command Prompt on Windows, or a terminal on macOS or Linux.
+1. Open a command line on Windows, or a terminal on macOS and Linux.
 
-2. **Go to the wrapper** — In the agent installation folder, go to **Wrapper** > **Bin**.
+2. Go to the installation folder, then into **Wrapper > Bin**.
 
-3. **Start it** — Run `TestsigmaAgent start` on macOS and Linux, or `TestsigmaAgent install` on Windows. Only Windows supports starting the agent at boot.
+3. On macOS and Linux, run `TestsigmaAgent start`. On Windows, run `TestsigmaAgent install`.
 
-4. **Stop it** — Run `TestsigmaAgent stop` from the same location.
+4. To stop it, run `TestsigmaAgent stop` from the same location.
 
 </Steps>
 
-`TestsigmaAgent` accepts these commands.
+<Aside type="note">
+Starting automatically at system boot is supported on Windows only.
+</Aside>
 
-| Command | What it does |
-| --- | --- |
-| `console` | Launches in the current console. |
-| `start` | Starts in the background as a daemon process. |
-| `stop` | Stops if running as a daemon or in another console. |
-| `restart` | Stops if running, then starts. |
-| `condrestart` | Restarts only if already running. |
-| `status` | Reports the current status. |
-| `install` | Installs the agent to start automatically at boot. |
-| `installstart` | Installs and starts running as a daemon process. |
-| `remove` | Uninstalls. |
-| `dump` | Requests a Java thread dump if running. |
+`TestsigmaAgent` accepts these commands from **Wrapper > Bin**:
+
+<br />
+
+```text
+console      Launch in the current console
+start        Start in the background as a daemon process
+stop         Stop if running as a daemon or in another console
+restart      Stop if running and then start
+condrestart  Restart only if already running
+status       Query the current status
+install      Install to start automatically when system boots
+installstart Install and start running as a daemon process
+remove       Uninstall
+dump         Request a Java thread dump if running
+```
 
 ## Register the agent
 
 <Steps>
 
-1. **Start registration** — On the **Agent Registration** page, select **Register**.
+1. Click **Register** on the **Agent Registration** page, which opens once the agent is running.
 
-2. **Name the machine** — In the **Add new Agent** dialog, enter a **Name**.
+2. Enter a **Name** for the machine.
 
-3. **Set the session limit** — Enter the maximum number of sessions.
+3. Enter a value in **Max sessions for this machine**, which limits parallel executions so the machine does not slow down. It cannot exceed the parallels available to your account, and the field needs enabling by Testsigma support.
 
-4. **Set visibility** — Select **Public** or **Private**.
+4. Select **Public** or **Private** for the agent's visibility.
 
-5. **Choose when it activates** — Select **Activate now** or **Activate later**.
+5. Select **Activate now** or **Activate later**.
 
-6. **Finish** — Select **Register & Activate**. The dialog confirms that registration succeeded.
+6. Click **Register & Activate**.
 
 </Steps>
 
-The agent then appears on the **Agents** page with the browsers available on that machine. The operating system version and browser names can take a few minutes to appear.
+The agent then appears on the **Agents** page with the browsers available on that machine. The operating system version and browser names take a couple of minutes to appear. If they have not appeared after 10 minutes, the agent has a setup problem.
+
+<Aside type="note">
+**Activate later** takes you to the agent configuration page, which carries the command for activating the agent when you are ready.
+</Aside>
+
+## Connect a local device
+
+A local Android or iOS device connects to the machine running the agent, and then appears under **Devices** on that agent's page in Testsigma.
+
+<Tabs>
+
+<TabItem label="Android">
+
+Developer options have to be enabled on the device first.
+
+1. Open **Settings** and tap **About Phone**.
+2. Go to **Software information** and tap **Build number** 7 times.
+3. Open **Developer Options** from **Settings**.
+4. Turn on **USB Debugging**.
+5. Connect the device to the machine running the agent, and accept the **Allow USB Debugging** alert. Select **Always allow from this computer** if it appears.
+6. Go to **Agents** in Testsigma and click the registered agent.
+7. The device appears under **Devices**.
+
+To run a test on it, select the **Connected Machine** and the **Device**.
+
+<Aside type="note">
+Device-level settings differ by brand, and some block local execution until they are changed. See [Run tests](/suite/run-tests/test-runs/#why-do-local-runs-on-a-real-android-device-fail-with-a-permission-error) for the settings Realme, Oppo, OnePlus, and Xiaomi need.
+</Aside>
+
+</TabItem>
+
+<TabItem label="iOS">
+
+An iOS device needs a provisioning profile configured in Testsigma before it will run tests. On Windows, it also needs iTunes installed to connect the device.
+
+<Aside type="note">
+Install iTunes from Apple's own `.exe` installer. Uninstall it first if it came from the Microsoft Store, and confirm that Apple Mobile Device Service is running in Task Manager.
+</Aside>
+
+Creating a provisioning profile moves between Testsigma and the Apple Developer portal:
+
+1. Go to **Settings > iOS Settings**, open the **Provisional Profile** tab, and click **+ Create new profile**.
+2. Enter a **Profile Name**.
+3. Click **Generate Request** to create a Certificate Signing Request, then **Download Request** to save the CSR file.
+4. In the Apple Developer portal, go to **Certificates, Identifiers & Profiles** and click **+** next to **Certificates**.
+5. Select **iOS App Development** under **Software** and click **Continue**.
+6. Upload the CSR file and click **Continue**.
+7. Click **Download** to save the certificate.
+8. Back in Testsigma, click **Upload Signed file** under **Upload Certificate** and select it.
+9. In the Apple Developer portal, go to **Profiles** and click **+**.
+10. Select **iOS App Development** under **Development** and click **Continue**.
+11. Select an **App ID** and click **Continue**.
+12. Select the certificates to include and click **Continue**.
+13. Select the **Devices** to include and click **Continue**.
+14. Name the provisioning profile and click **Generate**.
+15. Click **Download** to save it.
+16. In Testsigma, click **Upload Certificate** next to **Provisioning Profile**, select the file, and click **Create**.
+
+Then go to **Agents**, select the agent, and find the device under **Devices**. To run a test on it, select **Local Devices** as the **Test Lab**, then the machine and device under **Test Machine**.
 
 <Aside type="tip">
-Choose **Activate later** to add an agent now and activate it another time. Testsigma opens the agent configuration page, which holds the command that activates it later.
+The CSR and provisioned certificates can be downloaded from the same screen, for checking the provisioning profile's validity. **Delete** removes a certificate.
 </Aside>
 
-## Run the agent in Docker
+These are the errors the setup produces:
 
-Two routes start a local agent in Docker. Register the agent in Testsigma first and pass its activation key to the container, or create and register a new agent while the container boots.
+| Error | What it means |
+|---|---|
+| "Invalid certificate uploaded, please upload a valid certificate." | The certificate is wrong or corrupted. Generate it from the CSR created in the iOS Settings profile in Testsigma |
+| "Certificate uploaded is not included in this provisioning profile." | The provisioning profile was built with a different certificate. Use the one uploaded in iOS Settings |
+| "Upload is not resigned" | Re-signing is still in progress. Track it in the **Provisioning Profile Details** dialog, and select the upload once it finishes |
+| "Device initializing" | The agent is still setting the device up. Setup errors appear on the **Devices** tab of the agent details page |
+
+</TabItem>
+
+</Tabs>
+
+## Command-line arguments
+
+Arguments passed at startup configure registration, logging, memory, browsers, and proxies:
+
+<br/>
+
+```bash
+./start.sh --TS_AUTO_DETECT_PROXY=true
+```
+
+<Aside type="note">
+Pass these the first time you start the agent only. After that, start it by double-clicking the executable in the agent folder.
+</Aside>
+
+| Argument | What it does |
+|---|---|
+| `--TS_AUTO_DETECT_PROXY` | Detects and uses a network proxy, including proxies configured through PAC files |
+| `--TS_USE_SYSTEM_PROXY` | Uses the system's own proxy configuration |
+| `--TS_NON_PROXY_HOSTS` | Hosts that bypass the proxy |
+| `--TS_DELEGATE_SSL_VALIDATION` | Hands SSL validation to your SSL inspection tools instead of Java, bypassing certificate validation errors |
+| `--TS_TRUST_STORE_TYPE` | The trust store type to use |
+| `--TS_ACTIVATION_KEY` | Registers the agent with an activation key |
+| `--TS_ADDITIONAL_JVM_ARGS` | Extra JVM arguments |
+| `--TS_AGENT_JAR_PATH` | Path to the agent JAR |
+| `--TS_JAVA_HOME` | Path to a Java installation, instead of the bundled JRE |
+| `--TS_DATA_DIR` | The agent's data directory |
+| `--TS_ROOT_DIR` | The agent's root directory |
+| `--TS_LOGGING_LEVEL` | Log verbosity |
+| `--TS_ENABLE_GC_LOG` | Writes garbage collection logs |
+| `--TS_ENABLE_HEAP_DUMP` | Writes a heap dump |
+| `--TS_IS_HEADLESS` | Runs browsers headless |
+| `--TS_IS_MOBILE_DISABLED` | Disables mobile support |
+| `--TS_CHROME_PATH` | The Chrome executable path, for when the agent cannot find the browser itself |
+
+### Bypass the proxy for specific hosts
+
+Where the agent must use a proxy for most traffic but connect directly to internal or trusted domains, set the non-proxy hosts in the agent's configuration.
 
 <Steps>
 
-1. **Copy the key** — Go to **Agents**, select the agent, open **Config**, and copy the **Activation Key**.
+1. Open the **TestsigmaAgent** installation directory.
 
-2. **Write the Compose file** — Create a `docker-compose.yml` that sets `TS_ACTIVATION_KEY` to that key, using the `testsigmainc/testsigma-agent:latest` image.
+2. Go to **agent_data** and open `args.yml`.
 
-3. **Start the container** — Run the Compose file.
+3. Add or update these properties, separating domains with a pipe:
+
+   ```text
+   http.nonProxyHosts: "localhost|127.0.0.1|*.testsigma.com|*.amazonaws.com"
+   https.nonProxyHosts: "localhost|127.0.0.1|*.testsigma.com|*.amazonaws.com"
+   ```
 
 </Steps>
 
-## Upgrade the agent
+## Configure logs
 
-Automatic upgrades are on by default, and the agent upgrades itself when a new version is released. Nothing is required of you.
+The log level controls what the agent writes to the command line and to its local log files. The default is INFO.
 
-To control when upgrades happen, go to **Agents** > select the agent > **Settings** > **Agent upgrade settings** and select **Manual**. The page then shows the current and latest version numbers, and **Upgrade** applies the new one.
+Open an agent from the **Agents** list page, click the **Agent Settings** icon in the right navigation bar, and select the level for the CLI and for local files.
+
+| Level | What it logs |
+|---|---|
+| ERROR | Critical issues that cause the agent to fail |
+| WARN | Warnings and errors, to catch problems early |
+| INFO | General information, warnings, and errors. The default |
+| DEBUG | Detailed information for debugging, plus everything above |
+| TRACE | Traces of the execution flow for deep debugging, plus everything above |
+| ALL | Every message the agent produces |
 
 <Aside type="note">
-An upgrade that becomes available during an execution waits until that execution finishes. The agent then upgrades automatically.
+Restart the agent after changing the log level, or the new setting does not take effect.
 </Aside>
 
-## Make an agent obsolete or delete it
+To send logs to Testsigma, go to **Agents**, hover over the agent, and click **Report Agent**. Describe the problem in the dialog and click **Report**.
 
-Push an agent to the obsolete state to hide it from the **Agents** list without losing it. Obsolete agents cannot run tests.
+## Keep the agent up to date
+
+Automatic upgrades are on by default. Start the agent, and it downloads a higher version if one exists, then restarts itself and reports **Upgrade Success**. Nothing is required from you.
+
+<Aside type="note">
+A network interruption during the download restarts it from the beginning once the connection is stable.
+</Aside>
+
+To control when upgrades happen, go to **Agents > Agent > Settings > Agent upgrade settings** and select **Manual**. The interface then shows the current and latest versions when an upgrade is available, and **Upgrade** installs it.
+
+### Update the agent manually
+
+Use this when an automatic upgrade fails, usually from network conditions or a misconfiguration.
 
 <Steps>
 
-1. **Open the list** — Go to **Agents**.
+1. Check whether the agent is running. Its icon sits in the system tray on Windows, and in the status bar on macOS and Linux. If it is not running, skip to step 3.
 
-2. **Choose the action** — Select the ellipsis icon (⋯) beside the agent, then select **Obsolete**.
+2. Stop it from the agent directory. On Windows, open a command prompt there and run `./stop.bat`. On macOS and Linux, open a terminal there and run `./stop.sh`.
 
-3. **Confirm** — In the **Obsolete agent?** dialog, select **Obsolete Agent**.
+3. Delete the contents of the `TestsigmaAgent` folder.
+
+4. Click **Download Agent** on the **Agents** page to get the latest ZIP.
+
+5. Extract the `TestsigmaAgent` folder from the ZIP into the same location on your machine.
+
+6. Start the agent from that directory. On Windows, run `./start.bat`. On macOS and Linux, run `./start.sh`.
 
 </Steps>
 
-Select **Restore** beside the agent to bring it back. To remove an agent for good, select **Delete Permanently** from the same ellipsis menu, then confirm in the **Delete Agent Permanently?** dialog.
-
 <Aside type="note">
-Permanent deletion cannot be undone. Use **Obsolete** if you may want the agent again.
+If the agent will not connect after an update, delete it completely and reinstall. See [Force delete](#force-delete).
 </Aside>
 
+### Update browser drivers manually
 
-## FAQs
+The agent talks to each browser through a driver file, and driver updates ship with the agent's automatic updates. A failed update, from network conditions or a firewall, leaves you to replace the file yourself.
 
-**Do I need both the agent and Terminal?**
+Download the driver for your browser version and operating system from the SeleniumHQ downloads page, then place it in the matching directory inside the agent folder:
 
-No. Terminal downloads and manages an agent for you. Install the agent on its own only when a machine runs test plans with nobody working at it.
+| Browser | Directory |
+|---|---|
+| Google Chrome | `/drivers/googlechrome` |
+| Microsoft Edge | `/drivers/edge` |
+| Mozilla Firefox | `/drivers/mozilla` |
+| Internet Explorer | `/drivers/internetexplorer` |
 
-**What happens to an obsolete agent?**
+<Aside type="note">
+The `internetexplorer` folder exists in the Windows agent only.
+</Aside>
 
-Testsigma hides it from the **Agents** list, and it cannot run tests. Select **Restore** beside it to bring it back.
+## Trigger tests on a local agent from another machine
+
+Tests can run on one machine's agent while you work from another, on the same Testsigma account.
+
+<Steps>
+
+1. Install and register the agent on the target machine.
+
+2. Go to **Test Plans**, open the plan, and click **Edit**.
+
+3. On **Add Test Suites & Link Machine Profiles**, click **Link Test Machine** and select the target machine.
+
+</Steps>
+
+## Delete an agent
+
+A long agent list makes picking the right machine harder, so an agent can be pushed to an obsolete state instead of deleted.
+
+To obsolete one, go to **Agents**, click the ellipsis icon (⋮) beside the agent, click **Obsolete**, then click **Obsolete Agent** in the dialog. **Restore** brings it back.
+
+<Aside type="note">
+An obsolete agent cannot execute tests.
+</Aside>
+
+To delete one for good, click the ellipsis icon (⋮), click **Delete Permanently**, then confirm in the **Delete Agent Permanently?** dialog.
+
+### Force delete
+
+Where an agent will not come off cleanly, remove it in 4 places:
+
+<Steps>
+
+1. Click the **Testsigma Agent** icon in the status bar on macOS and Linux, or the system tray on Windows, and click **Quit**.
+
+2. Delete the folder the agent was started from.
+
+3. Delete the agent's entry in the Testsigma agents list.
+
+4. Delete the `agent.properties` file.
+
+</Steps>
+
+`agent.properties` lives in the agent's config directory:
+
+| OS | Location |
+|---|---|
+| Windows | `%userprofile%\AppData\Roaming\Testsigma\Agent\config\` |
+| Linux | `$HOME/.testsigma/agent/config/` |
+| macOS | `$HOME/Library/Application Support/Testsigma/Agent/config/` |
+
+## Frequently asked questions
+
+### How does Testsigma communicate with the agent?
+
+The agent queries Testsigma's servers and receives responses. Testsigma never initiates a connection to it, so no inbound firewall rule and no IP whitelisting is needed. Outgoing connections to `*.testsigma.com` on port 443 have to be allowed.
+
+### What are the resource requirements?
+
+8 GB of memory dedicated to the tests, around 20 GB of disk including space for screenshots and downloads, and a dual-core processor or better. See [System requirements](#system-requirements).
+
+### Do I need a Windows machine to run the agent?
+
+No. The agent runs on Linux, Windows, or macOS.
+
+### Can I run the agent without installing it on a machine?
+
+Yes. A Docker image and a Helm chart both run it as a container, and both register the agent themselves. See the Docker and Kubernetes tabs under [Install the agent](#install-the-agent).
+
+### How do I run more tests at once on one machine?
+
+Raise **Max sessions for this machine**, set when you register the agent. See [Register the agent](#register-the-agent) for its limits.
+
+### How do I make the agent bypass our proxy for internal domains?
+
+Add the domains to `http.nonProxyHosts` and `https.nonProxyHosts` in `args.yml`, in the agent's `agent_data` directory. See [Bypass the proxy for specific hosts](#bypass-the-proxy-for-specific-hosts).
+
+### How do I make the agent log more detail?
+
+Change the log level from **Agent Settings** on the agent's page, and restart the agent. DEBUG and TRACE add progressively more detail. See [Configure logs](#configure-logs).
+
+### How do I stop the agent upgrading itself?
+
+Set **Agent upgrade settings** to **Manual**, under **Agents > Agent > Settings**. See [Keep the agent up to date](#keep-the-agent-up-to-date).
+
+### Why won't the agent start?
+
+An agent that fails to start, or starts and terminates immediately, records the cause in its logs, so read those first. A common one is a port conflict: the agent detects available ports automatically, and an error reading "Port not available" means 8383 or 8484 is taken.
+
+Check them with `lsof -i :8383` on Linux and macOS, or on Windows with:
+
+```text
+Get-Process -Id (Get-NetTCPConnection -LocalPort 8383).OwningProcess
+```
+
+Repeat for 8484, and free whichever port is held. If the logs are unclear, send them to support@testsigma.com.
+
+### Why doesn't the agent detect my installed browsers?
+
+The agent could not find the web driver during startup, so its browser scan failed. Give it the browser path directly.
+
+Open `chrome://version` in Chrome, copy the executable path, then start the agent with it:
+
+```bash
+sudo sh start.sh --TS_CHROME_PATH=<chrome_executable_path>
+```
+
+On Windows, use `start.bat --TS_CHROME_PATH=<chrome_executable_path>`. The agent scans that path, writes it into `args.yml`, and detects the browser on later runs without reconfiguration.
+
+### Why is the agent download blocked?
+
+Your network is blocking the domains and IPs the agent needs. Whitelist these:
+
+| Purpose | Domain | IPs |
+|---|---|---|
+| Local agent and cloud services | `app.testsigma.com` | 166.117.52.243, 166.117.190.246 |
+| Testsigma Tunnels | `connect.testsigma.com` | 166.117.49.200, 166.117.156.234 |
+| Mobile Recorder | `mobilerecorder.testsigma.com` | 166.117.86.235, 166.117.227.251 |
+| Asset Proxy | `asset-proxy.testsigma.com` | 166.117.67.252, 166.117.170.206 |
+| Test lab incoming connections | | 35.174.92.188, 34.204.63.14, 74.50.105.97 |
+
+The agent also downloads browser drivers, so whitelist their sources: `googlechromelabs.github.io`, `chromedriver.storage.googleapis.com`, `storage.googleapis.com`, `registry.npmmirror.com`, and `raw.githubusercontent.com` for Chrome and Firefox, and `msedgewebdriverstorage.blob.core.windows.net` for Edge and Internet Explorer. Two more Testsigma services need allowing as well: `static-id.testsigma.com` and `id.testsigma.com`.

@@ -26,7 +26,6 @@ export default async function handler(req: any, res: any) {
   let body: {
     question?: string;
     vote?: string;
-    product?: string;
     sources?: { url?: string }[];
     answerPreview?: string;
   } = {};
@@ -50,7 +49,6 @@ export default async function handler(req: any, res: any) {
   console.log('[ask-feedback] ' + JSON.stringify({
     at: new Date().toISOString(),
     vote,
-    product: typeof body.product === 'string' ? body.product.slice(0, 20) : '',
     question: question.slice(0, 500),
     sources: (Array.isArray(body.sources) ? body.sources : [])
       .slice(0, 10)

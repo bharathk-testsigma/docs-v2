@@ -1,111 +1,84 @@
 ---
 title: Review management
-description: Send test cases and elements for peer or self review, then approve them or send them back for rework.
+description: Put test cases and elements through peer or self review, submit them, and approve or send back for rework.
 pageType: guide
-verified: 2026-07
+verified: 2026-08
 sidebar:
   order: 40
   label: Review Management
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
-import Prerequisites from '~/components/Prerequisites.astro';
 
-Review management puts an approval step between authoring and trusting. A test case or element goes to a reviewer, who approves it or sends it back for rework. Both work the same way, and both allow reviewing your own work.
+Review management puts a test case or an element through approval before it counts as ready, so nothing reaches a test suite unchecked. It works the same way for both, and there are 2 shapes it can take.
 
-<Prerequisites>
-
-- A [project](/suite/get-started/projects-and-applications/) with test cases, and elements if you are reviewing those.
-- [Users and roles](/suite/settings/users/) are set up, so there is someone to assign as reviewer.
-- The relevant toggle is on under **Settings > Preferences**.
-
-</Prerequisites>
-
-## The two review modes
-
-| Mode | Who reviews |
-| --- | --- |
-| Peer review | The author asks another team member to review, which spreads responsibility for automation quality across the team |
-| Self-review | The author reviews their own work, handling every stage themselves |
-
-Self-review is otherwise identical to peer review. The only difference is that the author assigns the review to themselves.
+- **Self-review**: the person who created the asset reviews their own work, for a team where a second pair of eyes is not practical
+- **Peer review**: the asset goes to someone else, which makes the whole team responsible for the quality of the automation rather than only its author
 
 ## Turn it on
 
+Both are off by default and are enabled separately.
+
 <Steps>
 
-1. **Open preferences** — Click **Settings** in the left navigation, then **Preferences**.
+1. Go to **Settings > Preferences**.
 
-2. **Enable test case review** — Turn on the **Test Case Review Management** toggle.
+2. Turn on **Test Case Review Management** to review test cases, or **Element Review Management** to review elements.
 
-3. **Enable self-review** — Turn on **Self-Review Management** if authors should be able to review their own work.
-
-4. **Enable element review** — Turn on **Element Review Management** to review elements as well.
+3. Turn on **Self-Review Management** as well if reviewers should be able to review their own work.
 
 </Steps>
+
+<Aside type="note">
+**Self-Review Management** only appears once **Test Case Review Management** is on.
+</Aside>
 
 ## Submit a test case for review
 
 <Steps>
 
-1. **Build the case** — Create a test case with its test steps.
+1. Open the test case and click **Submit for Review**.
 
-2. **Submit it** — Click the **Submit for Review** icon in the top-right corner.
+2. Select a **Reviewer** from the dropdown.
 
-3. **Choose a reviewer** — Select a **Reviewer** from the dropdown, tick **Notify Assignee and Reviewer**, and add comments.
+3. Select **Notify Assignee and Reviewer** to email them both.
 
-4. **Send it** — Click **Submit**.
+4. Add a comment if the reviewer needs context.
 
-</Steps>
-
-The **Submitted for Review** section of the dashboard tracks what you have sent.
-
-## Review a test case
-
-<Steps>
-
-1. **Find the request** — Open the link in the notification email, or the **Assigned for your Review** section on the dashboard.
-
-2. **Read it** — Work through the test case.
-
-3. **Give a verdict** — Click **Review Testcase** in the top-right corner.
-
-4. **Record it** — In **Update Review Status**, tick **Notify Assignee and Reviewer**, add comments, and click **Approve** or **Rework**.
+5. Click **Submit**.
 
 </Steps>
 
-Rework sends it back to the author, and the cycle repeats until the case is approved.
+The test case appears under **Submitted for Review** on the Dashboard, so you can see what is waiting on someone else.
 
 ## Submit an element for review
 
 <Steps>
 
-1. **Open the element** — Go to **Create Tests > Elements** and click the element.
+1. Go to **Create Tests > Elements** and click the element.
 
-2. **Edit it** — Click **Edit** in the **Element Details** overlay.
+2. Click **Edit** in the **Element Details** overlay.
 
-3. **Submit it** — Click **Submit for Review** in the **Update Element** overlay.
+3. Click **Submit for Review** in the **Update Element** overlay.
 
-4. **Choose a reviewer** — Select a **Reviewer**, tick **Notify Assignee and Reviewer**, add comments, and click **Submit**.
-
-</Steps>
-
-## Review an element
-
-<Steps>
-
-1. **Find the request** — On the **Dashboard**, go to **Assigned for your review** and click **Elements**.
-
-2. **Open it** — Click the element you are reviewing. The **Elements** page opens filtered to your assignments.
-
-3. **Start the review** — Hover the element, click the kebab menu, and select **Edit**.
-
-4. **Give a verdict** — Click **Review element**, then mark **Approve** or **Rework** in **Update review status**.
-
-5. **Save it** — Back in **Update Element**, click **Update Element**.
+4. Select a **Reviewer**, select **Notify Assignee and Reviewer**, add a comment, and click **Submit**.
 
 </Steps>
+
+## Review what is assigned to you
+
+You get an email when something is assigned to you, and work waiting on you also sits under **Assigned for your review** on the Dashboard, split into test cases and elements.
+
+For a test case, open it from the email link or from that section, click **Review Testcase**, then in the **Update Review Status** overlay select **Notify Assignee and Reviewer**, add comments, and click **Approve** or **Rework**.
+
+For an element, click **Elements** in that section and open the element. Hover over it, select **Edit** from the ellipsis icon `⋮`, and click **Review element**. Mark the status as **Approve** or **Rework**, then click **Update Element** to save it.
+
+A test case can go round more than once. **Rework** sends it back to its author, who fixes it and submits again, until it is approved.
 
 <Aside type="note">
-An element review is not recorded until you click **Update Element** at the end. Marking the status and closing the overlay loses the verdict.
+Self-reviewing works exactly the same way. The only difference is that you are the reviewer on your own asset.
+</Aside>
+
+<Aside type="note">
+Marking a review status does not save it. Click **Update Element** afterwards, or the status is lost.
 </Aside>

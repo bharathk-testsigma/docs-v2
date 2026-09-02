@@ -33,6 +33,35 @@ const isSplash = entry.data.template === 'splash' || entry.id === 'suite/changel
 	)
 }
 
+<script>
+	// Deep-linkable tabs: clicking a tab stamps a readable hash (#tab-docker),
+	// and arriving with one selects that tab and scrolls it into view.
+	// Starlight's own component does the switching; this only syncs the URL.
+	const slug = (s: string) =>
+		s
+			.toLowerCase()
+			.trim()
+			.replace(/[^a-z0-9]+/g, '-');
+	const tabs = Array.from(document.querySelectorAll<HTMLAnchorElement>('starlight-tabs [role="tab"]'));
+	tabs.forEach((tab) => {
+		tab.addEventListener('click', () => {
+			history.replaceState(null, '', '#tab-' + slug(tab.textContent ?? ''));
+		});
+	});
+	const m = window.location.hash.match(/^#tab-(.+)/);
+	if (m) {
+		const target = tabs.find((t) => slug(t.textContent ?? '') === m[1]);
+		if (target) {
+			// Starlight's <starlight-tabs> attaches the switching handler when the
+			// custom element upgrades; clicking before that just jumps the page.
+			customElements.whenDefined('starlight-tabs').then(() => {
+				target.click();
+				target.closest('starlight-tabs')?.scrollIntoView({ block: 'start' });
+			});
+		}
+	}
+</script>
+
 <style>
 	.ts-crumb-row {
 		display: flex;

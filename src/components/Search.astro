@@ -15,6 +15,7 @@
  */
 import { Icon } from '@astrojs/starlight/components';
 import project from 'virtual:starlight/project-context';
+import { withBase } from '../lib/base';
 
 const pagefindTranslations = {
 	placeholder: Astro.locals.t('search.label'),
@@ -97,35 +98,54 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>
 			</span>
 			<span class="ts-ask-panel-title">Ask Assistant</span>
-			<button type="button" class="ts-sa-clear" id="ts-sa-clear">Clear</button>
-			<button type="button" class="ts-ask-panel-close" id="ts-ask-close" aria-label="Close Ask Assistant">
+			{/* Icon buttons, not a "Clear" word button: the label doubled as the
+			    Stop control mid-stream, which made one button mean two things. The
+			    trash clears; Stop is now the send button's streaming state. */}
+			<button type="button" class="ts-sa-headbtn" id="ts-sa-clear" aria-label="Clear conversation" title="Clear conversation">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v5M14 11v5"/></svg>
+			</button>
+			<button type="button" class="ts-sa-headbtn" id="ts-ask-close" aria-label="Close Ask Assistant" title="Close">
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
 			</button>
 		</div>
 		<div class="ts-sa-view" id="ts-sa-view">
 			<div class="ts-sa-thread" id="ts-sa-thread">
-				<div class="ts-sa-msg" id="ts-sa-greeting">
-					<span class="ts-sa-avatar ts-sa-spark" aria-hidden="true">
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>
+				{/* Empty state. Hidden by CSS (:has) the moment the thread holds a
+				    message, and back on Clear -- no JS toggling either way. The
+				    greeting text is set on load, since a build-time render would
+				    bake in whatever hour the site was built at. */}
+				<div class="ts-sa-hello" id="ts-sa-greeting">
+					<span class="ts-sa-hello-mark" aria-hidden="true">
+						{/* <img>, not an inlined SVG: the file carries a <linearGradient
+						    id="gearGrad">, and inlining it here would put a second
+						    element with that id on any page that also uses the mark
+						    (the docs home does). */}
+						<img class="ts-sa-hello-gear" src={withBase('/testsigma-mark.svg')} alt="" width="34" height="34" />
+						<svg class="ts-sa-hello-spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>
 					</span>
-					<div class="ts-sa-msg-body">
-						<p><strong>Hey.</strong></p>
-						<p>Ask anything.</p>
-						<p>I'll find the answer across Testsigma's product knowledge.</p>
-					</div>
+					<h2 class="ts-sa-hello-title" id="ts-sa-hello-title">Hey there</h2>
+					<p class="ts-sa-hello-sub">I'm here to help you with the Testsigma docs.</p>
 				</div>
 			</div>
 			<div class="ts-sa-foot">
+				{/* Starter questions, above the composer. Filled from SUGGESTIONS by
+				    the script below, and hidden with the greeting once a thread
+				    starts -- these are openers, not contextual follow-ups. */}
+				<div class="ts-sa-chips" id="ts-sa-chips"></div>
 				<form class="ts-sa-form" id="ts-sa-form">
 					<input
 						class="ts-sa-input"
 						id="ts-sa-input"
-						placeholder="How do I get started?"
+						placeholder="Ask, search, or explain…"
 						autocomplete="off"
 					/>
-					<button type="submit" class="ts-sa-send" aria-label="Send">
-						<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>
-					</button>
+					<div class="ts-sa-form-foot">
+						<span class="ts-sa-ctx">
+							<span class="ts-sa-ai-badge" aria-hidden="true">AI</span>
+							Answers from the Testsigma docs
+						</span>
+						<button type="submit" class="ts-sa-send">Send</button>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -187,13 +207,23 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 			const emptyState = this.querySelector<HTMLElement>('#ts-sa-empty')!;
 			const sugsWrap = this.querySelector<HTMLElement>('#ts-sa-sugs')!;
 			const footBtn = this.querySelector<HTMLButtonElement>('#ts-sa-clear')!;
+			const chipsWrap = this.querySelector<HTMLElement>('#ts-sa-chips')!;
+			const helloTitle = this.querySelector<HTMLElement>('#ts-sa-hello-title')!;
+			const sendBtn = this.querySelector<HTMLButtonElement>('.ts-sa-send')!;
 
-			// In-flight stream state: the footer button is Stop while streaming,
-			// Clear otherwise.
+			// Time-of-day greeting. Client-side because the page is prerendered:
+			// a server-rendered greeting would show the build machine's hour to
+			// every reader forever.
+			const h = new Date().getHours();
+			helloTitle.textContent =
+				h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+
+			// In-flight stream state: the send button becomes Stop while streaming.
 			let controller: AbortController | null = null;
 			let streaming = false;
 			const setFootBtn = () => {
-				footBtn.textContent = streaming ? 'Stop' : 'Clear';
+				sendBtn.textContent = streaming ? 'Stop' : 'Send';
+				askForm.classList.toggle('ts-sa-streaming', streaming);
 			};
 
 			const pfQuery = () =>
@@ -232,11 +262,27 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 				sugsWrap.appendChild(b);
 			}
 
+			// Starter chips in the panel foot: same list as the search dialog's
+			// popular questions, one surface's worth of copy for both.
+			for (const q of SUGGESTIONS) {
+				const b = document.createElement('button');
+				b.type = 'button';
+				b.className = 'ts-sa-chip';
+				b.textContent = q;
+				b.addEventListener('click', () => startAsk(q));
+				chipsWrap.appendChild(b);
+			}
+
 			const syncSend = () => askForm.classList.toggle('ts-sa-hastext', !!askInput.value.trim());
 			askInput.addEventListener('input', syncSend);
 
 			askForm.addEventListener('submit', (e) => {
 				e.preventDefault();
+				// Mid-stream the same button reads Stop, so submitting aborts.
+				if (streaming) {
+					controller?.abort();
+					return;
+				}
 				const q = askInput.value.trim();
 				if (!q) return;
 				askInput.value = '';
@@ -247,22 +293,16 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 			bindCopyHandlers(askThread);
 
 			footBtn.addEventListener('click', () => {
-				if (streaming && controller) {
-					// Stop: abort mid-stream, keep the partial answer.
-					controller.abort();
-					return;
-				}
-				// Clear: reset the thread to the greeting, and forget the history.
-				for (const m of askThread.querySelectorAll('.ts-sa-msg:not(#ts-sa-greeting)')) m.remove();
+				// Abort anything in flight, then reset the thread to the empty
+				// state -- the greeting and chips come back on their own, since
+				// both hide off `.ts-sa-view:has(.ts-sa-msg)`.
+				controller?.abort();
+				for (const m of askThread.querySelectorAll('.ts-sa-msg')) m.remove();
 				turns = [];
-				askInput.placeholder = 'How do I get started?';
+				askInput.placeholder = 'Ask, search, or explain…';
 				askInput.focus();
 			});
 
-			const SPARK =
-				'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>';
-			const USER =
-				'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="10" r="3"/><path d="M6.2 19a6.5 6.5 0 0 1 11.6 0"/></svg>';
 			const BOOK =
 				'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2zM22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg>';
 
@@ -282,21 +322,21 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 				const priorTurns = [...turns];
 				// Retrieved sources for THIS answer, attached to any vote on it.
 				let lastSources: { url: string; title: string }[] = [];
+				// No avatar on either side: the question is a right-aligned bubble
+				// and the answer is the panel's full width, so who is speaking is
+				// already unambiguous and a 26px gutter is 26px of prose.
 				const userMsg = document.createElement('div');
-				userMsg.className = 'ts-sa-msg';
-				userMsg.innerHTML = `
-					<span class="ts-sa-avatar" aria-hidden="true">${USER}</span>
-					<div class="ts-sa-msg-body ts-sa-q">${escapeHtml(query)}</div>
-				`;
+				userMsg.className = 'ts-sa-msg ts-sa-msg-user';
+				userMsg.innerHTML = `<div class="ts-sa-q">${escapeHtml(query)}</div>`;
 				const aiMsg = document.createElement('div');
 				aiMsg.className = 'ts-sa-msg';
 				aiMsg.innerHTML = `
-					<span class="ts-sa-avatar ts-sa-spark" aria-hidden="true">${SPARK}</span>
 					<div class="ts-sa-msg-body">
 						<div class="ts-sa-think">
 							<span data-sa-status>Thinking</span>
 							<span class="ts-sa-dots"><i></i><i></i><i></i></span>
 						</div>
+						<details class="ts-sa-sources" hidden></details>
 						<div class="ts-ask-answer"></div>
 						<div class="ts-sa-actions" hidden>
 							<button type="button" class="ts-sa-act" data-sa-copy title="Copy answer">${IC_COPY}</button>
@@ -307,7 +347,6 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 14V2M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>
 							</button>
 						</div>
-						<div class="ts-sa-sources" hidden></div>
 					</div>
 				`;
 				askThread.append(userMsg, aiMsg);
@@ -362,8 +401,11 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 						sources: (srcs) => {
 							lastSources = srcs;
 							if (!srcs.length) return;
+							// A collapsed disclosure above the answer, so the reader can
+							// see WHAT was read without the source cards pushing the
+							// answer itself below the fold on every question.
 							sourcesEl.innerHTML =
-								'<div class="ts-sa-sources-head">Sources</div>' +
+								`<summary class="ts-sa-sources-head">Explored ${srcs.length} ${srcs.length === 1 ? 'page' : 'pages'}</summary>` +
 								srcs.map(s =>
 									`<a class="ts-sa-source" href="${escapeHtml(withBase(s.url))}">
 										<div class="ts-sa-source-crumb">${crumbs(s.url)}</div>
@@ -894,10 +936,6 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 			padding: 0;
 		}
 
-		#starlight__search .pagefind-ui__filter-value::before {
-			border-color: var(--sl-color-text-invert);
-		}
-
 		#starlight__search .pagefind-ui__result-tags {
 			margin-top: 0;
 			padding: 4px 0;
@@ -1029,8 +1067,12 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 		z-index: 40;
 		display: flex;
 		flex-direction: column;
-		width: min(26rem, calc(100vw - 40px));
-		height: min(60dvh, calc(100dvh - var(--sl-nav-height) - 40px));
+		width: min(27rem, calc(100vw - 40px));
+		/* Sized for the empty state (centred greeting + starter chips above the
+		   composer), then trimmed 15% on Bharath's call. The 0.85 rides BOTH
+		   terms, so the panel is 15% shorter on a short viewport too, where the
+		   second term is the one that binds. */
+		height: min(68dvh, calc((100dvh - var(--sl-nav-height) - 40px) * 0.85));
 		background: var(--ts-bg);
 		border: 1px solid var(--ts-bd);
 		border-radius: 14px;
@@ -1058,22 +1100,113 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 		font-weight: 600;
 		color: var(--ts-tx);
 	}
-	.ts-ask-panel-close {
+	.ts-sa-headbtn {
 		display: grid;
 		place-items: center;
 		flex: none;
-		width: 26px;
-		height: 26px;
+		width: 28px;
+		height: 28px;
 		padding: 0;
 		border: none;
 		border-radius: 6px;
 		background: transparent;
 		color: var(--ts-tx3);
 		cursor: pointer;
+		transition:
+			background var(--ts-t) var(--ts-ease),
+			color var(--ts-t) var(--ts-ease);
 	}
-	.ts-ask-panel-close:hover {
+	.ts-sa-headbtn:hover {
 		background: var(--ts-hover);
 		color: var(--ts-tx);
+	}
+	/* Nothing to clear yet: the trash is dimmed rather than removed, so the
+	   header does not reflow the first time a question is asked. */
+	.ts-ask-panel:not(:has(.ts-sa-msg)) #ts-sa-clear {
+		opacity: 0.35;
+		pointer-events: none;
+	}
+
+	/* ---- empty state: mark, time-of-day greeting, one line under it ----
+	   Centred in the thread, which is why the thread is a flex column: the
+	   greeting sits in the middle of the empty panel, and the chips + composer
+	   ride at the bottom the way they do once a conversation exists. */
+	.ts-sa-hello {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		flex: 1;
+		gap: 4px;
+		padding: 24px 8px;
+		text-align: center;
+	}
+	.ts-sa-hello-mark {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 64px;
+		height: 64px;
+		margin-bottom: 12px;
+		border-radius: 50%;
+		/* A teal tint, not --ts-ai-wash: the gear is brand teal, and the pink
+		   AI wash behind it read as two brands fighting. Translucent, so it
+		   sits correctly on the panel in either theme. */
+		background: rgba(1, 189, 167, 0.11);
+	}
+	/* The mark itself is static (it is the site favicon); only the glint moves. */
+	.ts-sa-hello-gear {
+		display: block;
+	}
+	/* The glint, riding the mark's upper right. */
+	.ts-sa-hello-spark {
+		position: absolute;
+		top: 7px;
+		right: 8px;
+		width: 13px;
+		height: 13px;
+		/* Brand teal, matching the gear -- the pink AI accent made the glint
+		   read as a second mark stuck onto the first. */
+		color: #01bda7;
+		animation: ts-sa-twinkle 3.2s var(--ts-ease) infinite;
+	}
+	@keyframes ts-sa-twinkle {
+		0%,
+		100% {
+			transform: scale(0.65) rotate(0deg);
+			opacity: 0.35;
+		}
+		45% {
+			transform: scale(1.15) rotate(90deg);
+			opacity: 1;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ts-sa-hello-spark {
+			animation: none;
+		}
+	}
+	.ts-sa-hello-title {
+		margin: 0;
+		font-size: 19px;
+		font-weight: 600;
+		letter-spacing: -0.015em;
+		color: var(--ts-tx);
+		border: none;
+		padding: 0;
+	}
+	.ts-sa-hello-sub {
+		margin: 0;
+		font-size: 13.5px;
+		line-height: 1.55;
+		color: var(--ts-tx2);
+	}
+	/* One rule retires the greeting AND the starter chips: both are empty-state
+	   furniture, and `:has` reads the thread directly, so nothing has to be
+	   toggled in JS when a question is asked or the trash resets it. */
+	.ts-sa-view:has(.ts-sa-msg) .ts-sa-hello,
+	.ts-sa-view:has(.ts-sa-msg) .ts-sa-chips {
+		display: none;
 	}
 
 	/* Conversation view */
@@ -1095,36 +1228,34 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 	.ts-ask-panel .ts-sa-thread {
 		max-height: none;
 	}
-	.ts-sa-label {
-		font-size: var(--sl-text-sm);
-		color: var(--sl-color-gray-3);
-		padding-block: 4px 12px;
-	}
 	.ts-sa-thread {
+		display: flex;
+		flex-direction: column;
 		flex: 1;
 		overflow-y: auto;
 		max-height: min(58vh, 33rem);
 		scrollbar-width: thin;
 	}
+	/* No rules between turns: the question's bubble is the divider. */
 	.ts-sa-msg {
 		display: flex;
-		gap: 1rem;
-		padding-block: 1.15rem;
+		padding-block: 0.9rem;
 	}
-	.ts-sa-thread > .ts-sa-msg + .ts-sa-msg {
-		border-top: 1px solid var(--sl-color-gray-6);
+	.ts-sa-msg-user {
+		justify-content: flex-end;
+		padding-block: 1.1rem 0.5rem;
 	}
-	.ts-sa-avatar {
-		display: inline-flex;
-		align-items: flex-start;
-		justify-content: center;
-		width: 1.6rem;
-		flex-shrink: 0;
-		color: var(--sl-color-gray-3);
-		padding-top: 2px;
+	/* The question, as a bubble on the reader's side. Capped at 85% so a long
+	   question still reads as a bubble and not as a full-width block. */
+	.ts-sa-msg-user .ts-sa-q {
+		max-width: 85%;
+		padding: 9px 14px;
+		border-radius: 14px;
+		background: var(--ts-hover);
+		font-size: 13.5px;
+		line-height: 1.5;
+		color: var(--ts-tx);
 	}
-	/* Assistant sparkle avatars (.ts-sa-spark) pick up the brand accent;
-	   the user icon stays gray. */
 	.ts-sa-msg-body {
 		flex: 1;
 		min-width: 0;
@@ -1181,8 +1312,8 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 	/* Answer actions (copy) */
 	.ts-sa-actions {
 		display: flex;
-		justify-content: flex-end;
-		margin-top: 0.6rem;
+		gap: 2px;
+		margin-top: 0.7rem;
 	}
 	.ts-sa-actions[hidden] {
 		display: none;
@@ -1208,16 +1339,46 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 		background: var(--ts-ac-soft);
 	}
 
-	/* Sources */
+	/* Sources -- a <details> ABOVE the answer ("Explored 4 pages"), collapsed.
+	   They used to be four cards below every answer, which pushed the answer
+	   itself off-screen on a short panel. */
 	.ts-sa-sources {
-		margin-top: 1.1rem;
+		margin-bottom: 0.85rem;
 	}
 	.ts-sa-sources[hidden] {
 		display: none;
 	}
 	.ts-sa-sources-head {
-		font-size: var(--sl-text-xs);
-		color: var(--sl-color-gray-3);
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		width: fit-content;
+		font-size: 12.5px;
+		color: var(--ts-tx3);
+		cursor: pointer;
+		list-style: none;
+	}
+	.ts-sa-sources-head::-webkit-details-marker {
+		display: none;
+	}
+	/* The caret is drawn here rather than left to the marker, so it can rotate
+	   on open and sit on the text baseline in both themes. */
+	.ts-sa-sources-head::after {
+		content: '';
+		width: 5px;
+		height: 5px;
+		border-right: 1.5px solid currentColor;
+		border-bottom: 1.5px solid currentColor;
+		transform: rotate(-45deg);
+		transition: transform var(--ts-t) var(--ts-ease);
+	}
+	.ts-sa-sources[open] .ts-sa-sources-head::after {
+		transform: rotate(45deg);
+	}
+	.ts-sa-sources-head:hover {
+		color: var(--ts-tx);
+	}
+	.ts-sa-sources[open] .ts-sa-sources-head {
 		margin-bottom: 0.6rem;
 	}
 	.ts-sa-source {
@@ -1259,57 +1420,130 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 		flex-shrink: 0;
 	}
 
-	/* Footer: ask input, then the shared dialog footer row */
+	/* ---- foot: starter chips, then the composer ----
+	   The AI wash rises behind both and fades out upward, so the bottom of the
+	   panel reads as one surface instead of a bordered box on white. */
 	.ts-sa-foot {
-		margin-top: 1rem;
+		position: relative;
 		flex-shrink: 0;
+		padding-top: 1rem;
 	}
-	.ts-sa-form {
+	.ts-sa-foot::before {
+		content: '';
+		position: absolute;
+		inset: -2.5rem -16px -12px;
+		background: var(--ts-ai-wash);
+		mask-image: linear-gradient(to bottom, transparent, #000 55%);
+		pointer-events: none;
+	}
+	.ts-sa-foot > * {
+		position: relative;
+	}
+
+	/* Starter chips: full-width pills, stacked, reading order top to bottom so
+	   the one nearest the composer is the one the cursor is already near. */
+	.ts-sa-chips {
 		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		border: 1px solid var(--ts-bd);
-		border-radius: 0.75rem;
-		padding: 0.35rem 0.55rem 0.35rem 1rem;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 6px;
+		margin-bottom: 10px;
+	}
+	.ts-sa-chip {
+		max-width: 100%;
+		padding: 8px 14px;
+		border: none;
+		border-radius: 999px;
 		background: var(--ts-panel);
-		transition: border-color 0.12s;
+		color: var(--ts-tx2);
+		font: inherit;
+		font-size: 13px;
+		text-align: start;
+		cursor: pointer;
+		transition:
+			background var(--ts-t) var(--ts-ease),
+			color var(--ts-t) var(--ts-ease);
+	}
+	.ts-sa-chip:hover {
+		background: var(--ts-hover);
+		color: var(--ts-tx);
+	}
+
+	.ts-sa-form {
+		border: 1px solid var(--ts-bd);
+		border-radius: 14px;
+		padding: 4px 6px 6px;
+		background: var(--ts-bg);
+		transition: border-color var(--ts-t) var(--ts-ease);
 	}
 	.ts-sa-form:focus-within {
 		border-color: var(--ts-ai-bd);
 	}
 	.ts-sa-input {
-		flex: 1;
-		min-width: 0;
+		display: block;
+		width: 100%;
 		border: none;
 		outline: none;
 		background: transparent;
 		color: var(--ts-tx);
 		font: inherit;
-		font-size: var(--sl-text-sm);
-		padding: 0.55rem 0;
+		font-size: 13.5px;
+		padding: 8px 8px 4px;
 	}
 	.ts-sa-input::placeholder {
 		color: var(--ts-tx3);
 	}
-	/* Send: transparent with a muted glyph while empty; the brand gradient with
-	   a white glyph once the input has content. */
-	.ts-sa-send {
+	/* Second row inside the composer: what the answers are drawn from, and the
+	   Send button (which becomes Stop mid-stream -- one control, one place). */
+	.ts-sa-form-foot {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+		padding: 0 2px 0 8px;
+	}
+	.ts-sa-ctx {
 		display: inline-flex;
 		align-items: center;
-		justify-content: center;
-		width: 2.1rem;
-		height: 2.1rem;
+		gap: 6px;
+		min-width: 0;
+		font-size: 11.5px;
+		color: var(--ts-tx3);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.ts-sa-ai-badge {
+		flex: none;
+		padding: 1px 5px;
+		border-radius: 4px;
+		background: var(--ts-ac-soft);
+		color: var(--ts-tx2);
+		font-size: 9.5px;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+	}
+	/* Muted until there is something to send; the brand gradient once there is,
+	   which is also the only colour in the panel besides the wash. */
+	.ts-sa-send {
+		flex: none;
+		padding: 5px 14px;
 		border: none;
-		border-radius: 0.5rem;
+		border-radius: 8px;
 		background: transparent;
 		color: var(--ts-tx3);
+		font: inherit;
+		font-size: 13px;
+		font-weight: 600;
 		cursor: pointer;
 	}
-	.ts-sa-form.ts-sa-hastext .ts-sa-send {
+	.ts-sa-form.ts-sa-hastext .ts-sa-send,
+	.ts-sa-form.ts-sa-streaming .ts-sa-send {
 		background: var(--ts-ai-grad);
 		color: #fff;
 	}
-	.ts-sa-form.ts-sa-hastext .ts-sa-send:hover {
+	.ts-sa-form.ts-sa-hastext .ts-sa-send:hover,
+	.ts-sa-form.ts-sa-streaming .ts-sa-send:hover {
 		filter: brightness(1.1);
 	}
 
@@ -1358,26 +1592,6 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 		margin-inline-end: 2px;
 		background: transparent;
 	}
-	.ts-sa-clear {
-		margin-inline-start: auto;
-		border: 1px solid var(--ts-bd);
-		border-radius: 0.4rem;
-		background: transparent;
-		color: var(--ts-tx2);
-		font: inherit;
-		font-size: var(--sl-text-xs);
-		font-weight: 500;
-		padding: 0.2rem 0.7rem;
-		cursor: pointer;
-	}
-	.ts-sa-clear[hidden] {
-		display: none;
-	}
-	.ts-sa-clear:hover {
-		background: var(--ts-hover);
-		color: var(--ts-tx);
-	}
-
 	/* Inline stream error + retry (never a blank thread) */
 	.ts-sa-error {
 		display: flex;

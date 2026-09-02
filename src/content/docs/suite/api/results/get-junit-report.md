@@ -1,6 +1,6 @@
 ---
 title: "Get a JUnit report"
-description: "Retrieve the JUnit XML report for a completed run result."
+description: "Deprecated. Retrieve the JUnit XML report for a completed run result. Responses carry Deprecation, Sunset, and Link headers — migrate to the export run report endpoint, unless your pipeline needs a JUnit parser."
 sidebar:
   label: "Get JUnit report"
   badge: { text: GET, variant: tip }

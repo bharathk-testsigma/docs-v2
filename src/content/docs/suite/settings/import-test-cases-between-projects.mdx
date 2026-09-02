@@ -1,11 +1,13 @@
 ---
 title: Import test cases between projects
-description: Move test cases and their linked assets from one project to another, then check the result under Settings.
+description: Move test cases and their linked assets from one project to another, understand the statuses and the save point, then check the result.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 covers:
-  - Import test cases
-  - View the import summary
+  - Run the import
+  - What the statuses mean
+  - The save point
+  - Check what happened
 sidebar:
   order: 30
   label: Import Test Cases Between Projects
@@ -13,47 +15,72 @@ sidebar:
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 
-An import copies test cases from one project into another, along with the step groups, elements, test data profiles, environment variables, and uploads they use. Application types must match: a web test case can only land in a web application.
-
-## Import test cases
-
-<Steps>
-
-1. **Start the import** — In the destination project, go to **Create Tests > Test Cases**, click the ellipsis icon in the **Test Case Explorer**, and click **Import**.
-
-2. **Pick the source** — Under **Select Source**, choose the source **Project**, **Application Name**, and **Version**, then click **Next**.
-
-3. **Choose what comes over** — In **Select Artefacts**, select the test cases. Everything they use — step groups, elements, test data profiles, environment variables, uploads — is selected with them.
-
-4. **Add unlinked assets** — To bring assets no selected test case uses, open that asset's tab and turn on **Show unlinked**. **Show selected** reviews your picks per tab.
-
-5. **Confirm** — Click **Proceed to Import**, review the list under **Start Import**, and click **Confirm**.
-
-6. **Name the save point** — In the **Create a Save Point?** dialog, enter a name and click **Start Importing**. Click **Done** when it finishes.
-
-</Steps>
-
-The review list marks what the import will do to each test case:
-
-| Status | Meaning |
-| --- | --- |
-| New | Does not exist in the destination — it is created |
-| No Change | Exists and is identical — nothing happens |
-| Override | Exists but differs — the import replaces it |
-
-The automatic [save point](/suite/create-and-manage/create-test-cases/#import-test-cases-from-another-project) puts the destination project back as it was if the result is wrong.
+Importing moves test cases from one project to another, along with everything they depend on: step groups, elements, test data profiles, environment variables, and uploads. Use it to promote work from a sandbox project into a real one, or to seed a new project from an existing library.
 
 <Aside type="note">
-Let the import finish — interrupting it can lose data. Import in smaller batches rather than one large one, and note the project keeps at most 10 save points.
+Test cases can only move between the same application type. A web application's test cases import into a web application, and nowhere else.
 </Aside>
 
-## View the import summary
+## Run the import
 
 <Steps>
 
-1. **Open the log** — Go to **Settings > Imports**.
+1. Go to **Create Tests > Test Cases**.
 
-2. **Inspect a run** — Click the status of the import you want. The **Import Summary** dialog shows the details of that run; click **OK, Got it** to close.
+2. Click the ellipsis icon `⋮` in Test Case Explorer and click **Import**.
+
+3. On the **Select Source** tab, choose the source **Project**, **Application Name**, and **Version**, then click **Next**.
+
+4. On the **Select Artifacts** tab, choose the test cases you want.
+
+5. Click **Proceed to Import**.
+
+6. Review the list on the **Start Import** tab and click **Confirm**.
+
+7. Name the save point in the **Create a Save Point?** dialog and click **Start Importing**.
+
+8. Click **Done**.
 
 </Steps>
 
+Selecting a test case automatically selects the step groups, elements, test data profiles, environment variables, and uploads it uses, so a test case never arrives without what it needs to run.
+
+To bring in an artifact that no selected test case uses, open its tab, turn on **Show unlinked**, and select it. **Show selected** reviews what you have chosen in each tab.
+
+## What the statuses mean
+
+The **Start Import** tab labels every test case before anything is written, so you can see what the import will do:
+
+| Status | Meaning |
+|---|---|
+| New | The test case does not exist in the destination project |
+| No Change | It exists and is identical |
+| Override | It exists and differs, so the import replaces it |
+
+## The save point
+
+Testsigma creates a save point before writing anything, so an import can be reverted in full. Naming it after the import makes it findable later. See [Projects and applications](/suite/get-started/projects-and-applications/#save-points).
+
+Import in smaller batches. A large import takes proportionally longer, and a smaller one is easier to verify and to revert.
+
+<Aside type="note">
+Do not interrupt an import. Stopping it partway can lose data.
+</Aside>
+
+<Aside type="note">
+A maximum of 10 save points are kept at a time, so an 11th import pushes out the oldest and an old restore point can disappear without warning.
+</Aside>
+
+## Check what happened
+
+<Steps>
+
+1. Go to **Settings > Imports**.
+
+2. Click the status of the import you want to inspect.
+
+3. Read the details in the **Import Summary** dialog and click **OK, Got it**.
+
+</Steps>
+
+This is where you confirm an import did what you expected, rather than inferring it from the destination project.

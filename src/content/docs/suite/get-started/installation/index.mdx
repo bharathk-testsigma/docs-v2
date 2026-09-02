@@ -1,86 +1,55 @@
 ---
-title: Installation
-description: Which Testsigma components to install and when — Agent, Terminal, and Tunnel — plus limitations that apply across all of them.
+title: Overview
+description: Which Testsigma components to install and when, how the agent, Terminal, and Tunnel relate, and what an IT reviewer asks about.
 pageType: guide
-verified: 2026-08
 covers:
-  - Components and when to install them
-  - Limitations
+  - What to install
+  - Choose between local and cloud
+  - How the components relate
+  - Before you start
 sidebar:
   order: 40
   label: Overview
 ---
 
-{/*
-  Split out of the V6 single Installation page (source: "Installation" Google
-  Doc 1fm4vLdHod7e7rTO..., 2026-08-11) when Installation became a folder with
-  one page per component (2026-08-17). This index keeps the orientation
-  content; each component page carries its own install/register/upgrade flow.
-*/}
+Testsigma runs in a browser, and most of it needs nothing installed. Five components install on your own machines, each because the cloud cannot do that job from outside your network.
 
-import { Aside, CardGrid } from '@astrojs/starlight/components';
-import DocCard from '~/components/DocCard.astro';
+A Copilot session on the Testsigma Cloud Lab, and a test run on a cloud machine against an internet-reachable application, need nothing installed except the recorder extension for authoring.
 
-Suite runs in your browser, and cloud runs need nothing installed. Three local applications extend it onto your own machines and networks. Each one has its own page covering requirements, installation, registration, upgrades, and removal.
+## What to install
 
-<CardGrid>
-	<DocCard
-		icon="box"
-		title="Testsigma Agent"
-		href="/suite/get-started/installation/testsigma-agent/"
-		description="Register a machine so test plans and ad-hoc runs execute on it."
-	/>
-	<DocCard
-		icon="terminal"
-		title="Testsigma Terminal"
-		href="/suite/get-started/installation/testsigma-terminal/"
-		description="The desktop application behind Copilot, local recording, and local runs."
-	/>
-	<DocCard
-		icon="tunnel"
-		title="Testsigma Tunnel"
-		href="/suite/get-started/installation/testsigma-tunnel/"
-		description="Reach an application the public internet cannot see."
-	/>
-	<DocCard
-		icon="monitor"
-		title="App Manager"
-		href="/suite/get-started/installation/app-manager/"
-		description="Roll out Agent and Terminal to managed Windows devices with PatchMyPC."
-	/>
-</CardGrid>
+| Component | Install it when | Where it runs |
+|---|---|---|
+| [Recorder extension](/suite/get-started/installation/recorder-extensions/) | You record web or mobile web test steps, or capture elements | Chrome, Edge, or Firefox on your machine |
+| [Testsigma Agent](/suite/get-started/installation/testsigma-agent/) | You run tests on your own machines or devices, rather than in Testsigma's cloud | A test machine, a Docker container, or a Kubernetes cluster |
+| [Testsigma Terminal](/suite/get-started/installation/testsigma-terminal/) | You author or debug with Copilot on a local device. A Copilot session on the Testsigma Cloud Lab needs no Terminal | Your desktop |
+| [Testsigma Tunnel](/suite/get-started/installation/testsigma-tunnel/) | Your application is behind a firewall or hosted locally, and you want to test it on Testsigma's cloud machines | A machine that can reach the application |
+| [App manager](/suite/get-started/installation/app-manager/) | You are an IT admin rolling the agent or the Terminal out to managed Windows devices | PatchMyPC and Microsoft Intune |
 
-## Components and when to install them
+## Choose between local and cloud
 
-<Aside type="note">
-Install a component only when you want to run tests on your own machines, create and debug tests locally, or reach an application that is not publicly available.
-</Aside>
+Two things decide what you need: where your application is reachable from, and where you want the browser or device to run.
 
-Each row names one application, the job it does, and the case that calls for it.
+- **Your application is reachable from the internet**: run everything on Testsigma's cloud machines, and install the recorder extension for authoring.
+- **Your application is only reachable inside your network**: the cloud cannot reach it, and IP whitelisting does not help. Either install Testsigma Tunnel, which keeps the test on a cloud machine and routes its traffic through your network, or install Testsigma Agent and run the test on a machine inside the network.
+- **You need a specific machine or a physical device**: install Testsigma Agent on it.
 
-| Component | What it does | Install it when | Platforms |
-| --- | --- | --- | --- |
-| Testsigma Agent | Registers one of your machines so test plans and ad-hoc runs execute on it | You want runs on your own machines or connected devices | Windows, macOS, Linux, Docker, Kubernetes |
-| Testsigma Terminal | Desktop application for Copilot, local recording, and local execution | You want Copilot, or you debug tests against a local browser or device | Windows 10/11 (64-bit), macOS 12 or later, Linux (64-bit), Docker |
-| Testsigma Tunnel | Connects the Testsigma cloud to an application on your own network | The application under test is not reachable from the internet | Windows, macOS, Linux (Debian and RPM), Docker, Kubernetes |
+## How the components relate
 
-Terminal downloads and manages an agent for you, so installing Terminal gives you an agent as well. Install the agent on its own when a machine runs test plans with nobody working at it, such as a build machine.
+Testsigma Terminal manages the agent for you. It downloads, upgrades, and runs the agent, and only one agent is active on a machine at a time. Installing the Terminal on a machine that already has a standalone agent converts that agent rather than adding a second one.
 
-Tunnel is unrelated to where tests run. It solves reachability instead.
+Install the agent on its own for local test execution. Install the Terminal when you also want Copilot sessions on that machine, and it brings the agent with it.
 
-## Limitations
+The tunnel is independent of both. It carries traffic and runs no tests, so it pairs with cloud execution rather than replacing the agent.
 
-- Automatic start at boot is Windows only, for Testsigma Agent.
-- PatchMyPC deployment covers Windows `.exe` only. macOS, Linux, and the agent ZIP are out of scope.
-- IP allowlisting cannot reach a locally hosted application. Tunnel is the only option in that case.
+The recorder extension is independent too, and needed for authoring regardless of where tests run. Copilot loads it through a browser profile it manages.
 
+## Before you start
 
-## FAQs
+Each component has its own requirements. These 3 recur across all of them, and are what an IT or security reviewer asks about:
 
-**Do I need to install anything to use Testsigma?**
+- **Outbound access only**: the agent and the tunnel open outbound connections and accept none inbound, so no ingress rule or IP whitelisting is needed for them.
+- **Allowlisting**: `*.testsigma.com` on port 443 has to be reachable, along with the browser driver sources the agent downloads from.
+- **Install location**: the Terminal and the agent install into the user profile rather than into `Program Files`, which application allow-listing tools such as AppLocker and WDAC block by default.
 
-No. Testsigma runs in your browser, and cloud runs need nothing installed. Install a component only for local runs, Copilot, or a private application.
-
-**Do I need both the agent and Terminal?**
-
-No. Terminal downloads and manages an agent for you. Install the agent on its own only when a machine runs test plans with nobody working at it.
+See each component's page for its full requirements, ports, and proxy and certificate handling.

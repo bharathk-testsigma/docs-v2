@@ -1,0 +1,180 @@
+---
+title: Security
+description: Your profile, password, and 2FA, plus the organization-wide password policy and single sign-on through Google or a SAML provider.
+pageType: task
+verified: 2026-08
+covers:
+  - Your profile
+  - Change your password
+  - Two-factor authentication
+  - Password policy
+  - Single sign-on
+sidebar:
+  order: 25
+  label: Security
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+Security settings sit in one dialog, reached from the **User Profile** menu, and split into 2 groups. **User settings** are your own account and are available to every user. **Organization Settings** apply to everyone in the account and need administrator access.
+
+| Setting | Group | Who changes it |
+|---|---|---|
+| Profile | User settings | You, for your own account |
+| Change Password | User settings | You, for your own account |
+| 2FA | User settings | You, for your own account |
+| Password Policy | Organization Settings | An administrator, for everyone |
+| Security (SSO) | Organization Settings | An administrator, for everyone |
+
+## Your profile
+
+Select **Profile**, edit the **First Name** and **Last Name**, and click **Update**. Both are required.
+
+Your email address is shown alongside them and is not editable here, since it identifies the account. Click the pencil icon on the avatar to change your profile picture.
+
+## Change your password
+
+Select **Change Password**, enter your **Current Password**, then the new one in **New Password** and **Confirm Password**, and click **Update**.
+
+## Two-factor authentication
+
+2FA requires a one-time code from an authenticator app alongside your password. You enable it for your own account, and you need an authenticator app before you start.
+
+<Steps>
+
+1. Select **2FA** under **User settings**.
+
+2. Turn on the **Two-Factor Authentication** toggle. The **Confirm Your Password** dialog opens.
+
+3. Enter your password and click **Continue**.
+
+4. Scan the QR code in the **Set Up Authenticator App** dialog, or enter the setup key in your app, and click **Continue**.
+
+5. Enter the 6-digit code from your authenticator app in **Verify Authenticator App**, and click **Continue**.
+
+</Steps>
+
+<Aside type="note">
+Phone numbers used for authentication are managed under **Settings > Phone Numbers (TFA)**.
+</Aside>
+
+## Password policy
+
+The password policy sets 3 account-wide controls. Each is enabled separately, so you can use one without the others.
+
+| Control | What it does |
+|---|---|
+| **Idle Session Timeout (minutes)** | Signs an inactive user out after this many minutes |
+| **Max Failed Login Attempts** | Locks the account after this many consecutive failed sign-ins |
+| **Password Change Frequency (days)** | Requires a new password after this many days |
+
+<Steps>
+
+1. Click the **User Profile** menu and select **Password Policy** under **Organization Settings**.
+
+2. Click **Configure**.
+
+3. Select each setting you want to enable in the **Configure Password Policy** dialog.
+
+4. Enter the value for each one you selected.
+
+5. Click **Update**.
+
+</Steps>
+
+## Single sign-on
+
+SSO points authentication at your identity provider, so users sign in with existing corporate credentials and Testsigma accepts a secure token instead of a password.
+
+Five providers are supported: **Google**, and SAML-based **Okta**, **Azure**, **OneLogin**, and **Google Workspace**.
+
+<Aside type="note">
+Only one SSO configuration can be active at a time, so enabling a second replaces the first. Verify a new configuration with one account before applying it to the organization.
+</Aside>
+
+Reach the settings the same way for any provider: click the **User Profile** menu, scroll to **Organization Settings**, and click **Security (SSO)**.
+
+### Google
+
+Turn on the toggle on the **Google** widget. You and your teammates can then sign in with Google on the next sign-in.
+
+<Aside type="note">
+The toggle is disabled unless you are signed in to G Suite. The panel offers a link to sign in.
+</Aside>
+
+### SAML providers
+
+Okta, Azure, OneLogin, and Google Workspace all use SAML, so the exchange has the same 3 stages whichever you use.
+
+<Steps>
+
+1. Turn on the **SAML** widget in Testsigma to get its configuration values.
+
+2. Create an application at the identity provider using those values.
+
+3. Bring the provider's certificate and URLs back into Testsigma.
+
+</Steps>
+
+The terms the provider's own screens use:
+
+| Term | What it means here |
+|---|---|
+| Service Provider (SP) | Testsigma |
+| Identity Provider (IdP) | Okta, Azure AD, OneLogin, or Google Workspace |
+| Single Sign-On URL | Where authentication requests are sent |
+| Audience URI (SP Entity ID) | The unique identifier for Testsigma, usually a URL |
+| Default RelayState | Where users land after authenticating |
+| Name ID Format | The format of the user identifier in the assertion, usually an email address |
+| SAML or X.509 certificate | Verifies the identity of both parties in the exchange |
+
+For Azure, the values Testsigma needs on the **Basic SAML Configuration** screen are:
+
+```text
+Entity ID:    https://id.testsigma.com/saml/<id>/metadata
+Sign on URL:  https://id.testsigma.com/saml/<id>/callback
+Relay State:  https://id.testsigma.com/
+Logout URL:   leave empty
+```
+
+Replace `<id>` with the SAML ID from your Testsigma SSO panel.
+
+<Aside type="note">
+Users have to be assigned to the Testsigma application at the identity provider before they can sign in through it. Creating the application is not enough. On Okta this is **Assign > Assign to People**, and on Azure it is **Assign users and groups** on the enterprise application.
+</Aside>
+
+### Sign in with SSO
+
+<Steps>
+
+1. Click **Sign in with SSO** on the Testsigma sign-in page.
+
+2. Enter the email address configured with SSO for the account and click **Sign in**.
+
+</Steps>
+
+<Aside type="note">
+Signing in through SSO needs the email address configured first, and Okta requires its mobile app for the first authentication.
+</Aside>
+
+### Turn SSO off
+
+Turn off the **SAML** toggle, then click **I Understand and Disable** in the warning prompt. That removes the SSO configuration from the account.
+
+<Aside type="note">
+Disabling SSO removes the configuration rather than pausing it, so re-enabling means configuring the provider again.
+</Aside>
+
+## What SSO changes
+
+Once SSO is on, sign-in happens at your identity provider, so account lockout, password rotation, and any multi-factor requirement are governed there. The Testsigma password policy stops being the control that matters for those users.
+
+## Related security controls
+
+Three more controls sit outside this dialog, and each has its own page.
+
+- **Guest access** grants the Testsigma support team temporary, logged, revocable access. See [Guest access](/suite/settings/guest-access/)
+- **IP whitelisting** lets Testsigma's cloud reach an application behind your firewall. See [IP whitelisting](/suite/settings/ip-whitelisting/)
+- **Audit logs** record who changed what and when, including authentication and access events. See [Audit logs](/suite/settings/audit-logs/)
+
+Roles decide what a signed-in user can do, and are assigned per project. See [Users](/suite/settings/users/).

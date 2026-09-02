@@ -1,13 +1,184 @@
 ---
-title: Create Web Test Case
-description: Create Web Test Case — this page is being written.
+title: Create a web or mobile web test case
+description: Create a test case against a URL through NLPs, the recorder, Copilot, or Atto, and what is specific to web and mobile web.
 pageType: guide
 sidebar:
   order: 10
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+A web test case runs against a URL, so the first step carries the address and everything after it acts on that page. A mobile web test case is the same thing rendered at a device's dimensions, so it takes the same 4 routes and differs only in how you record.
+
+| Route | Start from | Best when |
+|---|---|---|
+| NLPs | Nothing | You know the flow and want exact control |
+| Recorder | The page in front of you | The flow is quicker to perform than to describe |
+| Copilot | The page in front of you | You want Copilot to draft steps for the page as you record |
+| Atto | Requirements, designs, or prompts | You are covering a feature rather than one flow |
+
+Before you start, you need a project and a web or mobile web application, and the [Testsigma Recorder extension](/suite/get-started/installation/recorder-extensions/) installed. Copilot also needs [Testsigma Terminal](/suite/get-started/installation/testsigma-terminal/) running.
+
+## Create the test case
+
+<Steps>
+
+1. Go to **Create Tests > Test Cases**.
+
+2. Expand a folder in Test Case Explorer and click the **+** icon next to a subfolder.
+
+3. Confirm the folder and subfolder, enter a name, and click **Create**.
+
+4. Enter the URL you want to test on the Test Case Details page, and click **Create Step**.
+
+</Steps>
+
+That URL step is what the rest of the test case runs against. From here, take one of the routes below.
+
+## Add the steps
+
+<Tabs>
+
+<TabItem label="NLPs">
+
+Write each action in plain English on the Test Case Details page. Suggestions appear as you type an action word.
+
+A login flow reads as:
+
+```text
+Navigate to https://simply-travel.testsigma.com/
+Click on Login / Sign Up Button
+Click on Login Button
+Enter robert@gmail.com in the Email Address Input field
+Click on Continue Button
+Enter •••••••• in the Password Input field
+Click on Submit Button
+```
 
 <Aside type="note">
-This page is being written. Content lands here in an upcoming update.
+On mobile web the same flow uses `Tap on` in place of `Click on`, since the interaction is a tap.
 </Aside>
+
+See [Create test cases](/suite/create-and-manage/create-test-cases/) for the full action list and the step types.
+
+</TabItem>
+
+<TabItem label="Recorder">
+
+On web:
+
+1. Click **Record** on the Test Case Details page. A new window opens.
+2. Enter the URL to capture from. The Testsigma Recorder appears and waits.
+3. Perform the actions you want as test steps.
+4. Click **Stop**.
+
+On mobile web, the recorder runs inside Chrome DevTools so the page renders at a device's dimensions:
+
+1. Click **Record**, and enter the URL in the new window.
+2. Select **Companion Mode** in the action bar.
+3. Press **F12** to open Chrome DevTools, and dock it to the right of the window.
+4. Click **>>** and select **Testsigma Recorder**. The recorder opens inside DevTools.
+5. Select the device dimension to record at.
+6. Perform the actions you want as test steps, and click **Stop**.
+
+<Aside type="tip">
+If the device you test on is not listed, select **Edit** in the **Dimensions** dropdown and click **Add custom device**. A device's own characteristics change how an element displays and behaves, so recording at the right dimension matters.
+</Aside>
+
+The recorded steps appear on the Test Case Details page, ready to review and run.
+
+</TabItem>
+
+<TabItem label="Copilot">
+
+1. Click **Copilot** on the Test Case Details page.
+2. Click **Launch** in the **Copilot** overlay. Copilot opens a browser window and runs the URL.
+3. Click **Rec** and perform the actions you want as test steps.
+4. Click **Stop recording**.
+5. Click **Exit Copilot**, then **Stop Copilot** in the **Stop & Exit Copilot** dialog.
+
+<Aside type="tip">
+Click **Generate Steps** in the Copilot dialog to have Copilot draft scenarios from the current page. Select one and it writes the steps for you.
+</Aside>
+
+See [Copilot](/suite/atto/copilot/) for debugging, step management, and the browser profile.
+
+</TabItem>
+
+<TabItem label="Atto">
+
+Atto generates whole test cases from requirements, Figma designs, qTest, Confluence, video, files, or a live recording, rather than steps for one flow. See [AI agents](/suite/atto/ai-agents/).
+
+</TabItem>
+
+</Tabs>
+
+## What is specific to web and mobile web
+
+Most of what you do next is the same for any application type. These parts are not.
+
+### Elements
+
+Web and mobile web elements come from the page's HTML structure, and both support 7 locator types against 5 on a native mobile app. Three cases only occur here: a CSS selector is the only way to reach inside a Shadow DOM, an iframe element carries its frame details so the test needs no `switch to the frame` step, and an image element identifies a control by pixel recognition when dynamic behavior keeps breaking an XPath. See [Elements](/suite/create-and-manage/elements/).
+
+### The recorder
+
+Mobile web records through Chrome DevTools in **Companion Mode**, at a device dimension you choose. Web records in a plain browser window. Everything else about the recorder is the same.
+
+Freeze an element with **Ctrl + Shift + F**, or **Command + Shift + F** on macOS, to add a verification or an action without repeating the workflow that got you there. Excluded attributes keep captured locators stable when the page rewrites its own attributes. See [Recorder extension](/suite/get-started/installation/recorder-extensions/).
+
+### Steps that act on the browser
+
+A long web session fills the test machine's disk, so start a test case with `Delete all cookies from the current session` and close spare tabs with the window NLPs. Dropdowns built with the `<select>` tag take the Select NLPs. Dropdowns built from `<div>`, `<a>`, or `<span>` take a click instead. Basic authentication goes in the URL as `protocol://username:password@host`. See [Create test cases](/suite/create-and-manage/create-test-cases/).
+
+### Run settings
+
+Headless testing is available on web but not on mobile web, and records no video. **Page Timeout** and **Element Timeout** apply per run. Browser console logs come from `extendedDebugging` on Testsigma Lab or `browserstack.console` on BrowserStack. See [Run tests](/suite/run-tests/test-runs/).
+
+### Desired capabilities
+
+Desired capabilities set the browser's behavior for the run: the user agent, extensions, a custom profile, geolocation, site permissions, incognito mode, and network throttling. See [Desired capabilities](/suite/create-and-manage/advanced-settings/desired-capabilities/).
+
+## Frequently asked questions
+
+### Why can't Testsigma open my URL?
+
+Check the URL itself first: the protocol, the slashes, and the spelling in the test case. Open it in an incognito window on your workstation to confirm the site is reachable from there at all.
+
+If it loads for you but not for Testsigma, the application is probably not reachable from outside your network, which happens when it is still in development, hosted on your own machine, or on a company server behind a firewall. Use [Testsigma Tunnel](/suite/get-started/installation/testsigma-tunnel/), or run on local devices.
+
+<Aside type="note">
+A page that takes longer than the page load timeout also reads as inaccessible. Raise **Page Timeout** in the run's **Additional Settings**.
+</Aside>
+
+### Why do pages load slowly in cloud execution but not locally?
+
+Rendering engines differ between environments, so a page can stall or load slowly in the cloud and produce missing elements or unperformed actions. Add a `Click on the Refresh button in the browser` step immediately before the step that fails.
+
+### Why does the browser session fail to start?
+
+The error text names the cause.
+
+- "Exception in initiating a browser session in path: timeouts": the session did not start in time, so Testsigma and the browser never established communication. An outdated Selenium browser driver is the usual cause
+- "A session with id ... was not found": the session started but stopped communicating. On Windows that is usually outdated driver files. On macOS it is usually a missing Safari WebDriver extension, or **Allow Remote Automation** left off
+- "The driver server has unexpectedly died!": the webdriver process that talks to the browser is unresponsive or dead
+
+Safari produces 3 of its own:
+
+- "The session timed out while connecting to a Safari instance": Safari started, but communication with the driver failed
+- "The Safari instance is already paired with another WebDriver session": a Safari or webdriver process is already running and unresponsive
+- "You must enable the 'Allow Remote Automation' option in Safari's Develop menu": Safari automation is off. See [Run tests](/suite/run-tests/test-runs/) for enabling it
+
+### Why does a step time out waiting for an element?
+
+"Element time out is timed out. Details: Expected condition failed: waiting for visibility of element located by ..." means Testsigma cannot find the element on the loaded page. Either the locator value is wrong, or the element is not visible. If it is slow to load, add a wait step before it.
+
+### Why does the recorder show a blank screen, or report blocked cookies?
+
+Both come from Chrome's third-party cookie setting, and the extension reports the second as "Not able to record as third-party cookies are blocked by the browser".
+
+Check the Testsigma Recorder extension is installed, then open `chrome://settings/cookies`, or **Chrome > Settings > Privacy and security > Third-party cookies**, and select **Allow all cookies** or **Block third-party cookies in Incognito mode**.
+
+### Why can't the extension access local files and URLs?
+
+The extension reports "Not able to access local files and urls". Go to **Chrome > Manage Extensions > Testsigma Extension > Details** and turn on **Allow access to File URLs**.

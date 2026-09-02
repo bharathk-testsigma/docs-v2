@@ -1,13 +1,151 @@
 ---
-title: Recorder Extensions
-description: Recorder Extensions — this page is being written.
+title: Recorder extension
+description: Install the Testsigma Recorder in Chrome, Edge, or Firefox, configure its options, and freeze elements or exclude attributes while recording.
 pageType: guide
+covers:
+  - Install the extension
+  - Extension options
+  - Freeze an element to add a verification or action
+  - Exclude attributes and classes
 sidebar:
   order: 44
+  label: Recorder Extensions
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+The Testsigma Recorder is a browser extension that turns your interactions with a web application into test steps. It captures clicks, text entry, and navigation, writes each one as an NLP step in plain English, and learns the elements it touches along the way.
+
+The extension is needed for recording web and mobile web test steps and for capturing elements. Copilot loads it too, through the profile mode set under **Settings > Preferences > Copilot & Recorder Extension**; see [Set up a browser profile for recording](/suite/atto/copilot/#set-up-a-browser-profile-for-recording). The Android and iOS recorders are separate and do not use it.
+
+## Install the extension
+
+<Tabs>
+
+<TabItem label="Chrome">
+
+1. Go to the [Testsigma Recorder](https://chrome.google.com/webstore/detail/testsigma-recorder/epmomlhdjfgdobefcpocockpjihaabdp) listing on the Chrome Web Store.
+2. Click **Add to Chrome**.
+3. Click **Add extension** on the permission prompt.
+
+A confirmation message appears when the installation finishes.
+
+To record in incognito mode, which keeps no browsing history or cookies, right-click the Testsigma extension icon, select **Manage extension**, and turn on **Allow in Incognito**.
+
+</TabItem>
+
+<TabItem label="Edge">
+
+1. Go to the [Testsigma Recorder](https://microsoftedge.microsoft.com/addons/detail/testsigma-recorder/pdgdbfedjpffcnmgedicplikkejikhif) listing on Edge Add-ons.
+2. Click **Get**.
+3. Click **Add Extension** on the permission prompt.
+
+A confirmation message appears when the installation finishes.
+
+To record in InPrivate mode, which keeps no browsing history or cookies, go to **Extensions**, click the ellipsis icon (⋯) on the Testsigma extension, select **Manage Extension**, and turn on **Allow in InPrivate**.
+
+</TabItem>
+
+<TabItem label="Firefox">
+
+1. Open the [Testsigma Recorder](https://addons.mozilla.org/en-US/firefox/) listing on Firefox Add-ons.
+2. Click **Add to Firefox**.
+3. Click **Add** on the permission prompt.
+
+<Aside type="tip">
+Select **Allow this extension to run in Private Windows** on that prompt to use the recorder in a private window.
+</Aside>
+
+Firefox needs 2 more settings before the recorder can read every page.
+
+**Allow the extension to access data:**
+
+1. Click the **Extension** icon and go to **Manage extensions**.
+2. Click the menu icon on **Testsigma Recorder** and select **Manage**.
+3. Open the **Permission** tab and turn on **Access your data for all websites**.
+
+**Relax tracking protection:**
+
+1. Click the menu icon and select **Settings**.
+2. Go to **Privacy & Security** and select **Custom** under **Enhanced Tracking Protection**.
+3. Select **Cookies from unvisited websites** in the dropdown next to **Cookies**.
+4. Click **Reload All Tabs**.
 
 <Aside type="note">
-This page is being written. Content lands here in an upcoming update.
+Without these, the recorder cannot reach every website in the browser to record interactions.
 </Aside>
+
+</TabItem>
+
+</Tabs>
+
+## Extension options
+
+Three options change how the recorder behaves, and the route to them differs by browser:
+
+- **Chrome**: go to **Extensions > Manage Extensions**, click **Details** on the Testsigma widget, then click **Extension Options**.
+- **Firefox**: go to **Extensions > Extension Settings > Manage Extensions**, click the ellipsis icon (⋯) on **Testsigma Recorder Extension Details**, and select **Preferences**.
+
+<Aside type="note">
+The Edge documentation does not describe these options. Check whether the Edge extension offers them before relying on them.
+</Aside>
+
+| Option | What it does |
+|---|---|
+| Enable Inspect Popover on Elements | Highlights each element with a green rectangle while you record, so you can see what you are about to select. On by default |
+| Disable Recording Mouse Scroll | Stops scroll NLPs being added automatically, which keeps a test case clean on a static application with no infinite loading. On by default |
+| Enable Developer Mode | Turns on the browser's developer mode for inspecting elements, troubleshooting locators, and examining application behavior |
+
+## Freeze an element to add a verification or action
+
+Freezing holds an element still so you can act on it without repeating the workflow that got you there. Use it to add a verification, such as checking text, an attribute, or a value, or to add a click, an entry, or a selection.
+
+<Steps>
+
+1. Open a test case and click **Record**.
+
+2. Enter the URL of the site to record in the new window.
+
+3. Hover over the element and press **Ctrl + Shift + F** on Windows, or **Command + Shift + F** on macOS.
+
+4. Click the **Show More** icon.
+
+5. Expand the menu and select the verification or action you want.
+
+6. Supply the test data value if prompted.
+
+7. Click **Stop** when you have finished recording.
+
+</Steps>
+
+The recorded steps appear on the Test Case Details page.
+
+## Exclude attributes and classes
+
+An element captured on an attribute that changes soon afterwards produces a locator that stops matching. Excluding those attributes and classes keeps captured elements stable.
+
+<Steps>
+
+1. Start recording a test case.
+
+2. Hover over the settings button in the recorder.
+
+3. Click **Excluded Attributes**.
+
+4. Add the attributes and classes to leave out while recording.
+
+</Steps>
+
+## Frequently asked questions
+
+### Why does Testsigma need a browser extension?
+
+Modern web applications are built from generic HTML elements such as `div` and `span`, so a test needs locators that identify each element within the page structure. The extension reads that structure while you record, which is how Testsigma captures usable locators.
+
+### Why does the recorder show a blank screen with no elements?
+
+On web, check the extension is installed, then open **Chrome > Settings > Privacy and security > Third-party cookies** and turn on **Block third-party cookies in Incognito mode**. On a hybrid mobile application the blank screen is a WebView instead, which is a different problem.
+
+### Can I record without installing anything?
+
+Not for web. Copilot also loads the recorder extension, though it can manage the browser profile that holds it for you. Recording on Android and iOS uses the streamed device recorder rather than a browser extension.

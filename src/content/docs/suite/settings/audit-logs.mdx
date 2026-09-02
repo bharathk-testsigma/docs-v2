@@ -1,73 +1,67 @@
 ---
 title: Audit logs
-description: Read the immutable record of every account action, filter it, and export it for a compliance review.
+description: Read the immutable record of every account action, filter it five ways, export the filtered set, and know how it differs from an activity log.
 pageType: task
 verified: 2026-08
 covers:
-  - View audit logs
-  - Filter audit logs
-  - Export audit logs
+  - Read the log
+  - Filter the log
+  - Export the log
+  - How this differs from an activity log
 sidebar:
   order: 60
   label: Audit Logs
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
-import Prerequisites from '~/components/Prerequisites.astro';
 
-Audit logs record every key account activity as immutable entries, from test asset changes to sign-ins. Administrators use them to monitor usage, investigate security incidents, troubleshoot issues, and keep the organization accountable.
+An audit log records every key action in the account as an immutable entry: who did it, what changed, and when. Administrators use them to investigate an incident, trace an unexpected change, and answer questions about who had access to what.
 
-<Prerequisites>
+## Read the log
 
-- You administer the account.
-- You know the per-entity **Activity** logs.
-
-</Prerequisites>
-
-## View audit logs
-
-Go to **Settings > Audit Logs**. The page lists every recorded activity, and each entry carries six fields.
+Go to **Settings > Audit Logs**. Every recorded activity is listed, and each entry carries:
 
 | Field | What it holds |
-| --- | --- |
-| **Time** | The date and time the action occurred |
-| **Event Type** | The entity involved: Test Case, Test Suite, Test Plan, Test Data, Element, Environment, REST API Step, Step Group, or Authentication & Access Bridge |
-| **Project/App/Version** | The project, application, and version where the change was made |
-| **Action** | Create, Update, Delete, Login, or Logout |
-| **User** | Who performed it |
-| **Details** | The fields that changed, with their specific values |
+|---|---|
+| Time | The date and time of the action |
+| Event Type | The entity acted on: Test Case, Test Suite, Test Plan, Test Data, Element, Environment, REST API Step, Step Group, or Authentication & Access Bridge |
+| Project/App/Version | Where the change was made |
+| Action | Create, Update, Delete, Login, or Logout |
+| User | Who performed it |
+| Details | The fields that changed, with their values |
 
-**Details** is the field that matters in an investigation. It records specific values, so you can see what a value changed from as well as what it changed to.
+The **Details** column is what separates an audit log from an activity feed. It names the fields and the values, so you can see what a change actually was rather than only that something changed.
 
-## Filter audit logs
+## Filter the log
 
-Five filters narrow the list, and they combine.
+Five filters, and they stack:
 
-| Filter | What it selects |
-| --- | --- |
-| **Event Type** | One entity type, such as Test Case or Environment |
-| **Action** | One activity type: Create, Update, Delete, Login, or Logout |
-| **Date Range** | Activity between a **From Date & Time** and a **To Date & Time** |
-| **User** | One person in your organization |
-| **Project** | Actions inside one project |
+- **Event Type**: one entity type
+- **Action**: Create, Update, Delete, Login, or Logout
+- **Date Range**: between a **From Date & Time** and a **To Date & Time**
+- **User**: one person's activity
+- **Project**: actions within one project
 
-## Export audit logs
+## Export the log
 
-An export runs against whatever filters are applied, so set those first.
+The export runs in the background and the file arrives on a different page, so it takes 2 stages.
 
 <Steps>
 
-1. **Filter the list**: apply the filters you want on the **Audit Logs** page.
+1. Apply the filters you want on the **Audit Logs** page.
 
-2. **Start the export**: click **Export** in the top-right corner.
+2. Click **Export**, then click **Export** again in the confirmation dialog.
 
-3. **Confirm**: click **Export** in the confirmation dialog. A message confirms the export has been initiated.
+3. Once the file is generated, go to **Settings > Exports**.
 
-4. **Collect the file**: go to **Settings > Exports** and click **Download** next to the generated audit log report.
+4. Click **Download** beside the generated report.
 
 </Steps>
 
-<Aside type="note">
-The export is asynchronous. The entry appears under **Settings > Exports** once the file is generated, so start a large date range before you need it.
-</Aside>
+The export carries the filtered set rather than the whole log, so filter before you export.
 
+## How this differs from an activity log
+
+An audit log is account-wide and administrator-facing, covering authentication and access alongside asset changes.
+
+An activity log sits on an individual test case, element, test suite, or test plan, under **Activity** in its utility panel, and shows the history of that one asset. Support actions taken under `guest@testsigma.com` appear there too. See [Guest access](/suite/settings/guest-access/).

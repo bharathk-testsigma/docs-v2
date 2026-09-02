@@ -1,49 +1,212 @@
 ---
-title: Connect Salesforce to Suite
-description: Create the project, the metadata connection that auto-learns your org, and the user connections tests log in with.
+title: Set up Salesforce testing
+description: Create the app in Salesforce that authorizes the connection, the Salesforce project, the metadata connection, and the user connections tests log in with.
 pageType: task
-verified: 2026-07
+verified: 2026-08
 covers:
-  - Create a Salesforce project
+  - Create the app in Salesforce
+  - Create the Salesforce project
   - Create the metadata connection
   - Add user connections
-  - Test a connection before authorising
-  - Recover from a metadata refresh
+  - Test a connection before authorizing
 sidebar:
   order: 41
   label: Setup
 ---
 
-import { Aside, Steps } from '@astrojs/starlight/components';
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
-Two kinds of connection link Suite to an org. The metadata connection reads the org's structure and auto-learns its components; user connections are the profiles — admin, sales rep — that tests log in as. Both authenticate through the [connected app](/suite/salesforce/setup/connected-app/).
+Testing a Salesforce application means connecting Testsigma to your Salesforce organization twice: once to read the org's metadata, and once per user profile whose permissions a test needs to run under.
 
-## Create a Salesforce project
+Setup runs in 3 stages. Create an app in Salesforce that authorizes the connection, create a Salesforce project in Testsigma, then create the metadata and user connections.
 
-From the **Dashboard**, go to **Project > New Project**, name it, choose **Salesforce** as the **Application type**, name the application, set a version, and click **Create**. Suite drops you on the **Salesforce connections** page.
+## Create the app in Salesforce
 
-## Create the metadata connection
+Salesforce has replaced connected apps with External Client Apps in newer organizations. Use the route your org offers.
+
+Before you start, you need a Salesforce organization and access to its admin email, since the identity verification code and the security token go there.
+
+<Tabs>
+
+<TabItem label="External Client App">
+
+1. Log in to Salesforce, enter **App Manager** in the quick finder on the **Setup** page, and click **App Manager**.
+2. Click **New External Client App**.
+3. Enter the **External Client App Name**, **API Name**, and **Contact Email** in **Basic Information**. Salesforce fills the **API Name** in for you.
+4. Set **Distribution State** to **Local**.
+5. Expand **API (Enable OAuth Settings)** and select **Enable OAuth**.
+6. Enter `https://salesforce-callback.testsigma.com/authorize/` in **Callback URL**.
+7. Move the required OAuth scopes into **Selected OAuth Scopes**. The scopes are mandatory for connecting and downloading metadata.
+8. Under **Security**, select **Require Secret for Web Server Flow** and **Require Secret for Refresh Token Flow**.
+9. Click **Create**.
+
+<Aside type="note">
+Testsigma connects through the standard OAuth web server flow, so leave **Flow Enablement**, **Canvas**, **Mobile App Configuration**, and **Custom Attributes** unchanged.
+</Aside>
+
+<Aside type="note">
+Wait 10 to 15 minutes after creating the app before connecting from Testsigma.
+</Aside>
+
+</TabItem>
+
+<TabItem label="Connected App (legacy)">
+
+Use this only if your organization still offers **New Connected App**.
+
+1. Log in to Salesforce, enter **Apps** in the quick finder on the **Setup** page, and click **Settings** under **External Client Apps**.
+2. Turn on **Allow creation of connected apps** under **Connected Apps**, and click **Enable** in the dialog. The dialog appears only the first time.
+3. Click **New Connected App**.
+4. Enter the **Connected App Name**, **API Name**, and **Contact Email** in **Basic Information**. Salesforce fills the **API Name** in for you, and the other fields are optional.
+5. Select **Enable OAuth Settings** in the **API** section, then set the **Callback URL** to `https://salesforce-callback.testsigma.com/authorize/` and move the required scopes into **Selected OAuth Scopes**.
+6. Click **Save**.
+
+<Aside type="note">
+A connected app allows only a few approvals, and exceeding the limit can revoke the oldest one automatically. Create a separate connected app for each application connection.
+</Aside>
+
+</TabItem>
+
+</Tabs>
+
+<Aside type="note">
+Some Salesforce editions do not include API access, and a connection cannot be created in them.
+</Aside>
+
+### Get the consumer key and secret
+
+Every connection below needs the app's **Consumer Key** and **Consumer Secret**. The route differs by app type.
+
+- **External Client App**: open the app, go to the **Settings** tab, expand **OAuth Settings**, and click **Consumer Key and Secret**
+- **Connected App**: edit the app and click **Manage Consumer Details**, after confirming no checkbox in the **API** section is selected
+
+Either way, **Verify Your Identity** opens in a new tab. Enter the OTP sent to the admin email, and Salesforce shows both values.
+
+## Create the Salesforce project
 
 <Steps>
 
-1. **Open the form** — On the **Salesforce connections** page, click **Create metadata connection**.
+1. Go to **Project** on the Dashboard and click **New Project**.
 
-2. **Name and target** — Name the connection (the role you connect through, such as `Admin`, is the convention). Under **Connect with**, choose **Production / Developer edition** for production or **Sandbox** for staging.
+2. Enter a **Project name** and select **Salesforce** as the **Application type**.
 
-3. **Authenticate** — Pick the **Authentication type**: **OAuth 2.0** takes the username, consumer key, and consumer secret; **User name & Password** additionally takes the password and security token. The callback URL is `https://salesforce-callback.testsigma.com/authorize/`.
-
-4. **Authorise** — Click through to Salesforce's login, sign in, and the connection lands on the **SF connections** page.
+3. Enter the **Application** name and **Version**, and click **Create**.
 
 </Steps>
 
+You are taken to the **Salesforce connections** page, where the connections below are created.
+
+## Create the metadata connection
+
+The metadata connection is what lets Testsigma retrieve metadata, update configurations, create custom objects, and manage the components that define how the application behaves.
+
+<Steps>
+
+1. Click **Create metadata connection** on the **Salesforce connections** page.
+
+2. Enter a **Connection name**. This is usually the user role you connect through, such as `Admin`, though any name works.
+
+3. Select the environment under **Connect with**: **Production / Developer edition** for a production environment, or **Sandbox** for staging.
+
+4. Select the **Authentication type** and fill in its fields, as below.
+
+5. Click **Authorise & Connect**.
+
+</Steps>
+
+| Authentication type | Fields |
+|---|---|
+| OAuth 2.0 | Username, Consumer key, Consumer secret, Callback URL |
+| User name & Password | Username, Password, Security token, Consumer key, Consumer secret |
+
+The callback URL is `https://salesforce-callback.testsigma.com/authorize/`.
+
+<Aside type="tip">
+To get the security token that **User name & Password** authentication needs, go to **My Personal Information > Reset My Security Token** in Salesforce and click **Reset Security Token**. Salesforce emails a new token to the admin address.
+</Aside>
+
+### Run a test against a connection
+
+Add the user connections as **Environments** in Testsigma first. Then on the **Ad-Hoc Run** overlay, select the **Environment** the test steps use and the **Salesforce Metadata Connection** to execute against. A test plan takes the same 2 values under **Test Plan Settings > Additional Settings**.
+
+### Add more metadata connections
+
+A project can hold several metadata connections.
+
+<Steps>
+
+1. Go to **Settings > SF Metadata**.
+
+2. Select the **Project** and **Application**.
+
+3. Click **Add New** and fill in the **Metadata Connection** dialog as above.
+
+</Steps>
+
+When you create a new version, its connections can be copied rather than rebuilt. Go to **Project > Project Settings > Versions**, click **New Version**, enter a name, then open that version from **Projects**. On the **Salesforce Connections** page, click **Select Existing Metadata Connection** to copy from a previous version, or **Create Metadata Connection** to start fresh.
+
+### Edit or refresh a metadata connection
+
+To edit one, go to **SF Connections**, hover over the connection under **Metadata connection**, click the ellipsis icon `⋮`, select **Edit connection**, make the changes, and click **Authorise & Connect**.
+
+<Aside type="note">
+A metadata connection cannot be moved to a different environment.
+</Aside>
+
+To refresh the metadata, click **Refresh Metadata** on the **SF Connections** page or on the Dashboard. A refresh downloads the org's current structure, and any field that no longer exists surfaces as a warning on the affected test cases. See [Create a Salesforce test case](/suite/application-types/salesforce/create-salesforce-test-case/).
+
+### Read the activity log
+
+The activity log on the connection details page records every metadata sync trigger with its status, and the start time of each edit or refresh.
+
+Go to **SF connections** and click **Activity log**.
+
 ## Add user connections
 
-Under **User connection** on the same page, click **Add Connection**: name it, choose the environment, pick the authentication type (same two options), enter the details, and click **Authorise & Connect** — a Salesforce login window confirms it. One connection can serve several users. Edit or delete from the ellipsis menu beside each connection.
+A user connection maps to a Salesforce user profile, such as an administrator or a sales representative, so a test runs with that profile's permissions. One connection can serve several users.
 
-## Test a connection before authorising
+<Steps>
 
-Any connection dialog — new or edited — carries a **Test Connection** button: it validates the credentials against Salesforce's login without completing authorisation or saving. Use it before committing changed credentials.
+1. Go to **SF connections** and click **Add Connection** under **User connection**.
 
-## Recover from a metadata refresh
+2. Enter a **Connection name** and select the user's environment.
 
-Refreshing metadata after org changes — a removed field, a renamed object — flags what those changes break. Impacted test cases are highlighted with a warning on the **Test Cases** page; **View All** (or the highlighted filter) isolates them. Open a flagged test case, hover the highlighted step for the error, then **View/Edit element** to repair it. Step groups and the element repository flag the same way.
+3. Select the **Authentication type** and fill in its fields, using the same table as above.
+
+4. Click **Authorise & Connect**.
+
+5. Enter the Salesforce credentials in the login window and click **Log In**.
+
+6. Click **Done**.
+
+</Steps>
+
+The connection appears under **User connection** on the **Salesforce connections** page.
+
+To edit one, click the ellipsis icon `⋮` against it, select **Edit connection**, change the details, and click **Authorise & Connect**. To remove one, select **Delete connection** and confirm.
+
+<Aside type="note">
+A user connection linked to a test case can only be deleted after every test case and step group using it has been removed.
+</Aside>
+
+## Test a connection before authorizing
+
+You can validate credentials without completing the authorization flow or saving the connection.
+
+<Steps>
+
+1. Go to **SF Connections**, or open **Settings > SF Metadata**.
+
+2. Click the ellipsis icon `⋮` next to the connection under **Metadata connection** or **User connection**, and click **Edit Connection**.
+
+3. Click **Test Connection**.
+
+4. Enter your username and password on the Salesforce login page and click **Log In**.
+
+</Steps>
+
+**Salesforce Connection Successful** confirms the credentials work.
+
+<Aside type="tip">
+To test different credentials, edit the connection, change the fields, and click **Test Connection** again.
+</Aside>
