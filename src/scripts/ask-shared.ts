@@ -8,27 +8,6 @@
 
 import { stripBase, withBase } from '../lib/base';
 
-// The API routes are serverless functions at the DOMAIN root, not inside the
-// docs base path (vercel.json maps api/ask.ts to /api/ask), so these two are
-// deliberately NOT run through withBase().
-//
-// That root-relative form is correct ONLY where the functions are deployed
-// alongside the static output -- i.e. Vercel. The httpd image (Dockerfile) ships
-// dist/ and nothing else, and the website's Apache proxies only /docs-new/ to
-// it, so on website.testsigma.com a POST to /api/ask left the docs namespace
-// entirely and was answered by the WEBSITE's own API router -- which rejected
-// the {question, product, history} body with a 400. Not a 404: something was
-// listening, just not this service.
-//
-// PUBLIC_ASK_API_ORIGIN points those two paths at a deployment that actually
-// runs the handlers. Unset (Vercel, `npm run dev:ask`) keeps the same-origin
-// paths, so nothing changes where it already worked. api/ask.ts and
-// api/ask-feedback.ts both send permissive CORS headers, so cross-origin is
-// already supported.
-//
-// PUBLIC_ is required: Astro only exposes that prefix to client code, and this
-// module is bundled into the browser. The value is a public URL, not a secret --
-// unlike ANTHROPIC_API_KEY / VOYAGE_API_KEY, which stay server-side.
 const ASK_API_ORIGIN = (import.meta.env.PUBLIC_ASK_API_ORIGIN ?? '').replace(/\/+$/, '');
 
 export const ASK_API_URL = `${ASK_API_ORIGIN}/api/ask`;
@@ -385,7 +364,7 @@ function highlightCode(code: string, lang: string): string {
   return tokenize(code, GENERIC);
 }
 
-/** Where votes are logged (see api/ask-feedback.ts). Same origin rules as ASK_API_URL. */
+/** Where votes are logged (see api/ask-feedback.ts). */
 export const FEEDBACK_API_URL = `${ASK_API_ORIGIN}/api/ask-feedback`;
 
 /**

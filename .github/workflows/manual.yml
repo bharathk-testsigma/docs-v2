@@ -126,13 +126,6 @@ jobs:
 
       # `npm run build` chains prebuild (clears public/pagefind), the Astro build
       # (dist/ + dist/pagefind for search) and postbuild. Only dist/ is shipped.
-      #
-      # PUBLIC_ASK_API_ORIGIN is already in the environment (GITHUB_ENV, set
-      # above) and Astro inlines PUBLIC_-prefixed vars into the client bundle at
-      # BUILD time -- there is no runtime config in a static image, so this is
-      # the only point at which the Ask endpoint can be pointed anywhere.
-      # Unset repository variable => empty => same-origin, i.e. the previous
-      # behaviour, so a missing variable never fails the deploy.
       - name: Build static site
         run: npm run build
 
@@ -147,15 +140,6 @@ jobs:
           grep -q '"/docs-new/' dist/index.html dist/suite/get-started/introduction/index.html \
             || { echo "links are not /docs-new/-prefixed — check \`base\` in astro.config.mjs"; exit 1; }
 
-          # The Ask endpoint is inlined into the client bundle, so whether it
-          # points off-origin is decided here and is invisible afterwards. When
-          # the variable is set, prove it landed; when it is not, say so rather
-          # than shipping a drawer that 400s with no trace of why.
-          #
-          # Grep for the ORIGIN ALONE, not "<origin>/api/ask": Vite inlines the
-          # value but leaves the trailing-slash strip and the path join as
-          # runtime expressions, so the joined URL never appears as a literal in
-          # the bundle. Matching the full path rejected a build that was correct.
           if [[ -n "${PUBLIC_ASK_API_ORIGIN:-}" ]]; then
             grep -rq "$PUBLIC_ASK_API_ORIGIN" dist/_astro \
               || { echo "PUBLIC_ASK_API_ORIGIN set but not inlined — is it PUBLIC_-prefixed?"; exit 1; }
