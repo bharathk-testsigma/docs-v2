@@ -65,6 +65,14 @@ export const collections = {
 				// page -- not as blanket synonyms.
 				searchTerms: z.array(z.string()).optional(),
 
+				// A hand-written Markdown twin, served by `<page>.md` (the "Copy
+				// page" export, and what an LLM is handed) INSTEAD of a stripped
+				// copy of the body. For the splash homes the body is a hero, a card
+				// grid and an SVG: stripping it leaves a wall of orphaned link text
+				// wrapped around markup, on the two most-visited pages on the site.
+				// Every ordinary page leaves this off -- its prose IS the export.
+				mdSummary: z.string().optional(),
+
 				// ── API reference endpoint pages ──
 				// Endpoint pages are pure frontmatter: this block is the single
 				// source of truth, and ApiMarkdownContent.astro renders it (tables,

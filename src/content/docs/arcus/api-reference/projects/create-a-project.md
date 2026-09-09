@@ -7,7 +7,7 @@ sidebar:
 api:
   method: POST
   path: /projects
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   bodyFields:
     - { name: "name", desc: "Name of the project." }
     - { name: "description", desc: "Brief description of the project." }

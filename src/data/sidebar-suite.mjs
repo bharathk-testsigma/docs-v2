@@ -34,7 +34,7 @@ export const section = (label, directory, extra = {}) => ({
 export const suite = [
 	// Top-of-rail utility rows: standalone links above the first group, each with
 	// a framed icon (theme.css keys that off `data-nav-utility`).
-	{ label: 'Home', slug: 'home', attrs: { 'data-nav-utility': 'true' } },
+	{ label: 'Home', slug: 'suite/home', attrs: { 'data-nav-utility': 'true' } },
 	{ label: 'API Reference', slug: 'suite/api/overview', attrs: { 'data-nav-utility': 'true' } },
 	{ label: 'Changelog', slug: 'suite/changelog', attrs: { 'data-nav-utility': 'true' } },
 

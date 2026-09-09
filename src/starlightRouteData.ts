@@ -53,6 +53,12 @@ export const isArcusPath = (pathname: string) =>
 export const isApiReferencePath = (pathname: string) =>
 	API_SECTIONS.some((s) => stripBase(pathname).startsWith(s.path));
 
+/** The group label of the API reference serving this path ("REST APIs" for
+ *  Suite, "API Reference" for Arcus). Breadcrumbs.astro puts it back as the
+ *  root crumb, which a hardcoded label got wrong on the other product. */
+export const apiSectionLabel = (pathname: string) =>
+	API_SECTIONS.find((s) => stripBase(pathname).startsWith(s.path))?.group;
+
 type Group = Extract<SidebarEntry, { type: 'group' }>;
 
 const isGroup = (entry: SidebarEntry): entry is Group => entry.type === 'group';
@@ -66,9 +72,6 @@ const isGroup = (entry: SidebarEntry): entry is Group => entry.type === 'group';
 // all-lowercase test and are left alone.
 const LABEL_EXCEPTIONS: Record<string, string> = {
 	'ci-cd': 'CI/CD',
-	// Sentence case, per the Arcus nav sheet; the title-case rule would give
-	// "Developer Tools".
-	'developer-tools': 'Developer tools',
 	ios: 'iOS',
 	'rest-apis': 'REST APIs',
 };

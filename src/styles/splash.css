@@ -1,5 +1,5 @@
 /**
- * Splash-page styles — the docs home for each product (home.mdx, arcus/home.mdx).
+ * Splash-page styles — the docs home for each product (suite/home.mdx, arcus/home.mdx).
  *
  * Lifted out of home.mdx on 2026-09-02, when Arcus got a home of its own:
  * these ~480 lines were a page-local MDX <style> block, and a second splash
@@ -495,3 +495,217 @@
     background: var(--ts-panel);
     color: var(--ts-tx2);
   }
+
+  /* ---- suite home: split hero ---------------------------------------------
+     The Arcus hero throws its art off the right edge as decoration. The Suite
+     hero puts it in the layout instead -- copy left, run card right, wrapping
+     to one column on narrow screens -- so the .ov-art rules above are undone
+     here rather than duplicated under a second set of names. */
+  .ov-hero-split {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 56px;
+    padding: 48px 0 44px;
+  }
+  .ov-hero-col { flex: 1 1 440px; min-width: 0; }
+  /* The hero column is half the width the Arcus one is, so the Ask field has
+     to give up its 640px basis or Browse Docs wraps onto a line of its own. */
+  .ov-hero-split .ov-ask { width: auto; flex: 1 1 240px; }
+  .ov-hero-split .ov-art {
+    position: static;
+    flex: 1 1 380px;
+    width: auto;
+    min-width: 0;
+    transform: none;
+    pointer-events: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  /* In the layout, so it wraps under the copy rather than disappearing. */
+  @media (max-width: 1180px) {
+    .ov-hero-split .ov-art { display: block; }
+  }
+  .ov-hero-split .ov-art-steps { width: auto; }
+  /* The run bar is the card's header row here, not a strip floating above it. */
+  .ov-hero-split .ov-art-bar {
+    width: auto;
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid var(--ts-bd-soft);
+    border-radius: 0;
+    box-shadow: none;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .ov-hero-split .ov-art-heal {
+    width: auto;
+    margin: 12px 0 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+  }
+
+  /* The Suite home runs three stacked sections, so its headings sit a step
+     quieter than the Arcus home's single 30px one, and its deck runs the full
+     measure rather than the narrow 52ch. Modifiers, not edits to .ov-c-h2 /
+     .ov-c-sub: the Arcus home still wants those as they are. */
+  .sl-markdown-content .ov-c-h2-sm {
+    margin-bottom: 20px;
+    font-size: 24px;
+    letter-spacing: -.015em;
+  }
+  /* A heading with a deck under it sits tight to it; one that introduces a
+     grid directly needs the full gap. */
+  .sl-markdown-content .ov-c-h2-sm:has(+ .ov-c-sub) { margin-bottom: 6px; }
+  .sl-markdown-content .ov-c-sub-wide { max-width: 70ch; margin-bottom: 22px; }
+
+  /* ---- start here: three numbered cards ---- */
+  .ov-steps { display: flex; flex-wrap: wrap; gap: 16px; }
+  .sl-markdown-content .ov-step {
+    flex: 1 1 280px;
+    min-width: 0;
+    display: block;
+    padding: 22px 24px;
+    border: 1px solid var(--ts-bd);
+    border-radius: 14px;
+    background: var(--ts-bg);
+    text-align: center;
+    text-decoration: none;
+    transition: border-color 150ms, background 150ms;
+  }
+  .sl-markdown-content .ov-step:hover { border-color: var(--ts-tx3); background: var(--ts-panel); }
+  .ov-step-n {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    margin: 0 auto 12px;
+    border-radius: 999px;
+    background: var(--ts-ac);
+    color: var(--ts-on-ac);
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+  .ov-step-t { display: block; margin-bottom: 6px; font-size: 17px; font-weight: 600; color: var(--ts-tx); }
+  .ov-step-d { display: block; font-size: 14px; line-height: 22px; color: var(--ts-tx3); text-wrap: pretty; }
+
+  /* ---- browse by topic: section, blurb, and the pages inside it ---- */
+  .ov-tgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .ov-tcard {
+    padding: 20px 22px;
+    border: 1px solid var(--ts-bd);
+    border-radius: 14px;
+    background: var(--ts-bg);
+  }
+  .ov-tcard-h { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .ov-tcard-i {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--ts-bd-soft);
+    color: var(--ts-tx2);
+  }
+  .sl-markdown-content .ov-tcard-t {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ts-tx);
+    text-decoration: none;
+  }
+  /* Underline on hover, but in the card's own ink -- the link colour would
+     pull the heading out of the card's palette. */
+  .sl-markdown-content .ov-tcard-t:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    color: var(--ts-tx);
+  }
+  .sl-markdown-content .ov-tcard p {
+    margin: 0 0 14px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--ts-tx3);
+    text-wrap: pretty;
+  }
+  /* Wrapped, not scrolled: a fourth chip belongs on a second line inside the
+     card, not clipped at its edge. Matches the Arcus home's topic cards. */
+  .ov-tcard-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sl-markdown-content .ov-tcard-links a {
+    flex: none;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 11px;
+    border: 1px solid var(--ts-bd);
+    border-radius: 8px;
+    background: var(--ts-bg);
+    font-size: 13px;
+    color: var(--ts-tx2);
+    text-decoration: none;
+    transition: border-color 150ms, background 150ms, color 150ms;
+  }
+  .sl-markdown-content .ov-tcard-links a:hover {
+    border-color: var(--ts-tx3);
+    background: var(--ts-bd-soft);
+    color: var(--ts-tx);
+  }
+
+  /* ── Suite home: the design's own measurements ─────────────────────────────
+     Every .ov-* rule above is shared with the Arcus home, which is a different
+     design. These carry the values from "Testsigma Suite Docs Home.html"
+     verbatim, hung off the one class only the Suite home has, so matching the
+     design here cannot move the Arcus page. */
+  .sl-markdown-content:has(.ov-hero-split) .ov-hero-split { padding: 56px 0 52px; }
+  .sl-markdown-content:has(.ov-hero-split) .ov-eyebrow {
+    margin-bottom: 14px;
+    font-weight: 700;
+    letter-spacing: .1em;
+  }
+  .sl-markdown-content:has(.ov-hero-split) .ov-h1 {
+    margin-bottom: 16px;
+    max-width: 16ch;
+    /* The design's flat 52px, kept from overflowing a phone. */
+    font-size: clamp(38px, 5vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -.028em;
+  }
+  .sl-markdown-content:has(.ov-hero-split) .ov-lede { margin-bottom: 28px; max-width: 52ch; }
+  .sl-markdown-content:has(.ov-hero-split) .ov-ask-row { margin-bottom: 16px; }
+  .sl-markdown-content:has(.ov-hero-split) .ov-ask {
+    height: 56px;
+    border-radius: 14px;
+    font-size: 16px;
+  }
+  .sl-markdown-content:has(.ov-hero-split) .ov-ask-go {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  /* Matched to the field it sits beside; ::after is the ring's 1.5px inset. */
+  .sl-markdown-content:has(.ov-hero-split) .ov-browse { height: 56px; border-radius: 14px; }
+  .sl-markdown-content:has(.ov-hero-split) .ov-browse::after { border-radius: 12.5px; }
+  .sl-markdown-content:has(.ov-hero-split) .ov-try-chip { height: 34px; padding: 0 13px; }
+  .sl-markdown-content:has(.ov-hero-split) .ov-art-steps { border-radius: 16px; }
+  .sl-markdown-content:has(.ov-hero-split) .ov-art-bar { padding: 12px 18px; gap: 12px; }
+  .sl-markdown-content:has(.ov-hero-split) .ov-art-step { padding: 11px 18px; gap: 11px; }
+  .sl-markdown-content:has(.ov-hero-split) .ov-chip { height: 22px; padding: 0 8px; font-size: 10.5px; }
+  .sl-markdown-content:has(.ov-hero-split) .ov-section { padding: 44px 0 8px; }
+
+  /* The Atto mark, lifted from the design bundle. Masked rather than inlined as
+     an <img> so it can take the AI gradient in the hero and the surrounding ink
+     in the run card -- and so it stays visible on the dark theme, where the
+     shipped mark's own #42526E would sink into the panel. */
+  .ov-mark {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    background: var(--ts-ai-grad);
+    -webkit-mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='black' d='M0.288757 10.1309C0.549584 10.3625 0.846833 10.5591 1.17548 10.707C1.54516 10.8734 1.92074 11.0244 2.2995 11.1621C3.41212 13.1635 5.54752 14.5183 7.99969 14.5186C10.4539 14.5186 12.5898 13.1611 13.7018 11.1572C14.0989 11.0137 14.4924 10.8559 14.8796 10.6816C15.1789 10.547 15.4539 10.3722 15.6999 10.167C14.7548 13.5319 11.6667 16 7.99969 16C4.31976 15.9997 1.22166 13.5143 0.288757 10.1309ZM7.99969 0C11.1059 0 13.7964 1.77172 15.1218 4.3584C14.7299 4.19619 14.2964 4.11363 13.8425 4.13184L13.2624 4.1543C12.0764 2.53432 10.1612 1.48145 7.99969 1.48145C5.84064 1.48164 3.92604 2.5314 2.73993 4.14844L2.2702 4.12988C1.76028 4.109 1.27519 4.21564 0.845398 4.41992C2.15918 1.79962 4.86892 0.000227373 7.99969 0Z'/><path fill='black' d='M13.2539 4.53211C14.756 4.4837 16 5.68841 16 7.19129V7.46766C16 8.68386 15.2923 9.78918 14.1875 10.2977C10.2606 12.1054 5.73939 12.1054 1.8125 10.2977C0.707734 9.78918 0 8.68386 0 7.46766V7.19129C0 5.68841 1.244 4.4837 2.74609 4.53211L8 4.70106L13.2539 4.53211ZM4.87207 6.78016H4.58984V8.4159H4.87207V8.80555H5.4375V8.4159H5.7207V8.00574H5.86035V7.18836H5.7207V6.78016H5.4375V6.3993H4.87207V6.78016ZM10.7305 6.3993V6.78016H10.4492V8.4159H10.7305V8.80555H11.2959V8.4159H11.5801V8.00574H11.7197V7.18836H11.5801V6.78016H11.2959V6.64539L11.4355 6.64637V6.64539H11.2959V6.3993H10.7305ZM4.44531 8.0077H4.58594V7.19031H4.44531V8.0077ZM10.3047 7.19031V8.0077H10.4463V7.19031H10.3047Z'/></svg>") center / contain no-repeat;
+    mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='black' d='M0.288757 10.1309C0.549584 10.3625 0.846833 10.5591 1.17548 10.707C1.54516 10.8734 1.92074 11.0244 2.2995 11.1621C3.41212 13.1635 5.54752 14.5183 7.99969 14.5186C10.4539 14.5186 12.5898 13.1611 13.7018 11.1572C14.0989 11.0137 14.4924 10.8559 14.8796 10.6816C15.1789 10.547 15.4539 10.3722 15.6999 10.167C14.7548 13.5319 11.6667 16 7.99969 16C4.31976 15.9997 1.22166 13.5143 0.288757 10.1309ZM7.99969 0C11.1059 0 13.7964 1.77172 15.1218 4.3584C14.7299 4.19619 14.2964 4.11363 13.8425 4.13184L13.2624 4.1543C12.0764 2.53432 10.1612 1.48145 7.99969 1.48145C5.84064 1.48164 3.92604 2.5314 2.73993 4.14844L2.2702 4.12988C1.76028 4.109 1.27519 4.21564 0.845398 4.41992C2.15918 1.79962 4.86892 0.000227373 7.99969 0Z'/><path fill='black' d='M13.2539 4.53211C14.756 4.4837 16 5.68841 16 7.19129V7.46766C16 8.68386 15.2923 9.78918 14.1875 10.2977C10.2606 12.1054 5.73939 12.1054 1.8125 10.2977C0.707734 9.78918 0 8.68386 0 7.46766V7.19129C0 5.68841 1.244 4.4837 2.74609 4.53211L8 4.70106L13.2539 4.53211ZM4.87207 6.78016H4.58984V8.4159H4.87207V8.80555H5.4375V8.4159H5.7207V8.00574H5.86035V7.18836H5.7207V6.78016H5.4375V6.3993H4.87207V6.78016ZM10.7305 6.3993V6.78016H10.4492V8.4159H10.7305V8.80555H11.2959V8.4159H11.5801V8.00574H11.7197V7.18836H11.5801V6.78016H11.2959V6.64539L11.4355 6.64637V6.64539H11.2959V6.3993H10.7305ZM4.44531 8.0077H4.58594V7.19031H4.44531V8.0077ZM10.3047 7.19031V8.0077H10.4463V7.19031H10.3047Z'/></svg>") center / contain no-repeat;
+  }
+  .ov-mark-dim { width: 15px; height: 15px; background: currentColor; }

@@ -1,0 +1,31 @@
+---
+/**
+ * FlowCaption -- the hover caption under the Arcus home's flow diagram.
+ *
+ * Each of the five zones in that SVG carries a `data-cap` sentence; hovering
+ * or focusing one writes it into `[data-zone-caption]`, and leaving restores
+ * the resting sentence the element ships with (`data-cap-rest`), so the line
+ * is never blank and never shifts the page.
+ *
+ * The design export did this with a React runtime and a `{{ zoneCaption }}`
+ * binding. This is the same behaviour in a dozen lines of DOM, in a component
+ * rather than a <script> in the .mdx because MDX parses `{` inside JSX
+ * children as an expression -- a script with a loop body cannot be authored
+ * there.
+ */
+---
+
+<script>
+	const caption = document.querySelector<HTMLElement>('[data-zone-caption]');
+	if (caption) {
+		const rest = caption.dataset.capRest ?? '';
+		for (const zone of document.querySelectorAll<SVGAElement>('.ah-zone')) {
+			const show = () => (caption.textContent = zone.dataset.cap ?? rest);
+			const hide = () => (caption.textContent = rest);
+			zone.addEventListener('mouseenter', show);
+			zone.addEventListener('mouseleave', hide);
+			zone.addEventListener('focus', show);
+			zone.addEventListener('blur', hide);
+		}
+	}
+</script>

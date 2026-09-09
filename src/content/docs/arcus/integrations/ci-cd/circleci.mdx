@@ -28,7 +28,9 @@ Integrating CircleCI with Arcus by Testsigma uploads your JUnit test results to 
 <Steps>
 
 1. Open your project in CircleCI.
+
 2. Go to **Project Settings > Environment Variables**.
+
 3. Add a variable. Enter `TESTSIGMA_API_TOKEN` in **Name** and your Arcus by Testsigma API token in **Value**.
 
 </Steps>
@@ -42,6 +44,7 @@ Keep this value secret and out of build logs. Don't echo the token in a step.
 <Steps>
 
 1. In your repository, open or create `.circleci/config.yml`.
+
 2. Add the following, then replace the 2 placeholders as described below.
 
 </Steps>
@@ -65,7 +68,7 @@ jobs:
       - run:
           name: Upload JUnit results to Testsigma
           command: |
-            curl --location 'https://test-management.testsigma.com/api/v1/projects/<Project_ID>/junit-import/test-run/<Run_ID>' \
+            curl --location 'https://arcus.testsigma.com/api/v1/projects/<Project_ID>/junit-import/test-run/<Run_ID>' \
             --header "Authorization: Bearer $TESTSIGMA_API_TOKEN" \
             --form "junit_xml=@target/surefire-reports/TEST-MyTests.xml"
 

@@ -73,7 +73,7 @@ async function serveStatic(req, res) {
   // production httpd does, and bounce the two roots a person actually types.
   if (pathname === '/' || pathname === '/docs-new' || pathname === '/docs-new/') {
     res.statusCode = 302;
-    res.setHeader('Location', '/docs-new/home/');
+    res.setHeader('Location', '/docs-new/suite/home/');
     res.end();
     return;
   }

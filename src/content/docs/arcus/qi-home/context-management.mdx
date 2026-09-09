@@ -28,7 +28,9 @@ Attach as many sources as apply.
 <Steps>
 
 1. In the **Add Context** bar on QI Home or in the Arcus panel, click a source, or click the plus icon (+) for the full list.
+
 2. Make your selections in the **Add Context** dialog. Each attached source shows a count beside its name.
+
 3. Click **Save**. The source appears in the **Add Context** bar with a count beside its name.
 
 </Steps>
@@ -43,7 +45,7 @@ Attach as many sources as apply.
 | **Files and Documents** | `.jpeg`, `.png`, `.docx`, `.pdf`, `.xls` files | The files to upload |
 | **Video Recording** | `.mp4`, `.mov`, `.webm`, `.avi`, `.mkv` recordings | The videos to upload |
 
-Uploads are capped at 500 MB per file. A source whose integration isn't connected yet shows an **Integrate** button in the dialog. Connect [Confluence](/arcus/integrations/project-management/confluence/) and [Figma](/arcus/integrations/dev-tools/figma/) from there, and trackers under **Settings > Integrations**.
+Uploads are capped at 500 MB per file. A source whose integration isn't connected yet shows an **Integrate** button in the dialog. Connect [Confluence](/arcus/integrations/project-management/confluence/) and [Figma](/arcus/integrations/plugins/figma/) from there, and trackers under **Settings > Integrations**.
 
 ## Read the Context drawer
 
@@ -65,6 +67,7 @@ Expand a category to see its items. A Jira story, for example, shows its source,
 <Steps>
 
 1. Open **QI Home**.
+
 2. Click **Context Management**. Its badge shows the pending count.
 
 </Steps>
@@ -85,9 +88,13 @@ What an entry shows depends on its source. A coding session shows its title, tak
 <Steps>
 
 1. Click **Map to Module** on the entry.
+
 2. Select the **Project**.
+
 3. Under **Map to**, select **Sprint** or **Adhoc**.
+
 4. For a sprint, select the **Sprint** and the **Stories** the work relates to. For Adhoc, select the session under **Existing Adhoc Session**, or click **+ Create New Adhoc Session**.
+
 5. Click **Map**.
 
 </Steps>
@@ -114,9 +121,13 @@ Test cases authored with `/arcus:test` and pushed with `/arcus:push`, or produce
 <Steps>
 
 1. Click **Link** on the test case.
+
 2. Select the **Project**.
+
 3. Under **Link to**, select **Sprint** or **Adhoc**.
+
 4. Select the sprint story, or the Adhoc session.
+
 5. Click **Link & accept**.
 
 </Steps>
@@ -130,4 +141,4 @@ The test case moves to the selected story, accepted and ready to run in a plan. 
 Two dialogs behind the more options icon (⋮) on QI Home control what flows in:
 
 - **Manage integrations**: toggles for the project management tools Arcus reads sprints from (Jira, Linear, ClickUp, Azure DevOps), and for **Dev Tools and AI** (the GitHub App, plus setup links for the Claude Code, GitHub Copilot, Codex, and Cursor plugins). A connected plugin shows **Active**.
-- **Manage connected projects**: use it to link 1 project per tool. Arcus then reads the active sprints in that project and drafts test cases for each story's acceptance criteria. The steps are in [Test generation and quality](/arcus/qi-home/test-generation-and-quality/).
+- **Manage connected projects**: use it to link 1 project per tool. Arcus then reads the active sprints in that project and drafts test cases for each story's acceptance criteria. The steps are in [Test generation and quality](/arcus/qi-home/generate-tests/).

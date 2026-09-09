@@ -60,7 +60,7 @@ Generation is the default route. There are 2 ways to start it, and everything af
 | Context comes from | Sources you attach yourself | The stories linked to the sprint |
 | Reach for it when | You are covering a feature outside a sprint cycle, or want to control exactly what the Generator reads | Your team works in sprints and you want coverage to start with the sprint |
 
-Context sources are [Jira](/arcus/integrations/project-management/jira/), [Azure DevOps](/arcus/integrations/project-management/azure-devops/), [Linear](/arcus/integrations/project-management/linear/), or [ClickUp](/arcus/integrations/project-management/clickup/) for stories, [Confluence](/arcus/integrations/project-management/confluence/) for PRDs and specifications, [Figma](/arcus/integrations/dev-tools/figma/) for designs, files such as PDFs and Word documents, and video recordings. Each needs its integration connected.
+Context sources are [Jira](/arcus/integrations/project-management/jira/), [Azure DevOps](/arcus/integrations/project-management/azure-devops/), [Linear](/arcus/integrations/project-management/linear/), or [ClickUp](/arcus/integrations/project-management/clickup/) for stories, [Confluence](/arcus/integrations/project-management/confluence/) for PRDs and specifications, [Figma](/arcus/integrations/plugins/figma/) for designs, files such as PDFs and Word documents, and video recordings. Each needs its integration connected.
 
 Creating a [test case](/arcus/create-and-manage/test-cases/) manually is the third route, for a flow you already know and want exact control over.
 
@@ -87,7 +87,7 @@ Copilot also runs a test case without Agentic Learning, which suits a quick sani
 
 ## Keep coverage current
 
-When developers work in [Claude Code](/arcus/integrations/dev-tools/claude/), [Cursor](/arcus/integrations/dev-tools/cursor/), [GitHub Copilot](/arcus/integrations/dev-tools/copilot/), or [Codex](/arcus/integrations/dev-tools/codex/), or open pull requests in [GitHub](/arcus/integrations/dev-tools/github/), that context is detected and surfaced in the **Unmapped Context** view. Each entry arrives with a suggestion for the module and sprint it belongs to. You review the suggestion and map it, and the Generator writes new test cases or updates existing ones from the changes captured. That is what keeps coverage aligned with what the team is building.
+When developers work in [Claude Code](/arcus/integrations/plugins/claude/), [Cursor](/arcus/integrations/plugins/cursor/), [GitHub Copilot](/arcus/integrations/plugins/copilot/), or [Codex](/arcus/integrations/plugins/codex/), or open pull requests in [GitHub](/arcus/integrations/plugins/github/), that context is detected and surfaced in the **Unmapped Context** view. Each entry arrives with a suggestion for the module and sprint it belongs to. You review the suggestion and map it, and the Generator writes new test cases or updates existing ones from the changes captured. That is what keeps coverage aligned with what the team is building.
 
 ## Your first generated test case
 
@@ -96,9 +96,13 @@ The shortest path, on a project with Jira connected:
 <Steps>
 
 1. Go to **Settings > Integrations** and connect Jira.
+
 2. Open **QI Home** and start a session.
+
 3. Attach a Jira story as a context source.
+
 4. Write a prompt describing what to cover, and click **Generate**.
+
 5. Review the generated test cases and accept the ones that are accurate.
 
 </Steps>
@@ -107,8 +111,8 @@ Nothing in that path needs a test plan, a test run, or a manually created test c
 
 ## Where to go next
 
-- **Generating from your own requirements**: [QI Home](/arcus/qi-home/overview/), then [Test generation and quality](/arcus/qi-home/test-generation-and-quality/)
+- **Generating from your own requirements**: [QI Home](/arcus/qi-home/overview/), then [Test generation and quality](/arcus/qi-home/generate-tests/)
 - **Automating what you accepted**: [Agentic Learning](/arcus/automation/explore-and-automate/), then [Copilot](/arcus/automation/copilot/)
 - **Building a library manually**: [Test cases](/arcus/create-and-manage/test-cases/), then [step groups](/arcus/create-and-manage/step-groups/) and [data sets](/arcus/create-and-manage/data-sets/)
 - **Running and reporting**: [Test runs](/arcus/run-tests/test-runs/), then [test plans](/arcus/run-tests/test-plans/) and [reports](/arcus/reports/reports/)
-- **Connecting your tools**: [Jira](/arcus/integrations/project-management/jira/), [CI/CD](/arcus/integrations/ci-cd/jenkins/), and [developer context mapping](/arcus/integrations/dev-tools/claude/)
+- **Connecting your tools**: [Jira](/arcus/integrations/project-management/jira/), [CI/CD](/arcus/integrations/ci-cd/jenkins/), and [developer context mapping](/arcus/integrations/plugins/claude/)

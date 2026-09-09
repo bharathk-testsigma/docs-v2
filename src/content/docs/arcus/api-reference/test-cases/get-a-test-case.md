@@ -7,7 +7,7 @@ sidebar:
 api:
   method: GET
   path: /projects/{project_id}/test_cases/{test_case_id}
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project that contains the test case." }
     - { name: "test_case_id", desc: "Unique identifier (or human-readable ID) of the test case to retrieve." }

@@ -13,7 +13,7 @@ covers:
   - Frequently asked questions
 sidebar:
   order: 3
-  label: Test generation and quality
+  label: Generate Tests
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
@@ -31,8 +31,11 @@ Once a sprint or session exists, the **Arcus** panel continues generating into i
 <Steps>
 
 1. Open **QI Home**.
+
 2. Enter what you want to test in the prompt box. Specific prompts produce specific test cases: name the feature, the roles, the variations, and the edge cases that matter.
+
 3. In the **Add Context** bar, attach the sources the generation should read. Attach them as described in [Context Management](/arcus/qi-home/context-management/).
+
 4. Click **Send**.
 
 </Steps>
@@ -50,9 +53,13 @@ The **Sprints** tab needs a project connected from Jira, Azure DevOps, Linear, o
 <Steps>
 
 1. On **QI Home**, click the more options icon (⋮) and click **Manage connected projects**.
+
 2. Open the tool's tab.
+
 3. Turn on the toggle beside the tool name.
+
 4. Select the project.
+
 5. Click **Link project**. Arcus reads the active sprints in that project.
 
 </Steps>
@@ -68,7 +75,9 @@ An **Arcus** panel docks to the left of every sprint and Adhoc session page. Use
 <Steps>
 
 1. Open the sprint or Adhoc session from **QI Home**.
+
 2. In the **Arcus** panel, describe what you want in "Ask Arcus about this cycle...". Click the plus icon (+) to attach more context.
+
 3. Click **Generate with AI**.
 
 </Steps>
@@ -107,6 +116,7 @@ The **Simple** and **Detailed** toggles switch how much each row shows; the deta
 <Steps>
 
 1. Click a test case name. The detail view opens with its description, preconditions, and steps with expected results.
+
 2. Move through the list with the arrows at the top; the counter shows where you are, such as "1 of 18".
 
 </Steps>
@@ -146,7 +156,9 @@ Every smoke case is contained in the feature tier, so running the wider tier val
 <Steps>
 
 1. On the sprint or Adhoc session page, click **Generate test plan** on the **Plans & Execution** card.
+
 2. Under **Select a plan**, select 1 or more tiers.
+
 3. Click **Generate with AI**.
 
 </Steps>
@@ -160,7 +172,9 @@ Each generated plan gets its own tab on the **Test Plans & Execution** page and 
 <Steps>
 
 1. Open the plan's tier tab.
+
 2. Read the plan card: an **Arcus suggested** badge, the plan's description, its execution count, its run count, and the bar splitting results into **Passed**, **Failed**, **Not run**, and **gaps to review**.
+
 3. Click **Accept Plan** to accept it and start its runs, or **Reject**.
 
 </Steps>
@@ -180,6 +194,7 @@ You refine a plan by asking for the change, not through a form.
 <Steps>
 
 1. Click **Modify plan**, or **+ Create new plan**. The **Arcus** panel opens.
+
 2. Describe the change (generate another tier, adjust coverage, reassign a run's machine) in "Ask Arcus to plan, or refine an existing plan...", and send it.
 
 </Steps>
@@ -193,8 +208,11 @@ Link a plan to a Testsigma automated test plan, so automated run results flow in
 <Steps>
 
 1. Open the plan's tier tab.
+
 2. Click **Link plan** beside **Automated Test Plan** on the plan card. The **Link Testsigma Automated Test Plan** dialog opens.
+
 3. Select the **Project**, **Application**, **Version**, and **Test Plan**.
+
 4. Click **Link**.
 
 </Steps>
@@ -286,8 +304,11 @@ Editing QI Metrics requires admin access.
 <Steps>
 
 1. Go to **Settings > QI Metrics**.
+
 2. Review each metric's formula.
+
 3. Set the **Ready** and **Conditional** thresholds for the 5 release gate checks. The **Not Ready** boundary is derived from them.
+
 4. Under **Confidence**, adjust where the High and Medium bands start.
 
 </Steps>

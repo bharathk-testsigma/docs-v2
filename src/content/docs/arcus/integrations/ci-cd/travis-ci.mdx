@@ -28,7 +28,9 @@ Integrating Travis CI with Arcus by Testsigma uploads your JUnit test results to
 <Steps>
 
 1. Open your project in Travis CI.
+
 2. Open **Settings**.
+
 3. Under **Environment Variables**, add a variable. Enter `TESTSIGMA_API_TOKEN` in **Name** and your Arcus by Testsigma API token in **Value**.
 
 </Steps>
@@ -42,6 +44,7 @@ Turn off **Display value in build log** for this variable. Left on, your API tok
 <Steps>
 
 1. In your repository, open or create `.travis.yml` in the root directory.
+
 2. Add the following, then replace the 2 placeholders as described below.
 
 </Steps>
@@ -60,7 +63,7 @@ script:
   - mvn clean package
 
 after_success:
-  - curl --location 'https://test-management.testsigma.com/api/v1/projects/<Project_ID>/junit-import/test-run/<Run_ID>' --header "Authorization: Bearer $TESTSIGMA_API_TOKEN" --form "junit_xml=@target/surefire-reports/TEST-MyTests.xml"
+  - curl --location 'https://arcus.testsigma.com/api/v1/projects/<Project_ID>/junit-import/test-run/<Run_ID>' --header "Authorization: Bearer $TESTSIGMA_API_TOKEN" --form "junit_xml=@target/surefire-reports/TEST-MyTests.xml"
 ```
 
 - Replace `<Project_ID>` with your project ID, which you can retrieve using the Arcus by Testsigma APIs.

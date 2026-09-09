@@ -7,7 +7,7 @@ sidebar:
 api:
   method: PUT
   path: /projects/{project_id}/folders/{folder_id}
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project that contains the folder." }
     - { name: "folder_id", desc: "Unique identifier of the folder to update." }

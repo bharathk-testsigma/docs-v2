@@ -34,7 +34,9 @@ The pipeline reads the token from a pipeline variable named `TESTSIGMA_API_TOKEN
 <Steps>
 
 1. In Azure DevOps, open your pipeline.
+
 2. Click **Edit** in the top right.
+
 3. Replace the contents of `azure-pipelines.yml` with the following, then replace the 2 placeholders as described below.
 
 </Steps>
@@ -64,7 +66,7 @@ steps:
     displayName: 'Build and test with Maven'
 
   - bash: |
-      curl --location 'https://test-management.testsigma.com/api/v1/projects/<Project_ID>/junit-import/test-run/<Run_ID>' \
+      curl --location 'https://arcus.testsigma.com/api/v1/projects/<Project_ID>/junit-import/test-run/<Run_ID>' \
       --header "Authorization: Bearer $TESTSIGMA_API_TOKEN" \
       --form "junit_xml=@target/report.xml"
     env:

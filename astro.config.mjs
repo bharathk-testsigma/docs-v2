@@ -28,9 +28,11 @@ export default defineConfig({
 	// every redirect would land outside the docs, on the website's own 404.
 	redirects: {
 		// Docs home lives at the site root (of the docs base).
-		'/': withDocsBase('/home/'),
-		'/suite/home/': withDocsBase('/home/'),
-		'/suite/get-started/home/': withDocsBase('/home/'),
+		'/': withDocsBase('/suite/home/'),
+		// The Suite home moved under /suite/ (2026-09-10) to mirror Arcus, so the
+		// old root-level path redirects INTO the product instead of out of it.
+		'/home/': withDocsBase('/suite/home/'),
+		'/suite/get-started/home/': withDocsBase('/suite/home/'),
 		'/suite/get-started/': withDocsBase('/suite/get-started/overview/'),
 		// Overview moved into get-started/ when the sidebar became folder-driven
 		// (2026-08-17) and each rail section became one content folder.
@@ -54,7 +56,6 @@ export default defineConfig({
 		'/arcus/qi-home/learn-and-execute/': withDocsBase('/arcus/automation/explore-and-automate/'),
 		'/arcus/qi-home/explore-and-automate/': withDocsBase('/arcus/automation/explore-and-automate/'),
 		'/arcus/qi-home/copilot/': withDocsBase('/arcus/automation/copilot/'),
-		'/arcus/qi-home/generate-tests/': withDocsBase('/arcus/qi-home/test-generation-and-quality/'),
 		'/arcus/qi-home/cli/': withDocsBase('/arcus/qi-home/developer-tools/cli/'),
 		'/arcus/qi-home/mcp/': withDocsBase('/arcus/qi-home/developer-tools/mcp/'),
 		'/arcus/qi-home/plugins/': withDocsBase('/arcus/qi-home/developer-tools/plugins/'),

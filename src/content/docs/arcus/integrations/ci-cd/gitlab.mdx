@@ -31,11 +31,14 @@ The GitLab pipeline reads the project and run IDs from variables rather than fro
 <Steps>
 
 1. Open your project in GitLab.
+
 2. Go to **Settings > CI/CD > Variables** and click **Expand**.
+
 3. Add these 3 variables:
    - `TESTSIGMA_API_TOKEN`: your Arcus by Testsigma API token.
    - `TESTSIGMA_PROJECT_ID`: your project ID, which appears in your project URL: `https://test-management.testsigma.com/ui/projects/<Project_ID>/`.
    - `TESTSIGMA_RUN_ID`: the run ID, which appears in the URL when you view a test run: `https://test-management.testsigma.com/ui/test_runs/<Run_ID>/`.
+
 4. Click **Save changes**.
 
 </Steps>
@@ -62,7 +65,7 @@ upload_testsigma:
     - 'echo "Looking for reports/junit.xml ..."'
     - 'test -f reports/junit.xml || { echo "File not found: reports/junit.xml"; exit 1; }'
     - 'echo "Uploading JUnit XML to Testsigma..."'
-    - 'curl --fail --show-error --location --header "Authorization: Bearer ${TESTSIGMA_API_TOKEN}" --form "junit_xml=@reports/junit.xml" "https://test-management.testsigma.com/api/v1/projects/${TESTSIGMA_PROJECT_ID}/junit-import/test-run/${TESTSIGMA_RUN_ID}"'
+    - 'curl --fail --show-error --location --header "Authorization: Bearer ${TESTSIGMA_API_TOKEN}" --form "junit_xml=@reports/junit.xml" "https://arcus.testsigma.com/api/v1/projects/${TESTSIGMA_PROJECT_ID}/junit-import/test-run/${TESTSIGMA_RUN_ID}"'
     - 'echo "Upload complete."'
 ```
 

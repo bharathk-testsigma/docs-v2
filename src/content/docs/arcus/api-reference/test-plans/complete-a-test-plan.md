@@ -7,7 +7,7 @@ sidebar:
 api:
   method: POST
   path: /projects/{project_id}/test_plans/{test_plan_id}/complete
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project that contains the test plan." }
     - { name: "test_plan_id", desc: "Unique identifier of the test plan to mark as complete." }

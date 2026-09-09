@@ -7,7 +7,7 @@ sidebar:
 api:
   method: GET
   path: /projects/{project_id}/junit-imports/{import_id}/status
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project the import belongs to." }
     - { name: "import_id", desc: "Unique identifier of the JUnit import whose status is retrieved." }
