@@ -10,7 +10,7 @@
  * The final crumb is the page itself and is not a link.
  */
 import type { SidebarEntry } from '@astrojs/starlight/schema';
-import { isApiReferencePath } from '../starlightRouteData';
+import { apiSectionLabel } from '../starlightRouteData';
 
 const { entry, sidebar } = Astro.locals.starlightRoute;
 
@@ -32,11 +32,8 @@ const ancestors = trailTo(sidebar) ?? [];
 // walking it yields the entity section but not the section it came from. Put
 // the root crumb back, otherwise an endpoint page reads "Projects / List
 // projects" with nothing saying which reference it belongs to.
-const crumbs = [
-	...(isApiReferencePath(Astro.url.pathname) ? ['REST APIs'] : []),
-	...ancestors,
-	entry.data.title,
-];
+const apiRoot = apiSectionLabel(Astro.url.pathname);
+const crumbs = [...(apiRoot ? [apiRoot] : []), ...ancestors, entry.data.title];
 ---
 
 <nav class="ts-crumbs" aria-label="Breadcrumb">

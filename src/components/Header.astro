@@ -35,7 +35,6 @@ import Search from './Search.astro';
 // The product switcher came back with Arcus (2026-09-02), in the brand
 // cluster rather than the rail head it used to sit in.
 import ProductSwitcher from './ProductSwitcher.astro';
-import { isArcusPath } from '../starlightRouteData';
 
 // Docs home hides the search pill and Ask button, and gains the
 // "| Documentation" label beside the logo. The <Search /> dialog still mounts
@@ -45,13 +44,20 @@ import { stripBase, withBase } from '../lib/base';
 
 // stripBase: under /docs-new the pathname carries the base, so the bare
 // comparison would never match and home would lose its header treatment.
-const isHome = stripBase(Astro.url.pathname).replace(/\/+$/, '') === '/home';
+// One rule for both products: each home lives at /<product>/home since the
+// Suite splash moved under /suite/ (2026-09-10).
+const isHome = /^\/(suite|arcus)\/home$/.test(
+	stripBase(Astro.url.pathname).replace(/\/+$/, '')
+);
 
-// The brand lock-up goes to the CURRENT product's overview: hard-coding Suite
-// here would make the logo a way OUT of Arcus on every Arcus page.
-const brandHref = isArcusPath(Astro.url.pathname)
-	? '/arcus/get-started/overview/'
-	: '/suite/get-started/overview/';
+// The brand lock-up leaves the docs for testsigma.com (Bharath, 2026-09-10):
+// the logo is the company mark, so it behaves the way it does on every other
+// Testsigma page. Getting back to a docs home is the product switcher's job,
+// and each of its entries lands on one.
+//
+// Absolute, and NOT withBase(): the marketing site is a different app, and the
+// docs base would point this at /docs-new/https://…
+const BRAND_HREF = 'https://testsigma.com/';
 ---
 
 <div class:list={['ts-bar', { 'ts-bar-home': isHome }]}>
@@ -108,7 +114,7 @@ const brandHref = isArcusPath(Astro.url.pathname)
 			</button>
 
 			<span class="ts-brand">
-				<a href={withBase(brandHref)} class="ts-brand-site" aria-label="Testsigma docs">
+				<a href={BRAND_HREF} class="ts-brand-site" aria-label="Testsigma home">
 				{/* Two files, not one filtered file: the brand lock-up is a teal gear
 				    beside a near-black wordmark, and no CSS filter can lighten the
 				    word without dragging the gear off-brand with it. The dark one is

@@ -52,6 +52,7 @@ Claude Code also needs Python 3.9 or later on your PATH as `python3`, since the 
    ```
 
 2. Run `/arcus:login` and complete the SSO flow in the browser. You log in once per machine.
+
 3. Run `/arcus:project list`, then `/arcus:project use <project_id>` to pin the project your sessions are sent to.
 
 </Steps>
@@ -69,7 +70,9 @@ Claude Code also needs Python 3.9 or later on your PATH as `python3`, since the 
    ```
 
 2. Start a new GitHub Copilot CLI session.
+
 3. Run `/arcus:login`.
+
 4. Run `/arcus:project list`, then `/arcus:project use <project_id>`.
 
 </Steps>
@@ -89,6 +92,7 @@ Requires Codex CLI with plugin support and Python 3.11 or later.
    ```
 
 2. When Codex prompts you to trust the plugin's hooks, accept. Capture stays off until you do.
+
 3. Run `/arcus:login`, then `/arcus:project use <project_id>`.
 
 </Steps>
@@ -99,8 +103,11 @@ Requires Codex CLI with plugin support and Python 3.11 or later.
 <Steps>
 
 1. Install the **Arcus** extension from the VS Code Marketplace. Requires Cursor or VS Code 1.85 or later, with `node` on the integrated-terminal PATH.
+
 2. Press `Cmd+Shift+P`.
+
 3. Select **Arcus: Sign In** and complete the browser SSO.
+
 4. Run `/arcus-project use <project_id>`.
 
 </Steps>
@@ -123,10 +130,15 @@ You need admin access to the GitHub organization.
 <Steps>
 
 1. Go to the [Arcus GitHub App](https://github.com/apps/arcus-by-testsigma) and click **Install**.
+
 2. Select the GitHub organization you want to connect.
+
 3. Select **All repositories** under **Repository access**, or select specific repositories.
+
 4. Click **Install & Authorize**.
+
 5. Select the **Workspace** and **Project** in the **Connect GitHub** dialog that opens in Arcus.
+
 6. Click **Connect**.
 
 </Steps>
@@ -138,7 +150,9 @@ To check it worked:
 <Steps>
 
 1. Confirm the organization name and repository list show a **Connected** status under **Settings > Integrations > GitHub**.
+
 2. Raise a test pull request.
+
 3. Open **QI Home > Context Management**. The pull request appears on the **Unlinked Contexts** tab within a few seconds.
 
 </Steps>

@@ -7,7 +7,7 @@ sidebar:
 api:
   method: GET
   path: /projects/{project_id}/folders
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project whose folders are listed." }
   query:

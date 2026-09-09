@@ -7,7 +7,7 @@ sidebar:
 api:
   method: GET
   path: /projects/{project_id}/test_plans
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project whose test plans are listed." }
   query:
@@ -49,6 +49,6 @@ api:
     page_info:
       page_size: 2
       total_count: 9
-      next: "https://test-management.testsigma.com/api/v1/projects/bd57bbc6-e83e-4f09-927d-fc48b3509cdf/test_plans?page_size=2&page=2"
+      next: "https://arcus.testsigma.com/api/v1/projects/bd57bbc6-e83e-4f09-927d-fc48b3509cdf/test_plans?page_size=2&page=2"
       prev: ""
 ---

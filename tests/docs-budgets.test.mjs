@@ -107,6 +107,14 @@ function measure(file) {
 	const pageType = fmValue(fm, 'pageType');
 	if (!pageType) return null;
 
+	// A splash page (the two product homes) is a hero, a card grid and a
+	// diagram, not prose. Every budget here measures sentences, and on such a
+	// page a "sentence" is whatever adjacent labels the stripper glued together
+	// -- "Test cases Step types Elements Test data Run tests Suites, plans..."
+	// is nineteen words of nav, not a nineteen-word sentence. Their editorial
+	// contract is the `mdSummary` twin in frontmatter, which IS prose.
+	if (fmValue(fm, 'template') === 'splash') return null;
+
 	// Intro = prose between the last import and the first heading (W-04).
 	const beforeFirstHeading = body.split(/^## /m)[0];
 	const { prose, tableRowCount } = stripToProse(body);

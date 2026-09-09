@@ -7,7 +7,7 @@ sidebar:
 api:
   method: PUT
   path: /projects/{project_id}/test_runs/{test_run_id}/test_cases
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project the test run belongs to." }
     - { name: "test_run_id", desc: "Identifier of the test run whose test cases are updated." }

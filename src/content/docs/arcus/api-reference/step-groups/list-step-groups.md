@@ -7,7 +7,7 @@ sidebar:
 api:
   method: GET
   path: /projects/{project_id}/step_groups
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project whose step groups are listed." }
   query:
@@ -48,6 +48,6 @@ api:
     page_info:
       page_size: 2
       total_count: 9
-      next: "https://test-management.testsigma.com/api/v1/projects/c47ade67-0543-4582-a4a5-b7de447c94f5/step_groups?page_size=2&page=2"
+      next: "https://arcus.testsigma.com/api/v1/projects/c47ade67-0543-4582-a4a5-b7de447c94f5/step_groups?page_size=2&page=2"
       prev: ""
 ---

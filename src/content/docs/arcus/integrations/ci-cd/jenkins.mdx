@@ -28,12 +28,19 @@ Integrating Jenkins with Arcus by Testsigma uploads your JUnit test results to a
 <Steps>
 
 1. On the Jenkins dashboard, click **Manage Jenkins**.
+
 2. Under **Security**, click **Credentials**.
+
 3. Under **Stores scoped to Jenkins**, click **(global)** in the **Domain** column.
+
 4. On the **Global credentials** page, click **Add Credentials**.
+
 5. In the **Kind** dropdown, select **Secret text**.
+
 6. In **Secret**, enter your Arcus by Testsigma API token.
+
 7. In **ID**, enter `TESTSIGMA_API_TOKEN`.
+
 8. Click **Create**.
 
 </Steps>
@@ -43,10 +50,15 @@ Integrating Jenkins with Arcus by Testsigma uploads your JUnit test results to a
 <Steps>
 
 1. On the Jenkins dashboard, click **New Item**.
+
 2. In **Enter an item name**, enter a name for the pipeline.
+
 3. Select **Pipeline**, then click **OK**.
+
 4. On the **Configuration** page, scroll to the **Pipeline** section.
+
 5. In the **Definition** list, select **Pipeline script**.
+
 6. In **Script**, paste the script that follows, replacing its 2 placeholders.
 
 </Steps>
@@ -68,7 +80,7 @@ pipeline {
             steps {
                 // The test result file must exist at the path given below
                 sh '''
-                curl --location 'https://test-management.testsigma.com/api/v1/projects/<Project_ID>/junit-import/test-run/<Run_ID>' \
+                curl --location 'https://arcus.testsigma.com/api/v1/projects/<Project_ID>/junit-import/test-run/<Run_ID>' \
                 --header "Authorization: Bearer $TESTSIGMA_API_TOKEN" \
                 --form "junit_xml=@target/test-results/test-report.xml"
                 '''
@@ -89,6 +101,7 @@ Then click **Apply**, and click **Save**.
 <Steps>
 
 1. On the Jenkins dashboard, click the configured pipeline.
+
 2. In the Jenkins sidebar, click **Build Now**.
 
 </Steps>

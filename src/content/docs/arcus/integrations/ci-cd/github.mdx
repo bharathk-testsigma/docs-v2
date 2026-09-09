@@ -34,6 +34,7 @@ The workflow below reads the token from a repository secret named `TESTSIGMA_API
 <Steps>
 
 1. In your GitHub repository, open or create `.github/workflows/tests.yml`.
+
 2. Add the following, then replace the 2 placeholders as described below.
 
 </Steps>
@@ -60,7 +61,7 @@ jobs:
 
       - name: Upload test results to Testsigma
         run: |
-          curl --location 'https://test-management.testsigma.com/api/v1/projects/<Project_ID>/junit-import/test-run/<Run_ID>' \
+          curl --location 'https://arcus.testsigma.com/api/v1/projects/<Project_ID>/junit-import/test-run/<Run_ID>' \
           --header "Authorization: Bearer $TESTSIGMA_API_TOKEN" \
           --form "junit_xml=@target/surefire-reports/TEST-MyTests.xml"
 ```

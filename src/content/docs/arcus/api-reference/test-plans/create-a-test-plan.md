@@ -7,7 +7,7 @@ sidebar:
 api:
   method: POST
   path: /projects/{project_id}/test_plans
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project to create the test plan in." }
   bodyFields:

@@ -1,6 +1,6 @@
 ---
-title: Codex
-description: Install the Arcus plugin for Codex, map your session to a sprint, and push the captured context to QI Home for test generation.
+title: GitHub Copilot
+description: Install the Arcus plugin for GitHub Copilot, map your session to a sprint, and push the captured context to QI Home for test generation.
 pageType: task
 verified: 2026-09
 covers:
@@ -11,23 +11,27 @@ covers:
   - Command reference
   - Pull requests for the same work
 sidebar:
-  order: 340
-  label: Codex
+  order: 320
+  label: GitHub Copilot
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-The Arcus plugin for Codex captures your prompts, tool calls, and file changes as you work. You push the captured context to [QI Home](/arcus/qi-home/overview/) with a single command, and Arcus generates test cases from it.
+<Aside type="note">
+This page covers the GitHub Copilot CLI plugin for Arcus. It is not Testsigma Copilot, the test execution feature. They are separate tools. See [Copilot](/arcus/automation/copilot/) under QI Home for the execution feature.
+</Aside>
+
+The Arcus plugin for GitHub Copilot captures your prompts, tool calls, and file changes as you work. You push the captured context to [QI Home](/arcus/qi-home/overview/) with a single command, and Arcus generates test cases from it.
 
 <Prerequisites>
-- Codex installed.
+- GitHub Copilot installed.
 - An active project in Arcus by Testsigma.
 </Prerequisites>
 
 ## Install the plugin
 
-Install the Arcus plugin from the Codex marketplace.
+Install the Arcus plugin from the GitHub Copilot marketplace.
 
 ## Log in and connect your project
 
@@ -35,9 +39,12 @@ Install the Arcus plugin from the Codex marketplace.
 
 <Steps>
 
-1. In Codex, run `/arcus:login`.
-2. Complete the login flow in the browser, then return to Codex when prompted.
+1. In GitHub Copilot, run `/arcus:login`.
+
+2. Complete the login flow in the browser, then return to GitHub Copilot when prompted.
+
 3. Run `/arcus:project <project-id>`, using your project ID from **Settings > Project**.
+
 4. Start coding. The plugin captures your context in the background.
 
 </Steps>
@@ -81,7 +88,7 @@ The context appears under **Unmapped Context** if you didn't run `/arcus:map`, o
 
 ## Pull requests for the same work
 
-With the [Arcus GitHub App](/arcus/integrations/dev-tools/github/) installed, raising a pull request for work you captured here joins them automatically:
+With the [Arcus GitHub App](/arcus/integrations/plugins/github/) installed, raising a pull request for work you captured here joins them automatically:
 
-- **Context still unmapped**: Arcus converts it into a GitHub context, and the Codex context and the pull request become a single entry in **Unmapped Context**.
+- **Context still unmapped**: Arcus converts it into a GitHub context, and the GitHub Copilot context and the pull request become a single entry in **Unmapped Context**.
 - **Context already mapped**: the pull request is auto-mapped to the same sprint or Ad-Hoc session, and there's nothing more to do.

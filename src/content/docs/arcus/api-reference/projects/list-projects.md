@@ -7,7 +7,7 @@ sidebar:
 api:
   method: GET
   path: /projects
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   query:
     - { name: "page_size", desc: "Number of projects to return per page." }
     - { name: "name__NEQ", desc: "Excludes projects whose name matches the given value." }
@@ -44,6 +44,6 @@ api:
     page_info:
       page_size: 2
       total_count: 17
-      next: "https://test-management.testsigma.com/api/v1/projects?page_size=2&page=2"
+      next: "https://arcus.testsigma.com/api/v1/projects?page_size=2&page=2"
       prev: ""
 ---

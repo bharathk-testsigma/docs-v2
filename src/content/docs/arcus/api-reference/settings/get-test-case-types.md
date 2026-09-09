@@ -7,7 +7,7 @@ sidebar:
 api:
   method: GET
   path: /test_cases/types
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   status: 200
   statusText: OK
   responseAttributes:

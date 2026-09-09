@@ -7,7 +7,7 @@ sidebar:
 api:
   method: POST
   path: /projects/{project_id}/step_groups
-  baseUrl: https://test-management.testsigma.com/api/v1
+  baseUrl: https://arcus.testsigma.com/api/v1
   pathParams:
     - { name: "project_id", desc: "Unique identifier of the project the step group belongs to." }
   bodyFields:
