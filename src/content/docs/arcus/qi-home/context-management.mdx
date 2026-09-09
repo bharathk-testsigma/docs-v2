@@ -1,0 +1,133 @@
+---
+title: Context Management
+description: Attach sources to a generation, read the context behind a sprint, and map pull requests, coding sessions, and CLI-pushed test cases to the right place.
+pageType: guide
+verified: 2026-09
+covers:
+  - Attach sources to a generation
+  - Read the Context drawer
+  - Open Context Management
+  - Map a context
+  - Link a pushed test case
+  - Manage the connections
+sidebar:
+  order: 4
+  label: Context Management
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+Context is everything Arcus reads before it writes a test case. You supply it 3 ways: sources you attach to a generation, artifacts a sprint's stories link to, and developer activity that lands in **Context Management** waiting to be mapped. Arcus also gathers context on its own from run history and from live-app learning, listed in the Context drawer below.
+
+Connect the sources first: install the plugins and the GitHub App from [Plugins](/arcus/qi-home/developer-tools/plugins/), and link trackers under **Manage integrations**, described at the end of this page.
+
+## Attach sources to a generation
+
+Attach as many sources as apply.
+
+<Steps>
+
+1. In the **Add Context** bar on QI Home or in the Arcus panel, click a source, or click the plus icon (+) for the full list.
+2. Make your selections in the **Add Context** dialog. Each attached source shows a count beside its name.
+3. Click **Save**. The source appears in the **Add Context** bar with a count beside its name.
+
+</Steps>
+
+| Source | Holds | You select |
+| :--- | :--- | :--- |
+| **Jira** | Requirements and user stories | Project, then the stories |
+| **Azure DevOps**, **Linear**, **ClickUp** | Work items | Project, then the items |
+| **Confluence** | PRDs and knowledge-base pages | Space, then pages |
+| **Figma** | Designs: UI references, flows, and screens | Team, project, file, then frames |
+| **GitHub** | A code repository | Repository |
+| **Files and Documents** | `.jpeg`, `.png`, `.docx`, `.pdf`, `.xls` files | The files to upload |
+| **Video Recording** | `.mp4`, `.mov`, `.webm`, `.avi`, `.mkv` recordings | The videos to upload |
+
+Uploads are capped at 500 MB per file. A source whose integration isn't connected yet shows an **Integrate** button in the dialog. Connect [Confluence](/arcus/integrations/project-management/confluence/) and [Figma](/arcus/integrations/dev-tools/figma/) from there, and trackers under **Settings > Integrations**.
+
+## Read the Context drawer
+
+Every sprint and Adhoc session page carries a **Context** button that opens the drawer: the full inventory of what Arcus read for that work, with counts for **Processed**, **Unprocessed**, **Failed**, and **Drifted** items, and a **Refresh context** action to re-read the sources. The drawer header shows when the context was last generated.
+
+- **Business Context**: what was supposed to be built (requirements and scope).
+- **Manual / Tribal Context**: what humans know but never wrote down (uploads and notes).
+- **Technical Context**: what got built (branches, PRs, code changes).
+- **User Intent Context**: what the developer meant to build (AI coding sessions).
+- **Run History Context**: what execution actually traversed (runs and flows).
+- **Live App Context**: what Arcus learned from the live app during Agentic Learning sessions on these test cases.
+
+Two more categories show as coming soon: **User Journey Context** (what end users actually do, from product analytics) and **Production Failure Context** (what breaks in production, from bugs and feedback).
+
+Expand a category to see its items. A Jira story, for example, shows its source, its processing state, and its status.
+
+## Open Context Management
+
+<Steps>
+
+1. Open **QI Home**.
+2. Click **Context Management**. Its badge shows the pending count.
+
+</Steps>
+
+Four tabs split the queue:
+
+- **Unlinked Contexts**: pull requests and coding sessions not mapped yet
+- **Linked Contexts**: everything already mapped, with the sprint and stories it went to
+- **Unlinked Test Cases**: test cases pushed via CLI or gap exploration, not linked yet
+- **Linked Test Cases**: test cases already linked
+
+## Map a context
+
+**Unlinked Contexts** summarizes what's waiting: the source split across GitHub pull requests, Claude Code sessions, and GitHub Copilot sessions, the pending and mapped counts, and the age of the oldest pull request. Filter the list by source with **All**, **GitHub**, **Claude**, and **Copilot**.
+
+What an entry shows depends on its source. A coding session shows its title, taken from the prompt, with the author, the repository, when it was pushed, and an AI suggestion for the module and sprint. A pull request shows its title or branch, the repository, the author, and when it was opened or last updated.
+
+<Steps>
+
+1. Click **Map to Module** on the entry.
+2. Select the **Project**.
+3. Under **Map to**, select **Sprint** or **Adhoc**.
+4. For a sprint, select the **Sprint** and the **Stories** the work relates to. For Adhoc, select the session under **Existing Adhoc Session**, or click **+ Create New Adhoc Session**.
+5. Click **Map**.
+
+</Steps>
+
+When you map an entry, Arcus generates test cases from that context: new ones, or updates to existing ones covering the same modules. To map several entries at once, select their checkboxes and click **Map to Module**. For an entry that isn't relevant to coverage, click **Discard**.
+
+**Linked Contexts** then shows each mapped entry tagged with its sprint and story, plus totals for contexts mapped and sprints covered.
+
+<Aside type="note">
+Where a developer uses both a coding tool and GitHub, Arcus unifies the pull request with the coding session it came from; mapping the coding session also maps the pull request to the same sprint.
+</Aside>
+
+### Map automatically
+
+Two kinds of entry are mapped without your input:
+
+- A pull request whose title or description carries a ticket ID from your connected tracker is mapped straight to the sprint holding that story.
+- A developer who runs `/arcus:map ticket <KEY>` in their coding tool links the session before it arrives.
+
+## Link a pushed test case
+
+Test cases authored with `/arcus:test` and pushed with `/arcus:push`, or produced by an Agentic Learning session, arrive on **Unlinked Test Cases** with their module, type, automation state, and local run result.
+
+<Steps>
+
+1. Click **Link** on the test case.
+2. Select the **Project**.
+3. Under **Link to**, select **Sprint** or **Adhoc**.
+4. Select the sprint story, or the Adhoc session.
+5. Click **Link & accept**.
+
+</Steps>
+
+The test case moves to the selected story, accepted and ready to run in a plan. Its local run results carry over. To drop one instead, click the delete icon.
+
+**Linked Test Cases** lists everything already linked, each tagged with its module.
+
+## Manage the connections
+
+Two dialogs behind the more options icon (⋮) on QI Home control what flows in:
+
+- **Manage integrations**: toggles for the project management tools Arcus reads sprints from (Jira, Linear, ClickUp, Azure DevOps), and for **Dev Tools and AI** (the GitHub App, plus setup links for the Claude Code, GitHub Copilot, Codex, and Cursor plugins). A connected plugin shows **Active**.
+- **Manage connected projects**: use it to link 1 project per tool. Arcus then reads the active sprints in that project and drafts test cases for each story's acceptance criteria. The steps are in [Test generation and quality](/arcus/qi-home/test-generation-and-quality/).

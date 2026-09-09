@@ -1,0 +1,316 @@
+---
+title: Test Cases
+description: Organize test cases into folders, create and edit them with the Documentation or Steps template, set properties, and use versions, review, comments, filters, run history, and bulk actions.
+pageType: guide
+verified: 2026-09
+covers:
+  - Folders
+  - Create a test case
+  - Test case properties
+  - Edit a test case
+  - Reorder test cases
+  - Clone a test case
+  - Versions
+  - Review management
+  - Comments
+  - Find test cases
+  - Run history
+  - Delete a test case
+  - Bulk actions
+sidebar:
+  order: 1
+  label: Test Cases
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+**A test case** defines one scenario to be tested, along with its steps, preconditions, and expected results. Test cases are stored in a hierarchical tree of folders and subfolders, and each folder shows a cumulative count of the test cases inside it.
+
+This page covers organizing test cases into folders, creating and editing them, the 2 templates available, properties, reordering, cloning, deleting, versions, review, comments, filtering, run history, and bulk actions.
+
+## Folders
+
+### Create a folder
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**.
+2. Click **+ Create a Folder**, or click the **Add Folder** icon.
+3. In the text box that opens, enter a name and click the plus icon (+).
+4. Open the folder and click **+ Create Test Case** to add a test case to it.
+
+</Steps>
+
+### Create a subfolder
+
+<Steps>
+
+1. Click the ellipsis icon (⋯) next to the parent folder and select **Add Sub Folder**.
+2. In the text box below the parent folder, enter a name and click the plus icon (+).
+3. Open the subfolder and click **+ Create Test Case** to add a test case to it.
+
+</Steps>
+
+### Move, rename, or delete a folder
+
+The ellipsis icon (⋯) next to a folder offers **Move Folder**, **Rename Folder**, and **Delete Folder**, along with **Create Test Case** and **Add Subfolder**.
+
+<Aside type="note">
+Deleting a folder is permanent.
+</Aside>
+
+## Create a test case
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**.
+2. Click **+ Create**. Alternatively, click the ellipsis icon (⋯) next to a folder or subfolder and select **Create Testcase**.
+3. In the dialog, enter a **title**. A **description** is optional.
+4. Select a **template type**, either Documentation or Steps.
+5. Click **Folder**, choose a location in the overlay, then click **Select Folder**.
+6. Select any additional properties.
+7. Click **Create**.
+8. On the test case details page, add your test steps. Steps save automatically.
+
+</Steps>
+
+The **template type** you pick sets the shape of the test case. Both accept attachments up to 25 MB, including screenshots, logs, and documents.
+
+| Aspect | Documentation | Steps |
+| :--- | :--- | :--- |
+| Use it for | Simple tests with basic preconditions, steps, and expected results | Tests needing a granular breakdown of each action |
+| Expected results | Defined per step, or once for the whole test case | Defined for each individual step |
+
+### Documentation template
+
+- **Test Case Title**: a title reflecting the purpose of the test.
+- **Preconditions**: conditions that must be met before the test runs.
+- **Test Steps**: a sequential list of the actions to perform.
+- **Expected Results**: the expected outcome of each step, or of the test case as a whole.
+
+For example, a Login functionality test case has the precondition that the user holds a valid username and password. Its steps are navigating to the login page, entering the username and password, and clicking **Login**. Its expected result is that the user lands on the dashboard.
+
+### Steps template
+
+- **Test Case Title**: a clear, descriptive title for the scenario.
+- **Test Steps**: each step with its own specific action.
+- **Expected Results**: the result expected after each individual step runs.
+
+For example, a User registration flow test case enters a valid email address and password, expecting both fields to be populated. It then clicks **Submit**, expecting the confirmation page to open. It then verifies the confirmation message, expecting a success message to appear.
+
+## Test case properties
+
+Properties classify and organize a test case. Select them when you create it, or in the **Test Case Properties** section afterwards.
+
+- **Location**: the folder the test case is stored in.
+- **Priority**: the urgency and execution order of the test case, one of **Critical**, **Major**, **Medium**, or **Minor**.
+- **Owner**: the team member responsible for the test case.
+- **Reviewer**: the team member who reviews the test case.
+- **Automation Type**: the automation status of the test case, one of **Not Automated**, **Automated**, **Obsolete**, or **Automation Not Required**.
+- **Status**: the current state of the test case in the testing lifecycle. Values include **Ready**, **Draft**, **Rework**, and **In Review**.
+- **Test Case Type**: the type based on purpose and testing approach, for example **Functional**, **Regression**, or **Smoke**.
+- **Requirements**: [Jira](/arcus/integrations/project-management/jira/) stories linked to the test case.
+- **Labels**: labels linked from the dropdown.
+- **Attachments**: files that support the test case.
+
+{/* CONFIRM: the full Status list. The Manage Properties screen continues below these 4 values. */}
+
+<Aside type="note">
+Which properties are available is configured under **Settings > Manage Properties**. See [Test properties](/arcus/settings/test-properties/).
+</Aside>
+
+## Edit a test case
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**.
+2. In the **Test Case List**, click a test case to open the **Quick View** overlay.
+3. Click the edit icon.
+4. Update the **Test Case Name**, **Test Steps**, **Folder**, **Properties**, or any other field. Changes save automatically.
+
+</Steps>
+
+<Aside type="tip">
+You can also click the ellipsis icon (⋯) next to a test case and select **Edit**.
+</Aside>
+
+## Reorder test cases
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**.
+2. Open the folder holding the test cases.
+3. Drag the test case by its **Drag Handle** to its new position. The new position takes effect immediately at the folder level, and carries into all related test runs.
+
+</Steps>
+
+<Aside type="note">
+You can reorder within a single folder only. Selecting multiple folders or leaving any filter active disables reordering.
+</Aside>
+
+## Clone a test case
+
+Cloning copies every field value as it stands at the moment you clone. Later changes to the original do not reach the copy.
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then open the folder or subfolder holding the test case.
+2. Click the ellipsis icon (⋯) next to the test case, then click **Clone**. The **Clone Test Case** dialog opens.
+3. Enter a title.
+4. Select the **Target Project** and **Folder** to clone into.
+5. Click **Clone**.
+
+</Steps>
+
+## Versions
+
+### View version history
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then open a test case.
+2. In the top right, click the history icon. The **Version History** overlay lists every saved version with the date of the change and the user who made it.
+
+</Steps>
+
+### Compare versions
+
+<Steps>
+
+1. In the **Version History** overlay, hover over a version.
+2. Click the ellipsis icon (⋯), then click **Compare with Current**. The **Comparison Mode** page opens and shows the differences between that version and the current one.
+
+</Steps>
+
+<Aside type="note">
+An older version can be compared only against the current version, not against another older version. To go back to an older version, click **Restore to this Version**.
+</Aside>
+
+<Aside type="tip">
+The same ellipsis icon (⋯) also renames a version.
+</Aside>
+
+## Review management
+
+Review management adds a review step to test cases. A QA member submits a test case, and the reviewer either marks it ready or sends it back for rework with comments.
+
+### Enable review management
+
+<Steps>
+
+1. In the left navigation, go to **Project > Project Settings**.
+2. Turn on **Review Management**.
+
+</Steps>
+
+<Aside type="note">
+This is a project-level setting. Turn it on separately in every project where you want it.
+</Aside>
+
+### Submit a test case for review
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then create or open a test case.
+2. Click **Submit for Review**.
+3. Select a **Reviewer**.
+4. Click **Submit for Review**.
+
+</Steps>
+
+<Aside type="tip">
+You can also submit from the test case list by clicking the edit icon and selecting **Submit for Review**. To submit several at once, select them in the list, press `Command+K`, select **Submit for Review**, and choose a reviewer.
+</Aside>
+
+### Review a submitted test case
+
+<Steps>
+
+1. On the **Dashboard**, go to **Test Case Review Status**.
+2. Click a test case submitted for review. The test case details page opens.
+3. Click **Mark as Ready** to approve it, or click **Mark as Rework**, add your comments, and submit it to send it back for changes.
+
+</Steps>
+
+Every review action is recorded in the **Activity** section of the test case.
+
+## Comments
+
+### Add a comment
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then open a test case.
+2. In the **Activity** section, type your message in the comment field.
+3. Click **Add Comment**. The comment appears in the **Activity** section.
+
+</Steps>
+
+<Aside type="tip">
+Type `@` to tag a team member.
+</Aside>
+
+### Reply to and manage comments
+
+- Click the reply icon to respond to a comment.
+- Click the emoji icon to add a reaction.
+- Click the edit icon to change a comment, then click **Update Comment**.
+- Click the ellipsis icon (⋯) on a comment for **Copy Link**, which gives a direct link to that comment, or **Delete**, which asks you to confirm.
+
+## Find test cases
+
+### Filter the list
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then click **Filter by**. Alternatively, press `Command+Shift+F`.
+2. In the popover, select the properties to filter on.
+3. Click the plus icon (+) next to a selected property, then select the values you want in its panel.
+4. Review the filtered list.
+5. Click **Clear All** to remove the filters.
+
+</Steps>
+
+You can filter on **Priority**, **Automation Type**, **Test Case Type**, **Status**, **Label**, **Created At**, which takes a date or a date range, and **Folder**.
+
+### Choose which columns appear
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then click **View**.
+2. Select the properties to show or hide. The list updates to show only what you selected.
+
+</Steps>
+
+## Run history
+
+Run history lists every execution of a test case across the test runs it belongs to, so you can check stability and execution ownership without opening each run.
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then open a test case.
+2. Scroll to the **Activity** section.
+3. Click **Run History**. The tab lists every test run the test case belongs to, with its execution status, executor, and timestamp.
+4. Click a run to open its detailed view.
+
+</Steps>
+
+## Delete a test case
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**.
+2. Click the ellipsis icon (⋯) next to the test case, then select **Delete**.
+3. On the **Delete Test Case?** dialog, click **Delete Test Case**.
+
+</Steps>
+
+## Bulk actions
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**.
+2. Press `Command+K`, then select **Bulk Update Test Cases** from the **Testsigma Command Center**.
+3. Change properties, move test cases to a different folder, or delete several test cases at once.
+
+</Steps>

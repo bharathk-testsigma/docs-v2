@@ -1,0 +1,89 @@
+---
+title: CircleCI
+description: Upload JUnit test results from a CircleCI build to an Arcus test run so test case statuses update automatically.
+pageType: task
+verified: 2026-09
+covers:
+  - Store the API token in CircleCI
+  - Configure the pipeline
+  - Trigger a build
+sidebar:
+  order: 50
+  label: CircleCI
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Integrating CircleCI with Arcus by Testsigma uploads your JUnit test results to a test run at the end of a build, so test case statuses update automatically.
+
+<Prerequisites>
+- A CircleCI account.
+- A project in Arcus by Testsigma with at least one [test run](/arcus/run-tests/test-runs/).
+- An Arcus by Testsigma [API token](/arcus/settings/api-keys/).
+</Prerequisites>
+
+## Store the API token in CircleCI
+
+<Steps>
+
+1. Open your project in CircleCI.
+2. Go to **Project Settings > Environment Variables**.
+3. Add a variable. Enter `TESTSIGMA_API_TOKEN` in **Name** and your Arcus by Testsigma API token in **Value**.
+
+</Steps>
+
+<Aside type="note">
+Keep this value secret and out of build logs. Don't echo the token in a step.
+</Aside>
+
+## Configure the pipeline
+
+<Steps>
+
+1. In your repository, open or create `.circleci/config.yml`.
+2. Add the following, then replace the 2 placeholders as described below.
+
+</Steps>
+
+```yaml
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/openjdk:8.0
+    environment:
+      TESTSIGMA_API_TOKEN: << pipeline.parameters.testsigma_api_token >>
+    steps:
+      - checkout
+
+      - run:
+          name: Build and test with Maven
+          command: mvn clean package
+
+      - run:
+          name: Upload JUnit results to Testsigma
+          command: |
+            curl --location 'https://test-management.testsigma.com/api/v1/projects/<Project_ID>/junit-import/test-run/<Run_ID>' \
+            --header "Authorization: Bearer $TESTSIGMA_API_TOKEN" \
+            --form "junit_xml=@target/surefire-reports/TEST-MyTests.xml"
+
+workflows:
+  version: 2
+  test_and_upload:
+    jobs:
+      - build:
+          parameters:
+            testsigma_api_token:
+              type: env_var_name
+              default: TESTSIGMA_API_TOKEN
+```
+
+- Replace `<Project_ID>` with your project ID, which you can retrieve using the Arcus by Testsigma APIs.
+- Replace `<Run_ID>` with the run ID, which appears in the URL when you view a test run: `https://test-management.testsigma.com/ui/test_runs/<Run_ID>/`.
+- Point `junit_xml` at the path your build writes its JUnit XML report to.
+
+## Trigger a build
+
+Commit and push to the repository connected to CircleCI. CircleCI runs the workflow, and when it finishes the test run in Arcus by Testsigma updates with the execution results.

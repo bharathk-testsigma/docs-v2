@@ -1,0 +1,55 @@
+---
+title: Test Properties
+description: The 4 classifications every test case carries, and how to rename or extend their values.
+pageType: task
+verified: 2026-09
+covers:
+  - The properties
+  - Rename a value
+  - Add a value
+sidebar:
+  order: 2
+  label: Test Properties
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+**Test properties** are the 4 classifications every [test case](/arcus/create-and-manage/test-cases/) carries. Each has a set of values, which you rename or extend here.
+
+## The properties
+
+- **Test Case Priority**: the urgency and execution order of a test case. Its values are **Critical**, **Major**, **Medium**, and **Minor**.
+- **Automation Type**: the automation state of a test case. Its values are **Not Automated**, **Automated**, **Obsolete**, and **Automation Not Required**.
+- **Test Case Status**: the current state of a test case in the testing lifecycle. Its values are **Ready**, **Draft**, **Rework**, **In Review**, and **Obsolete**.
+- **Test Case Type**: the category of a test case, based on its purpose and testing approach. Its values are **User Experience**, **Functional**, **Unit Test**, **Non Functional**, and **Integration**.
+
+<Aside type="note">
+You can rename these values and add your own. The 4 properties themselves are fixed, so you can't add a fifth or remove one.
+</Aside>
+
+## Rename a value
+
+<Steps>
+
+1. In the left navigation, go to **Settings > Manage Properties**.
+2. Click **Edit**. The **Edit Properties** panel opens.
+3. Click the value you want to rename and edit it in place.
+4. Click **Update Details**.
+
+</Steps>
+
+## Add a value
+
+<Steps>
+
+1. In the left navigation, go to **Settings > Manage Properties**.
+2. Click **Edit**.
+3. Click the plus icon (+) beside the property you're adding to. A row opens with the placeholder **Enter property name**.
+4. Enter the name, then click the check icon to keep it. To drop the row instead, click the cross icon.
+5. Click **Update Details**.
+
+</Steps>
+
+<Aside type="tip">
+The plus icon's tooltip names the property it adds to, such as **Add Test Case Priority value**, which is worth checking before you type.
+</Aside>

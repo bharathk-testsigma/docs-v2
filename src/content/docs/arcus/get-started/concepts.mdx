@@ -1,0 +1,121 @@
+---
+title: Concepts
+description: 'The terms Arcus uses, grouped by where you meet them: structure, authoring, generation, coverage, automation, developer context, and integrations.'
+pageType: guide
+verified: 2026-09
+covers:
+  - Structure
+  - Authoring
+  - Generation
+  - Coverage and quality
+  - Automation
+  - Developer context
+  - Connecting other tools
+sidebar:
+  order: 2
+  label: Concepts
+---
+
+The terms Arcus uses, grouped by where you meet them.
+
+## Structure
+
+**Project** sits at the top of the hierarchy and holds the test cases, runs, and plans for one application, along with its own settings.
+
+**Folder** groups test cases within a project, by feature, functionality, or test type. Folders nest, so a hierarchy can match how your application is built.
+
+**Module** is the part of the application a test case covers. Coverage is reported per module.
+
+## Authoring
+
+**Test case** is a list of steps with expected results, and the building block of your library.
+
+**Test step** is one action inside a test case, with the result you expect from it.
+
+**Step group** is a saved sequence of steps reused across test cases. Write a login flow once, and link it wherever it is needed.
+
+**Data set** holds reusable input values, so one test case runs against several sets of data without being rewritten.
+
+**Test case properties** are the 4 built-in attributes every test case carries: **Test Case Priority**, **Test Case Status**, **Test Case Type**, and **Automation Type**. Their values are renamed under **Settings > Manage Properties**, and new ones cannot be added.
+
+**Custom field** adds project-specific information to a test case, and becomes a filter on the library.
+
+**Label** organizes test cases and test runs for filtering and tracking.
+
+**Test Capture** is a browser extension that records screen, video, and network logs alongside manual testing, and turns them into test cases or bug reports.
+
+**Version** records a change to a test case. Versions compare against each other, so you can see what changed and when.
+
+**Review Management** puts a test case through approval before it counts as ready. A reviewer accepts it or sends it back.
+
+**Test case template** is a starting shape for a new test case, so a team writes them in a consistent form.
+
+**Run history** shows every execution of one test case, across every run it appeared in.
+
+## Generation
+
+**QI Home** is where test cases are generated, coverage is tracked, and automation happens.
+
+**Context source** is what generation reads from: a Jira, Azure DevOps, Linear, or ClickUp story, a Confluence page, a Figma design, a file such as a PDF or Word document, or a video recording. Each needs its integration connected.
+
+**Ad-Hoc** generates on demand. You attach context sources yourself, write a prompt, and start generation.
+
+**Sprints** generates automatically. When a sprint starts in your connected project management tool, you confirm, and generation pulls the context linked to the sprint stories.
+
+**Session** is one generation run, from the context you attached to the test cases it produced.
+
+**Prompt** describes what you want covered. It shapes what generation produces from the same context.
+
+**Scenario** groups generated test cases by feature area or by the story they came from. Review works scenario by scenario.
+
+**Generated test case** is a proposal. It enters your library when you accept it.
+
+**Gap** is a pending test case nobody has accepted, and the signal that an area is not yet covered.
+
+## Coverage and quality
+
+**Coverage** is the percentage of generated test output you have accepted, calculated as accepted divided by accepted plus pending. Rejected cases are excluded. **Coverage and Gaps** breaks the same figure down per module.
+
+**Quality Intelligence Metrics** are the 5 measures in the session header, shown in evaluation order because each builds on the one before it.
+
+- **Coverage** asks whether enough has been tested
+- **Pass Rate** asks whether what was tested is working
+- **Confidence** asks whether those results can be trusted
+- **Release Readiness** combines the 3 into one score
+- **Release Gate** turns that score into a decision
+
+**Test plan** sets the scope, goals, and schedule for a round of testing, and links test cases to test runs. Plans are generated in 4 types, each a superset of the one before it: Smoke, Feature, Regression, and Deep Regression.
+
+**Test run** records execution: which test cases ran, what each one returned, and any defects logged.
+
+**Requirement traceability report** shows which test cases cover which requirements, and where coverage is missing.
+
+## Automation
+
+**Agentic Learning** walks a test case through your live application, observes how it behaves, learns the element interactions, and generates automated steps.
+
+**Copilot** executes automated steps in a browser, with a live panel showing each step as it runs. It pauses, takes new steps mid-run, and saves the result.
+
+**Testsigma Lab** is the cloud where a learning or execution session runs. The alternative is your own local device.
+
+**Automated test case** has steps that execute without anyone performing them. A test case is manual until Agentic Learning automates it.
+
+**Arcus CLI** runs tests from your own machine, outside the browser.
+
+## Developer context
+
+**Developer Context Mapping** keeps coverage aligned with what the team is building, by reading what developers do in their own tools.
+
+**Unmapped Context** is the view holding activity detected from Claude Code, Cursor, GitHub Copilot, Codex, and GitHub pull requests, before anyone has assigned it to a module.
+
+**Mapping** assigns a context entry to a module and sprint. Each entry arrives with a suggestion, and mapping it triggers test case generation or an update.
+
+## Connecting other tools
+
+**Integration** connects Arcus to a tool your team already uses, for requirements, defects, context, or notifications.
+
+**Two-way integration** syncs in both directions, so test cases and runs are managed from Jira or Azure DevOps as well as from Arcus.
+
+**API key** authenticates a call to Arcus from outside the application, such as a CI pipeline or a script.
+
+**Import** brings an existing library into Arcus, from TestRail, Zephyr, BrowserStack, or a CSV file. **Export** takes yours out.

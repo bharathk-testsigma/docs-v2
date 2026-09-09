@@ -1,0 +1,186 @@
+---
+title: Copilot execution
+description: Execute a test case's automated steps in a live browser on Testsigma Lab or your own machine, control execution as it runs, add steps mid-session, and save the results.
+pageType: guide
+verified: 2026-09
+covers:
+  - Pick a run option
+  - Choose where a Copilot session runs
+  - Run a session on Testsigma Lab
+  - Run a session on your own machine
+  - Control execution
+  - Add a step during execution
+  - Complete the session
+sidebar:
+  order: 2
+  label: Copilot Execution
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+**Copilot** runs a test case's automated steps in sequence in a live browser, with a panel showing the status of each step.
+
+<Aside type="note">
+Copilot runs automated steps only. To automate a manual test case first, see [Explore and Automate](/arcus/automation/explore-and-automate/).
+</Aside>
+
+## Pick a run option
+
+Hover over **Run** in the top action bar to open a dropdown with 3 options. Only **Run with Copilot** starts a Copilot session.
+
+- **Run with AI**: re-runs the Agentic Learning flow using AI browser control.
+- **Run Automated Steps**: executes the saved automated script without a live browser.
+- **Run with Copilot**: executes the steps interactively in a live browser.
+
+## Choose where a Copilot session runs
+
+A Copilot session runs in 1 of 2 places: Testsigma Lab or your own machine. Execution behaves the same in both.
+
+| Aspect | Testsigma Lab | Your own machine |
+| :--- | :--- | :--- |
+| Where the browser or device runs | Testsigma provides a cloud machine | Your desktop, or a device connected to it |
+| Requires Testsigma Terminal | No | Yes |
+| Use it when | You don't want to set anything up locally | Your application isn't publicly accessible, you're testing a local build, or you're executing on a physical device or emulator |
+
+Either way, you need a test case with automated steps saved in your library. Testsigma Lab also needs your application reachable from a cloud environment.
+
+## Run a session on Testsigma Lab
+
+<Steps>
+
+1. Open a test case from your library.
+2. In the top action bar, hover over **Run**, then click **Run with Copilot**.
+3. In the **Run with Copilot** dialog, configure the settings:
+   - **Test Lab**: pre-selected as **Testsigma Lab**.
+   - **Debug Point**: select a step where execution should pause, or leave it as **None**.
+   - **Environment**: select the test environment.
+   - **Run till failed step**: turn on to stop execution at the first failed step.
+   - **Additional Settings** and **Desired Capabilities**: expand these if you need them.
+4. Click **Launch**.
+
+</Steps>
+
+The cloud machine takes 10 to 20 seconds to provision, and a "Spinning up your cloud browser" screen appears while the machine provisions.
+
+## Run a session on your own machine
+
+If [Testsigma Terminal](/arcus/get-started/installation/terminal/) isn't running when you launch, a prompt appears. Start Terminal, then return and launch the session.
+
+For Android and iOS, connect your device or emulator to your machine first and confirm Testsigma Terminal recognizes it.
+
+### Web
+
+<Steps>
+
+1. Open a test case from your library.
+2. In the top action bar, hover over **Run**, then click **Run with Copilot**.
+3. In the **Run with Copilot** dialog, configure the settings:
+   - **Test Lab**: select **Local Devices**.
+   - **Debug Point**: select a step where execution should pause, or leave it as **None**.
+   - **Environment**: select the test environment.
+   - **Run till failed step**: turn on to stop execution at the first failed step.
+4. Click **Launch**. The Copilot panel opens in a browser on your machine.
+
+</Steps>
+
+### Android
+
+<Steps>
+
+1. Open a test case from your library.
+2. In the top action bar, hover over **Run**, then click **Run with Copilot**.
+3. In the **Run with Copilot** dialog, configure the settings:
+   - **Test Lab**: select **Local Devices**.
+   - **Test Machines**: select the machine your device is connected to.
+   - **Device**: select the Android device or emulator.
+   - **Initial Debug Point**: select a step, or leave it as **None**.
+   - **App Source**: specify the app with an **External link**, an app under **Uploaded apps**, or **Add Manually**.
+   - **Environment**: select the test environment.
+4. Click **Launch**.
+
+</Steps>
+
+### iOS
+
+<Steps>
+
+1. Open a test case from your library.
+2. In the top action bar, hover over **Run**, then click **Run with Copilot**.
+3. In the **Run with Copilot** dialog, configure the settings:
+   - **Test Lab**: select **Local Devices**.
+   - **Test Machines**: select the connected machine your iOS device is attached to.
+   - **Device**: select your iPhone, iPad, or iOS simulator.
+   - **Initial Debug Point**: select a step, or leave it as **None**.
+   - **App Source**: specify the `.ipa` with an **External link**, a file under **Uploaded apps**, or **Add Manually**.
+   - **Environment**: select the test environment.
+4. Click **Launch**.
+
+</Steps>
+
+## Control execution
+
+The Copilot panel opens alongside the browser and executes the steps in sequence.
+
+### Panel controls
+
+- **Pause**: pauses execution at the current step until you resume.
+- **Back**: steps back to the previous step.
+- **Forward**: steps forward to the next step.
+- **Settings**: opens session settings.
+- **Rec**: records the current session state as a step.
+- **Restart**: restarts execution from the first step. It appears after Copilot generates the steps.
+- **Stop**: ends the session.
+
+### Step statuses
+
+Every step on the **Automated Steps** tab carries 1 of 4 markers.
+
+| Marker | Meaning |
+| :--- | :--- |
+| Checkmark | The step finished as expected. |
+| Spinner | The step is running now. |
+| None | Execution has not reached the step. |
+| Failure | The step did not complete as expected. |
+
+### Manual and automated steps
+
+The panel has 2 tabs you can switch between at any point during execution.
+
+- **Manual Steps**: the original manual steps of the test case. Open it to read the expected behavior of a step.
+- **Automated Steps**: the steps Copilot is executing, each with its current status.
+
+Switching tabs changes only what the panel displays. Execution keeps running.
+
+### Debug points
+
+Two indicators at the bottom of the Copilot browser show where execution stands.
+
+- **Execution Point**: the step currently running or paused.
+- **Debug Point**: a step you set before launch, where execution pauses without further input. Use it to investigate one specific step.
+
+## Add a step during execution
+
+<Steps>
+
+1. At the bottom of the steps list on the **Automated Steps** tab, click **Add new step**.
+2. Enter the step details. The session adds the step.
+
+</Steps>
+
+## Complete the session
+
+When every step has been executed, a dialog reports "Test Case Executed Successfully."
+
+To keep the results, click **Save Test Case**, then select a folder in the **Save to Library** dialog and click **Save**.
+
+Three buttons then end or hold the session:
+
+- **Save and End**: saves all changes, closes the browser, and ends the session.
+- **Reject and End**: closes the browser without saving, and ends the session.
+- **Dismiss**: leaves the browser open and the session running.
+
+<Aside type="note">
+On Testsigma Lab, the cloud machine is released only when you end the session. If you click **Dismiss**, the cloud machine keeps running. A session on your own machine has no cloud machine to release; it closes when you end it.
+</Aside>
+
+A saved automated test case is available to the test plans you run in [Test generation and quality](/arcus/qi-home/test-generation-and-quality/), where its results move Pass Rate, Confidence, and Readiness.

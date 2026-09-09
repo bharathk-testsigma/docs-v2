@@ -1,0 +1,72 @@
+---
+title: Custom Fields
+description: Add project-specific fields to test cases beyond the default test properties, set them individually or in bulk, and filter by their values.
+pageType: task
+verified: 2026-09
+covers:
+  - Create a custom field
+  - Set a custom field on a test case
+  - Set a custom field on several test cases
+  - Filter by a custom field
+sidebar:
+  order: 3
+  label: Custom Fields
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+**A custom field** adds project-specific information to a test case, beyond the default [test properties](/arcus/settings/test-properties/). Once a field exists, you can set it on test cases and filter the list by its values.
+
+## Create a custom field
+
+<Steps>
+
+1. In the left navigation, go to **Settings > Custom Fields**.
+2. Click **+ Add New**. The **Add new field in Test Case** panel opens.
+3. Enter a **Field Name**. A **Description** is optional.
+4. Select the **Field Type**.
+5. (Optional) For a field type that offers choices, enter its options.
+6. Click **Add**. The field appears in the **Custom Fields** section.
+
+</Steps>
+
+A field takes 1 of 8 types:
+
+- **Text field**: a single line of text.
+- **URL**: a link.
+- **Text area**: several lines of text.
+- **Date picker**: a date.
+- **Dropdown select**: one option from a list you define.
+- **Checkbox**: a single on or off choice.
+- **Radio Button**: one option from a set you define.
+- **Multi select**: several options from a list you define.
+
+## Set a custom field on a test case
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then create or open a test case.
+2. In the **Test Properties** section, select the custom field values.
+
+</Steps>
+
+## Set a custom field on several test cases
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then select the test cases to update.
+2. Press `Command+K` and choose the custom field to edit.
+3. In the **\<Custom_Field_Name\>** dialog, select or enter the value to apply.
+4. Click **Update \<number\> Test Cases**.
+
+</Steps>
+
+## Filter by a custom field
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**.
+2. Click **Filter by**, or press `Command+Shift+F`.
+3. In the **Filter by** dialog, select the custom field to filter on. The list narrows to test cases matching your selection.
+
+</Steps>

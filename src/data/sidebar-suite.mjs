@@ -23,8 +23,8 @@
 
 import { restApis } from './sidebar-suite-api.mjs';
 
-/** A top-level rail section backed by a content folder. */
-const section = (label, directory, extra = {}) => ({
+/** A top-level rail section backed by a content folder. Shared with Arcus. */
+export const section = (label, directory, extra = {}) => ({
 	label,
 	collapsed: true,
 	items: [{ autogenerate: { directory, collapsed: true } }],

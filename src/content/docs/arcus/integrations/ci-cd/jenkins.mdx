@@ -1,0 +1,96 @@
+---
+title: Jenkins
+description: Upload JUnit test results from a Jenkins build to an Arcus test run so test case statuses update automatically.
+pageType: task
+verified: 2026-09
+covers:
+  - Store the API token in Jenkins
+  - Configure the pipeline
+  - Trigger a build
+sidebar:
+  order: 10
+  label: Jenkins
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Integrating Jenkins with Arcus by Testsigma uploads your JUnit test results to a test run at the end of a build, so test case statuses update automatically.
+
+<Prerequisites>
+- A Jenkins account.
+- A project in Arcus by Testsigma with at least one [test run](/arcus/run-tests/test-runs/).
+- An Arcus by Testsigma [API token](/arcus/settings/api-keys/).
+</Prerequisites>
+
+## Store the API token in Jenkins
+
+<Steps>
+
+1. On the Jenkins dashboard, click **Manage Jenkins**.
+2. Under **Security**, click **Credentials**.
+3. Under **Stores scoped to Jenkins**, click **(global)** in the **Domain** column.
+4. On the **Global credentials** page, click **Add Credentials**.
+5. In the **Kind** dropdown, select **Secret text**.
+6. In **Secret**, enter your Arcus by Testsigma API token.
+7. In **ID**, enter `TESTSIGMA_API_TOKEN`.
+8. Click **Create**.
+
+</Steps>
+
+## Configure the pipeline
+
+<Steps>
+
+1. On the Jenkins dashboard, click **New Item**.
+2. In **Enter an item name**, enter a name for the pipeline.
+3. Select **Pipeline**, then click **OK**.
+4. On the **Configuration** page, scroll to the **Pipeline** section.
+5. In the **Definition** list, select **Pipeline script**.
+6. In **Script**, paste the script that follows, replacing its 2 placeholders.
+
+</Steps>
+
+```groovy
+pipeline {
+    agent any
+    environment {
+        TESTSIGMA_API_TOKEN = credentials('TESTSIGMA_API_TOKEN')
+    }
+    stages {
+        stage('Run Tests') {
+            steps {
+                // Run your own test script here
+                sh './run-tests.sh'
+            }
+        }
+        stage('Upload to Testsigma TMS') {
+            steps {
+                // The test result file must exist at the path given below
+                sh '''
+                curl --location 'https://test-management.testsigma.com/api/v1/projects/<Project_ID>/junit-import/test-run/<Run_ID>' \
+                --header "Authorization: Bearer $TESTSIGMA_API_TOKEN" \
+                --form "junit_xml=@target/test-results/test-report.xml"
+                '''
+            }
+        }
+    }
+}
+```
+
+- Replace `<Project_ID>` with your project ID, which you can retrieve using the Arcus by Testsigma APIs.
+- Replace `<Run_ID>` with the run ID, which appears in the URL when you view a test run: `https://test-management.testsigma.com/ui/test_runs/<Run_ID>/`.
+- Point `junit_xml` at the path your build writes its JUnit XML report to.
+
+Then click **Apply**, and click **Save**.
+
+## Trigger a build
+
+<Steps>
+
+1. On the Jenkins dashboard, click the configured pipeline.
+2. In the Jenkins sidebar, click **Build Now**.
+
+</Steps>
+
+When the build succeeds, the test case statuses in the associated test run update automatically.

@@ -1,0 +1,102 @@
+---
+title: Data Sets
+description: Create a data set of reusable test data, link one to a test case, understand what happens when you link more than one, and remove rows and columns.
+pageType: guide
+verified: 2026-09
+covers:
+  - Create a data set
+  - Create a data set from a test case
+  - Add a data set to a test case
+  - Link more than one data set
+  - Remove a row or column
+sidebar:
+  order: 3
+  label: Data Sets
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+**A data set** is a table of reusable test data, with a column for each variable and a row for each set of values. Link one to a [test case](/arcus/create-and-manage/test-cases/) to supply the case with those values instead of entering data by hand.
+
+This page covers creating a data set, linking one to a test case, what happens when you link more than one, and removing rows and columns.
+
+## Create a data set
+
+<Steps>
+
+1. In the left navigation, open **Data Sets**.
+2. Click **Create** in the top right. The **Create a Dataset** dialog opens.
+3. Enter a **Name**. A **Description** is optional.
+4. Click **Create Dataset**.
+5. On the **Data Set details** page, enter a distinct variable name in each column header, then enter the values beneath them.
+6. Click **Add Column** for another variable, or **Add Row** for another set of values.
+
+</Steps>
+
+The data set is now reusable across your test cases.
+
+## Create a data set from a test case
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then create or open a test case.
+2. On the **Test Case details** page, go to the **Data Set** section and click **Create Dataset**.
+3. Enter a **Name**, optionally a **Description**, and click **Create Dataset**. The **Create a Data Set** dialog opens.
+4. Enter a distinct variable name in each column header, then enter the values beneath them.
+5. Click **Add Column** for another variable, or **Add Row** for another set of values.
+6. Click **Link Dataset**.
+
+</Steps>
+
+## Add a data set to a test case
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then create or open a test case.
+2. On the **Test Case details** page, go to the **Data Set** section and click **Add Data Set**. The **Add Data Set** dialog opens.
+3. Select a data set from the list and click **Next**.
+4. Select the rows whose values you want the test case to use, or select all of them.
+5. Click **Add Data Set**.
+
+</Steps>
+
+## Link more than one data set
+
+Repeat the steps above to link a second data set. Arcus then combines them by Cartesian product, generating one test scenario for every combination of rows across the linked data sets.
+
+Suppose Dataset A holds names and countries:
+
+| Name | Age | Country |
+| :--- | :--- | :--- |
+| Alice | 30 | India |
+| Bob | 25 | Japan |
+
+And Dataset B holds plans:
+
+| Plan | Price | Currency |
+| :--- | :--- | :--- |
+| Pro | 10 | USD |
+| Free | 0 | INR |
+| Enterprise | 50 | JPY |
+
+Linking both produces 6 test scenarios, one per combination:
+
+| Name | Age | Country | Plan | Price | Currency |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Alice | 30 | India | Pro | 10 | USD |
+| Alice | 30 | India | Free | 0 | INR |
+| Alice | 30 | India | Enterprise | 50 | JPY |
+| Bob | 25 | Japan | Pro | 10 | USD |
+| Bob | 25 | Japan | Free | 0 | INR |
+| Bob | 25 | Japan | Enterprise | 50 | JPY |
+
+## Remove a row or column
+
+<Steps>
+
+1. In the left navigation, open **Data Sets**, then open the data set.
+2. Hover over the row, or over the column header.
+3. Click the ellipsis icon (⋯) at the start of the row or column.
+4. Click **Remove Row** or **Remove Column**.
+
+</Steps>

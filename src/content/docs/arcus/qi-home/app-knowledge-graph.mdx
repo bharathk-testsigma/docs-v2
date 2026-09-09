@@ -1,0 +1,49 @@
+---
+title: App knowledge graph
+description: The model Arcus builds of your application from its runs, how to read it, and how to explore or dismiss a goal.
+pageType: guide
+verified: 2026-09
+covers:
+  - Open the graph
+  - Explore or dismiss a goal
+  - Read the Graph and Map views
+sidebar:
+  order: 5
+  label: App knowledge graph
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+The **App knowledge graph** is the model Arcus builds of your application as tests run and learning sessions explore it: the features, pages, components, and elements, and how much of each your tests actually assert on. It measures a different surface from the Coverage metric: Coverage reports how many generated test cases you accepted, while the graph reports how much of the application your tests touch. The App knowledge graph is in Beta.
+
+An **orphan node** is an element observed in the app that no test asserts on yet. Each sprint and Adhoc session reports how many its runs surfaced.
+
+## Open the graph
+
+On **QI Home**, click **App knowledge graph**. On a sprint or Adhoc session page, **View orphan nodes** on the App knowledge graph banner opens the same view scoped to its orphans.
+
+The header reports how much of the app is explored: the percentage, and the element count it is based on.
+
+## Explore or dismiss a goal
+
+Goals in the left panel are ordered by feature importance. Each goal is a flow identified in the model, such as "Register for a new bank account", with why it matters and how it was found:
+
+- **Observed**: seen in the app's structure. A goal can be "Observed, not walked": no test case touches it, directly or through a step group.
+- **Required**: implied by requirements.
+- **Journey**: a multi-step user flow.
+
+Four tabs track each goal's state: **Active**, **Exploring**, **Explored**, and **Dismissed**. Expand a goal for its evidence and a **Traced path** through the app. Then act on it:
+
+- Click **Explore** to start an Agentic Learning session on that flow. The goal moves to **Exploring**, and what the session finds surfaces as gaps under the **Agentic Learning** gap type in [Test generation and quality](/arcus/qi-home/test-generation-and-quality/). See [Explore and Automate](/arcus/automation/explore-and-automate/) for how a session runs.
+- Click the arrow beside **Explore**, then select a reason: **Intentionally untested**, **Out of scope**, **False positive**, or **Dead code**. Dismissed goals stay listed under **Dismissed**.
+
+## Read the Graph and Map views
+
+The right side shows the whole app, in 2 views:
+
+- **Graph**: features as nodes, connected by navigation ("one control leads to the other end"). Each node carries its page count, its covered-element ratio, its coverage percentage, how many open items it holds, and a critical tag where it applies. Open a node to expand it in place; shared UI such as the nav, header, and footer is counted once.
+- **Map**: a treemap of the same model, sized by element count and tinted by coverage, so the largest untested surface is the largest block. Each feature block lists its pages with their coverage.
+
+The legend at the bottom lists the node types (feature, page, component, element), the element states (covered, unexplored, picked to explore), and the connection types. Element states are separate from the 4 goal tabs above. The **Showing** dropdown scopes the view by run.
+
+What exploration produces arrives as pending test cases, so review it alongside the rest of the gaps.

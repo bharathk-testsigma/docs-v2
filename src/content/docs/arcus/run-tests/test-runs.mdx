@@ -1,0 +1,117 @@
+---
+title: Test Runs
+description: Create a test run, set its properties, and edit, clone, close, delete, or share one by public link.
+pageType: guide
+verified: 2026-09
+covers:
+  - Create a test run
+  - Test run properties
+  - Edit a test run
+  - Clone a test run
+  - Close a test run
+  - Delete a test run
+  - Share a test run by link
+sidebar:
+  order: 1
+  label: Test Runs
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+**A test run** is a set of test cases gathered for execution, with assignees, statuses, and a schedule of its own. Test cases can be added by hand, pulled in automatically by filter, or added all at once.
+
+This page covers creating a test run, its properties, editing, cloning, closing, deleting, and sharing one by public link.
+
+## Create a test run
+
+<Steps>
+
+1. In the left navigation, open **Test Runs**.
+2. Click **Create Test Run**.
+3. On the **Test Run Details** page, enter a **Title**. A **Description** is optional.
+4. Click **Add Test Cases**.
+5. In the **Attach Test Cases** dialog, choose how to add the test cases, then click **Select Test Cases**.
+   - **Select Test Cases Individually**: only the test cases you pick, with nothing added automatically afterwards.
+   - **Adding Cases Using Filters**: every test case matching your filter criteria, based on test case properties.
+   - **Add All Test Cases**: every available test case.
+6. If you chose **Adding Cases Using Filters**, select the filters and their values, then click **Apply Filters**.
+7. On the **Add Test Cases to Test Run** page, confirm the test cases selected.
+8. Click **Attach Test Cases**. The **Test Run Details** page opens again.
+9. Click **Create Test Run**.
+
+</Steps>
+
+<Aside type="note">
+To change the filters after the run exists, click **Update Filters** on the **Test Run Details** page. The test case selection updates to match.
+</Aside>
+
+## Test run properties
+
+- **Assign Run**: the team member responsible for the run. Click **Assign Team Mate** to set it.
+- **Schedule Run**: the start and end dates of the run, set with the date picker.
+- **Test Environment**: the environment the run executes in, made up of an operating system, a browser, and a device.
+- **Attach Test Plan**: the [test plan](/arcus/run-tests/test-plans/) the run is linked to.
+- **Labels**: tags for categorizing and filtering runs.
+
+## Edit a test run
+
+<Steps>
+
+1. In the left navigation, open **Test Runs**.
+2. Click the ellipsis icon (⋯) next to the test run and select the edit option. Alternatively, open the **Test Run Details** page and click the pencil icon.
+3. Change the **Title**, **Description**, or **Test Run Properties**. To change **Assignees** and **Status**, select the test cases in bulk first.
+4. If the test cases were added by filter, change the filters to update the selection. You can also click **Update Test Cases**.
+
+</Steps>
+
+## Clone a test run
+
+<Steps>
+
+1. In the left navigation, open **Test Runs**.
+2. Click the ellipsis icon (⋯) next to the test run, then click **Clone Run**. The clone is added to the **Active Runs** list.
+3. Edit the clone with the steps in [Edit a test run](#edit-a-test-run).
+
+</Steps>
+
+## Close a test run
+
+Closing a test run locks it against further changes.
+
+<Steps>
+
+1. In the left navigation, open **Test Runs**.
+2. Click the ellipsis icon (⋯) next to the test run, then click **Close Run**. The run moves to the **Closed Runs** list.
+
+</Steps>
+
+<Aside type="note">
+A closed test run can still be cloned.
+</Aside>
+
+## Delete a test run
+
+<Steps>
+
+1. In the left navigation, open **Test Runs**.
+2. Click the ellipsis icon (⋯) next to the test run and select the delete option.
+3. On the **Delete Run?** dialog, click **Delete**.
+
+</Steps>
+
+## Share a test run by link
+
+A public link lets stakeholders without an account see testing progress.
+
+<Steps>
+
+1. In the left navigation, open **Test Runs**, then open the test run.
+2. Click **Share** in the top right.
+3. In the **Share Test Run** dialog, turn on **Anyone with the link can view**.
+4. Click **Copy**.
+
+</Steps>
+
+<Aside type="note">
+The link gives read-only access. Anyone holding it can apply filters to view specific test cases.
+</Aside>

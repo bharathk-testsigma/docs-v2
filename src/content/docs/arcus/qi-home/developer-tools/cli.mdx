@@ -1,0 +1,101 @@
+---
+title: CLI
+description: Install and authenticate the Arcus CLI. Use it through Claude Code to write, validate, and run test cases on your own machine.
+pageType: task
+verified: 2026-09
+covers:
+  - Install and authenticate
+  - Write test cases for your repository
+  - Run test cases locally
+  - Convert existing Playwright or Selenium scripts
+  - Track results in QI Home
+sidebar:
+  order: 10
+  label: CLI
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+The Arcus CLI validates Testsigma test cases and runs them on your own machine, in the repository you are working in. It runs web test cases and Android mobile test cases.
+
+You run 1 npm command to install the CLI and 1 CLI command to authenticate it. After that you work through Claude Code, which writes the test cases and calls the CLI to validate and run them.
+
+<Prerequisites>
+- Node.js and npm.
+- Claude Code.
+- A Testsigma account. The free plan supports writing, validating, and pushing test cases.
+- For Android mobile test cases, a device connected through [Testsigma Terminal](/arcus/get-started/installation/terminal/).
+</Prerequisites>
+
+## Install and authenticate
+
+<Steps>
+
+1. Install the CLI globally.
+
+   ```bash
+   npm install -g @testsigma/arcus-cli
+   ```
+
+2. Authenticate it against your Testsigma account.
+
+   ```bash
+   testsigma login
+   ```
+
+</Steps>
+
+<Aside type="note">
+`testsigma login` authenticates the CLI only. The Claude Code plugin has its own login, and you need both. See [Plugins](/arcus/qi-home/developer-tools/plugins/).
+</Aside>
+
+## Write test cases for your repository
+
+<Steps>
+
+1. Open Claude Code from your project directory.
+2. Run `/arcus:test`, or ask Claude Code for Testsigma test cases. Claude Code writes code-based test cases and includes the element locators it detects in your source.
+3. Review the test cases Claude Code writes.
+4. Read the validation output. The CLI validates each test case offline and reports errors without running it.
+
+</Steps>
+
+## Run test cases locally
+
+<Steps>
+
+1. Confirm your browser or device is available.
+2. When Claude Code offers to run the validated test cases, accept the run.
+3. Read the pass and fail results in the output.
+
+</Steps>
+
+<Aside type="note">
+A test case stays on your machine until you push it. Running one locally does not create it in Arcus. Push it with `/arcus:push`, and it arrives on the **Unlinked Test Cases** tab of [Context Management](/arcus/qi-home/context-management/), or in the sprint you pick.
+</Aside>
+
+## Convert existing Playwright or Selenium scripts
+
+If you already have a Playwright or Selenium suite, ask Claude Code to convert those scripts into Testsigma test cases rather than writing them again. The CLI validates the output and reports what did not translate.
+
+<Steps>
+
+1. Open Claude Code from the directory that holds your existing scripts.
+2. Ask Claude Code to convert the scripts to Testsigma test cases.
+3. Read the validation output for translation errors.
+
+</Steps>
+
+Check each converted test case for:
+
+- **Custom helpers and page objects**: any that did not translate
+- **Waits, retries, and assertions**: any whose Playwright or Selenium form differs from Testsigma's
+- **Hard-coded test data and environment values**: any belonging in a test data profile or an environment
+- **Steps that act outside the application under test**: any that leave the application
+
+## Track results in QI Home
+
+Test cases you write locally and test cases generated from pushed developer context land in the same project. Both feed the same QI Metrics.
+
+Review, coverage, test plans, and metrics all happen in [QI Home](/arcus/qi-home/overview/).

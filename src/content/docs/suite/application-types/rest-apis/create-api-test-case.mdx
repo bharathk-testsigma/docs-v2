@@ -109,6 +109,8 @@ A raw body takes test data references anywhere a value would go, so a POST sends
 
 Here `id` is a random 3-digit number generated at run time, `name` comes from the **DogName** parameter of the bound test data profile, and `status` is static. Any static field can be parameterized the same way.
 
+![A Rest API step with a raw JSON body, the request tabs, and the response pane below](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/raw_body_restapi.png)
+
 ## Send the request and save the step
 
 Click **Send** to run the request live and see the response. Click **Create** to save the step.
@@ -173,11 +175,15 @@ A stored variable holds part of a response for use in a later step or elsewhere 
 
 **Save Response > As an Object** stores the whole response instead of a field. Stored objects have global scope, so they work across test cases, and they can be downloaded from **Save Response** or the **Stored Objects** tab.
 
+![The Stored Objects tab, listing saved responses with a download for each](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/StoreVariables.png)
+
 To use one in a request, the **Global Objects** section links stored objects and other predefined project objects into it, so they are reused rather than re-entered.
 
 ## Attachments
 
 A file sent with a request appears on the **Attachments** tab, and there are 2 ways to send one.
+
+![A form-data body with a file attached to a key](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_attachments_4.png)
 
 - **From form-data**: go to **Body > form-data**, hover the **Key** field and select **File**, upload the file in the **Value** field, and click **Create**
 - **From Binary**: go to **Body > Binary**, upload the file, and click **Create**

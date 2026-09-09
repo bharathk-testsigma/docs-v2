@@ -1,0 +1,100 @@
+---
+title: Dashboards
+description: Read the Dashboard's filters, summary metrics, run and defect charts, and review status tables, and export what you see as a PDF.
+pageType: guide
+verified: 2026-09
+covers:
+  - Filters
+  - Summary metrics
+  - Active runs
+  - Closed test runs
+  - Results from closed test runs
+  - Types of test cases
+  - Defects logged
+  - Test case review status
+  - Export the Dashboard
+sidebar:
+  order: 2
+  label: Dashboards
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+**The Dashboard** shows the current state of test management on one screen: test case counts, execution status, automation coverage, test run trends, defects, and review status. Every chart responds to the filters you set, so you don't have to open a detailed report.
+
+This page covers the filters, each section of the Dashboard, and exporting what you see.
+
+## Filters
+
+Both filters apply to every chart, and they combine. Setting a 1 month range and a single assignee narrows the whole screen to that person's last month.
+
+**Date Range** sets the period the charts cover. Select a range from the **From** dropdown:
+
+- Last 1 day
+- Last 7 days
+- Last 1 month
+- Last 3 months
+- Last 6 months
+- Last 1 year
+- All time
+
+**Assigned To** narrows the charts to one assignee, which lets you track a person's test activity, review how work is distributed, and compare execution metrics between people.
+
+## Summary metrics
+
+The **Dashboard Header** shows 4 figures describing how test cases are distributed across the project.
+
+- **Automation Coverage**: the percentage of test cases that are automated.
+- **Automated Test Cases**: the number of automated test cases.
+- **Manual Test Cases**: the number of manual test cases.
+- **Total Test Cases**: the total number of test cases.
+
+## Active runs
+
+A donut chart of the status of every active test run in the selected date range, covering Passed, Failed, Blocked, In Progress, Retest, Skipped, and Untested. Use it to judge the current state of execution.
+
+<Aside type="tip">
+Click **View Active Runs** for the full list.
+</Aside>
+
+## Closed test runs
+
+A line chart of how many test runs were closed over time, with each point showing the count of runs closed on that date. Use it to see how test cycles complete.
+
+<Aside type="tip">
+Click **View Closed Runs** for the full list.
+</Aside>
+
+## Results from closed test runs
+
+A horizontal stacked bar chart of the test case results from closed runs, with each bar grouped by status across Passed, Failed, Blocked, Skipped, Retest, and In Progress. Use it to judge the outcome of recently completed runs.
+
+## Types of test cases
+
+A donut chart of how test cases are distributed by category, across Functional, Integration, Non-Functional, Unit Test, and User Experience. The chart also shows the total number of test cases.
+
+<Aside type="tip">
+Click **View Test Cases** to open the **Test Case List** page.
+</Aside>
+
+## Defects logged
+
+A bar chart of the defects logged in the selected period. Use it to spot periods of high defect activity.
+
+## Test case review status
+
+Two tables covering both sides of review.
+
+**Awaiting My Review** lists the test cases assigned to you for review, so you can see what's pending. Its columns are **Test Case Name**, **Assignee**, and **Submitted Time**.
+
+**Submitted for Review** lists the test cases you submitted, so you can track their progress. Its columns are **Test Case Name**, **Reviewer**, and **Submitted Time**.
+
+## Export the Dashboard
+
+<Steps>
+
+1. On the **Dashboard**, apply the filters you want.
+2. Click **Export**.
+3. In the **Export Report as PDF** dialog, enter a name and click **Download PDF**.
+
+</Steps>

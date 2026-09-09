@@ -1,0 +1,86 @@
+---
+title: Step Groups
+description: Create a step group, build one from steps already in a test case, add it to a test case, and edit or delete it.
+pageType: guide
+verified: 2026-09
+covers:
+  - Create a step group
+  - Create a step group from a test case
+  - Add a step group to a test case
+  - Edit a step group
+  - Delete a step group
+sidebar:
+  order: 2
+  label: Step Groups
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+**A step group** is a set of test steps you save once and link to multiple test cases. Steps that repeat across cases are maintained in one place instead of being added to each case by hand.
+
+This page covers creating a step group, building one from steps you already have in a test case, adding it to a test case, and editing or deleting it.
+
+## Create a step group
+
+<Steps>
+
+1. In the left navigation, open **Step Groups**.
+2. Click **Create Step Group**.
+3. On the **Step Group Details** page, enter a **Title**. A **Description** is optional.
+4. Add the test steps.
+5. (Optional) Attach files such as screenshots, logs, or documents, up to 25 MB.
+6. Click **Create Step Group**.
+
+</Steps>
+
+## Create a step group from a test case
+
+Use this when the steps you want to reuse are already written in a [test case](/arcus/create-and-manage/test-cases/).
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then create or open a test case.
+2. On the **Test Case Details** page, click **Create Step Group**. The **Select Steps for Step Group** overlay opens.
+3. Select the test steps to include.
+4. Click **Create Step Group**. The **Create Step Group** page opens in a new tab.
+5. Add or change steps as needed, then click **Create Step Group**.
+
+</Steps>
+
+## Add a step group to a test case
+
+<Steps>
+
+1. In the left navigation, open **Test Cases**, then create or open a test case.
+2. On the **Test Case Details** page, click **Add Step Group**.
+3. Select the step group, then click the plus icon (+). The step group is added to the test case.
+
+</Steps>
+
+## Edit a step group
+
+<Steps>
+
+1. In the left navigation, open **Step Groups**.
+2. Click the ellipsis icon (⋯) next to the step group, then select **Edit**.
+3. Change the title, description, attachments, or test steps. Changes save automatically.
+
+</Steps>
+
+<Aside type="note">
+Editing a step group updates it in every test case linked to it.
+</Aside>
+
+## Delete a step group
+
+<Aside type="note">
+Deleting a step group unlinks it from every test case that uses it. This cannot be undone.
+</Aside>
+
+<Steps>
+
+1. In the left navigation, open **Step Groups**.
+2. Click the ellipsis icon (⋯) next to the step group, then select **Delete**.
+3. On the **Delete Step Group?** dialog, select the confirmation checkbox and click **Delete**. The step group is removed from the list.
+
+</Steps>

@@ -67,6 +67,8 @@ When you change the steps, Copilot recalculates the execution flow so the run st
 
 </Steps>
 
+![The Copilot launch panel, with the initial debug point, execute-from step, environment, and Launch](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/launch_copilot_5.png)
+
 Copilot opens a browser window on the test case's URL, and the steps panel and the application sit side by side.
 
 <Aside type="note">
@@ -135,6 +137,8 @@ Recording captures your own actions as steps, adds them to the running session, 
 
 </Steps>
 
+![The Copilot steps panel with 2 recorded steps pending, and Add Steps or Discard](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/record_copilot_7.png)
+
 Steps inserted below the last executed step run automatically once added. Steps inserted above it need **Resume**.
 
 ### Record at the end
@@ -163,6 +167,8 @@ When execution was already complete, the recorded steps run automatically after 
 
 This dialog appears when you resume a paused run after adding recorded steps. Click **Restart Execution** to run from the beginning, or **Dismiss** to continue from where execution stopped. After dismissing, set the application state manually so it matches the step about to run.
 
+![The Browser state changed dialog, with Restart Execution and Dismiss](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/record_copilot_15.png)
+
 ## Generate test steps in the recorder
 
 Copilot reads the page or screen in front of you and drafts test scenarios from it, so a test case starts from what the application actually shows rather than from a blank step.
@@ -182,6 +188,8 @@ Generating steps needs **Generative AI features** turned on under **Settings > P
 5. Click **Generate Test Cases** in the **Testsigma Copilot** overlay. Copilot generates scenarios from the current page content.
 6. Open a generated test case to see its steps.
 7. Select the steps you want, then click **Add to test case** to import them into the recorder.
+
+![The Testsigma Copilot overlay beside the steps panel, with Generate Test Cases and the prompt box](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/LE_copilot_3.png)
 
 To ask for something specific instead, enter a prompt in the **Testsigma Copilot** overlay at step 5 and press **Enter**. Copilot generates steps for what you described, and **Add to test case** imports them the same way.
 
@@ -237,6 +245,8 @@ The ellipsis icon `⋮` on a step carries the rest of the options:
 - **Step Above** and **Step Below**: insert an empty step and open the inline editor
 - **Delete Step**: removes the step
 
+![The step ellipsis menu open in a Copilot session, over the application under test](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/edit_copilot_6.png)
+
 <Aside type="note">
 **Execute from Here** does not run the earlier steps, so the browser may not be in the state this step expects. Set the application to the right state before you use it.
 </Aside>
@@ -272,6 +282,8 @@ Hover over a step and click the checkbox that appears in place of the step numbe
 - **Create Step Group**: combines them into a step group
 - **Delete**: removes them permanently
 
+![The floating action bar in a Copilot session, with every step selected](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/bulk_copilot_2.png)
+
 ## Set up a browser profile for recording
 
 Copilot loads the Testsigma recorder extension into the browser it opens. The profile mode controls how. Go to **Settings > Preferences**, scroll to **Copilot & Recorder Extension**, and select one of 3 options.
@@ -281,6 +293,8 @@ Copilot loads the Testsigma recorder extension into the browser it opens. The pr
 | Automatic | Testsigma, fresh each session | Testsigma's bundled extension, loaded every session | You do not need a profile that lasts, or your own extensions. This is the default, and needs no setup |
 | Managed profile | Testsigma, reused across sessions | The Chrome Web Store, installed once | You want the extension already there and your browser settings kept, without maintaining a profile |
 | Your own browser profile | Your team | You install it in your own profile | Your security policies require you to control every profile |
+
+![The Copilot & Recorder Extension setting on the Preferences page, with the 3 profile modes](https://s3.amazonaws.com/static-docs.testsigma.com/new/projects/applications/Recorder_Setup.png)
 
 With **Managed profile**, Testsigma creates a user-data directory inside the Testsigma data directory on the first session and reuses it afterwards, along with any browser settings you apply. Install the recorder extension from the Chrome Web Store once.
 
@@ -356,6 +370,8 @@ A debug point is a checkpoint on a step that pauses a run there, so you can insp
 Hover over a step that has not executed yet and click the **Place Debug Point** icon. Repeat on any other steps you want to pause at. To clear a debug point, click its red dot again, and execution continues past that step.
 
 The step widget marks both the debug point and the execution point.
+
+![A Copilot session paused, with a debug point on one step and the execution point marker beside it](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/debug_copilot_3.png)
 
 ## Use the debug toolbar
 

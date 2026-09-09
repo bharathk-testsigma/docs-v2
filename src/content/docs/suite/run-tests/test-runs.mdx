@@ -87,6 +87,8 @@ What each application type needs differs, including which labs it can run on:
 
 **Additional Settings** apply to web, mobile web, Android, and iOS. They hold the **Environment**, **Screenshot Capture** for **All Steps** or **Failed Steps** alone, **Page Timeout** for how long a test waits for a page, and **Element Timeout** for how long it waits for an element. Desktop Windows and Rest API take the **Environment** on its own.
 
+![The Ad-Hoc Run panel, with the test labs, the machine, additional settings, and desired capabilities](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/webappliaction_adhocrun.png)
+
 ### Run a prerequisite first
 
 A test case can run another test case before it. Open the test case, click **Test Case Settings**, and select the prerequisite from the dropdown. In a dry run the prerequisite executes first, and the order appears as the **Execution sequence** on the test case results page. See [Test case settings](/suite/create-and-manage/advanced-settings/test-case/) for how a prerequisite behaves in a plan.
@@ -137,6 +139,8 @@ A partial run executes some of a plan rather than all of it.
 Click **Save As Favorite** and name the configuration to reuse it, or to trigger this partial run through the API.
 </Aside>
 
+![The Partial Test Plan Run dialog, with include or exclude suites and the resulting test case count](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_test_execution_6.png)
+
 ## Run on local devices
 
 Local execution suits an application that is only reachable inside your network. It needs the Testsigma agent set up on the machine.
@@ -172,6 +176,8 @@ Private Grid runs tests in parallel across browsers, operating systems, and mach
 
 Setting one up needs the Testsigma agent, Core Java with OpenJDK 18, the Testsigma Private Grid folder, and an ngrok setup. The full setup covers creating a dynamic agent through `POST https://app.testsigma.com/api/v1/agents`, starting that agent with a `jwtApiKey`, starting the hub and its web nodes, and then executing tests either through the REST API or from the application.
 
+![The Testsigma Hub distributing tests from the client to browser nodes on macOS, Windows, and Linux](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/TestsigmaHub.png)
+
 ## Parallel runs and queues
 
 Your subscription sets 2 limits: the parallel executions allowed at once, and the queue allowed behind them.
@@ -187,6 +193,8 @@ On Android and iOS, turning on the recorder consumes an extra parallel execution
 <Aside type="note">
 A Copilot session launched from the action panel consumes a Copilot parallel, and one on the Testsigma Cloud Lab also occupies a cloud parallel for its duration. A session launched through Agentic Learning consumes an Atto session instead.
 </Aside>
+
+![Parallel Tests Usage, showing the parallel tests and allowed queue in use](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/PATests.png)
 
 ## Related run features
 

@@ -16,6 +16,10 @@ export const collections = {
 			// vX.Y.Z, so the date is the one identifier every release has.
 			date: z.string(), // e.g. "June 16, 2026"
 			headline: z.string(),
+			// Which product's feed this release belongs to. Defaults to suite so
+			// the ~40 Suite files that predate Arcus's return need no backfill;
+			// only an Arcus release has to say so.
+			product: z.enum(['suite', 'arcus']).default('suite'),
 		}),
 	}),
 

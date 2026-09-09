@@ -78,6 +78,8 @@ Go to **Create Tests > Elements**, click **Create Element**, fill in the fields,
 - **Element Type**: **XPATH**, **ID**, **Name**, **Class Name**, or **Accessibility ID**. These are the 5 types the dropdown offers
 - **Enter Value**: the locator value for the type you selected
 
+![The Create Element panel, with the name, screen name, element type, and value fields](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_web_elements_3.png)
+
 <Aside type="tip">
 Click **Record Element** on the **Create Element** page to capture the element instead of typing its locator.
 </Aside>
@@ -130,6 +132,8 @@ Recording needs the Testsigma Chrome extension and an application you can reach.
 6. Click **Stop**.
 
 </Steps>
+
+![The Record Elements panel over the application, listing a captured element and its screen name](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_elements_5.png)
 
 The recorder returns you to the **Elements** page with everything you captured.
 
@@ -284,6 +288,8 @@ Locator precedence tells the recorder which locator type to reach for first, acr
 
 </Steps>
 
+![The Locator precedence panel in the recorder, with the locator types in draggable order](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/lplpovrly.png)
+
 <Aside type="note">
 Testsigma reverts to the default order if you leave without saving.
 </Aside>
@@ -307,6 +313,8 @@ Verify an element during recording rather than waiting for a run to fail on it.
 4. If the element does not exist, a message says so. Correct the locator and verify again until it highlights.
 
 </Steps>
+
+![The Update Element panel in the recorder, with Verify below the captured element image](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/verify_elements_7.png)
 
 ## Update an element
 
@@ -332,6 +340,12 @@ An image element identifies a control by pixel recognition instead of the DOM, w
 
 </Steps>
 
+![Capture Element in the recorder, with Image as the element type and Capture or Upload for the image](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_learn_elements_5.png)
+
+Crop the capture tight to the control, with even padding on all sides. A capture that includes surrounding background, or cuts the control off, matches less reliably.
+
+![Tight, evenly padded captures work; loose, cropped, or context-heavy ones do not](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Dos_donts_padding.png)
+
 The element is saved to the elements list. You can also do this from a test case: click **Record**, create a step that takes an element, click the element, and select **Create Element**.
 
 ## Shadow DOM elements
@@ -346,6 +360,8 @@ To check whether a page uses one, right-click the page, select **Inspect**, expa
 | Shadow tree | The hidden tree of DOM elements inside the shadow DOM |
 | Shadow boundary | The line separating the shadow DOM from the main DOM |
 | Shadow root | The root node of the hidden tree |
+
+![Chrome DevTools showing a #shadow-root in the element tree, with Copy selector in the context menu](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/captureelement_shadowdom.png)
 
 Capture one from **Create Tests > Elements**: click **Create Element**, click **Record Element** in the overlay, open the page in a new tab, click the element, and click **Capture**.
 
@@ -413,6 +429,8 @@ Larger teams can turn on review management for elements, so an element is review
 Import and export move elements between application versions, in the same project or a different one. They also handle bulk edits: export the elements, change them in the file, and import the file back.
 
 To import, go to **Create Tests > Elements**, click **Import**, click **Browse File** and select your file, choose **Overwrite** or **Ignore** for duplicates, then click **Import**.
+
+![The element Import panel, with the uploaded file and the Overwrite or Ignore choice for duplicates](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_IE_elements_4.png)
 
 To export, go to **Create Tests > Elements** and click **Export**.
 

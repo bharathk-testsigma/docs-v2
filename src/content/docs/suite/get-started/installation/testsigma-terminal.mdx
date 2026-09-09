@@ -159,9 +159,13 @@ Java agent files sit at `Disk > Users > user_folder > Library > Application Supp
 
 The left panel holds 2 execution sections, Copilot and Agentic, and 5 pages for monitoring and configuration.
 
+![The Testsigma Terminal window, with the Copilot and Agentic sections and the monitoring pages in the left panel](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/terminal_updates_1.png)
+
 **Copilot** is the execution engine for web, Salesforce, and desktop applications. It downloads and configures its dependencies on first setup, and the application's status indicator turns from blue to green while a session is running.
 
 **Agentic** powers Atto, the agentic Copilot, and is available to enterprise accounts. It manages its own dependency downloads and runs independently of Copilot. For accounts without it, the panel shows upgrade availability per application type, and **Upgrade to Enterprise** enables the agentic features for the application you select.
+
+![The Active Executions page, listing a running session with its run ID, test name, execution type, and user](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Active_sessions_1.png)
 
 **Active Sessions** shows local executions as they happen, with the run ID, the test name, the execution type such as Web Copilot, the user who triggered it, and the timestamp. It refreshes when a run completes or stops, shows agent readiness for local mobile executions, and lists local API executions, so there is no need to refresh the dashboard during a local run.
 
@@ -177,6 +181,8 @@ The left panel holds 2 execution sections, Copilot and Agentic, and 5 pages for 
 - **Security and Certificates**: the **Trust Store Type**, either **JKS** or **PKCS12**, and **Delegate SSL Validation** for how the Terminal validates certificates during execution.
 - **Network and Proxy**: **Configure Proxy** sets the host, port, user, and password per protocol for HTTP and HTTPS, plus the **Non Proxy Hosts** that bypass it.
 - **Runtime and JVM**: the **Engine version**, either **Modern**, which is recommended, or **Classic**, along with additional JVM arguments as key-value pairs and **Min** and **Max** memory allocation in MB or GB.
+
+![Terminal Settings, with the Updates, Security and Certificates, Network and Proxy, and Runtime and JVM groups](https://s3.amazonaws.com/static-docs.testsigma.com/new/projects/applications/Terminal_Settings_Left_Nav.png)
 
 **Info** shows device specifications, the current version and port configuration, the Terminal's directory path, and links to help and support.
 

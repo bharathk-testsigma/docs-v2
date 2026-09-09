@@ -32,8 +32,10 @@
 import ThemeSelect from './ThemeSelect.astro';
 import Search from './Search.astro';
 // The tab strip is gone (Bharath, 2026-08-14 — its 49px was wasted height).
-// The product switcher is gone too (2026-08-17): only Suite ships for now;
-// a switcher returns with Arcus.
+// The product switcher came back with Arcus (2026-09-02), in the brand
+// cluster rather than the rail head it used to sit in.
+import ProductSwitcher from './ProductSwitcher.astro';
+import { isArcusPath } from '../starlightRouteData';
 
 // Docs home hides the search pill and Ask button, and gains the
 // "| Documentation" label beside the logo. The <Search /> dialog still mounts
@@ -44,6 +46,12 @@ import { stripBase, withBase } from '../lib/base';
 // stripBase: under /docs-new the pathname carries the base, so the bare
 // comparison would never match and home would lose its header treatment.
 const isHome = stripBase(Astro.url.pathname).replace(/\/+$/, '') === '/home';
+
+// The brand lock-up goes to the CURRENT product's overview: hard-coding Suite
+// here would make the logo a way OUT of Arcus on every Arcus page.
+const brandHref = isArcusPath(Astro.url.pathname)
+	? '/arcus/get-started/overview/'
+	: '/suite/get-started/overview/';
 ---
 
 <div class:list={['ts-bar', { 'ts-bar-home': isHome }]}>
@@ -100,7 +108,7 @@ const isHome = stripBase(Astro.url.pathname).replace(/\/+$/, '') === '/home';
 			</button>
 
 			<span class="ts-brand">
-				<a href={withBase('/suite/get-started/overview/')} class="ts-brand-site" aria-label="Testsigma docs">
+				<a href={withBase(brandHref)} class="ts-brand-site" aria-label="Testsigma docs">
 				{/* Two files, not one filtered file: the brand lock-up is a teal gear
 				    beside a near-black wordmark, and no CSS filter can lighten the
 				    word without dragging the gear off-brand with it. The dark one is
@@ -124,6 +132,8 @@ const isHome = stripBase(Astro.url.pathname).replace(/\/+$/, '') === '/home';
 				<span class="ts-brand-docs">Docs</span>
 				</a>
 			</span>
+
+			<ProductSwitcher />
 		</div>
 
 		<div class="ts-searchcol">

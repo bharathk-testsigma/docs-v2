@@ -1,0 +1,126 @@
+---
+title: Explore and Automate
+description: Run an Agentic Learning session on Testsigma Lab, control it while it runs, save the automated steps it generates, and re-learn a test case after your application changes.
+pageType: guide
+verified: 2026-09
+covers:
+  - Start a session
+  - Control the session
+  - Generate and save the automated steps
+  - Run the steps with Copilot
+  - Re-learn a test case
+sidebar:
+  order: 1
+  label: Explore and Automate
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+**Agentic Learning** runs each manual step of a test case against your live application and generates automated steps from the result. You write no scripts.
+
+## Start a session
+
+You need a [test case](/arcus/create-and-manage/test-cases/) already saved in your library with manual steps, and your application reachable from a cloud environment, either at a publicly accessible URL or through a configured test environment.
+
+<Aside type="note">
+Agentic Learning runs Web application types on Testsigma Lab. The **Android** and **iOS** application types and the **Local Devices** test lab are labeled **Soon** in the panel and are not available yet. [Copilot execution](/arcus/automation/copilot/) does support local devices today.
+</Aside>
+
+Two entry points open the same panel, which is labeled **Explore and Automate** in a review and **Learn and Automate** on a test case.
+
+<Steps>
+
+1. Open a test case from your library, or from a review in [Test generation and quality](/arcus/qi-home/test-generation-and-quality/).
+2. Click **Explore and Automate**, or **Learn and Automate**.
+3. Select the **Application** type: **Web**.
+4. Under **Test Lab**, select **Testsigma Lab**.
+5. Click **Launch**. A new browser tab opens with the Agentic Learning panel.
+
+</Steps>
+
+## Control the session
+
+The Agentic Learning panel opens alongside the browser and lists the steps of your test case. Each step gets a checkmark as the session validates that step. The session starts as soon as the panel opens.
+
+### Panel controls
+
+- **Start Learning Live App**: starts the session. It appears while the session is still waiting to begin.
+- **Record Step**: records the current state of the browser as a step. Use it if a step was missed, or to add a step that isn't in the original test case.
+- **Pause**: stops walking through steps and waits for you to resume.
+- **Resume**: continues after a pause.
+- **Stop**: ends the session without generating automated steps.
+
+### Session states
+
+| State | What it means | What you see |
+| :--- | :--- | :--- |
+| Learning | Agentic Learning runs each step in order. | A spinner on the current step, and the status "Learning..." in the panel. |
+| Needs your input | A step can't be completed without guidance. The session is paused. | A banner on the test case view reading "Atto is waiting on your input to continue learning", with a **Go to Session** button beside it. |
+| Completed | Every step is validated. | Checkmarks on the steps list, and the **Generate Automated Steps**, **Save to Library**, and **Reject** buttons. |
+| Generation Failed | Automated steps couldn't be generated from the session. | A "Generation Failed" error with an **Edit** option. |
+
+On the sprint or Adhoc session view, the test case carries its own status while a session runs: learning in progress, waiting on input, or automated once the steps are saved.
+
+<Aside type="note">
+This panel still labels the agent **Atto**, the former name for Arcus.
+</Aside>
+
+### Provide input when a session pauses
+
+<Steps>
+
+1. On the test case view, click **Go to Session** in the banner. The browser tab holding the session opens.
+2. In the browser, complete the action that couldn't be performed, such as a CAPTCHA or a multi-factor authentication step. The session resumes automatically once you finish.
+
+</Steps>
+
+Do not close the browser tab before you complete the action. Closing it ends the session, and you start a new one.
+
+## Generate and save the automated steps
+
+When a session completes, the learned steps aren't automated steps yet.
+
+<Steps>
+
+1. Click **Generate Automated Steps**. Arcus converts the learned steps into automated steps.
+2. Review the generated automated steps.
+3. Click **Save to Library**.
+4. Select the folder where this test case belongs.
+5. Click **Save**. A success screen reports how many steps were automated, how long the session took, and an estimate of the time saved against running the case manually.
+6. Click **Go to Test Case** to return to the test case detail view.
+
+</Steps>
+
+Click **Reject** to discard the steps this session generated. The test case stays manual, and you can start a new session.
+
+## Run the steps with Copilot
+
+When a session completes, **Run with Copilot** appears in the panel. [Copilot execution](/arcus/automation/copilot/) runs the generated steps in a live browser.
+
+<Aside type="note">
+Anything unsaved is lost when you end the session. Ending it also releases the cloud machine.
+</Aside>
+
+<Steps>
+
+1. Click **Run with Copilot**. A dialog confirms "This ends your Agentic Learning session and opens Copilot in a fresh machine."
+2. Click **Continue**. The Agentic Learning session closes and a new browser tab opens with the Copilot panel, which starts executing the steps.
+3. When execution finishes, a dialog reports "Test Case Executed Successfully." Click **Save Test Case**.
+4. Select the folder and click **Save**.
+5. Click **Save and End** or **Reject and End** to close the session.
+
+</Steps>
+
+## Re-learn a test case
+
+After a test case is automated, **Re-learn and Automate** replaces **Learn and Automate** on the test case view. Use it when your application has changed and the automated steps no longer match.
+
+<Steps>
+
+1. On the test case view, click **Re-learn and Automate** in the top action bar.
+2. Complete the dialog as you did for the first session, then click **Launch**.
+3. When the session completes, save the new automated steps to your library. They replace the previous ones.
+
+</Steps>
+
+The previous automated steps stay in your library until you save the new ones. Rejecting the new session discards only what it generated, so the original steps remain.

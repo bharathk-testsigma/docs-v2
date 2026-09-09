@@ -32,6 +32,8 @@ Five parts make up the connection.
 | REST API client or browser | The automation environment, which uses the tunnel server as its proxy |
 | Remote address | The server URL you are testing, whether `localhost`, a privately hosted site, or a public one |
 
+![The tunnel client inside your network connecting through the API gateway to the auth and proxy servers, which drive the browser VMs](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/TS_Tunnel_Arch.png)
+
 The client holds a bidirectional tunnel open between Testsigma and the remote address.
 
 ## System requirements
@@ -405,7 +407,11 @@ For an automated test, open the test case, click **Run**, select the **Test Lab*
 |---|---|---|
 | `testsigmaLab.tunnelName` | String | `<tunnel_name>` |
 
+![The Desired Capabilities section with testsigmaLab.tunnelName set to a tunnel name](https://s3.amazonaws.com/static-docs.testsigma.com/new_images/projects/applications/tunnel_desired_cap.png)
+
 For live REST API testing, open the REST API step, go to **Settings**, and enter the tunnel name in **Tunnel Name**.
+
+![The Settings tab of a REST API step, with the Testsigma Connect Tunnel name field](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Testsigma_Tunnel_API.png)
 
 <Aside type="note">
 A REST API test saved with a tunnel name uses that tunnel during automation, unless `testsigmaLab.tunnelName` in the run form overrides it. Setting up the tunnel is not enough on its own: without the capability or the tunnel name on the step, the run goes to the cloud lab and never uses the tunnel.
