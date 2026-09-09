@@ -1,5 +1,8 @@
 ---
 title: Testsigma Support Knowledge — Common Questions
+# Every answer below is a Suite screen or Suite behaviour, so it must not
+# reach an Arcus reader. Takes effect on the next index rebuild.
+product: suite
 ---
 
 ## Why can't I delete a feature or scenario in Testsigma Suite?

@@ -1,0 +1,46 @@
+---
+title: API Keys
+description: Generate an API key for the Arcus API, then disable, re-enable, or delete an existing key.
+pageType: task
+verified: 2026-09
+covers:
+  - Generate an API key
+  - Manage existing keys
+sidebar:
+  order: 5
+  label: API Keys
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+**An API key** authenticates calls to the Arcus by Testsigma API, which you can use to create projects, test cases, test runs, and test plans, and to execute them.
+
+## Generate an API key
+
+<Steps>
+
+1. In the left navigation, go to **Settings > API Keys**.
+2. Click **Generate New Key**.
+3. In the **Generate Key** dialog, enter a **Key Name**.
+4. Click **Generate**.
+5. Copy the key.
+
+</Steps>
+
+<Aside type="note">
+Arcus shows the key once and never again, so a lost key has to be replaced with a new one. Store it as securely as a password, since it authorizes calls against your account.
+</Aside>
+
+## Manage existing keys
+
+The **API Keys** page lists every key with its name, when it was last used, whether it is **Active** or **Inactive**, and who owns it.
+
+Click the ellipsis icon (⋮) on a key for its actions:
+
+- **Disable Key**: stops the key working, and moves it to **Inactive**. Shown on an active key.
+- **Re-Enable Key**: puts an inactive key back into service. Shown on an inactive key.
+- **Delete Key**: removes the key permanently.
+
+<Aside type="note">
+Deleting a key can't be undone, and anything authenticating with it stops working. Disable the key first if you want to check what breaks before committing.
+</Aside>

@@ -1,0 +1,94 @@
+---
+title: Email
+description: Configure SMTP, choose which events send an email, and edit the subject line and body each notification uses.
+pageType: task
+verified: 2026-09
+covers:
+  - Configure SMTP
+  - Notification events
+  - Customize a notification
+  - Send notifications from a test plan
+sidebar:
+  order: 230
+  label: Email
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Arcus by Testsigma emails your team about test activity. You choose which events trigger an email, and edit the subject line and body each one uses.
+
+<Prerequisites>
+- To be added as a user in Arcus by Testsigma.
+</Prerequisites>
+
+<Aside type="note">
+Email notifications need **SMTP Configuration** turned on. Until it is, the **Customise Email Notifications** page shows a prompt to configure SMTP and no email is sent.
+</Aside>
+
+## Configure SMTP
+
+Simple Mail Transfer Protocol (SMTP) decides which server sends your notifications. Sending from your own authenticated address keeps notifications on your domain.
+
+To use your own server, get these from your email service provider first:
+
+- The SMTP server address.
+- The port number.
+- A valid username and password.
+- Any additional parameters your provider requires.
+
+<Steps>
+
+1. In the left navigation, go to **Settings > SMTP Configuration**.
+2. Turn on the **SMTP Configuration** toggle.
+3. Select **Own**, then enter the **Host**, **Port**, **Username**, and **Password**.
+4. Click **Save**.
+
+</Steps>
+
+Email notifications are then sent from the address you configured.
+
+<Aside type="note">
+Select **Testsigma** instead to send from the default Testsigma address. You don't need any provider details for that option.
+</Aside>
+
+## Notification events
+
+You configure notifications one event at a time. Turn each event on or off as needed.
+
+- **Test Plan Completed**: a test plan completes.
+- **Test Run Assigned**: a test run is assigned to a user.
+- **Test Run Completed**: a test run's status changes or it completes.
+- **Test Case Assigned**: a test case is assigned to a user.
+- **Test Case Waiting on Review**: a test case is submitted for review.
+- **Test Case Approved**: a test case is approved.
+- **Test Case Rework Requested**: a test case needs rework.
+- **Comments Mentioned**: a user is mentioned in a comment.
+- **Test Run Added to Test Plan**: a test run is added to a test plan.
+- **Test Plan Daily Summary**: a daily summary of test plan progress.
+
+Each event has its own subject line, listed beside it on the **Customise Email Notifications** page. Subjects can include variables such as `{{TestPlanTitle}}` and `{{TestRunId}}`, which are filled in when the email is sent.
+
+## Customize a notification
+
+<Steps>
+
+1. In the left navigation, go to **Settings > Notifications**.
+2. Expand **Notifications**, then click **Email**. The **Customise Email Notifications** section opens.
+3. Hover over the event you want to change and click the edit icon.
+4. Update the **HTML Content**.
+5. (Optional) Click **Send Test Email** to check the template.
+6. Click **Save**.
+
+</Steps>
+
+## Send notifications from a test plan
+
+<Steps>
+
+1. In the left navigation, open **Test Plans**, then create or open a [test plan](/arcus/run-tests/test-plans/).
+2. In the **Notifications** section, enter the email addresses to notify. Separate multiple addresses with commas.
+
+</Steps>
+
+Arcus sends an email when the test plan is created or updated.

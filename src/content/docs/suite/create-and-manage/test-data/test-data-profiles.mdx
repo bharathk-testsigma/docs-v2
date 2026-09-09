@@ -63,6 +63,8 @@ Search from the bar at the top of the left panel. Results filter as you type, ac
 Turn on the toggle in the **ETF** (Expected to Fail) column to mark a data set as expected to fail during execution.
 </Aside>
 
+![A new test data profile, with the controls that add a row and a column](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/add_new_row_column_tdp.png)
+
 ## Mask sensitive values
 
 Mask a parameter that holds passwords or tokens, so its values show as dots to everyone.
@@ -72,6 +74,8 @@ Open the profile, enter the values in the parameter column, click the lock icon 
 <Aside type="note">
 Masking hides the values in the interface only. Execution uses the real values.
 </Aside>
+
+![The lock icon on a profile column, warning that encrypting the data conceals the original](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Lock_Data_in_TDP.png)
 
 ## Import a profile
 
@@ -102,6 +106,8 @@ An import needs an XLSX file carrying three mandatory columns, followed by one c
 </Steps>
 
 Testsigma emails you when the import finishes. Refresh the page to see the profile in the tree.
+
+![The Import Test Data Profile dialog, with the file, the name, and the columns to encrypt](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Details_for_TDP_to_Import.png)
 
 ## Replace a profile
 
@@ -157,6 +163,8 @@ To use a parameter in a step, click **Add new step** and write a step carrying a
 Steps name a parameter directly, as `@Email` for a column called `Email`. Renaming that column breaks the steps rather than following the rename.
 </Aside>
 
+![Test Case Settings with Data Driven on and the Filter Type options](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Filter_Type_for_Data_Driven_test.png)
+
 ## Iterate from a runtime value
 
 A data-driven test runs every data set from start to end. To start and stop at values decided during the run, store them in a prerequisite test case and point the iteration at those variables.
@@ -197,6 +205,8 @@ Two more things work on a data set name. The `store-iteration-count-test-data-se
 
 The test data in your test steps is replaced with the generated data.
 
+![Generate TDP with AI at the foot of the Test Data Profile list in Test Case Settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/TDP_with_AI.png)
+
 ## Delete profiles
 
 <Steps>
@@ -210,8 +220,6 @@ The test data in your test steps is replaced with the generated data.
 4. Enter `Delete` in the **Delete List of Test Data** prompt and click **I understand, delete this test data**.
 
 </Steps>
-
-{/* SCREENSHOT NEEDED: a test data profile grid with the ETF column, a locked sensitive parameter, and the import icon in the top bar */}
 
 ## FAQs
 

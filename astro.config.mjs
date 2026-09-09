@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { suite } from './src/data/sidebar-suite.mjs';
+import { arcus } from './src/data/sidebar-arcus.mjs';
 import { DOCS_BASE, withDocsBase } from './src/lib/site-config.mjs';
 import { rehypeBaseLinks } from './src/lib/rehype-base-links.mjs';
 
@@ -46,6 +47,25 @@ export default defineConfig({
 		// material is now Concepts.
 		'/suite/get-started/terminology/': withDocsBase('/suite/get-started/concepts/'),
 		'/suite/get-started/execution-stacks/': withDocsBase('/suite/get-started/concepts/#where-tests-run'),
+
+		// Arcus QI Home restructure (2026-09-09). The rail moved these pages twice
+		// in one sitting, and a dev tab left open on an old path renders a
+		// content-collection crash rather than a 404, so the dead ids get kept.
+		'/arcus/qi-home/learn-and-execute/': withDocsBase('/arcus/automation/explore-and-automate/'),
+		'/arcus/qi-home/explore-and-automate/': withDocsBase('/arcus/automation/explore-and-automate/'),
+		'/arcus/qi-home/copilot/': withDocsBase('/arcus/automation/copilot/'),
+		'/arcus/qi-home/generate-tests/': withDocsBase('/arcus/qi-home/test-generation-and-quality/'),
+		'/arcus/qi-home/cli/': withDocsBase('/arcus/qi-home/developer-tools/cli/'),
+		'/arcus/qi-home/mcp/': withDocsBase('/arcus/qi-home/developer-tools/mcp/'),
+		'/arcus/qi-home/plugins/': withDocsBase('/arcus/qi-home/developer-tools/plugins/'),
+		'/arcus/get-started/installation/cli/': withDocsBase('/arcus/qi-home/developer-tools/cli/'),
+		'/arcus/get-started/installation/plugins/': withDocsBase('/arcus/qi-home/developer-tools/plugins/'),
+
+		// Pages deleted 2026-09-09. AI agents folded into QI Home overview's
+		// "The agents" section; Settings' own landing page went away and the
+		// section now opens on its first real row.
+		'/arcus/qi-home/ai-agents/': withDocsBase('/arcus/qi-home/overview/#the-agents'),
+		'/arcus/settings/settings/': withDocsBase('/arcus/settings/test-properties/'),
 	},
 	// Authors write in-site links as '/suite/...'; this re-prefixes them with
 	// `base` at build time. See the plugin for why it is not done in content.
@@ -59,6 +79,11 @@ export default defineConfig({
 			// in public/favicon.svg, which Starlight falls back to when this is
 			// unset). Same mark the sidebar head uses, extracted from
 			// testsigma-logo.svg -- one asset for both.
+			// Search is indexed per product by scripts/build-pagefind.mjs (run from
+			// `postbuild`), which writes dist/pagefind and dist/pagefind-arcus.
+			// Starlight's own integration indexes the whole site into one bundle,
+			// which would put Arcus pages in Suite's results and vice versa.
+			pagefind: false,
 			favicon: '/testsigma-mark.svg',
 			// The SVG above is the primary icon and stays crisp at any size, but it
 			// is not enough on its own: iOS ignores SVG icons, and every browser
@@ -66,6 +91,17 @@ export default defineConfig({
 			// rasterised FROM that same SVG by `npm run favicons`, so the three can
 			// never drift into three different marks.
 			head: [
+				// Google Tag Manager. The feedback buttons already dispatch
+				// `testsigma:page-feedback` (see PageFeedback.astro) rather than
+				// calling an analytics API themselves, so the GA4 event is wired by
+				// listening for it here -- the component stays destination-agnostic.
+				// The <noscript> half of GTM's snippet has to live in <body>; it is in
+				// Footer.astro.
+				{
+					tag: 'script',
+					content: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5F8HTVT');
+document.addEventListener('testsigma:page-feedback',function(e){(window.dataLayer=window.dataLayer||[]).push({event:'page_feedback',feedback_helpful:e.detail.helpful?'yes':'no',page_path:e.detail.path});});`,
+				},
 				{
 					tag: 'link',
 					attrs: { rel: 'icon', href: withDocsBase('/favicon-32.png'), sizes: '32x32', type: 'image/png' },
@@ -95,6 +131,12 @@ export default defineConfig({
 			// system's colors_and_type.css, pointing at .ttf files in that project).
 			// Self-hosted via fontsource here rather than copying the TTFs, which
 			// exceed the design API's 256 KiB per-file read limit.
+			//
+			// Swapped to Raleway on 2026-09-03 and reverted the same day: it is a
+			// different typeface, not a different size, but its smaller x-height
+			// and wider letterforms read as a size change at identical px values.
+			// Changing the family means re-tuning the type scale below, so it is
+			// not the one-line change it looks like.
 			customCss: ['@fontsource-variable/inter', './src/styles/theme.css'],
 			components: {
 				// Linear-style layout: the sidebar owns the full viewport height and
@@ -122,10 +164,10 @@ export default defineConfig({
 				minHeadingLevel: 2,
 				maxHeadingLevel: 3,
 			},
-			// One product (Suite) since Arcus was removed 2026-08-17; when Arcus
-			// returns, wrap each product's tree in a labeled group and unwrap by
-			// URL in the middleware again (see git history).
-			sidebar: suite,
+			// Two products in one array (Starlight takes exactly one sidebar):
+			// Arcus rides along as a wrapper group that the route middleware
+			// unwraps on /arcus/ pages and strips everywhere else.
+			sidebar: [...suite, arcus],
 			// Splits the API reference out of the tree: endpoint pages show only
 			// the endpoint groups, every other page shows everything else.
 			routeMiddleware: './src/starlightRouteData.ts',

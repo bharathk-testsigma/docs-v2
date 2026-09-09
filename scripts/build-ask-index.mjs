@@ -363,7 +363,11 @@ async function main() {
     const { title, description, body, data } = parseFrontmatter(raw);
     if (data.draft === true) continue;   // drafts are excluded from the site too
     const url     = fileToUrl(file);
-    const product = 'suite';
+    // The two products are separate folders under content/docs, so the URL
+    // is the product. api/ask.ts re-derives this rather than trusting the
+    // field (see productOf there) -- the field is only as fresh as the last
+    // re-embed, and a stale one would silently empty a product's pool.
+    const product = url.startsWith('/arcus/') ? 'arcus' : 'suite';
     // Fold the frontmatter description and any `api:` block into the indexable
     // content. API reference pages have an empty body, so the api block is the
     // only thing that makes them findable by endpoint, params, or fields.

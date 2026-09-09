@@ -7,9 +7,9 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "//search": "Pagefind is generated into dist/ by the build, but `astro dev` serves public/ -- so the index is copied there afterwards to make search work in dev. `prebuild` removes the previous copy first, otherwise Astro copies it into dist/ before Pagefind regenerates and the old content-hashed fragments pile up in the deployed output. public/pagefind/ is gitignored.",
-    "prebuild": "rm -rf public/pagefind",
-    "postbuild": "cp -r dist/pagefind public/pagefind",
+    "//search": "Pagefind is generated into dist/ by `postbuild` (scripts/build-pagefind.mjs, one bundle per product), but `astro dev` serves public/ -- so the indexes are copied there afterwards to make search work in dev. `prebuild` removes the previous copies first, otherwise Astro copies them into dist/ before Pagefind regenerates and the old content-hashed fragments pile up in the deployed output. public/pagefind*/ is gitignored.",
+    "prebuild": "rm -rf public/pagefind public/pagefind-arcus",
+    "postbuild": "npm run build:pagefind && cp -r dist/pagefind public/pagefind && cp -r dist/pagefind-arcus public/pagefind-arcus",
     "favicons": "node scripts/gen-favicons.mjs",
     "logo:dark": "node scripts/gen-logo-dark.mjs",
     "build:ask-index": "node --env-file-if-exists=.env scripts/build-ask-index.mjs",
@@ -18,7 +18,8 @@
     "//verify:dist": "Pre-deploy gate on dist/, run by the deploy workflow after `npm run build`. Names no content path on purpose -- see the header comment in the script.",
     "test": "node --test \"tests/*.test.mjs\"",
     "test:ask": "node --import tsx --env-file-if-exists=.env --test tests/ask-golden.test.mjs",
-    "astro": "astro"
+    "astro": "astro",
+    "build:pagefind": "node scripts/build-pagefind.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.56.0",

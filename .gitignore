@@ -3,6 +3,7 @@ dist/
 # the Pagefind index, copied out of dist/ by `postbuild` so that search works
 # under `astro dev` (which serves public/, not dist/). Generated, never authored.
 public/pagefind/
+public/pagefind-arcus/
 # generated types
 .astro/
 

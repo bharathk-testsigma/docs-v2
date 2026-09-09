@@ -1,0 +1,307 @@
+---
+title: Test generation and quality
+description: Generate test cases from a prompt, a sprint, or the Arcus panel, review and accept them, run the plans built from them, and read the metrics and verdict they produce.
+pageType: guide
+verified: 2026-09
+covers:
+  - Generate from a prompt
+  - Generate for a sprint
+  - Continue in the Arcus panel
+  - Review and accept test cases
+  - Generate and accept plans
+  - Read the QI Metrics and the verdict
+  - Frequently asked questions
+sidebar:
+  order: 3
+  label: Test generation and quality
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+Generation starts in 3 ways:
+
+- **A prompt on QI Home**: you describe what to test and attach context. This creates an Adhoc session.
+- **A sprint**: Arcus reads the sprint's stories from your connected project management tool and drafts test cases for each story's acceptance criteria.
+- **Mapped developer context**: a pull request or coding session linked to a sprint or an Adhoc session triggers generation for it.
+
+Once a sprint or session exists, the **Arcus** panel continues generating into it rather than starting a fourth way.
+
+## Generate from a prompt
+
+<Steps>
+
+1. Open **QI Home**.
+2. Enter what you want to test in the prompt box. Specific prompts produce specific test cases: name the feature, the roles, the variations, and the edge cases that matter.
+3. In the **Add Context** bar, attach the sources the generation should read. Attach them as described in [Context Management](/arcus/qi-home/context-management/).
+4. Click **Send**.
+
+</Steps>
+
+The new session appears on the **Adhoc** tab with the status "Generating test cases...". When generation finishes, open the row and review what arrived. The prompt box carries the notice "Your data is secure and never used for AI training."
+
+<Aside type="note">
+A prompt that works names the goal, what exists, and what to cover. `Generate test cases for funds transfer. Users: retail and corporate. Cover transfer limits, OTP mismatch, expired sessions, and the notifications for each outcome` produces more specific test cases than `test transfers`.
+</Aside>
+
+## Generate for a sprint
+
+The **Sprints** tab needs a project connected from Jira, Azure DevOps, Linear, or ClickUp.
+
+<Steps>
+
+1. On **QI Home**, click the more options icon (⋮) and click **Manage connected projects**.
+2. Open the tool's tab.
+3. Turn on the toggle beside the tool name.
+4. Select the project.
+5. Click **Link project**. Arcus reads the active sprints in that project.
+
+</Steps>
+
+Arcus then drafts test cases for each story's acceptance criteria. Each sprint appears as a row on the **Sprints** tab, showing "Generating test cases..." while generation runs, and its page fills as it completes.
+
+Sprint generation reads the stories plus what they link to (Confluence pages, Figma designs, and pull requests), provided the linked artifact is publicly accessible or reachable through a connected integration.
+
+## Continue in the Arcus panel
+
+An **Arcus** panel docks to the left of every sprint and Adhoc session page. Use it when coverage is missing, a flow wasn't generated, or you want the plan adjusted, without leaving the page.
+
+<Steps>
+
+1. Open the sprint or Adhoc session from **QI Home**.
+2. In the **Arcus** panel, describe what you want in "Ask Arcus about this cycle...". Click the plus icon (+) to attach more context.
+3. Click **Generate with AI**.
+
+</Steps>
+
+The panel shows the generation as it runs: an "Orchestrating a generation plan" log with steps such as "Step groups searched", "Existing tests searched", "Scenarios validated", "Plan updated", and "Summary generated". Arcus searches your existing library and step groups first, so coverage you already have isn't duplicated.
+
+When it finishes, the panel offers 3 follow-ups: **Satisfied — finish**, **Drill deeper**, or **Additional work**. Pick one, or reply in your own words.
+
+However generation started, the new test cases arrive in **Pending** status and the **Test Case Review** card updates its count. Nothing enters your library until you accept it.
+
+## Review and accept test cases
+
+Accepting moves coverage immediately; coverage is the only metric that rises before any run. Whatever stays pending is counted as a gap.
+
+<Steps>
+
+1. On the sprint or Adhoc session page, click **Review test cases** on the **Test Case Review** card. The card also lists the highest-value cases under **Start with these**; click one to open it directly.
+
+</Steps>
+
+The review page carries 2 cards: the current **Coverage**, and **Pending review** with the count still waiting, plus how many are approved and how many were already in your library.
+
+### Group, filter, and search
+
+Four controls above the list narrow what you review:
+
+- **By**: group the list by **Story** or by **Modules impacted**. Each group header shows the story or module, its coverage, its open gap count, its test count, and an **Accept all** button.
+- **Gap type**: filter gaps by where they came from: **Requirement** (generated from stories and attached context), **Agentic Learning** (found while exploring the live app), or **CLI** (pushed from a developer's terminal).
+- **Filters**: narrow by **Status** (**All**, **Pending**, **Accepted**, **Rejected**), **Story**, **Module**, **Priority**, **Origin**, and **Type**.
+- **Search tests**: find a test case by name.
+
+The **Simple** and **Detailed** toggles switch how much each row shows; the detailed view adds the test type.
+
+### Review a test case
+
+<Steps>
+
+1. Click a test case name. The detail view opens with its description, preconditions, and steps with expected results.
+2. Move through the list with the arrows at the top; the counter shows where you are, such as "1 of 18".
+
+</Steps>
+
+A step showing **Steps added** reuses a [step group](/arcus/create-and-manage/step-groups/). Expand it to see the sub-steps, or open the step group itself from the link. Steps can be parameterized with [data set](/arcus/create-and-manage/data-sets/) variables such as `$from_account`.
+
+To change anything, click the more options icon (⋮) and click **Edit**. An accepted test case stays editable from your library.
+
+### Accept or reject
+
+- **One test case**: open it and click **Save to Library**, or **Reject** if it isn't accurate.
+- **A group**: click **Accept all** on a story or module header.
+
+Accepting is what moves the numbers:
+
+- **Accepted** test cases enter your library, count toward coverage, and can be automated.
+- **Pending** test cases are open gaps. They hold coverage down until you decide.
+- **Rejected** test cases are excluded from coverage entirely, and stay listed in the review.
+
+To automate an accepted test case without leaving the review, click **Explore and Automate** in its detail view. See [Explore and Automate](/arcus/automation/explore-and-automate/).
+
+## Generate and accept plans
+
+A test plan groups test cases into runs. Until a plan runs, Pass Rate, Confidence, and Readiness stay empty.
+
+### The 4 tiers
+
+The 4 tiers widen in scope:
+
+- **Smoke**: critical path (P0 and high-risk cases).
+- **Feature**: new functionality in this sprint.
+- **Regression**: modules impacted by the sprint.
+- **Deep Regression**: end-to-end, across every app type.
+
+Every smoke case is contained in the feature tier, so running the wider tier validates everything the narrower one would have.
+
+<Steps>
+
+1. On the sprint or Adhoc session page, click **Generate test plan** on the **Plans & Execution** card.
+2. Under **Select a plan**, select 1 or more tiers.
+3. Click **Generate with AI**.
+
+</Steps>
+
+A plan can include both accepted and under-review test cases. The selection screen shows the split, such as "1 accepted · 17 still under review".
+
+### Review and accept a plan
+
+Each generated plan gets its own tab on the **Test Plans & Execution** page and waits in **Pending Review** until you act on it.
+
+<Steps>
+
+1. Open the plan's tier tab.
+2. Read the plan card: an **Arcus suggested** badge, the plan's description, its execution count, its run count, and the bar splitting results into **Passed**, **Failed**, **Not run**, and **gaps to review**.
+3. Click **Accept Plan** to accept it and start its runs, or **Reject**.
+
+</Steps>
+
+The status line says what acceptance triggers, such as "Accept to start 10 runs". An accepted plan shows **Plan Accepted**.
+
+A plan's under-review test cases surface as its gaps, and the card shows "39 gaps to review before the next run". Review them first, so the next run's results cover them.
+
+### Test runs
+
+Each plan splits into 1 test run per module, listed under **Test Runs**. A run row shows its machine, its test count, and its open gap count, with result counts on the right. Expand a run to see its test cases, each with its module, type, automation state, and latest result.
+
+### Modify or create a plan
+
+You refine a plan by asking for the change, not through a form.
+
+<Steps>
+
+1. Click **Modify plan**, or **+ Create new plan**. The **Arcus** panel opens.
+2. Describe the change (generate another tier, adjust coverage, reassign a run's machine) in "Ask Arcus to plan, or refine an existing plan...", and send it.
+
+</Steps>
+
+The panel reports what changed: the tier, the case count, the run count, the estimated duration, which signal sources it scored candidates on, and whether every smoke case still sits inside the feature tier. The updated plan appears on its tier tab, pending your acceptance.
+
+### Link an automated test plan
+
+Link a plan to a Testsigma automated test plan, so automated run results flow into the metrics.
+
+<Steps>
+
+1. Open the plan's tier tab.
+2. Click **Link plan** beside **Automated Test Plan** on the plan card. The **Link Testsigma Automated Test Plan** dialog opens.
+3. Select the **Project**, **Application**, **Version**, and **Test Plan**.
+4. Click **Link**.
+
+</Steps>
+
+The card then shows the linked plan beside **Automated Test Plan**, such as "TS-67 NA Sprint 1 | Smoke Testing". Linking is per tier: link the Smoke plan to a Testsigma smoke plan, the Feature plan to a feature plan, and so on.
+
+## Read the QI Metrics and the verdict
+
+The **QI (Quality Intelligence) Metrics** are the 4 values in the sprint or Adhoc session header (**Coverage**, **Pass Rate**, **Confidence**, and **Readiness**) and the release gate verdict built on them. Thresholds are configurable per project under **Settings > QI Metrics**.
+
+The metrics build on each other in order. Coverage reports how much of the generated surface you accepted. Pass Rate reports how much of what ran passed. Confidence reports how trustworthy those results are. Readiness rolls the 3 into a single score, and the release gate turns the checks into the verdict: **Ready**, **Conditional Ready**, or **Not Ready**.
+
+### Coverage
+
+The share of the generated surface that has been signed off. It rises as you review test cases, before any run.
+
+```text
+Coverage = Accepted ÷ (Accepted + Pending) × 100
+```
+
+Pending test cases count against it. Rejected test cases are excluded entirely. Coverage is live from the moment test cases are generated and updates in real time as you accept. Default target: 85% or above.
+
+### Pass Rate
+
+The share of executed units that passed, where a unit is 1 test case on 1 machine. Manual and automated results are tracked separately, and each unit counts once, on its latest terminal result. A terminal result is one that finished: passed, failed, blocked, or skipped. Not run and in progress are excluded.
+
+```text
+Pass Rate = Passed Unique (Test Case × Machine) Units ÷ Total Unique (Test Case × Machine) Units with Terminal Status × 100
+```
+
+Pass Rate shows **Awaiting execution** until a test plan runs. Default target: 95% or above.
+
+### Confidence
+
+The priority-weighted share of the planned scope that ran trustworthily: executed, and not flaky. A flaky test case is one that has both passed and failed across runs without its steps changing. Because weights follow priority, flaky P0 test cases cost the most.
+
+```text
+Confidence = Trustworthy Weight ÷ Total Weight × 100
+```
+
+Confidence shows **Awaiting execution** until runs report. It lands in 1 of 3 bands. You set where **High** and **Medium** start; **Low** is whatever falls below **Medium**.
+
+| Band | Default | Meaning |
+| :--- | :--- | :--- |
+| High | 80% of score or above | Trustworthy signals |
+| Medium | 50% to 79% of score | Some issues |
+| Low | Below 50%, auto-derived | Unreliable signals |
+
+Confidence is scoped to what was planned. If you generate a wide tier and run only a narrow one, the unrun scope stays in the denominator, and the score reports the validation you committed to but did not perform.
+
+### Readiness
+
+Pass Rate, Coverage, and Confidence rolled into a single 0 to 100 shippability score. It stays empty until a run reports. The header card is labeled **Readiness**; Settings shows the same metric as **Release Readiness**.
+
+```text
+Release Readiness = (Pass Rate × 0.40) + (Coverage × 0.25) + (Confidence × 0.35)
+```
+
+Pass Rate holds the largest weight because an active failure is a more direct signal than a known gap. Confidence modifies how far those results can be trusted.
+
+### Release gate
+
+The verdict on the sprint or Adhoc session (the status chip beside its name, and the **Readiness** column on QI Home) comes from 5 checks. Each check lands in **Ready**, **Conditional**, or **Not Ready**, and the worst result across all checks is the verdict. One Not Ready check overrides everything else.
+
+| Check | Ready | Conditional | Not Ready |
+| :--- | :--- | :--- | :--- |
+| Pass rate (tests passing) | ≥ 95% | ≥ 90% | Below 90% |
+| Coverage (tests approved) | ≥ 85% | ≥ 70% | Below 70% |
+| Confidence (signals trustworthiness) | High | Medium | Low |
+| Critical flaky (P0 tests unstable) | 0 | 1 | 2 or more |
+| Critical failures (P0 tests failing) | 0 | 1 | 2 or more |
+
+The page states the failing reason in plain terms: "Not ready to release. Coverage is 24%, below the 85% bar." A sprint or Adhoc session with no run data yet shows **Awaiting Run** instead of a verdict.
+
+### Activation states
+
+| Value | Cases generated, none accepted | Accepted, no runs | Runs executed |
+| :--- | :--- | :--- | :--- |
+| Coverage | 0%, live | Updates as you accept | Updates as you accept |
+| Pass Rate | Awaiting execution | Awaiting execution | Percentage |
+| Confidence | Awaiting execution | Awaiting execution | Percentage with band |
+| Readiness | Awaiting execution | Awaiting execution | 0 to 100 score |
+| Verdict | Awaiting Run | Awaiting Run | Ready, Conditional Ready, or Not Ready |
+
+### Threshold configuration
+
+Editing QI Metrics requires admin access.
+
+<Steps>
+
+1. Go to **Settings > QI Metrics**.
+2. Review each metric's formula.
+3. Set the **Ready** and **Conditional** thresholds for the 5 release gate checks. The **Not Ready** boundary is derived from them.
+4. Under **Confidence**, adjust where the High and Medium bands start.
+
+</Steps>
+
+## Frequently asked questions
+
+### Why is Coverage 0% when test cases were generated?
+
+Coverage counts accepted test cases, not generated ones. Generated test cases start in **Pending** and hold coverage down until you accept them. Coverage updates in real time as you do.
+
+### Why is my Pass Rate empty?
+
+Pass Rate needs at least 1 executed test plan. Until a run reports, it shows **Awaiting execution**; accepting test cases moves Coverage only. Generate and accept a plan to start runs.
+
+### Why is the verdict Not Ready when I accepted test cases?
+
+Because the worst of the 5 checks wins, and most checks need run data. Accepting test cases raises Coverage, but Pass Rate, Confidence, and the critical-failure checks move only after a plan runs. The line under the verdict names the failing check.

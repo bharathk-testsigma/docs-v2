@@ -17,17 +17,41 @@ import { stripBase } from './lib/base';
  * so the split happens here rather than in Sidebar.astro, which hands the
  * tree straight to Starlight's own renderer.
  *
- * (Until 2026-08-17 this also unwrapped a per-product wrapper group -- Suite
- * vs Arcus -- by URL. Arcus was removed; see git history when it returns.)
+ * Arcus rides in the same array as a wrapper group ("Arcus"), unwrapped on
+ * /arcus/ pages and dropped on every other page -- so the reader only ever
+ * sees one product's sections.
  */
 
-/** The API reference section: its URL prefix and the group holding it. */
-const API_SECTION = { path: '/suite/api/', group: 'REST APIs' } as const;
+/**
+ * Each product's API reference: the URL prefix its endpoint pages live under,
+ * and the label of the group holding them in that product's tree. Both get the
+ * same treatment; only these strings differ.
+ */
+const API_SECTIONS = [
+	{ path: '/suite/api/', group: 'REST APIs' },
+	{ path: '/arcus/api-reference/', group: 'API Reference' },
+] as const;
 
-/** Pages served by the API-only nav. Header.astro keys the "API reference" tab off this too.
+/** Each product's changelog page, and the release feed it draws from. */
+const CHANGELOGS = [
+	{ path: '/suite/changelog', product: 'suite' },
+	{ path: '/arcus/changelog', product: 'arcus' },
+] as const;
+
+/** The Arcus tree: its URL prefix and the wrapper group holding it. */
+const ARCUS_SECTION = { path: '/arcus/', group: 'Arcus' } as const;
+
+/** Pages served by the Arcus tree. ProductSwitcher.astro reads this too, so
+ *  the button's label and the rail can never disagree about the product. */
+export const isArcusPath = (pathname: string) =>
+	stripBase(pathname).startsWith(ARCUS_SECTION.path);
+
+/** Pages served by the API-only nav, in EITHER product. Sidebar.astro keys the
+ *  API-nav treatment off this too, so a Suite-only test here would have left
+ *  Arcus endpoint pages rendering as ordinary rows.
  *  stripBase: pathnames carry the /docs-new base in every environment that sets one. */
 export const isApiReferencePath = (pathname: string) =>
-	stripBase(pathname).startsWith(API_SECTION.path);
+	API_SECTIONS.some((s) => stripBase(pathname).startsWith(s.path));
 
 type Group = Extract<SidebarEntry, { type: 'group' }>;
 
@@ -42,6 +66,9 @@ const isGroup = (entry: SidebarEntry): entry is Group => entry.type === 'group';
 // all-lowercase test and are left alone.
 const LABEL_EXCEPTIONS: Record<string, string> = {
 	'ci-cd': 'CI/CD',
+	// Sentence case, per the Arcus nav sheet; the title-case rule would give
+	// "Developer Tools".
+	'developer-tools': 'Developer tools',
 	ios: 'iOS',
 	'rest-apis': 'REST APIs',
 };
@@ -66,6 +93,19 @@ export const onRequest = defineRouteMiddleware(async (context) => {
 	// Base-free, so it can be matched against the literal prefixes below.
 	const pathname = stripBase(context.url.pathname);
 
+	// ── 0. pick the product tree ──
+	// Each product carries its OWN utility rows, so this runs before they are
+	// read below: borrowing Suite's would point Arcus's rail at Suite's API
+	// reference and Suite's changelog.
+	const arcusGroup = starlightRoute.sidebar.find(
+		(e): e is Group => isGroup(e) && e.label === ARCUS_SECTION.group
+	);
+	if (arcusGroup) {
+		starlightRoute.sidebar = pathname.startsWith(ARCUS_SECTION.path)
+			? arcusGroup.entries
+			: starlightRoute.sidebar.filter((e) => e !== arcusGroup);
+	}
+
 	// The top-of-rail utility rows (Home / API Reference / Changelog) appear on
 	// EVERY tree, including the swapped-in API and changelog navs below.
 	const utilityRows = starlightRoute.sidebar.filter(
@@ -73,11 +113,14 @@ export const onRequest = defineRouteMiddleware(async (context) => {
 	);
 
 	// ── 1. split the API reference out ──
-	const apiGroup = starlightRoute.sidebar.find(
-		(e): e is Group => isGroup(e) && e.label === API_SECTION.group
-	);
-	if (apiGroup) {
-		starlightRoute.sidebar = pathname.startsWith(API_SECTION.path)
+	// The loop covers both products, but only the one whose group survived
+	// step 0 is ever found, so the other iteration is a no-op.
+	for (const section of API_SECTIONS) {
+		const apiGroup = starlightRoute.sidebar.find(
+			(e): e is Group => isGroup(e) && e.label === section.group
+		);
+		if (!apiGroup) continue;
+		starlightRoute.sidebar = pathname.startsWith(section.path)
 			? // Unwrap the group so each entity (Projects, Test Cases, ...) becomes a
 				// top-level section, keeping the utility rows above them.
 				[...utilityRows, ...apiGroup.entries]
@@ -87,11 +130,12 @@ export const onRequest = defineRouteMiddleware(async (context) => {
 	// ── 1b. changelog nav: utility rows + one link per release ──
 	// The page renders every release as a card (ChangelogFeed.astro); the rail
 	// mirrors it as anchors, newest first, using the same id the feed stamps on
-	// each headline.
-	if (pathname.startsWith('/suite/changelog')) {
-		const releases = (await getCollection('changelog')).sort(
-			(a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-		);
+	// each headline. Filtered by product for the same reason the feed is.
+	const changelog = CHANGELOGS.find((c) => pathname.startsWith(c.path));
+	if (changelog) {
+		const releases = (await getCollection('changelog'))
+			.filter((r) => r.data.product === changelog.product)
+			.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 		starlightRoute.sidebar = [
 			...utilityRows,
 			{
@@ -102,8 +146,8 @@ export const onRequest = defineRouteMiddleware(async (context) => {
 				entries: releases.map((r, i) => ({
 					type: 'link',
 					// Releases are identified by date, not version: only a handful
-					// ever had a vX.Y.Z. The entry id IS the date (YYYY-MM-DD.md),
-					// which is the anchor the feed stamps on each headline.
+					// ever had a vX.Y.Z. The entry id is the filename, which is the
+					// anchor the feed stamps on each headline.
 					label: r.data.date,
 					href: `${context.url.pathname}#${r.id}`,
 					isCurrent: false,

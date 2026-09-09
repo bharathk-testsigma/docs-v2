@@ -4,11 +4,21 @@
 //  Renders releases (newest first) grouped under month dividers, each as a card
 //  with a version pill, release date, headline, and change-type sections.
 //  Release content lives as markdown in the `changelog` collection
-//  (src/content/changelog/**).
+//  (src/content/changelog/**), one feed per product via the `product` prop.
 // ─────────────────────────────────────────────────────────────────────────────
 import { getCollection } from 'astro:content';
 
-const copy = { sub: 'A full rundown of our latest releases, improvements and fixes in Testsigma Suite' };
+// Which product's releases to show. Suite is the default, so its own page
+// needs no prop; the Arcus page passes product="arcus".
+interface Props {
+	product?: 'suite' | 'arcus';
+}
+const { product = 'suite' } = Astro.props;
+const SUB: Record<string, string> = {
+	suite: 'A full rundown of our latest releases, improvements and fixes in Testsigma Suite',
+	arcus: 'A full rundown of our latest releases, improvements and fixes in Testsigma Arcus',
+};
+const copy = { sub: SUB[product] };
 
 type Item = { title: string; desc: string };
 type Section = { type: string; items: Item[] };
@@ -50,7 +60,7 @@ function monthOf(date: string): string {
 }
 
 // Load the releases, newest first, and shape them for rendering.
-const entries = await getCollection('changelog');
+const entries = (await getCollection('changelog')).filter((e) => e.data.product === product);
 const releases: Release[] = entries
 	.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
 	.map((e, i) => ({

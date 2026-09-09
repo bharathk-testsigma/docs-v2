@@ -39,6 +39,8 @@ The Coverage Planner and Optimizer agents are announced but not yet available.
 
 Atto reads requirements from the tools your team already uses, and runs on a large language model. Both are configured before you generate anything: the integrations under **Settings > Integrations**, and the model under **Settings > Gen AI Keys**.
 
+![The Generative AI and Agentic AI toggles on the Preferences page](https://s3.amazonaws.com/static-docs.testsigma.com/new/projects/applications/Gen_AI_Preferences_Updated.png)
+
 ### Integrations
 
 Every integration follows the same shape. Go to **Settings > Integrations**, turn on the widget's toggle, enter the credentials in the dialog, and click **Save & Enable**. What differs is which credentials each one needs, and where you get them.
@@ -136,11 +138,15 @@ To add a key:
 
 </Steps>
 
+![The Create new key panel, with the key name, AI provider, and API key fields](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/New_AI_Provider_Details.png)
+
 The key appears in the **Keys** section.
 
 Adding a key changes nothing on its own. Each Testsigma feature is pointed at a key and a model separately, so different features can run on different models.
 
 In **Feature Model Configuration**, select the **Key** and the **Model** for each **Feature**. Those features then use the mapped model.
+
+![Feature Model Configuration, mapping each Testsigma feature to a key and a model](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/New_Feature_Model_Configuration.png)
 
 ## Generator
 
@@ -159,6 +165,8 @@ Go to **Atto's Home**, click **Generate with AI**, and select a source in the **
 3. Select **Epic** or **Story** under **Issue Type**. Selecting **Epic** lets you choose the stories under it; selecting **Story** lets you choose stories directly.
 4. Click **Save**.
 
+![The Add Jira Tickets dialog, with the project, issue type, and issue list](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/requirements_1.png)
+
 <Aside type="note">
 For Salesforce test cases, **Prefer API steps** is selected by default in the prompt box **Settings**. Clear it to generate UI-based steps instead.
 </Aside>
@@ -170,6 +178,8 @@ For Salesforce test cases, **Prefer API steps** is selected by default in the pr
 1. Click **Figma Designs**.
 2. Select a **Team**, **Project**, **Figma design file**, **Section**, and **Page** in the **Figma Designs** dialog.
 3. Click **+ Select Frames**, select the frames you want, and click **Save**.
+
+![The Figma Designs dialog, with the team, project, design file, page, and frame selection](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/requirements_2.png)
 
 <Aside type="tip">
 **Clear Selection** removes everything you have selected.
@@ -256,6 +266,8 @@ The Live Recorder captures your own walkthrough of the application as context.
 
 </Steps>
 
+![Atto's Chat with the attached input sources, Read existing test case library, and Generate with AI](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Atto_automate_update_3.png)
+
 <Aside type="note">
 Once **Read existing test case library** is on in a session, it cannot be turned off again. It can be turned on partway through a session that started without it.
 </Aside>
@@ -286,6 +298,8 @@ Turn on **Generate test cases from Swagger schema** under **Settings > Preferenc
 1. Go to **Create Tests > Test Cases**.
 
 2. Click **Atto** in Test Case Explorer and select **Generate Test Cases from API Schema**.
+
+   ![The Atto menu in Test Case Explorer, with Generate Test Cases from API Schema](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/SOAP_API_2.1.png)
 
 3. Click **Select file to import** in **Add API Schema** and choose your schema file.
 
@@ -323,6 +337,8 @@ Running before saving checks element detection, assertions, and test data agains
 
 </Steps>
 
+![Test Case Details with the automated steps, the Run with Copilot environment list, and Save to Library](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Atto_automate_update_9.png)
+
 <Aside type="tip">
 To save without running first, click **Save to Library** at step 3.
 </Aside>
@@ -352,6 +368,8 @@ Atto checks the library while it generates. Where a test case already exists, At
 
 </Steps>
 
+![The Overwrite Test Case dialog, with Overwrite, Save as New, and the link to the original](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/manage_updated_test_case_atto_3.png)
+
 <Aside type="note">
 **Read existing test case library** is selected by default, which is what lets Atto find the existing test case. Once it is on in a session it cannot be turned off again, though it can be turned on partway through.
 </Aside>
@@ -374,6 +392,8 @@ The Test Data Generator builds a test data profile for a data-driven test case, 
 
 </Steps>
 
+![The Test Data Generation dialog, listing the fields data will be created for](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Generate_Atto.png)
+
 ## Analyzer
 
 The Analyzer explains a failed step: the error type, the root cause, the visual evidence captured during execution, and a set of suggestions. It needs a run containing a failed step, from a test plan or a dry run.
@@ -387,6 +407,8 @@ The Analyzer explains a failed step: the error type, the root cause, the visual 
 3. Click **Analyze with Agent** in the action bar.
 
 </Steps>
+
+![A failed step's Analysis tab, with the error code, Visual Evidence, and Analyze with Agent](https://s3.amazonaws.com/static-docs.testsigma.com/new/projects/applications/Analyze_with_Agent_Results.png)
 
 The analysis returns 4 things:
 
@@ -437,6 +459,8 @@ This needs a [bug tracking tool integrated with Testsigma](/suite/integrations/)
 
 </Steps>
 
+![The QA Agent panel with the prefilled bug description and Report Bug](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/bug_reporting_2.png)
+
 <Aside type="note">
 The fields shown depend on the tool.
 </Aside>
@@ -464,6 +488,8 @@ The **Analysis** tab shows a **Healed this step** card reporting that the existi
 - **Approve as Primary** makes the healed locator the one the test uses from now on
 - **Ignore** leaves the original locator in place. The heal still applied to this run
 
+![The Healed this step card on the Analysis tab, with Approve as Primary and Ignore](https://s3.amazonaws.com/static-docs.testsigma.com/new/projects/applications/Healed_Details_in_Results.png)
+
 <Aside type="note">
 In **Visual Evidence**, the current run panel carries a **Healed** badge, and the **Element** field has an edit icon for correcting the locator directly.
 </Aside>
@@ -471,6 +497,8 @@ In **Visual Evidence**, the current run panel carries a **Healed** badge, and th
 ### See what changed
 
 Open the **Autoheal Details** panel to read the heal itself. It names the element that was healed, the method and how long it took, such as **Autohealed using CSS Selector** in **32s 912ms**, and shows the locator that failed struck through, followed by the one that replaced it.
+
+![The Autoheal Details panel, showing the failed locator struck through and the one that replaced it](https://s3.amazonaws.com/static-docs.testsigma.com/new/projects/applications/Auto_HeaL_Accept_Reject.png)
 
 The panel asks whether to update the autohealed element in all the linked test cases. **Update** applies the healed locator across every test case linked to the element, and **Ignore** leaves those test cases unchanged.
 

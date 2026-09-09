@@ -51,6 +51,11 @@ if (!existsSync(join(DIST, '404.html'))) fail('dist/404.html missing — Apache 
 // Search is a headline feature; an empty index ships a dead search box.
 const pagefind = join(DIST, 'pagefind');
 if (!existsSync(pagefind)) fail('dist/pagefind missing — search would break');
+// Arcus searches its own bundle (scripts/build-pagefind.mjs); without it the
+// dialog loads nothing on every /arcus/ page and reports no results.
+const pagefindArcus = join(DIST, 'pagefind-arcus');
+if (!existsSync(join(pagefindArcus, 'pagefind-entry.json')))
+	fail('dist/pagefind-arcus/pagefind-entry.json missing — Arcus search would find nothing');
 else {
 	// Pagefind nests its shards: pagefind/index/*.pf_index and
 	// pagefind/fragment/*.pf_fragment, with pagefind-entry.json naming them. A

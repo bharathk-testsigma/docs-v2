@@ -1,0 +1,93 @@
+---
+title: Set up MCP access
+description: Connect an external AI client to Arcus so it can read your projects and test assets and draft test cases back into Arcus.
+pageType: task
+verified: 2026-09
+covers:
+  - Turn on MCP access
+  - Copy the server URL
+  - Install the server on Claude Code
+  - Tools exposed to AI clients
+sidebar:
+  order: 20
+  label: MCP
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+<Aside type="note">
+Turning on MCP access requires permission to change account-level settings.
+</Aside>
+
+Connect an external AI client to Arcus so it can read your projects and test assets and draft test cases back into Arcus. MCP (Model Context Protocol) is the protocol those clients use to connect.
+
+## Turn on MCP access
+
+<Steps>
+
+1. Go to **Settings > MCP**.
+2. Open the **Access & Authentication** tab.
+3. Turn on **MCP Access**.
+
+</Steps>
+
+<Aside type="note">
+While **MCP Access** is off, external AI clients cannot reach the server. Turning it off shows the message "MCP access turned off".
+</Aside>
+
+## Copy the server URL
+
+<Steps>
+
+1. In the **Server Details** table, find **MCP Server URL**.
+2. Click the copy icon beside the URL.
+
+</Steps>
+
+The URL is specific to your Arcus account. Copy it from your own **Settings > MCP** page rather than reusing one from documentation or from a teammate.
+
+## Install the server on Claude Code
+
+<Steps>
+
+1. Under **MCP Installation**, select **Claude Code** from the **Client** list.
+2. From your project directory, run the install command with the URL you copied.
+
+   ```bash
+   claude mcp add --transport http "arcus" "https://arcus.testsigma.com/mcp/v1"
+   ```
+
+3. Confirm that the server is registered.
+
+   ```bash
+   claude mcp list
+   claude mcp get arcus
+   ```
+
+4. Start or restart Claude Code.
+5. Open a new session.
+6. Run `/mcp`.
+7. Complete the browser sign-in. The server shows as connected, with its tools listed.
+
+</Steps>
+
+The Arcus MCP server and the Arcus plugin for Claude Code are separate integrations that do different jobs, and you can install both. The MCP server lets Claude Code read your Arcus data and draft test cases into Arcus. The plugin captures your coding session and pushes it to QI Home as developer context, and is covered in [Plugins](/arcus/qi-home/developer-tools/plugins/).
+
+## Tools exposed to AI clients
+
+The **Tools** tab lists every tool this MCP server exposes to external AI clients, grouped by what the tool does. Each tool shows its display name, the tool ID the client calls, and a "Read only" badge where the tool cannot change your data. The badge beside **Tools in this MCP Server** shows how many tools are currently enabled.
+
+| Tool | Tool ID | What it returns |
+| :--- | :--- | :--- |
+| List projects | `list_projects` | Arcus projects visible to the authenticated account. Every other tool is scoped to a project, so a client calls this first. |
+| List folders | `list_folders` | The project's folder tree as full breadcrumb paths. A client uses a path from here when it places a test case. |
+| Get push context | `get_push_context` | Sprints with their stories, plus modules and test types for a project. Returns everything `/arcus:push` needs in 1 call. |
+| Search test cases | `search_test_cases` | Existing test cases matched by title, folder, sprint, ticket, or status. A client searches before it authors a new case. |
+| Get test case | `get_test_case` | Full detail for 1 test case: steps, assertions, referenced step groups, labels, linked tickets, and version. |
+| Get run summary | `get_run_summary` | Status breakdown, pass rate, and the failing cases for 1 test run. |
+| List step groups | `list_step_groups` | Reusable step groups in the project. A client checks here before it repeats the same steps in another case. |
+| Get step group | `get_step_group` | The steps inside 1 step group. |
+| List test data profiles | `list_test_data_profiles` | Test data profiles in the project. A client binds a case to 1 of these instead of writing data into steps. |
+| Get test data profile | `get_test_data_profile` | Variables and data rows for 1 test data profile. |
+| List test cases | `list_test_cases` | Existing test cases for a sprint, story, or module as Agentic Test sees them, including cases not yet pushed to the repository. |

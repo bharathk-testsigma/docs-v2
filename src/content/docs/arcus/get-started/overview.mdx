@@ -1,0 +1,114 @@
+---
+title: Overview
+description: What the Arcus agents do, where test cases come from, how they get automated, and what a run tells you, plus the shortest path to a first generated test case.
+pageType: guide
+verified: 2026-09
+covers:
+  - What the agents do
+  - How Arcus is organized
+  - Where test cases come from
+  - What happens after generation
+  - How a test case gets automated
+  - Keep coverage current
+  - Your first generated test case
+sidebar:
+  order: 1
+  label: Overview
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+Arcus by Testsigma is a test management platform run by AI agents. You give them a Jira story, a Figma design, or a recording, and they write the test cases, learn your application to automate them, execute the runs, file the defects, and report how ready the build is.
+
+Your test cases, test plans, test runs, and reports live in one place, and the agents work on them alongside you.
+
+This page covers the decisions that shape everything else: what the agents do, where test cases come from, how they get automated, and what a run tells you. Then the quickest route to a first generated test case.
+
+## What the agents do
+
+Each agent owns one part of the cycle, and together they cover it end to end.
+
+| Agent | What it does |
+|---|---|
+| Generator | Writes test cases from the context you attach, mapped to your modules |
+| Coverage Planner | Tracks coverage per module, flags gaps, and builds the test plans |
+| Runner | Executes test cases and records the results |
+| Bug Reporter | Files a failure as a defect in your tracker, with the evidence attached |
+
+<Aside type="note">
+The agents propose, and you decide. Test cases arrive as proposals, you accept the ones that are accurate, and the ones you reject are tracked as gaps rather than discarded.
+</Aside>
+
+## How Arcus is organized
+
+Arcus has 2 layers, and everything in the navigation belongs to one of them.
+
+| Layer | Holds |
+|---|---|
+| Core test management | Test cases, step groups, data sets, test plans, test runs, reports |
+| QI Home | Context sources, generation sessions, coverage, automation |
+
+**[QI Home](/arcus/qi-home/overview/)** is where the agents work. A test case behaves the same in the core layer whether an agent generated it or you created it manually, and everything the agents generate lands in the same library.
+
+## Where test cases come from
+
+Generation is the default route. There are 2 ways to start it, and everything after generation is identical for both.
+
+| | **Ad-Hoc** | **Sprints** |
+|---|---|---|
+| Generation starts when | You attach context and click **Generate** | A sprint starts in your project management tool and you confirm |
+| Context comes from | Sources you attach yourself | The stories linked to the sprint |
+| Reach for it when | You are covering a feature outside a sprint cycle, or want to control exactly what the Generator reads | Your team works in sprints and you want coverage to start with the sprint |
+
+Context sources are [Jira](/arcus/integrations/project-management/jira/), [Azure DevOps](/arcus/integrations/project-management/azure-devops/), [Linear](/arcus/integrations/project-management/linear/), or [ClickUp](/arcus/integrations/project-management/clickup/) for stories, [Confluence](/arcus/integrations/project-management/confluence/) for PRDs and specifications, [Figma](/arcus/integrations/dev-tools/figma/) for designs, files such as PDFs and Word documents, and video recordings. Each needs its integration connected.
+
+Creating a [test case](/arcus/create-and-manage/test-cases/) manually is the third route, for a flow you already know and want exact control over.
+
+## What happens after generation
+
+You review the generated test cases grouped by scenario, then accept or reject them individually or in bulk. Four things update as you go.
+
+- **Coverage and Gaps** reports coverage per module, calculated as accepted test cases divided by accepted plus pending. Rejected cases are excluded
+- **Gaps** are the pending test cases nobody has accepted, which is the signal that an area is not yet covered
+- **Test plans** are generated in 4 types: Smoke, Feature, Regression, and Deep Regression. Each is a superset of the one before it, so Smoke is included in Feature, Feature in Regression, and Regression in Deep Regression
+- **Quality Intelligence Metrics** are 5 metrics in the session header: Coverage, Pass Rate, Confidence, Release Readiness, and Release Gate
+
+## How a test case gets automated
+
+An accepted test case carries manual steps until it is automated. No code or scripts are involved.
+
+**[Agentic Learning](/arcus/automation/explore-and-automate/)** opens a browser, on Testsigma Lab in the cloud or on your local device, and walks through the test case steps on your live application. It observes how the application behaves, learns the element interactions, and generates automated steps for you to review and save.
+
+**[Copilot](/arcus/automation/copilot/)** executes those steps in a browser, with a live panel showing each step as it runs. You can pause execution, add steps mid-run, switch between manual and automated steps, and save the results.
+
+<Aside type="note">
+Copilot also runs a test case without Agentic Learning, which suits a quick sanity check or an exploratory run.
+</Aside>
+
+## Keep coverage current
+
+When developers work in [Claude Code](/arcus/integrations/dev-tools/claude/), [Cursor](/arcus/integrations/dev-tools/cursor/), [GitHub Copilot](/arcus/integrations/dev-tools/copilot/), or [Codex](/arcus/integrations/dev-tools/codex/), or open pull requests in [GitHub](/arcus/integrations/dev-tools/github/), that context is detected and surfaced in the **Unmapped Context** view. Each entry arrives with a suggestion for the module and sprint it belongs to. You review the suggestion and map it, and the Generator writes new test cases or updates existing ones from the changes captured. That is what keeps coverage aligned with what the team is building.
+
+## Your first generated test case
+
+The shortest path, on a project with Jira connected:
+
+<Steps>
+
+1. Go to **Settings > Integrations** and connect Jira.
+2. Open **QI Home** and start a session.
+3. Attach a Jira story as a context source.
+4. Write a prompt describing what to cover, and click **Generate**.
+5. Review the generated test cases and accept the ones that are accurate.
+
+</Steps>
+
+Nothing in that path needs a test plan, a test run, or a manually created test case.
+
+## Where to go next
+
+- **Generating from your own requirements**: [QI Home](/arcus/qi-home/overview/), then [Test generation and quality](/arcus/qi-home/test-generation-and-quality/)
+- **Automating what you accepted**: [Agentic Learning](/arcus/automation/explore-and-automate/), then [Copilot](/arcus/automation/copilot/)
+- **Building a library manually**: [Test cases](/arcus/create-and-manage/test-cases/), then [step groups](/arcus/create-and-manage/step-groups/) and [data sets](/arcus/create-and-manage/data-sets/)
+- **Running and reporting**: [Test runs](/arcus/run-tests/test-runs/), then [test plans](/arcus/run-tests/test-plans/) and [reports](/arcus/reports/reports/)
+- **Connecting your tools**: [Jira](/arcus/integrations/project-management/jira/), [CI/CD](/arcus/integrations/ci-cd/jenkins/), and [developer context mapping](/arcus/integrations/dev-tools/claude/)

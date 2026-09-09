@@ -37,6 +37,8 @@ This structure keeps a large library searchable, prevents duplicate test cases, 
 
 To create a folder, click **+**, select **New Folder**, name it, and click **Add**. To create a subfolder, click **+**, select **New Subfolder**, select the parent folder in **Select Folder**, click **Next**, name the subfolder, and click **Create**.
 
+![Test Case Explorer, with subfolders under a folder and the New Test Case control](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Feature_Test_case_explorer.png)
+
 For quick actions, click the ellipsis icon `⋮` on a folder or subfolder row:
 
 | Action | What it does |
@@ -68,6 +70,8 @@ Click **&lt;** to collapse the folder list and give the test case more width.
 
 </Steps>
 
+![A test case's steps written as NLPs, with Add new step at the end](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_npl_2.png)
+
 These action words have suggestions: `Click`, `Tap`, `Verify`, `Scroll`, `Check`, `Clear`, `Close`, `Uncheck`, `Store`, `Double Click`, `Drag`, `Enter`, `Swipe`, `Switch`, `Execute`, `Select`, `Wait`, and `Mouseover`.
 
 </TabItem>
@@ -94,6 +98,8 @@ Recording needs the [Recorder extension](https://chromewebstore.google.com/detai
 
 </Steps>
 
+![The recorder panel over the application, with Generate Steps, Pause, and Stop](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/web_test_case_record_2.png)
+
 **Android and iOS**
 
 <Steps>
@@ -113,6 +119,8 @@ Recording needs the [Recorder extension](https://chromewebstore.google.com/detai
 7. Stop the recording.
 
 </Steps>
+
+![The Record test steps overlay, with Test Lab, Test Machine, and App Source](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Entities_for_Selection_in_Overlay.png)
 
 <Aside type="tip">
 If direct recording misses an action, use **Tap** to record the element instead.
@@ -257,6 +265,8 @@ Find test cases with filters and labels, delete and restore them, and import tes
 
 Click **List View** to search, sort, and filter the whole library. Search by name from the search bar. Sort by **Title**, **Created Date**, or **Updated Date**. To filter, click **Show Filters > Add Filter**. Filters stack, and you can filter by Status, Priority, Last run result, Added to Test Suite, Assignee, Created By, Created Date, Updated Date, Reviewer, Test Case Type, Labels, Requirement, Requirement Type, and any custom field.
 
+![List View with Add Filter open, showing the filter fields](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_list_actions_5.png)
+
 To keep a filter, click **Save Filter > As New**, name it, and select **Mark as Public** to share it. **Replace Existing** updates a filter you already saved. Saved filters live under **Saved Filters**, split into Custom and Predefined, and you can edit or delete each one. Click **Reset** or **All** to clear the active filter.
 
 ### Label test cases
@@ -280,6 +290,8 @@ Deleting a test case removes its associations with test suites, test plans, and 
 </Aside>
 
 A deleted test case goes to the trash. To restore it, click **Saved Filters** in List View, select **Trash (Deleted Test Cases)**, find the test case, click **Restore** next to it, then click **Restore** in the dialog.
+
+![The Trash filter in List View, with Restore and the permanent-delete icon on each row](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Restore_Delete.png)
 
 <Aside type="note">
 Deleting a test case permanently also removes its run reports and associated configurations. This cannot be undone.
@@ -312,6 +324,8 @@ Test cases import into the same application type only. Test cases from a web app
 9. Click **Done**.
 
 </Steps>
+
+![The Select artefacts step of Import Artefacts, with the artefact tabs and their counts](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_import_5.png)
 
 <Aside type="note">
 Selecting a test case also selects its step groups, elements, test data profiles, environment variables, and uploads. To include artefacts that are not linked to the test cases you selected, open that artefact's tab and turn on **Show unlinked**. Turn on **Show selected** to review your selections on each tab.
@@ -368,6 +382,8 @@ Test scripts, prerequisite scripts, settings, unsupported authorizations, unsupp
 A step is a natural language action by default. Change its type to reuse a sequence, repeat steps over test data, branch on a condition, group steps under a label, or call an API.
 
 Click the option on the left side of a step to open the step type panel. Six types are available.
+
+![The step type panel open on a step, listing the available types](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_step_type_3.png)
 
 Loops, conditions, and blocks hold child steps, added with the **Step Inside** control. Child steps are numbered under their parent, such as **2.1** and **2.2**.
 
@@ -430,6 +446,8 @@ A REST API step calls an API inside any test case. Configure the request, verify
 
 </Steps>
 
+![A REST API step, with the method, endpoint, request tabs, and the response pane](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_step_type_RESTAPI_4.png)
+
 **Global Objects** links stored objects and other predefined project objects into the request for reuse.
 
 SOAP APIs use the same step. Send the XML envelope as the raw body with a `content-type: text/xml; charset=utf-8` header, using the **POST** method.
@@ -459,6 +477,8 @@ Verifications live on the response **Body**, **Headers**, and **Status**. Add th
 - Hover over an HTML response line and capture an attribute
 - Add fields on the **Verification** tab, with a JSON or XPath path, an expected value, and a verification type. The **Status** tab takes a key name instead of a path
 - Click **Copy Response**, paste the copied path into the path field, then set the type and the expected value
+
+![The response Outline, with Store Variable and Add Verification on a field](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_verification_n_1.png)
 
 **Verify Response Body** compares the whole body instead. Set **Comparison Type** and **Verification Type**. Before the API is invoked, it also asks for **Response Body Type** and an expected value.
 
@@ -495,6 +515,8 @@ Any request field takes test data instead of a literal value.
 4. (Optional) Enter trial values under **Add Request Values**, click **Apply**, then click **Send**.
 
 </Steps>
+
+![Insert Test Data offered on a selected value in the request URL](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_custom_values_4.png)
 
 Inside a raw body, reference a profile parameter as `@|ParameterName|` and a data generator as `!|Number.digits(int:3)|`. Unicode values work in every field. Paste them in.
 
@@ -537,6 +559,8 @@ Click the ellipsis icon `⋮` and select **Step Settings** for the full per-step
 **Highlight element in screenshot** is off until Testsigma support turns it on for your account. It then appears under **Settings > Preferences**.
 </Aside>
 
+![The Step Settings panel, with the timeout, retries, screenshot, and per-step toggles](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_step_settings_1.png)
+
 **Global Step Timeout**, under **Additional settings** in the Ad-hoc Run overlay, can override these values. With the toggle off, the global value applies only to steps without a custom timeout. With it on, the global value overrides every step.
 
 ### Change several steps at once
@@ -550,6 +574,8 @@ Click the ellipsis icon `⋮` and select **Step Settings** for the full per-step
 3. Click **Exit Bulk Action** to leave the mode.
 
 </Steps>
+
+![Bulk action mode, with Select All, Update Settings, Create Block, Create Step Group, and Delete](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_bulkactions_3.png)
 
 <Aside type="note">
 Bulk **Update Settings** cannot change **Pre-Requisite** or the retry count. Set those on each step.
@@ -571,6 +597,8 @@ The right-side utility panel holds everything that belongs to the test case rath
 - **Data-Driven**: runs the test case once per data set, filtered by Iteration (greater than, less than, between), Set Name (equals, contains, starts with, ends with, between), or Parameter
 - **Fail Test Case if Visual Testing Fails**: a visual mismatch fails the test case
 - **After Test Case**: cleanup steps that run after the test case, with **Fail the Test Case** or **Show Test Case Result** when they fail. **Mark this for AfterTest Suite** runs the test case in a suite's cleanup phase
+
+![The Test Case Settings panel, with prerequisites, test data profile, and the data-driven filters](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Test_Case_Settings_New.png)
 
 **Manage Test Case** carries the workflow fields.
 

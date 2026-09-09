@@ -13,6 +13,16 @@ import { stripBase, withBase } from '../lib/base';
 // deliberately NOT run through withBase().
 export const ASK_API_URL = '/api/ask';
 
+/**
+ * Which product's docs the reader is in, sent with every question so the API
+ * retrieves from that product only. Suite and Arcus are separate products, and
+ * an Arcus reader getting Suite screens is a wrong answer, not a broad one.
+ * Read from the path rather than passed down: every caller is on a docs page,
+ * and the base prefix (/docs-new/) sits before the product segment.
+ */
+export const askProduct = (): 'suite' | 'arcus' =>
+  typeof location !== 'undefined' && /(^|\/)arcus(\/|$)/.test(location.pathname) ? 'arcus' : 'suite';
+
 export const IC_COPY =
   '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
 export const IC_CHECK =
@@ -59,7 +69,7 @@ export async function streamAsk(
   const resp = await fetch(ASK_API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question, history }),
+    body: JSON.stringify({ question, history, product: askProduct() }),
     signal,
   });
   if (!resp.ok) throw new Error(`API responded ${resp.status}`);

@@ -1,0 +1,137 @@
+---
+title: Reports
+description: Create a report from test cases, test runs, test plans, or requirements, read each of its sections, and edit, export, or delete one.
+pageType: guide
+verified: 2026-09
+covers:
+  - Create a report
+  - Read a report
+  - Requirement traceability report
+  - Edit a report
+  - Export a report
+  - Delete a report
+sidebar:
+  order: 1
+  label: Reports
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+**A report** visualizes execution results for a set of artifacts you choose: test cases, test runs, test plans, or requirements. It covers execution progress, status distribution, defects, and assignee comparison.
+
+This page covers creating a report, reading each of its sections, the requirement traceability report, and editing, exporting, or deleting a report.
+
+## Create a report
+
+<Steps>
+
+1. In the left navigation, open **Reports**.
+2. Click **Create Report** in the top right. The **Select Data for Visualization** dialog opens.
+3. Choose the artifact type for the report.
+4. Attach the relevant artifacts.
+5. Click **Attach Test Runs**.
+6. Enter a **Name**. A **Description** is optional.
+7. Click **Create a Report**.
+
+</Steps>
+
+<Aside type="note">
+The report covers only the artifacts you attached.
+</Aside>
+
+## Read a report
+
+<Steps>
+
+1. In the left navigation, open **Reports**.
+2. Select the **Test Cases**, **Test Runs**, or **Test Plans** tab, then click a report to open it.
+
+</Steps>
+
+The report shows the sections below, built from the attached artifacts.
+
+- **Test Execution Progress**: a line chart of completed against remaining tests over time, for completion trends.
+- **Test Execution Status (Chart 1)**: the distribution of test statuses across Blocked, Failed, In Progress, Passed, Retest, Skipped, and Untested.
+- **Test Execution Status (Chart 2)**: a horizontal bar chart giving the percentage and count of test cases in each status.
+- **Defect Report (Cumulative)**: a line chart of cumulative defects against newly raised or linked defects, for defect inflow over time.
+- **Defect Status**: a donut chart of the current status of defects.
+- **Comparative Analysis by Assignee and Execution Status**: a bar chart of execution statuses grouped by assignee, for workload distribution.
+
+## Requirement traceability report
+
+This report maps requirements to the test cases, test runs, and defects that validate them. Requirements can come from [Jira](/arcus/integrations/project-management/jira/), [Linear](/arcus/integrations/project-management/linear/), or [ClickUp](/arcus/integrations/project-management/clickup/).
+
+Before you create one, the test cases must be generated from requirements, linked to test runs, and carrying execution results.
+
+<Steps>
+
+1. In the left navigation, open **Reports**.
+2. Click **Create Report** in the top right. The **Select Data for Visualization** dialog opens.
+3. Choose **Select Requirements**, then click **Select Requirements**.
+4. On the **Add Test Requirements** page, select the requirements to include and click **Attach Test Requirements**.
+5. Enter a **Title**. A **Description** is optional.
+6. Click **Create a Report**.
+7. To share it, click **Share** in the top right, turn on **Anyone with the link can view**, and click **Copy**.
+
+</Steps>
+
+### What the report shows
+
+**Requirements by Priority** gives the number of requirements in each business priority.
+
+- **Critical**: must-have functionality that blocks release if it fails.
+- **Major**: core functionality affecting primary workflows.
+- **Medium**: important but non-blocking enhancements.
+- **Minor**: optional or low-impact usability improvements.
+
+**Test Case Count** gives the number of test cases linked to requirements, split into **Manual**, executed by users, and **Automated**, executed by automation workflows.
+
+**Traceability Matrix** maps **Requirements > Test Cases > Test Runs**, in both directions.
+
+| Column | What it shows |
+| :--- | :--- |
+| **Requirement** | The requirement title or story summary. |
+| **Test Cases** | The test case IDs linked to the requirement. |
+| **Test Runs** | Test run records with execution timestamps and a Tested or Untested status tag. |
+
+## Edit a report
+
+<Steps>
+
+1. In the left navigation, open **Reports**.
+2. Click the ellipsis icon (⋯) next to the report and select **Edit**.
+3. Update the **Name** or **Description**, then click **Preview Selected Runs** to review the current selection.
+4. Click **Update Selection**, then add or remove test runs on the **Update Test Runs** page.
+5. Click **Update Test Runs**, then **Update Report**.
+
+</Steps>
+
+<Aside type="note">
+The same steps edit reports built from test cases or test plans.
+</Aside>
+
+## Export a report
+
+<Steps>
+
+1. In the left navigation, open **Reports**.
+2. On the **Reports List** page, select an artifact type tab.
+3. Select a report.
+4. Click **Export** in the top right.
+5. In the **Export Report as PDF** dialog, enter a name and click **Download PDF**.
+
+</Steps>
+
+## Delete a report
+
+<Steps>
+
+1. In the left navigation, open **Reports**.
+2. Click the ellipsis icon (⋯) next to the report and select **Delete**.
+3. On the **Delete Report?** dialog, click **Delete Report**.
+
+</Steps>
+
+<Aside type="note">
+The same steps delete reports built from test cases or test plans.
+</Aside>

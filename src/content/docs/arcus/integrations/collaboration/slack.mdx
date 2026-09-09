@@ -1,0 +1,65 @@
+---
+title: Slack
+description: Send Arcus notifications into your Slack workspace, choose which events trigger them, and edit each notification template.
+pageType: task
+verified: 2026-09
+covers:
+  - Notification events
+  - Customize a notification
+  - Send notifications from a test plan
+sidebar:
+  order: 210
+  label: Slack
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Connecting Slack to Arcus by Testsigma sends notifications about test activity into your Slack workspace. You choose which events trigger a notification, and edit the message each one uses.
+
+<Prerequisites>
+- An active Slack workspace.
+- The Slack integration connected. Click **Integrate Slack** on the **Customise Slack Notifications** page, or **Setup Integration** next to Slack under **Settings > Integrations**.
+</Prerequisites>
+
+## Notification events
+
+You configure notifications one event at a time. Turn each event on or off as needed.
+
+- **Test Run Assigned**: a test run is assigned to a user.
+- **Test Case Waiting on Review**: a test case is submitted for review.
+- **Test Case Approved**: a test case is approved.
+- **Comments Mentioned**: a user is mentioned in a comment.
+- **Test Run Completed**: a test run's status changes or it completes.
+- **Test Case Assigned**: a test case is assigned to a user.
+- **Test Case Rework Requested**: a test case needs rework.
+- **Test Run Added to Test Plan**: a test run is added to a test plan.
+- **Test Plan Completed**: a test plan completes.
+- **Test Plan Daily Summary**: a daily summary of active test plans.
+- **Export Completed**: a data export finishes and is ready to download.
+
+## Customize a notification
+
+<Steps>
+
+1. In the left navigation, go to **Settings > Notifications**.
+2. Expand **Notifications**, then click **Slack**. The **Customise Slack Notifications** section opens.
+3. Hover over the event you want to change and click the edit icon.
+4. Update the **Notification Template**.
+5. (Optional) Click **Send Test Notification** to check the template.
+6. Click **Save**.
+
+</Steps>
+
+## Send notifications from a test plan
+
+{/* CONFIRM: whether a specific channel is picked here. The source says "select the Slack channel". */}
+
+<Steps>
+
+1. In the left navigation, open **Test Plans**, then create or open a [test plan](/arcus/run-tests/test-plans/).
+2. In the **Notifications** section, select **Slack** from the dropdown.
+
+</Steps>
+
+Arcus sends a notification when the test plan is created or updated.

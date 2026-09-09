@@ -33,7 +33,17 @@ export const SUITE_REGIONS: Region[] = [
 	{ id: 'in', label: 'India', host: 'app-in.testsigma.com' },
 ];
 
-const FAMILIES: Region[][] = [SUITE_REGIONS];
+/**
+ * Arcus, served from its own domain. ONE entry on purpose: the regional Arcus
+ * hosts have never been confirmed, and inventing app-eu-shaped names would put
+ * URLs in the docs that resolve nowhere. A single-entry family renders no
+ * picker, which is the honest UI until the real hosts are known.
+ */
+export const ARCUS_REGIONS: Region[] = [
+	{ id: 'us', label: 'US', host: 'test-management.testsigma.com' },
+];
+
+const FAMILIES: Region[][] = [SUITE_REGIONS, ARCUS_REGIONS];
 
 /** Every host this repo is allowed to use in an `api.baseUrl`. */
 export const CANONICAL_HOSTS: string[] = FAMILIES.flatMap((f) => f.map((r) => r.host));

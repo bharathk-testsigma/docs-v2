@@ -1,0 +1,95 @@
+---
+title: Test Plans
+description: Create a test plan, add test runs to it, and edit, delete, or share one by public link.
+pageType: guide
+verified: 2026-09
+covers:
+  - Create a test plan
+  - Add a test run to a test plan
+  - Edit a test plan
+  - Delete a test plan
+  - Share a test plan by link
+sidebar:
+  order: 2
+  label: Test Plans
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+**A test plan** groups test runs and sets the scope, goals, and schedule for a round of testing. It links directly to both test runs and test cases.
+
+This page covers creating a test plan, adding test runs to it, editing, deleting, and sharing one by public link.
+
+## Create a test plan
+
+<Steps>
+
+1. In the left navigation, open **Test Plans**.
+2. Click **Create Test Plan**.
+3. On the **Test Plan Details** page, enter a **Title**. A **Description** is optional.
+4. (Optional) Select a **Start Date** and **End Date** from the date picker to schedule the plan.
+5. Click **Create Test Plan**.
+
+</Steps>
+
+## Add a test run to a test plan
+
+Create the run inside the plan, or attach one that already exists.
+
+### Create a new run inside the plan
+
+<Steps>
+
+1. Open the test plan.
+2. Click **+ Create Test Run**.
+3. Follow the steps in [Test runs](/arcus/run-tests/test-runs/).
+
+</Steps>
+
+### Attach an existing run
+
+<Steps>
+
+1. In the left navigation, open **Test Runs**, then open the run.
+2. Click **Edit Test Run**.
+3. Click **Attach Test Plan**.
+4. Select the test plan.
+
+</Steps>
+
+## Edit a test plan
+
+<Steps>
+
+1. In the left navigation, open **Test Plans**.
+2. Click the ellipsis icon (⋯) next to the test plan and select **Edit**.
+3. Make your changes, then click **Save Test Plan**.
+
+</Steps>
+
+## Delete a test plan
+
+<Steps>
+
+1. In the left navigation, open **Test Plans**.
+2. Click the ellipsis icon (⋯) next to the test plan and select **Delete**.
+3. On the **Delete Test Plan?** dialog, click **Delete Test Plan**.
+
+</Steps>
+
+## Share a test plan by link
+
+A public link lets stakeholders without an account see testing progress.
+
+<Steps>
+
+1. In the left navigation, open **Test Plans**, then open the test plan.
+2. Click **Share** in the top right.
+3. In the **Share Test Plan** dialog, turn on **Anyone with the link can view**.
+4. Click **Copy**.
+
+</Steps>
+
+<Aside type="note">
+The link gives read-only access. Anyone holding it can filter the test runs and open a run to see its test cases.
+</Aside>

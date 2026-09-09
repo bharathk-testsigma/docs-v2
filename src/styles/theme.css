@@ -1492,10 +1492,11 @@ starlight-toc nav > ul > li:first-child:has(a[aria-current='true']) + li > a::be
 }
 
 /* Code blocks sit in the same vertical rhythm as callouts, and the copy button
-   stays legible instead of fading into the frame. EC gives the figure no bottom
-   margin of its own, so consecutive blocks would otherwise touch. */
+   stays legible instead of fading into the frame. EC gives the figure no margin
+   of its own, so consecutive blocks would otherwise touch, and a block would
+   hug the sentence introducing it -- hence half a line's gap above. */
 .sl-markdown-content .expressive-code {
-	margin: 0 0 1.75rem;
+	margin: 0.875rem 0 1.75rem;
 }
 
 /* Real macOS traffic lights on the terminal frame. EC draws the three dots as a

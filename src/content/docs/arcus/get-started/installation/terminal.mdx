@@ -1,0 +1,50 @@
+---
+title: Terminal
+description: Install Testsigma Terminal and connect a device, so Agentic Learning, Copilot, and CLI test runs can execute on your own machine.
+pageType: task
+verified: 2026-09
+covers:
+  - Install Terminal
+  - Where Terminal is required
+sidebar:
+  order: 100
+  label: Terminal
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+Testsigma Terminal connects your device to Testsigma, so test cases can run on it.
+
+You need it in 2 cases: running Android mobile test cases through the CLI, and running Agentic Learning or Copilot on a local device. Cloud execution uses Testsigma Lab and needs nothing installed on your machine.
+
+Local execution covers web, Android, and iOS. Use it when your application is not publicly accessible, when you are testing a local build, or when you are automating mobile test cases on a physical device or emulator.
+
+## Install Terminal
+
+<Steps>
+
+1. Download Testsigma Terminal from the **Learn and Automate** dialog, and install it.
+2. Open Testsigma Terminal.
+3. Select **Modern** in the configuration settings.
+4. Log in to Testsigma Terminal.
+5. For a mobile test case, connect your device or emulator. It appears in Testsigma Terminal.
+
+</Steps>
+
+A mobile run cannot start without a connected device, so connect it before you ask Claude Code to run a test case, and before you select **Local Devices** in the **Learn and Automate** dialog. A local web run needs Terminal running but no device.
+
+## Where Terminal is required
+
+| Task | Cloud | Local |
+|---|---|---|
+| Agentic Learning or Copilot on web | Testsigma Lab, nothing installed | Terminal running |
+| Agentic Learning or Copilot on Android or iOS | Testsigma Lab, nothing installed | Terminal running, device or emulator connected |
+| CLI test runs on Android | Not available | Terminal running, device connected |
+
+<Aside type="note">
+Terminal has to be running, not just installed, for a local session to start. Where it is not running, a prompt appears with a **Launch Terminal** button and a download link.
+</Aside>
+
+## Next
+
+See [Explore and Automate](/arcus/automation/explore-and-automate/) and [Copilot](/arcus/automation/copilot/) for running on a connected device.

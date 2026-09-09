@@ -1,0 +1,89 @@
+---
+title: QI Home overview
+description: What QI Home covers, the workflow it runs, the agents behind it, and which page to open for each stage.
+pageType: guide
+verified: 2026-09
+covers:
+  - The workflow
+  - Sprints or Adhoc
+  - Inside a sprint or Adhoc session
+  - The agents
+  - Developer context
+sidebar:
+  order: 1
+  label: Overview
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+**QI Home** is where Arcus generates test cases, tracks what you accept, plans and executes runs, and reports whether each sprint is ready to ship. Work happens in sprints and Adhoc sessions.
+
+## The workflow
+
+Five stages run in order, and the pages that document each one:
+
+<Steps>
+
+1. Feed context. Attach sources to a prompt, let a sprint supply its stories, or map developer activity in [Context Management](/arcus/qi-home/context-management/).
+2. Generate. Arcus writes test cases grouped by story and module. They arrive in **Pending** status.
+3. Review. Accept the accurate ones into your library. A test case left pending is a gap, and gaps hold coverage down.
+4. Plan and run. Generate and accept test plans, and their runs report results back.
+5. Read the verdict. Coverage, Pass Rate, Confidence, and Readiness roll up into a Ready, Conditional Ready, or Not Ready verdict.
+
+</Steps>
+
+Stages 2 through 5 all live on [Test generation and quality](/arcus/qi-home/test-generation-and-quality/).
+
+Automating an accepted test case happens in the Automation section: [Explore and Automate](/arcus/automation/explore-and-automate/) generates its automated steps, and [Copilot execution](/arcus/automation/copilot/) runs them in a live browser. An automated test case is then available to the test plans you run here.
+
+Arcus proposes test cases and plans. No test case enters your library, and no plan starts a run, until you accept it.
+
+## Sprints or Adhoc
+
+Open **QI Home** in the left navigation. A prompt box sits at the top, and 2 tabs list your work beneath it.
+
+| Aspect | Sprints | Adhoc |
+| :--- | :--- | :--- |
+| Starts when | A sprint starts in your connected project management tool | You write a prompt, attach context, and click **Send** |
+| Context comes from | The sprint stories and their linked artifacts | Sources you attach yourself |
+| Use it when | Your team works in sprints and coverage should start with the sprint | You are covering a feature outside a sprint, a hotfix, or an experiment |
+
+Connect [Jira](/arcus/integrations/project-management/jira/), [Azure DevOps](/arcus/integrations/project-management/azure-devops/), [Linear](/arcus/integrations/project-management/linear/), or [ClickUp](/arcus/integrations/project-management/clickup/) to the project before you use the **Sprints** tab. Everything after generation is identical for both.
+
+Each row shows its **Readiness** verdict, its **Coverage**, and when it last changed. Sprints are grouped into **Current Sprints** and **Closed**.
+
+## Inside a sprint or Adhoc session
+
+Open any row to get its working view.
+
+- **The verdict and the reason**: a status chip such as **Not Ready** or **Awaiting Run**, and a one-line explanation, such as "Coverage is 24%, below the 85% bar."
+- **4 metric cards**: **Coverage**, **Pass Rate**, **Confidence**, and **Readiness**, each with its threshold marked. Run-based metrics show **Awaiting execution** until a plan runs.
+- **Test Case Review**: how many generated cases wait for review, with the highest-value ones to start with.
+- **Plans & Execution**: the state of the test plans and runs, from "No test plan yet" through to run results that need attention.
+- **App knowledge graph**: how many orphan nodes the runs observed (elements in the app that no test asserts on yet). See [App knowledge graph](/arcus/qi-home/app-knowledge-graph/).
+- **Insights and activity**: findings ranked **Act now**, **Watch**, and **Next**, such as a module at 0% coverage or flaky tests to stabilize, beside an **Activity** feed of what changed and when. Insights that name a module or stories link straight to them.
+- **Context**: a drawer listing everything Arcus read here (requirements, uploads, code changes, AI coding sessions, run history, and live-app learning), with a **Refresh context** action.
+
+An **Arcus** panel docks to the left of every sprint and Adhoc session page. Ask it about the work, generate more test cases, or refine a plan. The panel behaves the same way on every page.
+
+## The agents
+
+Seven agents run at different stages of the workflow. They propose, and you decide what enters your library and what runs.
+
+| Agent | Owns | Where its work surfaces |
+| :--- | :--- | :--- |
+| Generator | Writes test cases from the context it reads | Test generation and quality |
+| Sprint Planner | Detects a sprint start, generates for it, and builds the test plans | Test generation and quality |
+| Coverage Planner | Reports coverage per module, flags gaps, and scores readiness | The metric cards, and Insights and activity |
+| Runner | Runs Agentic Learning against your application and generates automated steps | Explore and Automate |
+| Analyzer | Reads execution results for patterns and risk signals | Insights and activity |
+| Bug Reporter | Files a failed test case as a defect | Jira, Azure DevOps, Linear, or ClickUp |
+| Healer | Corrects element locators when they fail during a run | Run results |
+
+Three agents have no page of their own in this documentation. The Analyzer surfaces recurring failures and risk signals in Insights and activity. The Bug Reporter files a defect carrying the test case name, the environment, the test plan ID, the result URL, the error type, the probable root cause, and suggested next steps. The Healer corrects a failed locator during a run, so a renamed button doesn't break a test case that is otherwise still valid.
+
+## Developer context
+
+Developer activity arrives on its own. Pull requests from connected repositories, and coding sessions captured by the Arcus plugins for Claude Code, Cursor, GitHub Copilot, and Codex, land in [Context Management](/arcus/qi-home/context-management/), along with test cases pushed from the [CLI](/arcus/qi-home/developer-tools/cli/). Linking an entry to a sprint or an Adhoc session sends it to generation, so the test cases track what was actually built.
+
+Install the plugins from [Plugins](/arcus/qi-home/developer-tools/plugins/).

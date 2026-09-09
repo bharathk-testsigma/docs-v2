@@ -81,15 +81,41 @@ function cosine(q: Float32Array, offset: number, vecs: Float32Array): number {
 const CANDIDATES = 50;   // pool size sent to the reranker
 const TOP_K      = 8;    // excerpts handed to Claude
 
+// ── Product scope ─────────────────────────────────────────────────────────────
+// Suite and Arcus are separate products with separate navigation, so a reader
+// in one must not be answered out of the other's pages. The client sends which
+// docs it is in; omitting it keeps the old behaviour (search everything).
+//
+// Derived from the chunk URL, NOT read from meta.product: that field is only
+// rewritten when the index is re-embedded, so a stale index would leave one
+// product with an empty pool and the assistant answering nothing. Supplementary
+// context chunks have no URL, so those do use the field, where 'all' (the
+// default) matches both products.
+export type Product = 'suite' | 'arcus';
+
+const productOf = (m: ChunkMeta): string =>
+  m.url ? (m.url.startsWith('/arcus/') ? 'arcus' : 'suite') : m.product || 'all';
+
+const PRODUCT_LABEL: Record<Product, string> = {
+  suite: 'Testsigma Suite',
+  arcus: 'Testsigma Arcus, the test management product',
+};
+
 /** Stage 1: cosine top-N with light family diversity. */
 export function retrieveCandidates(
   q: number[],
   vecs: Float32Array,
   meta: ChunkMeta[],
   n = CANDIDATES,
+  product?: Product,
 ): (ChunkMeta & { score: number })[] {
   const qf = new Float32Array(q);
   const total = vecs.length / DIMS;
+  const inScope = (m: ChunkMeta) => {
+    if (!product) return true;
+    const p = productOf(m);
+    return p === product || p === 'all';
+  };
 
   // The site duplicates platform pages per app (web/mobile/salesforce/... each
   // have "Test suites", "Author tests", ...). Cap candidates per page FAMILY
@@ -99,7 +125,10 @@ export function retrieveCandidates(
   const familyOf = (url: string) => url.split('/').filter(Boolean).pop() ?? url;
 
   const scores: [number, number][] = [];
-  for (let i = 0; i < total; i++) scores.push([cosine(qf, i * DIMS, vecs), i]);
+  for (let i = 0; i < total; i++) {
+    if (!inScope(meta[i])) continue;
+    scores.push([cosine(qf, i * DIMS, vecs), i]);
+  }
   scores.sort((a, b) => b[0] - a[0]);
 
   const seen = new Set<string>();
@@ -235,6 +264,7 @@ export default async function handler(req: any, res: any) {
   let body: {
     question?: string;
     history?: { role: 'user' | 'assistant'; content: string }[];
+    product?: string;
   } = {};
   try {
     if (req.body && typeof req.body === 'object') {
@@ -259,6 +289,11 @@ export default async function handler(req: any, res: any) {
     .slice(-6)
     .map(m => ({ role: m.role, content: m.content.slice(0, 4000) }));
 
+  // Which product's docs the reader is in. Anything else (or nothing) means
+  // unscoped, so an older cached client keeps working.
+  const product: Product | undefined =
+    body.product === 'arcus' || body.product === 'suite' ? body.product : undefined;
+
   // SSE response headers
   res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
   res.setHeader('Cache-Control', 'no-cache, no-transform');
@@ -281,7 +316,7 @@ export default async function handler(req: any, res: any) {
 
     // 2. Two-stage retrieval: wide cosine pool → reranked top slice.
     const { vectors, meta } = loadIndex();
-    const candidates = retrieveCandidates(queryVec, vectors, meta);
+    const candidates = retrieveCandidates(queryVec, vectors, meta, CANDIDATES, product);
     send('status', { text: 'Ranking sources…' });
     const hits = await rerank(searchText, candidates);
 
@@ -304,10 +339,10 @@ export default async function handler(req: any, res: any) {
       // The full rationale for every rule below is ASK-ASSISTANT-STYLE-GUIDE.md
       // at the repo root. That file is the source of truth; this prompt is its
       // operative form. Change one, change the other.
-      system: `You are Ask Assistant, a documentation assistant for Testsigma Suite. Answer the reader's question using ONLY the numbered excerpts below.
+      system: `You are Ask Assistant, a documentation assistant for ${product ? PRODUCT_LABEL[product] : 'Testsigma'}. Answer the reader's question using ONLY the numbered excerpts below.
 
 GROUNDING — the rules that matter most:
-- Every fact must trace to an excerpt. Where the excerpts do not cover the question, say so, name the closest documented topic, and give support@testsigma.com as plain text at the end. Do not reconstruct an answer from general knowledge of test automation, Selenium, Appium, or how such tools usually work.
+${product ? `- The reader is in the ${PRODUCT_LABEL[product]} documentation, and every excerpt below comes from it. Testsigma's other product is ${product === 'arcus' ? 'Suite (test automation)' : 'Arcus (test management)'}: if the question is about that one, say these docs do not cover it and name the other product, rather than answering from these excerpts.\n` : ''}- Every fact must trace to an excerpt. Where the excerpts do not cover the question, say so, name the closest documented topic, and give support@testsigma.com as plain text at the end. Do not reconstruct an answer from general knowledge of test automation, Selenium, Appium, or how such tools usually work.
 - Never invent a UI label, menu path, field name, default, limit, version number, error string, API parameter, or endpoint shape. These are the most quotable and the most damaging inventions. If you need one and no excerpt has it, name the page instead and stop.
 - Describe a gap as a gap in the DOCUMENTATION, never in the product. "The documentation doesn't cover this" is correct; "Testsigma doesn't support this" is a claim the excerpts cannot make.
 - Never soften a gap into a hedge. "Testsigma may support this" is worse than saying the docs don't cover it, because it sounds like an answer.

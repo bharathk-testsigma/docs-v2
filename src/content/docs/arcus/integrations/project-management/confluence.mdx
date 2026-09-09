@@ -1,0 +1,56 @@
+---
+title: Confluence
+description: Connect Confluence to Arcus and attach pages from a space as context when you generate test cases.
+pageType: task
+verified: 2026-09
+covers:
+  - Connect Confluence
+  - Attach pages as context
+sidebar:
+  order: 140
+  label: Confluence
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Connecting Confluence to Arcus by Testsigma lets you attach pages from a Confluence space as context when you generate test cases, using documentation your team already maintains.
+
+<Prerequisites>
+- An active Confluence account with the necessary permissions.
+</Prerequisites>
+
+## Connect Confluence
+
+<Steps>
+
+1. In the left navigation, go to **Settings > Integrations**.
+
+2. Click **Setup Integration** next to **Confluence**. The **Atlassian Login** page opens in a new tab.
+
+3. Log in with your Atlassian credentials.
+
+4. On the **Requesting Access** page, click **Accept**.
+
+</Steps>
+
+## Attach pages as context
+
+{/* CONFIRM: the entry point. The selector appears as ADD CONTEXT from the QI Home prompt and as ADD FILE elsewhere, and the two list different sources. The Confluence panel is the same in both. */}
+
+<Steps>
+
+1. In the left navigation, open **QI Home**.
+2. In the **Add Context** row, click the plus icon (+).
+3. Select **Confluence**.
+4. Select a **Space** from the dropdown.
+5. Under **Pages**, select the pages to attach. Select **Select all** to take every page in the space.
+6. Click **Save**.
+
+</Steps>
+
+<Aside type="tip">
+Use the search icon beside **Pages** to find a page in a large space.
+</Aside>
+
+The **Pages** heading counts your selection against the space total, such as (2/5). The selected pages are added to the **Add Context** row, and the [Generator](/arcus/qi-home/overview/#the-agents) reads them when you generate test cases.

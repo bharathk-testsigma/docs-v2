@@ -53,6 +53,8 @@ Go to **Agents** and click **Download Agent**, or take the direct download for y
 | macOS (Intel) | <a class="ts-dlbtn" href="DOWNLOAD_LINK_MAC_INTEL_DMG" aria-label="Download the macOS Intel DMG" /> | <a class="ts-dlbtn" href="DOWNLOAD_LINK_MAC_INTEL_ZIP" aria-label="Download the macOS Intel ZIP" /> |
 | Linux | <a class="ts-dlbtn" href="DOWNLOAD_LINK_LINUX_BIN" aria-label="Download the Linux binary" /> | <a class="ts-dlbtn" href="DOWNLOAD_LINK_LINUX_ZIP" aria-label="Download the Linux ZIP" /> |
 
+![The download menu on the Agents page, listing the executable and ZIP for each operating system](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Download_Agent.png)
+
 The agent comes in 4 forms: a ZIP file, an executable, a DMG, or a Docker image. A ZIP or an executable installs on the machine and is then started and registered separately. A Docker image does all three at once. It also runs on Kubernetes as a Helm release. Deploying to managed devices at scale goes through PatchMyPC rather than any of these.
 
 <Tabs>
@@ -182,6 +184,8 @@ The agent image runs as root, so a namespace enforcing the `restricted` Pod Secu
 ### Install the chart with an activation key
 
 1. Go to **Agents** in Testsigma and create an agent with **Activate Later**. Select it, open the **Config** tab, and copy the **Activation Key**.
+
+   ![The Config tab of an agent, showing the activation command with the TS_ACTIVATION_KEY value](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Agent_Key.png)
 
 2. Create a namespace and store the key in a secret. Write the key to a temporary file rather than passing it on the command line, so it stays out of your shell history and the process list.
 
@@ -444,8 +448,6 @@ Starting automatically at system boot is supported on Windows only.
 
 `TestsigmaAgent` accepts these commands from **Wrapper > Bin**:
 
-<br />
-
 ```text
 console      Launch in the current console
 start        Start in the background as a daemon process
@@ -477,6 +479,8 @@ dump         Request a Java thread dump if running
 
 </Steps>
 
+![The Add new Agent dialog, with fields for the device name, visibility, and activation](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Agent_Details.png)
+
 The agent then appears on the **Agents** page with the browsers available on that machine. The operating system version and browser names take a couple of minutes to appear. If they have not appeared after 10 minutes, the agent has a setup problem.
 
 <Aside type="note">
@@ -500,6 +504,8 @@ Developer options have to be enabled on the device first.
 5. Connect the device to the machine running the agent, and accept the **Allow USB Debugging** alert. Select **Always allow from this computer** if it appears.
 6. Go to **Agents** in Testsigma and click the registered agent.
 7. The device appears under **Devices**.
+
+   ![The Devices tab of an agent, listing a connected Android device with its ID, model, OS, and resolution](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_android_device_2.png)
 
 To run a test on it, select the **Connected Machine** and the **Device**.
 
@@ -614,6 +620,8 @@ The log level controls what the agent writes to the command line and to its loca
 
 Open an agent from the **Agents** list page, click the **Agent Settings** icon in the right navigation bar, and select the level for the CLI and for local files.
 
+![The agent Settings panel with the log level options for the CLI and local files](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_agent_3.png)
+
 | Level | What it logs |
 |---|---|
 | ERROR | Critical issues that cause the agent to fail |
@@ -638,6 +646,8 @@ A network interruption during the download restarts it from the beginning once t
 </Aside>
 
 To control when upgrades happen, go to **Agents > Agent > Settings > Agent upgrade settings** and select **Manual**. The interface then shows the current and latest versions when an upgrade is available, and **Upgrade** installs it.
+
+![The agent Settings panel set to manual upgrades, showing the current and latest versions with an Upgrade link](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Current_Latest_Version_Agent.png)
 
 ### Update the agent manually
 
@@ -692,6 +702,8 @@ Tests can run on one machine's agent while you work from another, on the same Te
 
 3. On **Add Test Suites & Link Machine Profiles**, click **Link Test Machine** and select the target machine.
 
+   ![The second step of Edit Test Plan, with the Link Test Machine option beside the linked test machines](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_trigger_4.png)
+
 </Steps>
 
 ## Delete an agent
@@ -705,6 +717,8 @@ An obsolete agent cannot execute tests.
 </Aside>
 
 To delete one for good, click the ellipsis icon (⋮), click **Delete Permanently**, then confirm in the **Delete Agent Permanently?** dialog.
+
+![The Restore and Delete Permanently options on an obsolete agent in the Agents list](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_agents_5.png)
 
 ### Force delete
 
