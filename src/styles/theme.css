@@ -245,6 +245,30 @@ html {
 	box-sizing: border-box;
 }
 
+/* A markdown image is its own paragraph, so the frame can move up to that
+   paragraph -- and once the padding belongs to the wrapper, the picture's own
+   corners can be rounded. On the <img> alone they never could: border-radius
+   clips the border box, which the 20px padding holds well clear of the bitmap,
+   so the screenshot stayed square against the navy. The rule above still
+   frames any image that is NOT alone in a paragraph. */
+.sl-markdown-content p:has(> img:only-child) {
+	padding: 20px;
+	margin: 1.25rem 0;
+	background: linear-gradient(135deg, #12274d 0%, #091e42 55%, #0a1730 100%);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 12px;
+	box-sizing: border-box;
+}
+.sl-markdown-content p:has(> img:only-child) > img {
+	margin: 0;
+	padding: 0;
+	background: none;
+	border: 0;
+	/* Not the concentric 12 - 20: that is negative. Enough to take the hard
+	   corner off a screenshot without reading as a rounded card. */
+	border-radius: 8px;
+}
+
 /* ------------------------------------------------------------------ type ---
    V4 scale: body 15.5px/1.65, page title 44px (PageTitle.astro), markdown
    h2 30px, h3 22px, h4 16px. Headings are 700, not 600 -- with no accent hue

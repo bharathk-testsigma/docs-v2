@@ -56,59 +56,6 @@
 	margin-bottom: 20px;
 }
 
-/* ── flow diagram ────────────────────────────────────────────────────────── */
-/* The zone box is a <rect> inside the zone's <a>; --zs carries that zone's
-   accent, set per zone in the markup, so one rule covers all five. */
-.ah-zone-box {
-	transition:
-		stroke 0.2s,
-		fill 0.2s;
-}
-.ah-zone:hover .ah-zone-box {
-	stroke: var(--zs);
-	fill: var(--ts-bd-soft);
-}
-
-.ah-cap {
-	margin: 18px auto 0;
-	max-width: 70ch;
-	/* Reserve the line so hovering a zone does not shift the page. */
-	min-height: 23px;
-	text-align: center;
-	font-size: 14.5px;
-	line-height: 23px;
-	color: var(--ts-tx2);
-	text-wrap: pretty;
-}
-
-@keyframes ts-draw {
-	to {
-		stroke-dashoffset: 0;
-	}
-}
-
-@keyframes ts-node-in {
-	from {
-		opacity: 0;
-		transform: translateY(4px);
-	}
-	to {
-		opacity: 1;
-		transform: none;
-	}
-}
-
-/* The diagram animates itself in on load; a reader who asked for less motion
-   gets the finished state instead of nothing (opacity/dashoffset reset). */
-@media (prefers-reduced-motion: reduce) {
-	[style*='ts-node-in'],
-	[style*='ts-draw'] {
-		animation: none !important;
-		opacity: 1 !important;
-		stroke-dashoffset: 0 !important;
-	}
-}
-
 /* ── three steps ─────────────────────────────────────────────────────────── */
 .ah-steps {
 	display: flex;
@@ -267,18 +214,12 @@
 .sl-markdown-content .ah-topic-link,
 .sl-markdown-content .ah-topic-link:hover,
 .sl-markdown-content .ah-tool,
-.sl-markdown-content .ah-tool:hover,
-.sl-markdown-content .ah-zone,
-.sl-markdown-content .ah-zone:hover {
+.sl-markdown-content .ah-tool:hover {
 	text-decoration: none;
 }
 .sl-markdown-content .ah-topic-h:hover {
 	text-decoration: underline;
 	text-underline-offset: 3px;
-}
-/* An <a> inside the SVG underlines its <text> children too. */
-.sl-markdown-content .ah-zone text {
-	text-decoration: none;
 }
 
 /* Card links keep the card's own colours rather than the link colour. */

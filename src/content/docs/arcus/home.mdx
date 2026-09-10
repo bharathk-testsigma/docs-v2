@@ -130,94 +130,7 @@ mdSummary: |
   <h2 id="_flow" class="ah-h2">From a requirement to a release call, in one place</h2>
   <p class="ah-sub">Point QI Home at the work you already have. It writes the cases, you accept the ones that matter, and every run rolls up into the coverage story for the release.</p>
 
-<svg viewBox="0 0 1200 372" role="img" aria-label="How work moves through Arcus: bring context, QI Home writes, accept and organize, run and track, report" style="display:block;width:100%;height:auto;font-family:inherit">
-      <path id="ts-e0" d="M 210 165 H 255" fill="none" stroke="var(--ts-bd)" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60" style="animation:ts-draw .7s cubic-bezier(.4,0,.2,1) 0.30s forwards"></path>
-      <circle r="4" fill="#b2506a" opacity="0">
-        <animateMotion dur="2.6s" begin="0.00s" repeatCount="indefinite"><mpath href="#ts-e0"></mpath></animateMotion>
-        <animate attributeName="opacity" values="0;1;1;0" dur="2.6s" begin="0.00s" repeatCount="indefinite"></animate>
-      </circle>
-      <path id="ts-e1" d="M 455 165 H 500" fill="none" stroke="var(--ts-bd)" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60" style="animation:ts-draw .7s cubic-bezier(.4,0,.2,1) 0.42s forwards"></path>
-      <circle r="4" fill="#0b7f88" opacity="0">
-        <animateMotion dur="2.6s" begin="0.55s" repeatCount="indefinite"><mpath href="#ts-e1"></mpath></animateMotion>
-        <animate attributeName="opacity" values="0;1;1;0" dur="2.6s" begin="0.55s" repeatCount="indefinite"></animate>
-      </circle>
-      <path id="ts-e2" d="M 700 165 H 745" fill="none" stroke="var(--ts-bd)" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60" style="animation:ts-draw .7s cubic-bezier(.4,0,.2,1) 0.54s forwards"></path>
-      <circle r="4" fill="#5c27f5" opacity="0">
-        <animateMotion dur="2.6s" begin="1.10s" repeatCount="indefinite"><mpath href="#ts-e2"></mpath></animateMotion>
-        <animate attributeName="opacity" values="0;1;1;0" dur="2.6s" begin="1.10s" repeatCount="indefinite"></animate>
-      </circle>
-      <path id="ts-e3" d="M 945 165 H 990" fill="none" stroke="var(--ts-bd)" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60" style="animation:ts-draw .7s cubic-bezier(.4,0,.2,1) 0.66s forwards"></path>
-      <circle r="4" fill="#00875a" opacity="0">
-        <animateMotion dur="2.6s" begin="1.65s" repeatCount="indefinite"><mpath href="#ts-e3"></mpath></animateMotion>
-        <animate attributeName="opacity" values="0;1;1;0" dur="2.6s" begin="1.65s" repeatCount="indefinite"></animate>
-      </circle>
-        <path id="ts-loop" d="M 1090 260 V 320 H 355 V 260" fill="none" stroke="var(--ts-bd)" stroke-width="1.3" stroke-dasharray="5 5" opacity=".9"></path>
-        <circle r="3.5" fill="#5c27f5" opacity="0">
-          <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.3s" fill="freeze"></animate>
-          <animateMotion dur="4.6s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1"><mpath href="#ts-loop"></mpath></animateMotion>
-        </circle>
-        <text x="600" y="342" text-anchor="middle" style="font-size:15px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;fill:var(--ts-tx3)">Coverage gaps feed back into generation</text>
-      <a class="ah-zone" href="/arcus/qi-home/context-management/" data-cap="Attach the sources that describe the feature. QI Home reads them as context, so nothing is retyped.">
-        <text x="110" y="56" text-anchor="middle" style="font-size:15px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;fill:var(--ts-tx2)">Bring context</text>
-        <rect x="10" y="70" width="200" height="190" rx="16" fill="var(--ts-bg)" stroke="var(--ts-bd)" style="--zs:#42526e" class="ah-zone-box" data-zs="#42526e"></rect>
-        <rect x="26" y="92" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.15s forwards"></rect>
-        <text x="110" y="116" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.15s forwards">Jira story</text>
-        <rect x="26" y="134" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.21s forwards"></rect>
-        <text x="110" y="158" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.21s forwards">Figma frame</text>
-        <rect x="26" y="176" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.27s forwards"></rect>
-        <text x="110" y="200" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.27s forwards">PRD document</text>
-        <text x="110" y="243" text-anchor="middle" style="font-size:15px;fill:var(--ts-tx3);opacity:0;animation:ts-node-in .5s ease 0.33s forwards">What you already have</text>
-      </a>
-      <a class="ah-zone" href="/arcus/qi-home/generate-tests/" data-cap="QI Home drafts the cases, including the edge cases a tired reader of the ticket would miss.">
-        <text x="355" y="56" text-anchor="middle" style="font-size:15px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;fill:#b2506a">QI Home writes</text>
-        <rect x="255" y="70" width="200" height="190" rx="16" fill="var(--ts-bg)" stroke="var(--ts-bd)" style="--zs:#b2506a" class="ah-zone-box" data-zs="#b2506a"></rect>
-        <rect x="271" y="92" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.27s forwards"></rect>
-        <text x="355" y="116" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.27s forwards">Generated cases</text>
-        <rect x="271" y="134" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.33s forwards"></rect>
-        <text x="355" y="158" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.33s forwards">Edge cases</text>
-        <rect x="271" y="176" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.39s forwards"></rect>
-        <text x="355" y="200" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.39s forwards">Test data</text>
-        <text x="355" y="243" text-anchor="middle" style="font-size:15px;fill:var(--ts-tx3);opacity:0;animation:ts-node-in .5s ease 0.45s forwards">Cases you review, not write</text>
-      </a>
-      <a class="ah-zone" href="/arcus/create-and-manage/test-cases/" data-cap="Accept what is useful and drop the rest. Accepted cases land in your folders like any other case.">
-        <text x="600" y="56" text-anchor="middle" style="font-size:15px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;fill:#0b7f88">Accept and organize</text>
-        <rect x="500" y="70" width="200" height="190" rx="16" fill="var(--ts-bg)" stroke="var(--ts-bd)" style="--zs:#0b7f88" class="ah-zone-box" data-zs="#0b7f88"></rect>
-        <rect x="516" y="92" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.39s forwards"></rect>
-        <text x="600" y="116" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.39s forwards">Folders and labels</text>
-        <rect x="516" y="134" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.45s forwards"></rect>
-        <text x="600" y="158" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.45s forwards">Step groups</text>
-        <rect x="516" y="176" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.51s forwards"></rect>
-        <text x="600" y="200" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.51s forwards">Data sets</text>
-        <text x="600" y="243" text-anchor="middle" style="font-size:15px;fill:var(--ts-tx3);opacity:0;animation:ts-node-in .5s ease 0.57s forwards">One source of truth</text>
-      </a>
-      <a class="ah-zone" href="/arcus/run-tests/test-runs/" data-cap="Run a case by hand or let Copilot automate it. Either way the result lands in the same run.">
-        <text x="845" y="56" text-anchor="middle" style="font-size:15px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;fill:#5c27f5">Run and track</text>
-        <rect x="745" y="70" width="200" height="190" rx="16" fill="var(--ts-bg)" stroke="var(--ts-bd)" style="--zs:#5c27f5" class="ah-zone-box" data-zs="#5c27f5"></rect>
-        <rect x="761" y="92" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.51s forwards"></rect>
-        <text x="845" y="116" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.51s forwards">Test runs</text>
-        <rect x="761" y="134" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.57s forwards"></rect>
-        <text x="845" y="158" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.57s forwards">Test plans</text>
-        <rect x="761" y="176" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.63s forwards"></rect>
-        <text x="845" y="200" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.63s forwards">Copilot automation</text>
-        <text x="845" y="243" text-anchor="middle" style="font-size:15px;fill:var(--ts-tx3);opacity:0;animation:ts-node-in .5s ease 0.69s forwards">Manual or automated</text>
-      </a>
-      <a class="ah-zone" href="/arcus/reports/dashboards/" data-cap="Every run rolls up into coverage by module and a readiness score you can take to the release meeting.">
-        <text x="1090" y="56" text-anchor="middle" style="font-size:15px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;fill:#00875a">Report</text>
-        <rect x="990" y="70" width="200" height="190" rx="16" fill="var(--ts-bg)" stroke="var(--ts-bd)" style="--zs:#00875a" class="ah-zone-box" data-zs="#00875a"></rect>
-        <rect x="1006" y="92" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.63s forwards"></rect>
-        <text x="1090" y="116" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.63s forwards">Coverage by module</text>
-        <rect x="1006" y="134" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.69s forwards"></rect>
-        <text x="1090" y="158" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.69s forwards">Release readiness</text>
-        <rect x="1006" y="176" width="168" height="38" rx="8" fill="var(--ts-bd-soft)" stroke="var(--ts-bd)" style="opacity:0;animation:ts-node-in .5s cubic-bezier(.2,.8,.2,1) 0.75s forwards"></rect>
-        <text x="1090" y="200" text-anchor="middle" style="font-size:17px;fill:var(--ts-tx2);opacity:0;animation:ts-node-in .5s ease 0.75s forwards">Dashboards</text>
-        <text x="1090" y="243" text-anchor="middle" style="font-size:15px;fill:var(--ts-tx3);opacity:0;animation:ts-node-in .5s ease 0.81s forwards">Evidence for the call</text>
-      </a>
-      </svg>
-
-  {/* Filled by the script at the foot of this page from the hovered zone's
-      data-cap. Empty on load, and the min-height keeps the page from shifting. */}
-  <p class="ah-cap" data-zone-caption data-cap-rest="Five stages, from a requirement to a release call. Hover a stage to see what Arcus does there.">Five stages, from a requirement to a release call. Hover a stage to see what Arcus does there.</p>
-  <FlowCaption />
+<StageFlow flow={ARCUS_FLOW} />
 </section>
 
 <section class="ah-sec not-content" aria-labelledby="_start">
@@ -330,6 +243,7 @@ mdSummary: |
 {/* Hero, Ask row and run card come from the shared splash styles (the Suite
     home uses them too); the sections above are Arcus-only. Both are MDX
     imports, so they ship only on the pages that use them. */}
-import FlowCaption from '/src/components/FlowCaption.astro';
+import StageFlow from '/src/components/StageFlow.astro';
+import { ARCUS_FLOW } from '/src/data/flow-stages.mjs';
 import '/src/styles/splash.css';
 import '/src/styles/arcus-home.css';

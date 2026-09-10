@@ -39,7 +39,8 @@ mdSummary: |
     [integrations](/suite/integrations/) for CI/CD, trackers, and chat.
 ---
 
-import SuiteFlow from '../../../components/SuiteFlow.astro';
+import StageFlow from '../../../components/StageFlow.astro';
+import { SUITE_FLOW } from '../../../data/flow-stages.mjs';
 
 <section class="ov-hero ov-hero-split not-content" aria-labelledby="_top">
   <div class="ov-hero-col">
@@ -124,9 +125,9 @@ import SuiteFlow from '../../../components/SuiteFlow.astro';
 </section>
 
 <section class="ov-section not-content">
-  <h2 class="ov-c-h2 ov-c-h2-sm">One test case, from plain English to a green build</h2>
-  <p class="ov-c-sub ov-c-sub-wide">Describe the flow once. Atto writes the steps, Suite runs them everywhere at once, and auto-healing keeps them passing while the pipeline waits on the result.</p>
-  <SuiteFlow />
+  <h2 class="ov-c-h2 ov-c-h2-sm">One test case, from the first step to the final report</h2>
+  <p class="ov-c-sub ov-c-sub-wide">Write the steps yourself, or let Atto generate them from your requirements, designs, and files. Suite runs them agentically, in the cloud, or locally, heals what breaks, and reports the outcome.</p>
+  <StageFlow flow={SUITE_FLOW} />
 </section>
 
 <section class="ov-section not-content">
