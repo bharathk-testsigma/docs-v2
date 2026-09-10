@@ -1,59 +1,40 @@
 ---
 /**
- * The Suite home's journey diagram: one test case moving through five stages,
- * each stage a link into the section that documents it.
+ * The journey diagram on each product home: one unit of work moving through
+ * five stages, each stage a link into the section that documents it.
  *
- * A component rather than more markup in home.mdx. The diagram is ~120 SVG
- * nodes of pure decoration, and the page body doubles as the source for
- * `/suite/home.md` -- the file an LLM gets from "Copy page" -- so layout that
- * carries no prose is better kept out of it.
+ * One component for both homes. It was two -- an .astro file for Suite and
+ * ninety lines of inline SVG in arcus/home.mdx -- drawing the same five cards
+ * with the same geometry and two copies of every rule.
+ *
+ * A component rather than markup in the page for a second reason: a home
+ * page's body doubles as the source for its `.md` export, the file an LLM gets
+ * from "Copy page", so layout that carries no prose is better kept out of it.
  *
  * Hovering (or tabbing to) a stage swaps the caption underneath. That is done
  * with :has() rather than a script: the only state is which stage the pointer
  * is over, which CSS already knows.
+ *
+ * Stage words live in src/data/flow-stages.mjs.
  */
-const STAGES = [
-	{
-		label: 'Describe',
-		tone: 'var(--ts-tx2)',
-		href: '/suite/create-and-manage/create-test-cases/',
-		rows: ['Jira story', 'Figma frame', 'Recorder session'],
-		foot: 'Plain English, no code',
-		cap: 'Describe the flow. A step reads Click on Login Button, so the people who know the app automate it.',
-	},
-	{
-		label: 'Atto generates',
-		tone: 'var(--fl-pink)',
-		href: '/suite/atto/ai-agents/',
-		rows: ['Generator agent', 'Test data profile', 'Step groups'],
-		foot: 'Cases, ready to run',
-		cap: 'Atto turns a ticket, a design, or a prompt into whole test cases, then automates them against your app.',
-	},
-	{
-		label: 'Run anywhere',
-		tone: 'var(--fl-teal)',
-		href: '/suite/run-tests/test-plan/',
-		rows: ['Web, Android, iOS', 'Salesforce, Windows', 'REST API'],
-		foot: 'Parallel cloud grid',
-		cap: 'One test plan runs across browsers, real devices, desktop, and APIs, in parallel, with no grid to maintain.',
-	},
-	{
-		label: 'Heal and analyze',
-		tone: 'var(--fl-purple)',
-		href: '/suite/run-tests/debug/',
-		rows: ['Auto-healed locators', 'Analyzer explains', 'Bug Reporter files'],
-		foot: 'Fewer red builds',
-		cap: 'Auto-healing repairs a moved locator mid-run, and the Analyzer says why a step failed and what to change.',
-	},
-	{
-		label: 'Ship',
-		tone: 'var(--fl-green)',
-		href: '/suite/integrations/#cicd',
-		rows: ['CI/CD gate', 'Run results', 'Coverage dashboard'],
-		foot: 'Merge with evidence',
-		cap: 'Results land back in the pipeline, so the build fails on a failed run and the merge carries its evidence.',
-	},
-];
+interface Stage {
+	label: string;
+	tone: string;
+	href: string;
+	rows: string[];
+	foot: string;
+	cap: string;
+}
+interface Props {
+	flow: {
+		aria: string;
+		rest: string;
+		loop: { from: number; to: number; label: string };
+		stages: Stage[];
+	};
+}
+const { flow } = Astro.props;
+const { stages, loop } = flow;
 
 // One 245px column per stage: a 200px card, then the 45px connector to the next.
 const STRIDE = 245;
@@ -63,18 +44,14 @@ const cx = (i: number) => x(i) + 100;
 
 <div class="fl">
 	<div class="fl-scroll">
-		<svg
-			viewBox="0 0 1200 372"
-			role="img"
-			aria-label="How a test case moves through Testsigma Suite: describe, Atto generates, run anywhere, heal and analyze, ship"
-		>
+		<svg viewBox="0 0 1200 372" role="img" aria-label={flow.aria}>
 			{
 				/* Connectors, each with a dot travelling in the direction of the work.
 				   The dot takes the colour of the stage it is arriving at. */
-				STAGES.slice(1).map((s, i) => (
+				stages.slice(1).map((s, i) => (
 					<Fragment>
 						<path id={`fl-e${i}`} class="fl-edge" d={`M ${x(i) + 200} 165 H ${x(i + 1)}`} />
-						<circle class="fl-pulse" r="4" style={`fill:${s.tone}`}>
+						<circle class={`fl-pulse fl-t-${s.tone}`} r="4">
 							<animateMotion dur="2.6s" begin={`${i * 0.55}s`} repeatCount="indefinite">
 								<mpath href={`#fl-e${i}`} />
 							</animateMotion>
@@ -90,18 +67,23 @@ const cx = (i: number) => x(i) + 100;
 				))
 			}
 
-			{/* Auto-healing is the one stage that feeds back rather than forward. */}
-			<path id="fl-loop" class="fl-loop" d="M 845 260 V 320 H 355 V 260" />
-			<circle class="fl-pulse" r="3.5" style="fill:var(--fl-purple)">
+			{/* The one stage that feeds back rather than forward. */}
+			<path id="fl-loop" class="fl-loop" d={`M ${cx(loop.from)} 260 V 320 H ${cx(loop.to)} V 260`} />
+			<circle class={`fl-pulse fl-t-${stages[loop.to].tone}`} r="3.5">
 				<animateMotion dur="4.2s" repeatCount="indefinite"><mpath href="#fl-loop" /></animateMotion>
 			</circle>
-			<text x="600" y="342" text-anchor="middle" class="fl-loop-t">
-				Auto-healing feeds the fix back into the case
+			<text
+				x={(cx(loop.from) + cx(loop.to)) / 2}
+				y="342"
+				text-anchor="middle"
+				class="fl-loop-t"
+			>
+				{loop.label}
 			</text>
 
 			{
-				STAGES.map((s, i) => (
-					<a class="fl-z" id={`fl-z${i + 1}`} href={s.href} style={`--tone:${s.tone}`}>
+				stages.map((s, i) => (
+					<a class={`fl-z fl-t-${s.tone}`} id={`fl-z${i + 1}`} href={s.href}>
 						<text x={cx(i)} y="56" text-anchor="middle" class="fl-label">
 							{s.label}
 						</text>
@@ -125,8 +107,8 @@ const cx = (i: number) => x(i) + 100;
 
 	{/* Stacked in one grid cell so the block never changes height as it swaps. */}
 	<p class="fl-cap">
-		<span class="fl-cap-d">Five stages, one test case. Hover a stage to see what Suite does there.</span>
-		{STAGES.map((s, i) => <span class={`fl-cap-${i + 1}`}>{s.cap}</span>)}
+		<span class="fl-cap-d">{flow.rest}</span>
+		{stages.map((s, i) => <span class={`fl-cap-${i + 1}`}>{s.cap}</span>)}
 	</p>
 </div>
 
@@ -138,14 +120,23 @@ const cx = (i: number) => x(i) + 100;
 		--fl-pink: #e58086;
 		--fl-teal: #3fb6bf;
 		--fl-purple: #a78bfa;
+		--fl-blue: #8ab4f8;
 		--fl-green: #4bbd8a;
 	}
 	:root[data-theme='light'] .fl {
 		--fl-pink: #b2506a;
 		--fl-teal: #0b7f88;
 		--fl-purple: #5c27f5;
+		--fl-blue: #2563eb;
 		--fl-green: #00875a;
 	}
+	/* One --tone per stage, set by the tone name in the data. */
+	.fl-t-neutral { --tone: var(--ts-tx2); }
+	.fl-t-pink { --tone: var(--fl-pink); }
+	.fl-t-teal { --tone: var(--fl-teal); }
+	.fl-t-purple { --tone: var(--fl-purple); }
+	.fl-t-blue { --tone: var(--fl-blue); }
+	.fl-t-green { --tone: var(--fl-green); }
 
 	/* Below ~800px the 1200-unit viewBox shrinks the labels past legibility, so
 	   the diagram scrolls sideways instead of scaling down. */
@@ -160,6 +151,7 @@ const cx = (i: number) => x(i) + 100;
 		height: auto;
 	}
 
+	.fl-pulse { fill: var(--tone); }
 	.fl-edge {
 		fill: none;
 		stroke: var(--ts-bd);
@@ -205,9 +197,11 @@ const cx = (i: number) => x(i) + 100;
 		stroke: var(--tone);
 		fill: var(--ts-panel);
 	}
+	/* One step darker than the card behind them: on --ts-panel with a
+	   --ts-bd-soft edge the rows barely separated from the card at all. */
 	.fl-row {
-		fill: var(--ts-panel);
-		stroke: var(--ts-bd-soft);
+		fill: var(--ts-hover);
+		stroke: var(--ts-bd);
 	}
 	.fl-row-t {
 		font-size: 17px;
