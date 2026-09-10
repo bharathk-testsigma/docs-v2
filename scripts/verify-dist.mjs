@@ -105,6 +105,23 @@ const unprefixed = pages.filter((f) => {
 });
 if (unprefixed.length) fail(`${unprefixed.length} page(s) emit no ${DOCS_BASE}/ links, e.g. ${relative(DIST, unprefixed[0])}`);
 
+// ── 4. the Ask API origin reached the browser bundle ─────────────────────────
+// PUBLIC_ASK_API_ORIGIN is inlined at build time, so a missing or misspelled
+// value is invisible until a reader opens the drawer and the POST goes to this
+// image, which has no /api/ask. Vite keeps the trailing-slash strip and the path
+// join as runtime expressions, so "<origin>/api/ask" never appears as a literal
+// -- the origin alone is what to look for.
+const askOrigin = (process.env.PUBLIC_ASK_API_ORIGIN ?? '').replace(/\/+$/, '');
+if (askOrigin) {
+	const assets = join(DIST, '_astro');
+	const inlined =
+		existsSync(assets) &&
+		readdirSync(assets)
+			.filter((f) => f.endsWith('.js'))
+			.some((f) => readFileSync(join(assets, f), 'utf8').includes(askOrigin));
+	if (!inlined) fail(`PUBLIC_ASK_API_ORIGIN (${askOrigin}) is not in dist/_astro — Ask AI would POST to this image, which has no /api/ask`);
+}
+
 // ── report ───────────────────────────────────────────────────────────────────
 if (errors.length) {
 	for (const e of errors) console.error(`✗ ${e}`);

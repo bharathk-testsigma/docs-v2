@@ -62,6 +62,7 @@ jobs:
             echo "VALUES_FILE=production-values.yaml" >> $GITHUB_ENV
             echo "CLOUD_FRONT_DISTRIBUTION_ID=${{ secrets.PROD_CLOUD_FRONT_DISTRIBUTION_ID_ELB }}" >> $GITHUB_ENV
             echo "SITE_URL=https://testsigma.com/docs-new/" >> $GITHUB_ENV
+            echo "PUBLIC_ASK_API_ORIGIN=${{ vars.ASK_API_ORIGIN_PRODUCTION }}" >> $GITHUB_ENV
           elif [[ "${{ inputs.Environment }}" == "staging" ]]; then
             echo "AWS_ROLE_ARN=${{ secrets.WEBSITE_AWS_GITHUB_OIDC_ROLE_ARN }}" >> $GITHUB_ENV
             # `staging`, NOT `prod`. The ArgoCD app that owns staging is
@@ -79,6 +80,7 @@ jobs:
             echo "VALUES_FILE=staging-values.yaml" >> $GITHUB_ENV
             echo "CLOUD_FRONT_DISTRIBUTION_ID=${{ secrets.WEBSITE_CLOUD_FRONT_DISTRIBUTION_ID_ELB_V1 }}" >> $GITHUB_ENV
             echo "SITE_URL=https://website.testsigma.com/docs-new/" >> $GITHUB_ENV
+            echo "PUBLIC_ASK_API_ORIGIN=${{ vars.ASK_API_ORIGIN_STAGING }}" >> $GITHUB_ENV
           else
             echo "environment not supported"
             exit 1
@@ -138,9 +140,16 @@ jobs:
 
       # `npm run build` chains prebuild (clears public/pagefind), the Astro build
       # (dist/ + dist/pagefind for search) and postbuild. Only dist/ is shipped.
+      # PUBLIC_ASK_API_ORIGIN is inlined into the browser bundle here, so the
+      # value has to be present for THIS step, not at runtime. Unset is not a
+      # failure: the bundle falls back to same-origin, which on this image means
+      # the Ask drawer has no endpoint -- hence the warning rather than silence.
       - name: Build static site
         run: |
           set -eu
+          if [[ -z "${PUBLIC_ASK_API_ORIGIN:-}" ]]; then
+            echo "::warning::PUBLIC_ASK_API_ORIGIN is unset — Ask AI will have no endpoint on this deploy. Set the ASK_API_ORIGIN_${{ inputs.Environment == 'production' && 'PRODUCTION' || 'STAGING' }} repository variable."
+          fi
           npm run build
           # Stamp the build with the commit it came from, served as plain text at
           # <SITE_URL>build-id.txt. Nothing in CI checks it -- rollout is driven by

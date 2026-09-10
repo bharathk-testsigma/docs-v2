@@ -8,10 +8,14 @@
 
 import { stripBase, withBase } from '../lib/base';
 
-// The API routes are serverless functions at the DOMAIN root, not inside the
-// docs base path (vercel.json maps api/ask.ts to /api/ask), so these two are
-// deliberately NOT run through withBase().
-export const ASK_API_URL = '/api/ask';
+// The API routes live at the DOMAIN root of whichever host answers them, never
+// inside the docs base path, so these two are deliberately NOT run through
+// withBase(). PUBLIC_ASK_API_ORIGIN names that host: unset means same origin,
+// which is Vercel and `npm run dev:ask`; the httpd/EKS build sets it to the
+// vertex service, which serves both routes.
+const API_ORIGIN = (import.meta.env.PUBLIC_ASK_API_ORIGIN ?? '').replace(/\/+$/, '');
+
+export const ASK_API_URL = `${API_ORIGIN}/api/ask`;
 
 /**
  * Which product's docs the reader is in, sent with every question so the API
@@ -370,7 +374,7 @@ function highlightCode(code: string, lang: string): string {
 }
 
 /** Where votes are logged (see api/ask-feedback.ts). */
-export const FEEDBACK_API_URL = '/api/ask-feedback';
+export const FEEDBACK_API_URL = `${API_ORIGIN}/api/ask-feedback`;
 
 /**
  * Report a thumbs up/down on an answer, with the sources that produced it.
