@@ -3,7 +3,7 @@ run-name: 'Docs - ${{ inputs.Environment }} (${{ github.ref_name }})'
 
 # Same shape as the website repo's website-cd-eks-nextjs-manual.yml, because the
 # deployment target is the same: an httpd image in ECR, rolled out to EKS by
-# ArgoCD watching the devops-helm repo. The website's Apache proxies /docs-new
+# ArgoCD watching the devops-helm repo. The website's Apache proxies /docs/v2
 # to this service.
 #
 # Flow:  build static site -> bake into httpd image -> push to ECR
@@ -61,7 +61,7 @@ jobs:
             echo "HELM_BRANCH=prod" >> $GITHUB_ENV
             echo "VALUES_FILE=production-values.yaml" >> $GITHUB_ENV
             echo "CLOUD_FRONT_DISTRIBUTION_ID=${{ secrets.PROD_CLOUD_FRONT_DISTRIBUTION_ID_ELB }}" >> $GITHUB_ENV
-            echo "SITE_URL=https://testsigma.com/docs-new/" >> $GITHUB_ENV
+            echo "SITE_URL=https://testsigma.com/docs/v2/" >> $GITHUB_ENV
             echo "PUBLIC_ASK_API_ORIGIN=https://university.testsigma.com" >> $GITHUB_ENV
           elif [[ "${{ inputs.Environment }}" == "staging" ]]; then
             echo "AWS_ROLE_ARN=${{ secrets.WEBSITE_AWS_GITHUB_OIDC_ROLE_ARN }}" >> $GITHUB_ENV
@@ -79,7 +79,7 @@ jobs:
             echo "HELM_BRANCH=staging" >> $GITHUB_ENV
             echo "VALUES_FILE=staging-values.yaml" >> $GITHUB_ENV
             echo "CLOUD_FRONT_DISTRIBUTION_ID=${{ secrets.WEBSITE_CLOUD_FRONT_DISTRIBUTION_ID_ELB_V1 }}" >> $GITHUB_ENV
-            echo "SITE_URL=https://website.testsigma.com/docs-new/" >> $GITHUB_ENV
+            echo "SITE_URL=https://website.testsigma.com/docs/v2/" >> $GITHUB_ENV
             echo "PUBLIC_ASK_API_ORIGIN=https://university-staging.testsigma.com" >> $GITHUB_ENV
           else
             echo "environment not supported"
@@ -235,7 +235,7 @@ jobs:
         if: ${{ env.CLOUD_FRONT_DISTRIBUTION_ID != '' }}
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id "$CLOUD_FRONT_DISTRIBUTION_ID" --paths '/docs-new/*'
+            --distribution-id "$CLOUD_FRONT_DISTRIBUTION_ID" --paths '/docs/v2/*'
 
       - name: Summary
         if: always()

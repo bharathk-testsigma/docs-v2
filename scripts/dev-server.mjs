@@ -22,6 +22,7 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { join, extname, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { DOCS_BASE, withDocsBase } from '../src/lib/site-config.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = join(__dirname, '..', 'dist');
@@ -68,23 +69,23 @@ function enhance(res) {
 async function serveStatic(req, res) {
   const { pathname } = new URL(req.url, 'http://localhost');
 
-  // The build carries base=/docs-new (site-config.mjs), so every URL in the
+  // The build carries base=/docs/v2 (site-config.mjs), so every URL in the
   // output starts with it. Serve dist/ under that prefix, exactly like the
   // production httpd does, and bounce the two roots a person actually types.
-  if (pathname === '/' || pathname === '/docs-new' || pathname === '/docs-new/') {
+  if (pathname === '/' || pathname === DOCS_BASE || pathname === DOCS_BASE + '/') {
     res.statusCode = 302;
-    res.setHeader('Location', '/docs-new/suite/home/');
+    res.setHeader('Location', withDocsBase('/suite/home/'));
     res.end();
     return;
   }
-  if (!pathname.startsWith('/docs-new/')) {
+  if (!pathname.startsWith(DOCS_BASE + '/')) {
     res.statusCode = 404;
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.end('404 Not Found (the site is served under /docs-new/)');
+    res.end(`404 Not Found (the site is served under ${DOCS_BASE}/)`);
     return;
   }
 
-  const rel = decodeURIComponent(pathname.slice('/docs-new'.length));
+  const rel = decodeURIComponent(pathname.slice(DOCS_BASE.length));
   const candidates = [join(DIST, rel)];
 
   try {

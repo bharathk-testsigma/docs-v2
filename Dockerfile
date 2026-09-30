@@ -19,14 +19,14 @@ RUN sed -i \
     -e 's|^#\(LoadModule headers_module .*\)|\1|' \
     -e 's|^#\(LoadModule deflate_module .*\)|\1|' \
     conf/httpd.conf \
- && echo "Include conf/extra/docs-new.conf" >> conf/httpd.conf
+ && echo "Include conf/extra/docs-v2.conf" >> conf/httpd.conf
 
-COPY apache2/docs-new.conf conf/extra/docs-new.conf
+COPY apache2/docs-v2.conf conf/extra/docs-v2.conf
 
-# The site is served from /docs-new/, so it lives in a matching subdirectory of
+# The site is served from /docs/v2/, so it lives in a matching subdirectory of
 # the document root — the request path and the filesystem path line up, and no
 # alias or prefix rewriting is needed.
-COPY dist/ htdocs/docs-new/
+COPY dist/ htdocs/docs/v2/
 
 # The ALB health check has no healthcheck-path annotation on the website ingress,
 # so it defaults to "/" — which this service does not otherwise serve. The base
@@ -40,18 +40,18 @@ RUN printf '%s' 'ok' > htdocs/index.html
 # by api/ask.ts on Vercel — vercel.json bundles it into the function. Nothing in
 # the browser ever fetches it. Astro copies it out of public/ into dist/ all the
 # same, so without this it rides along in the image and is publicly downloadable
-# at /docs-new/ask-index.bin. Removed rather than blocked in httpd config: the
+# at /docs/v2/ask-index.bin. Removed rather than blocked in httpd config: the
 # bytes should not be in the layer at all.
 #
 # If /api/ask is ever served from this pod (see deploy/README.md), the index has
 # to come back — but as a file the API reads, not as a document-root asset.
-RUN rm -f htdocs/docs-new/ask-index.bin htdocs/docs-new/ask-index.meta.json
+RUN rm -f htdocs/docs/v2/ask-index.bin htdocs/docs/v2/ask-index.meta.json
 
 # Fail the build rather than ship an image that 404s everywhere: an empty or
 # stale dist/ is otherwise indistinguishable from a good one until it is live.
-RUN test -f htdocs/docs-new/index.html \
- && test -d htdocs/docs-new/pagefind \
- && grep -q '"/docs-new/' htdocs/docs-new/index.html \
- || (echo "dist/ is missing, empty, or was not built with base=/docs-new" && exit 1)
+RUN test -f htdocs/docs/v2/index.html \
+ && test -d htdocs/docs/v2/pagefind \
+ && grep -q '"/docs/v2/' htdocs/docs/v2/index.html \
+ || (echo "dist/ is missing, empty, or was not built with base=/docs/v2" && exit 1)
 
 EXPOSE 80
