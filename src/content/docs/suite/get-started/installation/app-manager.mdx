@@ -13,6 +13,7 @@ sidebar:
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
 
 PatchMyPC and Microsoft Intune deliver Testsigma Agent and Testsigma Terminal to managed Windows devices, instead of someone installing them one machine at a time. This is IT admin work. For a single device, see [Testsigma Agent](/suite/get-started/installation/testsigma-agent/) and [Testsigma Terminal](/suite/get-started/installation/testsigma-terminal/).
 
@@ -20,11 +21,13 @@ PatchMyPC and Microsoft Intune deliver Testsigma Agent and Testsigma Terminal to
 PatchMyPC deployment covers Windows `.exe` installers only. macOS `.dmg`, Linux, and the agent's raw ZIP are not supported through it.
 </Aside>
 
-Before you start:
+<Prerequisites>
 
 - PatchMyPC Publisher is installed and connected to your Intune tenant.
 - Testsigma has supplied the current Windows installer for each app you are deploying.
 - You have access to **Local Content > Custom Apps** in the Publisher.
+
+</Prerequisites>
 
 ## How the apps are onboarded
 

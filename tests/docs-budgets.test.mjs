@@ -10,12 +10,17 @@
  * the 50 generated API pages and the not-yet-rewritten ported pages are skipped
  * rather than reported as 60 failures.
  *
+ * The last two tests are publishing hygiene rather than editorial budget: they
+ * check what `src/pages/[...slug].md.ts` actually serves. They live here
+ * because this file already walks every page.
+ *
  * Run `npm test`. Set VERBOSE=1 to print the full per-page table.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { stripMdx } from '../src/lib/strip-mdx.mjs';
 
 const ROOT = new URL('../src/content/docs/', import.meta.url).pathname;
 
@@ -327,6 +332,46 @@ test('style: retired phrases stay retired', () => {
 				? [`${relative(ROOT, file)}: ${hits.length}× "${hits[0]}" — use ${instead}`]
 				: [];
 		});
+	});
+	assert.deepEqual(bad, []);
+});
+
+// A1 (content audit, 8 Sep 2026): 25 pages leaked `{/* SCREENSHOT NEEDED */}`
+// comments into their `.md` export, where "View as Markdown" and the Open in
+// Claude/ChatGPT buttons show them to readers. stripMdx now removes them; this
+// is the assertion that keeps it that way, since the leak is invisible in the
+// rendered HTML and so cannot be caught by looking at the site.
+const LEAKS = [
+	{ pattern: /\{\/\*/, what: 'MDX comment' },
+	{ pattern: /<style\b/i, what: '<style> block' },
+	{ pattern: /<script\b/i, what: '<script> block' },
+	{ pattern: /^\s*(?:import|export)\s/m, what: 'import/export statement' },
+];
+
+test('A1: no build scaffolding survives into the .md export', () => {
+	const bad = walk(ROOT).flatMap((file) => {
+		// Fenced samples come back out of stripMdx verbatim, and a sample may
+		// legitimately contain `import`, `<style>` or `{/*`. Drop them: the
+		// question is whether SCAFFOLDING leaked, not what the samples show.
+		const exported = stripMdx(readFileSync(file, 'utf8').replace(/^---\n[\s\S]*?\n---\n/, '')).replace(
+			/^```[\s\S]*?^```/gm,
+			''
+		);
+		return LEAKS.filter(({ pattern }) => pattern.test(exported)).map(
+			({ what }) => `${relative(ROOT, file)}: ${what}`
+		);
+	});
+	assert.deepEqual(bad, []);
+});
+
+// B4: the Prerequisites box keeps its label inside the component, so without
+// the substitution in stripMdx the export shows a bare bullet list with nothing
+// marking it as a gate -- which is exactly what the audit measured on 44 pages.
+test('B4: <Prerequisites> exports as a heading', () => {
+	const bad = walk(ROOT).flatMap((file) => {
+		const src = readFileSync(file, 'utf8');
+		if (!src.includes('<Prerequisites>')) return [];
+		return stripMdx(src).includes('## Prerequisites') ? [] : [relative(ROOT, file)];
 	});
 	assert.deepEqual(bad, []);
 });

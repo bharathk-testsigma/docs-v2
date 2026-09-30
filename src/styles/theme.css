@@ -1291,7 +1291,12 @@ starlight-toc nav > ul > li:first-child:has(a[aria-current='true']) + li > a::be
    in the docs is authored as `:::note[NOTE]` and recolouring beat rewriting 76
    files; `tip` carries the blue `note` gave up and is the "Additional Info"
    box, authored `:::tip[Additional Info]`. `caution`/`danger` are retired --
-   the docs use only note/tip (plus the Prerequisites block). */
+   the docs use only note/tip (plus the Prerequisites block).
+
+   Reaffirmed 2026-09-10 against finding A3 of the content audit, which asked
+   for a third destructive tier. `note` IS the warning tier here: it is red, and
+   `tip` is the blue one, so a "cannot be undone" note does not read like a
+   keyboard shortcut. Two tiers, not three -- do not reintroduce caution. */
 .starlight-aside--note {
 	--aside-color: #d64535;
 	--aside-bg: #fff0ef;

@@ -94,9 +94,7 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 	}
 	<aside class="ts-ask-panel" id="ts-ask-panel" hidden aria-label="Ask Assistant">
 		<div class="ts-ask-panel-head">
-			<span class="ts-sa-spark ts-ask-panel-mark" aria-hidden="true">
-				<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg>
-			</span>
+			<img class="ts-ask-panel-mark" src={withBase('/atto-icon.png')} alt="" width="20" height="20" />
 			<span class="ts-ask-panel-title">Ask Assistant</span>
 			{/* Icon buttons, not a "Clear" word button: the label doubled as the
 			    Stop control mid-stream, which made one button mean two things. The
@@ -175,18 +173,27 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 
 <script>
 	import { pagefindUserConfig } from 'virtual:starlight/pagefind-config';
-	import { streamAsk, sendFeedback, renderMarkdown, escapeHtml, bindCopyHandlers, IC_COPY, IC_CHECK } from '../scripts/ask-shared';
+	import { streamAsk, askProduct, sendFeedback, renderMarkdown, escapeHtml, bindCopyHandlers, IC_COPY, IC_CHECK } from '../scripts/ask-shared';
 	// Retrieval-index URLs are stored base-free ('/suite/...'), so each source
 	// link needs prefixing before it goes into the DOM or it 404s under the base.
 	import { withBase } from '../lib/base';
 
-	// Suggested questions for the empty state (first 4 are shown).
-	const SUGGESTIONS: string[] = [
-		'How do I create a test case?',
-		'What is Auto-Healing and how does it work?',
-		'How do I trigger a Test Plan via API?',
-		'How do I set up test data profiles?',
-	];
+	// Suggested questions for the empty state (first 4 are shown), per product:
+	// answers are retrieved from the reader's product only, so a Suite question
+	// asked from the Arcus docs would come back empty.
+	const SUGGESTIONS: string[] = askProduct() === 'arcus'
+		? [
+			'How do I generate test cases from a Jira story?',
+			'How do I review and accept generated test cases?',
+			'How does Explore and Automate work?',
+			'How do I log a defect from a failed run?',
+		]
+		: [
+			'How do I create a test case?',
+			'What is Auto-Healing and how does it work?',
+			'How do I trigger a Test Plan via API?',
+			'How do I set up test data profiles?',
+		];
 
 	class SiteSearch extends HTMLElement {
 		constructor() {
@@ -1097,7 +1104,8 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 		border-bottom: 1px solid var(--ts-bd);
 	}
 	.ts-ask-panel-mark {
-		display: inline-flex;
+		display: block;
+		object-fit: contain;
 	}
 	.ts-ask-panel-title {
 		flex: 1;
