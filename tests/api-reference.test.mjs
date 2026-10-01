@@ -21,9 +21,9 @@ import {
 } from '../src/data/regions.ts';
 
 const SECTIONS = [
-	// 46 endpoints + the overview: the legacy-documented set (the generated
+	// 55 endpoints + the overview: the legacy-documented set (the generated
 	// rest were deleted 2026-08-11; see sidebar-suite-api.mjs).
-	{ product: 'suite', content: 'suite/api/', dist: 'suite/api/', pages: 47, endpoints: 46 },
+	{ product: 'suite', content: 'suite/api/', dist: 'suite/api/', pages: 56, endpoints: 55 },
 ];
 const srcDir = (rel) => new URL(`../src/content/docs/${rel}`, import.meta.url).pathname;
 const distDir = (rel) => new URL(`../dist/${rel}`, import.meta.url).pathname;

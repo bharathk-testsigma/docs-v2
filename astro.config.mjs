@@ -20,6 +20,9 @@ export default defineConfig({
 	// Astro re-prefixes the links it generates; hand-written paths go through
 	// withBase()/stripBase() in src/lib/base.ts.
 	base: DOCS_BASE,
+	// Production origin. Gives absolute URLs to the canonical link and the
+	// schema.org JSON-LD (src/starlightRouteData.ts).
+	site: 'https://testsigma.com',
 	// Redirects for the root and the home/overview slugs that moved during
 	// development.
 	//
@@ -107,6 +110,17 @@ document.addEventListener('testsigma:page-feedback',function(e){(window.dataLaye
 					tag: 'link',
 					attrs: { rel: 'icon', href: withDocsBase('/favicon-32.png'), sizes: '32x32', type: 'image/png' },
 				},
+				// Link-preview card for Slack, LinkedIn, chat apps. Absolute URL:
+				// scrapers don't resolve relative og:image paths. Made by
+				// `npm run favicons` from the brand logo.
+				{
+					tag: 'meta',
+					attrs: { property: 'og:image', content: `https://testsigma.com${withDocsBase('/og-card.png')}` },
+				},
+				{
+					tag: 'meta',
+					attrs: { property: 'og:image:alt', content: 'Testsigma Documentation' },
+				},
 				{
 					tag: 'link',
 					attrs: { rel: 'apple-touch-icon', href: withDocsBase('/apple-touch-icon.png'), sizes: '180x180' },
@@ -157,6 +171,10 @@ document.addEventListener('testsigma:page-feedback',function(e){(window.dataLaye
 			// Chain-link anchor icons on headings (Bharath, 2026-08-19, reversing
 			// the 2026-08-18 removal) — Linear-style copyable section links.
 			markdown: { headingLinks: true },
+			// "Last updated" under each page, and dateModified in its schema.org
+			// tag. Read from git history, so CI must check out full history
+			// (fetch-depth: 0 in manual.yml) or every page shows the build date.
+			lastUpdated: true,
 			pagination: true,
 			tableOfContents: {
 				// Linear's rail nests H3s under their H2, so the reader can see

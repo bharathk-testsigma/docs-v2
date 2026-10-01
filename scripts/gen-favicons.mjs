@@ -42,4 +42,17 @@ ico.writeUInt32LE(22, 18); // offset of the image data
 png32.copy(ico, 22);
 writeFileSync('public/favicon.ico', ico);
 
+// 1200x630 link-preview card (og:image): the on-light logo lock-up at its
+// native width, centred on white over a "Documentation" line. Built from the
+// PNG rather than the mark SVG because the card needs the wordmark too.
+const card = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
+	<rect width="1200" height="630" fill="#ffffff"/>
+	<text x="600" y="430" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif"
+		font-size="44" font-weight="500" fill="#4b4b52">Documentation</text>
+</svg>`);
+await sharp(card)
+	.composite([{ input: 'public/testsigma-logo.png', top: 175, left: Math.round((1200 - 865) / 2) }])
+	.png()
+	.toFile('public/og-card.png');
+
 console.log('favicon-32.png', png32.length, 'B  ico', ico.length, 'B');

@@ -37,6 +37,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          # Full history: Starlight's lastUpdated reads each page's last commit.
+          fetch-depth: 0
 
       - name: Set environment variables
         run: |

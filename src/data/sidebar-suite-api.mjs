@@ -4,8 +4,10 @@
 //  sidebar-suite-v4.mjs were deleted as dead weight (git history keeps both,
 //  including the section commentary this serialization dropped).
 //
-//  Scope: only endpoints the legacy Gatsby docs actually document — 46 of the
+//  Scope: only endpoints the legacy Gatsby docs actually document — 55 of the
 //  134 in the Bruno collection; the generated rest were deleted 2026-08-11.
+//  9 pages that v1 covers were missing from this list until 2026-10-01 (list
+//  projects/applications/environments, stop a run, the 5 report exports).
 //  The route middleware (starlightRouteData.ts) strips this group off every
 //  regular page and unwraps it on /suite/api/ pages — see sidebar-suite.mjs.
 // ────────────────────────────────────────────────────────────────────────────
@@ -21,6 +23,12 @@ export const restApis = {
 			"label": "Projects",
 			"collapsed": true,
 			"items": [
+				{
+					"slug": "suite/api/projects/get-projects"
+				},
+				{
+					"slug": "suite/api/projects/get-applications"
+				},
 				{
 					"slug": "suite/api/projects/get-users"
 				},
@@ -103,6 +111,9 @@ export const restApis = {
 					"slug": "suite/api/test-plans/trigger-test-plan"
 				},
 				{
+					"slug": "suite/api/test-plans/stop-test-plan"
+				},
+				{
 					"slug": "suite/api/test-plans/get-test-plan-result"
 				},
 				{
@@ -138,6 +149,9 @@ export const restApis = {
 			"label": "Environments",
 			"collapsed": true,
 			"items": [
+				{
+					"slug": "suite/api/environments/list-environments"
+				},
 				{
 					"slug": "suite/api/environments/get-an-environment"
 				},
@@ -203,6 +217,21 @@ export const restApis = {
 				},
 				{
 					"slug": "suite/api/results/fetch-test-machine-results"
+				},
+				{
+					"slug": "suite/api/results/export-run-report"
+				},
+				{
+					"slug": "suite/api/results/export-suite-report"
+				},
+				{
+					"slug": "suite/api/results/export-machine-report"
+				},
+				{
+					"slug": "suite/api/results/export-case-report"
+				},
+				{
+					"slug": "suite/api/results/download-report"
 				},
 				{
 					"slug": "suite/api/results/get-junit-report"
