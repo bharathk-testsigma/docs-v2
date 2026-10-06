@@ -1,0 +1,228 @@
+---
+title: Test data profiles
+description: Create a profile in a folder tree, add parameters and data sets, mask sensitive values, import from XLSX, and drive a test case from the data.
+pageType: task
+verified: 2026-08
+covers:
+  - Organize profiles in folders and subfolders
+  - Create a test data profile
+  - Mask sensitive values
+  - Import and replace a profile
+  - Update a value from a test case
+  - Associate a profile with a test case
+  - Iterate from a runtime value
+  - Generate a profile with AI
+  - Delete profiles
+sidebar:
+  order: 10
+  label: Test Data Profiles
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+A test data profile is a grid of test data: each column is a parameter, and each row is a data set the test case runs against. Store a thousand credential pairs in one profile, turn on **Data-Driven** in the test case, and one test case covers all of them.
+
+<Prerequisites>
+
+- You have a project, and permission to manage test data.
+
+</Prerequisites>
+
+## Folders and subfolders
+
+Profiles sit in a two-level tree of folders and subfolders. A folder covers a functional area of the application, a subfolder groups related profiles inside it, and the profile holds the data.
+
+Folders and subfolders load collapsed, and Testsigma keeps their expanded state when you switch tabs.
+
+Go to **Test Data > Test Data Profiles**. To create a folder, click **+** at the top of the left panel, select **New Folder**, name it, and click **Add**. To create a subfolder, click **+**, select **New Subfolder**, select the parent folder, click **Next**, name the subfolder, and click **Create**.
+
+Search from the bar at the top of the left panel. Results filter as you type, across every folder and subfolder in the project.
+
+## Create a test data profile
+
+<Steps>
+
+1. Go to **Test Data > Test Data Profiles**.
+
+2. Start the profile one of two ways:
+   - Click **+** at the top of the left panel, select **New Test Data Profile**, choose the folder and subfolder in **Select Location**, and click **Confirm**. The subfolder you picked shows under **Target Subfolder**.
+   - Expand a folder, hover over a subfolder, and click the **+** beside its name. An **Untitled** profile opens, already attached to that subfolder.
+
+3. Enter a name in the **Test Data Profile Info** panel.
+
+4. Click **+** at the top of the grid to add a parameter, and **+** at the bottom to add a data set. Repeat until the grid holds the columns and rows you need.
+
+5. Enter the values.
+
+6. Click **Create**.
+
+</Steps>
+
+<Aside type="note">
+Turn on the toggle in the **ETF** (Expected to Fail) column to mark a data set as expected to fail during execution.
+</Aside>
+
+![A new test data profile, with the controls that add a row and a column](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/add_new_row_column_tdp.png)
+
+## Mask sensitive values
+
+Mask a parameter that holds passwords or tokens, so its values show as dots to everyone.
+
+Open the profile, enter the values in the parameter column, click the lock icon in the column header, and click **Update**.
+
+<Aside type="note">
+Masking hides the values in the interface only. Execution uses the real values.
+</Aside>
+
+![The lock icon on a profile column, warning that encrypting the data conceals the original](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Lock_Data_in_TDP.png)
+
+## Import a profile
+
+An import needs an XLSX file carrying three mandatory columns, followed by one column per parameter.
+
+| Column | What it holds |
+|---|---|
+| Name | The name of the data set in that row |
+| Description | A description of that row's data |
+| ExpectedToFail | `YES` if you expect the test case to fail on this data, `NO` if you expect it to pass. Shown as ETF in the profile grid |
+
+<Steps>
+
+1. Go to **Test Data > Test Data Profiles** and open **List View**.
+
+2. Click **Import**.
+
+3. Select the folder and subfolder in **Select Location**.
+
+4. Click **Browse File** in **Import Test Data Profile** and choose the file.
+
+5. Enter a **Name** for the profile.
+
+6. Select the columns to encrypt.
+
+7. Click **Import**.
+
+</Steps>
+
+Testsigma emails you when the import finishes. Refresh the page to see the profile in the tree.
+
+![The Import Test Data Profile dialog, with the file, the name, and the columns to encrypt](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Details_for_TDP_to_Import.png)
+
+## Replace a profile
+
+<Aside type="note">
+Importing a replacement file overwrites the existing profile.
+</Aside>
+
+Find the profile from **List View**, click the ellipsis icon (⋮) beside it, and select **Update TDP**. You can also open it from the tree and click **Update**. Then click **Browse File** in **Import Test Data Profile**, choose the replacement, select the columns to encrypt, and click **Import**. Testsigma emails you when it completes.
+
+## Update a value from a test case
+
+A test case can write back into a profile while it runs.
+
+<Steps>
+
+1. Open a test case and add a step using the NLP for updating a test data profile value.
+
+2. Hover over the **test data** placeholder, select **Plain text**, and enter the new value.
+
+3. Hover over the **test data profile** placeholder and select the profile.
+
+4. Hover over the **parameter** placeholder and select the column to update.
+
+5. Click **Run**.
+
+</Steps>
+
+The value is written to the profile when the run succeeds.
+
+## Associate a profile with a test case
+
+<Steps>
+
+1. Open the test case and click **Test Case Settings** in the right navigation bar.
+
+2. Select the profile from the **Test Data Profile** dropdown.
+
+3. Turn on **Data-Driven** to run the test case once per data set.
+
+4. (Optional) Narrow which data sets run, using one of the filters below.
+
+</Steps>
+
+| Filter | What it does |
+|---|---|
+| Iteration | Filters sequential data sets, with greater than, less than, or between |
+| Set Name | Filters non-sequential data sets by name, with equals, contains, starts with, or ends with |
+| Parameter | Filters non-sequential data sets by the parameters used in them |
+
+To use a parameter in a step, click **Add new step** and write a step carrying a test data placeholder, such as `Enter test data in the element field`. Click the placeholder, select **@ Parameter**, and pick the parameter from the right panel.
+
+<Aside type="note">
+Steps name a parameter directly, as `@Email` for a column called `Email`. Renaming that column breaks the steps rather than following the rename.
+</Aside>
+
+![Test Case Settings with Data Driven on and the Filter Type options](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Filter_Type_for_Data_Driven_test.png)
+
+## Iterate from a runtime value
+
+A data-driven test runs every data set from start to end. To start and stop at values decided during the run, store them in a prerequisite test case and point the iteration at those variables.
+
+<Steps>
+
+1. Open the test case that runs first, and store the start and end values in the variables `RunTime_TestData_Set_Start` and `RunTime_TestData_Set_End`.
+
+2. Open the data-driven test case and click **Test Case Settings**.
+
+3. Select that test case in the **Prerequisite** dropdown.
+
+4. Turn on **Data-Driven**.
+
+5. Select **Overwrite Test Data Set with a runtime variable** in both **Data Iterates From** and **Data Iterates To**.
+
+6. Write the steps and click **Run**.
+
+</Steps>
+
+Two more things work on a data set name. The `store-iteration-count-test-data-set-name` NLP saves it into a variable for later steps. An add-on uses data set values from the profile inside an if condition.
+
+## Generate a profile with AI
+
+<Steps>
+
+1. Open a test case and go to **Test Case Settings > Test Data Profile**.
+
+2. Click the **Test Data Profile** dropdown.
+
+3. Click **Generate TDP with AI**.
+
+4. Check the **Field Names** in **Test Data Generation** and click **Generate**.
+
+5. Click **Create and Replace** when the generated data looks right.
+
+</Steps>
+
+The test data in your test steps is replaced with the generated data.
+
+![Generate TDP with AI at the foot of the Test Data Profile list in Test Case Settings](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/TDP_with_AI.png)
+
+## Delete profiles
+
+<Steps>
+
+1. Go to **Test Data > Test Data Profiles** and click the **List View** icon.
+
+2. Select the profiles to delete.
+
+3. Click **Delete**.
+
+4. Enter `Delete` in the **Delete List of Test Data** prompt and click **I understand, delete this test data**.
+
+</Steps>
+
+## FAQs
+
+**A test modifies an Excel file. How do I get the changes back into Testsigma?**
+
+Changes made during a run live on the test machine, not in your upload. Install two addons: **ExcelActions_cloud** to write the value into the file (its NLP takes the upload, row, column, and sheet index, and stores the modified file's path in a runtime variable), then **Upload Latest file to Testsigma Uploads** to push that path back over your upload.

@@ -1,15 +1,15 @@
 ---
 title: Testsigma Support Knowledge — Common Questions
-# Every answer below is a Suite screen or Suite behaviour, so it must not
+# Every answer below is a Testsigma screen or Testsigma behaviour, so it must not
 # reach an Arcus reader. Takes effect on the next index rebuild.
 product: suite
 ---
 
-## Why can't I delete a feature or scenario in Testsigma Suite?
+## Why can't I delete a feature or scenario in Testsigma?
 
 `product: suite` `keywords: delete feature, delete scenario, cannot delete, not permitted to delete, trash, permanently delete`
 
-In Testsigma Suite, a feature cannot be deleted while it still contains scenarios and test cases that are present in the Trash. Deleting a test case moves it to the Trash rather than removing it, so the parent scenario and feature stay blocked until the Trash is cleared.
+In Testsigma, a feature cannot be deleted while it still contains scenarios and test cases that are present in the Trash. Deleting a test case moves it to the Trash rather than removing it, so the parent scenario and feature stay blocked until the Trash is cleared.
 
 Delete in this order:
 

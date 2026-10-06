@@ -2,9 +2,11 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
+import { slug } from 'github-slugger';
+import { toDocId } from './lib/site-config.mjs';
 
 export const collections = {
-	// Release notes rendered by ChangelogFeed.astro on /suite/changelog/.
+	// Release notes rendered by ChangelogFeed.astro on /changelog/.
 	// Frontmatter holds the meta; the markdown body holds the notes:
 	//   ## New features        (or "Improvements" / "Fixes")
 	//   **Item title** — one-line description
@@ -24,7 +26,22 @@ export const collections = {
 	}),
 
 	docs: defineCollection({
-		loader: docsLoader(),
+		// Ids carry the URL's product and version segments (toDocId), so pages
+		// build at /docs/v2/… and /docs/arcus/v2/… while the folders stay
+		// version-free. Same slugging Starlight's default generateId applies.
+		loader: docsLoader({
+			generateId: ({ entry, data }) =>
+				toDocId(
+					typeof data.slug === 'string' && data.slug
+						? data.slug
+						: entry
+								.replace(/\.[^/.]+$/, '')
+								.split('/')
+								.map((segment) => slug(segment))
+								.join('/')
+								.replace(/\/index$/, '')
+				),
+		}),
 		schema: docsSchema({
 			extend: z.object({
 				// ── Editorial contract (docs-v2-writer rules/frontmatter.md) ──

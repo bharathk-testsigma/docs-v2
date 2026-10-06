@@ -1,0 +1,80 @@
+---
+title: Codemagic
+description: Run the Testsigma trigger script from a codemagic.yaml workflow in Codemagic CI.
+pageType: task
+verified: 2026-08
+sidebar:
+  order: 113
+  label: Codemagic
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Codemagic runs workflows from a `codemagic.yaml` at the repository root. One step runs the committed shell script, so every build triggers your Testsigma test plan.
+
+<Prerequisites>
+
+- A Codemagic account and a repository containing the executable trigger script, `magictrigger.sh`.
+
+</Prerequisites>
+
+## Connect the repository
+
+<Steps>
+
+1. **Sign up**: go to [codemagic.io](https://codemagic.io) and sign up with your version control system (GitHub in this example).
+
+2. **Authorize**: click **Authorize Codemagic CI/CD**. On the **How will you be using Codemagic?** page, select the option you prefer.
+
+3. **Connect code**: on the **Welcome Onboard** page, under **Connect Code**, choose your version control provider (for example, **GitHub**).
+
+</Steps>
+
+<Aside type="note">
+If your repositories do not appear, click **Click here**, then select **Install and Authorize** to refresh the connection.
+</Aside>
+
+## Configure the application
+
+<Steps>
+
+1. **Select the repository**: under **Select repository**, choose the repository from the dropdown and click **Select repository**.
+
+2. **Set the project path**: enter the relative path to your project in the **Project path** field, then click **Retry** so Codemagic can scan the repository. Alternatively, click **Set Type Manually** to specify the project type yourself.
+
+3. **Create the app**: select the project type and click **Create Application**.
+
+</Steps>
+
+## Add the YAML workflow
+
+<Steps>
+
+1. **Switch to YAML**: on the workflow screen, click **Switch to YAML configuration**. In the **Update Settings** dialog, select the **codemagic.yaml** radio button and click **Save changes**.
+
+2. **Create the file**: in your repository, add a file named `codemagic.yaml` at the root directory:
+
+   ```yaml title="codemagic.yaml"
+   workflows:
+     run-testsigma:
+       name: Run Testsigma Shell Script
+       scripts:
+         - name: Trigger Testsigma
+           script: |
+             chmod +x ./magictrigger.sh
+             ./magictrigger.sh
+   ```
+
+3. **Push it**: commit and push the file. Optionally, configure **Environment Variables**, **Webhooks**, and other settings in Codemagic.
+
+</Steps>
+
+<Aside type="note">
+`magictrigger.sh` must be in the same repository and marked executable, with your API key and test plan ID set. The generic script is on the [shell script](/integrations/ci-cd/shell-script/) page.
+</Aside>
+
+## Run the workflow
+
+In Codemagic, click **Start new build**. Codemagic detects the `codemagic.yaml` file and starts the workflow. After the build completes, you can view the execution logs and test results.
+

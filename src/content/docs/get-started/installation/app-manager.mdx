@@ -1,0 +1,123 @@
+---
+title: App manager
+description: Roll out Testsigma Agent and Terminal to managed Windows devices at scale with PatchMyPC and Intune.
+pageType: task
+covers:
+  - How the apps are onboarded
+  - Add an app
+  - Install commands
+  - Add a new version
+  - Weekly releases
+sidebar:
+  order: 45
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+PatchMyPC and Microsoft Intune deliver Testsigma Agent and Testsigma Terminal to managed Windows devices, instead of someone installing them one machine at a time. This is IT admin work. For a single device, see [Testsigma Agent](/get-started/installation/testsigma-agent/) and [Testsigma Terminal](/get-started/installation/testsigma-terminal/).
+
+<Aside type="note">
+PatchMyPC deployment covers Windows `.exe` installers only. macOS `.dmg`, Linux, and the agent's raw ZIP are not supported through it.
+</Aside>
+
+<Prerequisites>
+
+- PatchMyPC Publisher is installed and connected to your Intune tenant.
+- Testsigma has supplied the current Windows installer for each app you are deploying.
+- You have access to **Local Content > Custom Apps** in the Publisher.
+
+</Prerequisites>
+
+## How the apps are onboarded
+
+Neither app is in PatchMyPC's built-in catalog, so both are onboarded as **Custom Apps**. PatchMyPC packages the installer, publishes it to Intune as a Win32 app, and Intune delivers it. Testsigma supplies the installer for each build; your IT team owns everything in PatchMyPC.
+
+An installer qualifies as a custom app when it meets 3 conditions: it installs silently with no user interaction, its install context matches the Intune deployment context, and it offers a stable way to detect the installed version from a file path that does not change between builds.
+
+<Aside type="note">
+Custom apps get no URL monitoring and no automatic version detection. Every new version needs a manual **Add Version** upload.
+</Aside>
+
+## Add an app
+
+Testsigma Agent installs per-user only, into the user profile and HKCU. Testsigma Terminal installs machine-wide or per-user, chosen by the install switch.
+
+The onboarding steps are the same for both, with different values.
+
+<Steps>
+
+1. Go to **Local Content > Custom Apps** in the PatchMyPC Publisher and click **Add**.
+
+2. Enter the metadata:
+   - **Name**: **TestsigmaAgent** or **TestsigmaTerminal**, typed exactly. A typo breaks the auto-generated DisplayName detection.
+   - **Vendor**: Testsigma.
+   - **Version**: the installer version, from `agent.version` in `agent.properties` for the agent, or from `package.json` for the Terminal.
+   - **Architecture**: x64.
+
+3. Upload the installer, `TestsigmaAgent-Windows.exe` or `TestsigmaTerminal-Setup-<version>.exe`.
+
+4. Enter the install command for that app. See [Install commands](#install-commands).
+
+5. Confirm the detection rule. PatchMyPC's auto-generated detection works as-is for both apps.
+
+6. Publish to Intune, then create the assignment groups on the Intune side.
+
+7. Deploy to one managed test device and confirm the install works before rolling it out further.
+
+</Steps>
+
+## Install commands
+
+```bash
+# Testsigma Agent, per-user only
+Install:   TestsigmaAgent-Windows.exe /S
+Uninstall: <install-dir>\Uninstall.exe /S
+
+# Testsigma Terminal, machine-wide
+Install:   TestsigmaTerminal-Setup-<version>.exe /S /allusers
+
+# Testsigma Terminal, current user
+Install:   TestsigmaTerminal-Setup-<version>.exe /S /currentuser
+
+Uninstall: "C:\Program Files\TestsigmaTerminalBlackpearl\Uninstall TestsigmaTerminalBlackpearl.exe" /S
+```
+
+<Aside type="note">
+The install context has to match the Intune deployment context. Testsigma Agent installs per-user, so it deploys in Intune user context. Testsigma Terminal takes `/S /allusers` in SYSTEM context and `/S /currentuser` in user context. A mismatch installs the app where the assigned user cannot see it, and Intune reports the deployment as failed.
+</Aside>
+
+## Add a new version
+
+<Steps>
+
+1. Testsigma builds the new installer and provides it. The agent's version comes from `agent.version` in `client/src/main/resources/agent.properties`, and the Terminal's from `package.json`.
+
+2. Open the app in the PatchMyPC portal, select **Add Version**, upload the installer, set the **Version**, confirm the install command and detection rule, and select **Create**.
+
+3. The update deploys on the next daily sync, or immediately with **Sync Now**. Assigned devices upgrade themselves.
+
+</Steps>
+
+On the device, the Terminal's electron-builder NSIS installer upgrades in place through its stable appId, `com.testsigma.testsigmaterminal`. The agent's `.onInit` block silently uninstalls the previous version first, and data in `%APPDATA%\Testsigma` survives the upgrade.
+
+## Weekly releases
+
+A weekly release cadence makes that upload a weekly manual task for both apps. Two ways to avoid it:
+
+- **Rely on each app's own auto-update**: both apps self-update independently of PatchMyPC, so Intune only handles the first install and every later version flows through the app's own updater. Re-upload only for a major or breaking change that needs a fresh initial-install baseline. This is the recommended route.
+- **Automate the upload**: script **Add Version** against the PatchMyPC Cloud API as part of your release pipeline. Confirm your plan's API exposes custom-app version creation first.
+
+<Aside type="note">
+Turning off an app's built-in auto-update makes PatchMyPC and Intune the only update path. Every new version then has to be uploaded, and a skipped upload leaves devices on the old version.
+</Aside>
+
+## Troubleshooting
+
+### The deployment reports as failed but the app appears installed
+
+The install context does not match the Intune deployment context. `/S /allusers` runs in SYSTEM context, and `/S /currentuser` and the agent's `/S` run in user context.
+
+### A reinstall fails with "specified path does not exist"
+
+A stale uninstall key from an earlier install points to a path that no longer exists. Remove the key and retry.

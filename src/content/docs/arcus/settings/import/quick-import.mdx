@@ -1,0 +1,231 @@
+---
+title: Quick import
+description: Copy a project from qTest, TestRail, Xray, Zephyr Scale, or five other tools into Arcus, with its test cases and execution history.
+pageType: task
+verified: 2026-10
+covers:
+  - Start a quick import
+  - Connect to your tool
+  - Choose what to import
+  - Map users
+  - Map field values
+  - Track the import
+  - Review the import results
+sidebar:
+  order: 2
+  label: Quick import
+---
+
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Quick import copies a project from your current test management tool into Arcus, with folders, step groups, execution history, and custom fields.
+
+<Prerequisites>
+- Your tool's credentials.
+- The [Jira](/arcus/integrations/project-management/jira/) integration for Jira Xray and Zephyr Scale, or [Azure DevOps](/arcus/integrations/project-management/azure-devops/) for Azure DevOps Test Plans.
+</Prerequisites>
+
+{/* Confirmed from screenshots: qTest end to end (2026-10-06); the Establish Connection stage and stage list for every other tool (2026-10-07). The other tools' later stages are assumed to match qTest. */}
+
+## Start a quick import
+
+<Steps>
+
+1. In the left navigation, go to **Settings**, then select **Import**.
+
+2. Click **Quick import from**.
+
+3. In **Choose your current Test Management tool**, select your tool: qTest, TestRail, Testmo, Jira Xray, BrowserStack, Zephyr Scale, Azure DevOps Test Plans, Qase, or TestMuAI.
+
+</Steps>
+
+The **Quick import** wizard opens on its first stage, **Establish Connection**.
+
+## Connect to your tool
+
+<Tabs syncKey="import-tool">
+<TabItem label="qTest">
+
+<Steps>
+
+1. In **qTest Host name**, enter your qTest site URL, for example `https://yourcompany.qtestnet.com/`.
+
+2. In **qTest API Key**, enter your qTest API key.
+
+3. If your project uses qTest Parameters, enter its URL in **qTest Parameters URL**, for example `parameters.qtestnet.com`.
+
+</Steps>
+
+</TabItem>
+<TabItem label="TestRail">
+
+<Steps>
+
+1. In **TestRail Host name**, enter your TestRail site, for example `qa-team.testrail.io`.
+
+2. In **TestRail Email**, enter the email address you sign in to TestRail with.
+
+3. In **TestRail API Key**, enter your TestRail API key.
+
+</Steps>
+
+</TabItem>
+<TabItem label="Testmo">
+
+<Steps>
+
+1. In **Testmo Host name**, enter your Testmo site, for example `yourorg.testmo.net`.
+
+2. In **Testmo API Key**, enter your Testmo API key.
+
+</Steps>
+
+</TabItem>
+<TabItem label="Jira Xray">
+
+Xray reads projects and users through your Jira connection, so [connect Jira](/arcus/integrations/project-management/jira/) first. Once it is connected, a banner confirms it.
+
+<Steps>
+
+1. In **Client ID**, enter your Xray client ID.
+
+2. In **Client Secret**, enter your Xray client secret.
+
+</Steps>
+
+{/* CONFIRM: what this stage shows when Jira is not connected yet. */}
+
+</TabItem>
+<TabItem label="BrowserStack">
+
+In **API Token**, enter your BrowserStack username and access key in the form `username:access_key`.
+
+</TabItem>
+<TabItem label="Zephyr Scale">
+
+Zephyr Scale reads project names and users through your Jira connection, so [connect Jira](/arcus/integrations/project-management/jira/) first. Once it is connected, a banner confirms it.
+
+<Steps>
+
+1. In **Zephyr Scale API Token**, enter your Zephyr Scale API token.
+
+2. In **Region**, select the region your Zephyr Scale instance runs in. It defaults to **US**.
+
+</Steps>
+
+{/* CONFIRM: the Region options besides US, and what this stage shows when Jira is not connected yet. */}
+
+</TabItem>
+<TabItem label="Azure DevOps Test Plans">
+
+Azure DevOps Test Plans needs no credentials here. It uses your Azure DevOps integration instead. If Azure DevOps isn't connected yet, **Connect Azure DevOps** says so: click **Go to Integrations** and [connect Azure DevOps](/arcus/integrations/project-management/azure-devops/), then start the import again.
+
+{/* CONFIRM: what Establish Connection shows once Azure DevOps is connected (straight to Select a Project, or a Proceed button). */}
+
+</TabItem>
+<TabItem label="Qase">
+
+In **API Token**, enter your Qase API token.
+
+</TabItem>
+<TabItem label="TestMuAI">
+
+<Steps>
+
+1. In **Username**, enter your TestMuAI username.
+
+2. In **Access Key**, enter your TestMuAI access key.
+
+</Steps>
+
+</TabItem>
+</Tabs>
+
+Then click **Test connection**. Once **Connection Tested Successfully** appears, click **Proceed**.
+
+{/* CONFIRM: whether Azure DevOps Test Plans also has Test connection and Proceed once connected. */}
+
+## Choose what to import
+
+The **How your &lt;tool&gt; data will be migrated to Arcus?** panel shows what each item in your tool becomes in Arcus. Folder structure, execution history, and custom fields come across with them.
+
+For qTest, for example:
+
+| qTest | Arcus |
+|---|---|
+| Test Cases | Test Cases |
+| Test Releases | Test Plans |
+| Test Cycles | Test Runs |
+| Test Runs | Test Case Executions |
+
+Under **Select Project**, qTest has two options, both selected by default:
+
+- **Import all the test cycles and test releases** brings cycles and releases as well as test cases.
+- **Include closed/completed items** brings items already closed or completed in qTest.
+
+{/* CONFIRM: the mapping table and Select Project options for TestRail, Testmo, Jira Xray, BrowserStack, Zephyr Scale, Azure DevOps Test Plans, Qase, and TestMuAI. Add a tab per tool here once known. */}
+
+<Steps>
+
+1. Under **Select Project**, choose the options you want.
+
+2. Select the project to import. The number of projects found appears beside **Select Project**.
+
+3. Click **Continue**.
+
+</Steps>
+
+## Map users
+
+The **Map Users** stage lists every user in the source project. Each one needs an Arcus user, who becomes the owner of their items.
+
+<Steps>
+
+1. For each user, select an Arcus user under **TMS USERS**. **Users mapped** counts your progress.
+
+2. Click **Continue**. It becomes available once every user is mapped. For tools without a **Map Fields** stage, this starts the import.
+
+{/* CONFIRM: the button label on Map Users for tools without Map Fields (qTest shows Continue, then Begin Import on Map Fields). */}
+
+</Steps>
+
+## Map field values
+
+qTest, Jira Xray, BrowserStack, Qase, and TestMuAI have a **Map Fields** stage. TestRail, Testmo, Zephyr Scale, and Azure DevOps Test Plans skip it and go straight to the import.
+
+**Map Fields** pairs values from your tool with Arcus values. For qTest, the fields are **Priority**, **Test case status**, and **Execution status**. Values with the same name are matched automatically. Any other value is set to **Create '&lt;value&gt;'**, which adds it to Arcus as a new value.
+
+{/* CONFIRM: which fields appear on Map Fields for each tool other than qTest. */}
+
+<Steps>
+
+1. Review each field. To use an existing Arcus value instead of creating one, select it from the list.
+
+2. Click **Begin Import**.
+
+</Steps>
+
+## Track the import
+
+The last stage is named for what your tool imports: **Import of Test Cases, Cycles & Releases** for qTest, TestRail, Testmo, Zephyr Scale, and Azure DevOps Test Plans; **Import of Test Cases, Plans & Executions** for Jira Xray; **Import of Test Cases, Plans & Runs** for BrowserStack and Qase; and **Import of Test Cases & Runs** for TestMuAI.
+
+The import queues, then starts when a worker is free. While it runs, counters show progress for each kind of item, such as test cases, folders, step groups, attachments, and comments. Click **View details** for more, or **Cancel** to stop.
+
+<Aside type="note">
+Don't change the source project in your tool while the import runs. Changes made mid-import can make it fail.
+</Aside>
+
+When it finishes, **Import completed** shows how many items of each kind came across, and how many were skipped. Click **Done** to close the wizard, or **Re-import** to run it again.
+
+{/* CONFIRM: what Re-import does. Whether it repeats the whole import or retries only the skipped and failed items. */}
+
+## Review the import results
+
+Click **Report** on **Import completed** to open **Import Results**. It has a tab for each kind of item, such as test cases, test releases, and test cycles. Each tab shows:
+
+- Totals for imported, skipped, and failed items.
+- **Failed to import**: each item's ID, title, error type, and the reason it failed.
+- The imported items, with their new Arcus ID and folder.
+
+Click **Report** on this page to download the results.

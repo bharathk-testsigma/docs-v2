@@ -45,15 +45,16 @@ import { stripBase, withBase } from '../lib/base';
 // stripBase: under /docs-new the pathname carries the base, so the bare
 // comparison would never match and home would lose its header treatment.
 // One rule for both products: each home lives at /<product>/home since the
-// Suite splash moved under /suite/ (2026-09-10).
-const isHome = /^\/(suite|arcus)\/home$/.test(
-	stripBase(Astro.url.pathname).replace(/\/+$/, '')
-);
+// Suite splash moved under / (2026-09-10).
+const path = stripBase(Astro.url.pathname).replace(/\/+$/, '');
+// The docs home (/home/, which the bare root redirects to) gets the home treatment but no
+// product switcher: the page itself is the switch.
+const isLanding = path === '' || path === '/home';
+const isHome = isLanding;
 
 // The brand lock-up leaves the docs for testsigma.com (Bharath, 2026-09-10):
 // the logo is the company mark, so it behaves the way it does on every other
-// Testsigma page. Getting back to a docs home is the product switcher's job,
-// and each of its entries lands on one.
+// Testsigma page. "Docs" beside it is its own link, to the docs home.
 //
 // Absolute, and NOT withBase(): the marketing site is a different app, and the
 // docs base would point this at /docs-new/https://…
@@ -134,12 +135,12 @@ const BRAND_HREF = 'https://testsigma.com/';
 					height="24"
 					aria-hidden="true"
 				/>
-				<span class="ts-brand-sep" aria-hidden="true" />
-				<span class="ts-brand-docs">Docs</span>
 				</a>
+				<span class="ts-brand-sep" aria-hidden="true" />
+				<a href={withBase('/')} class="ts-brand-docs">Docs</a>
 			</span>
 
-			<ProductSwitcher />
+			{!isLanding && <ProductSwitcher />}
 		</div>
 
 		<div class="ts-searchcol">
@@ -361,6 +362,10 @@ const BRAND_HREF = 'https://testsigma.com/';
 		font-weight: 400;
 		color: var(--ts-tx3);
 		white-space: nowrap;
+		text-decoration: none;
+	}
+	.ts-brand-docs:hover {
+		color: var(--ts-tx);
 	}
 	:root[data-theme='light'] .ts-logo-light {
 		display: block;

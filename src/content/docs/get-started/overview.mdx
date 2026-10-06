@@ -1,0 +1,133 @@
+---
+title: Overview
+description: The four decisions that shape everything in Testsigma — what you test, how you write it, where it runs, and how a test becomes a result — plus the shortest path to a first passing test.
+pageType: guide
+verified: 2026-08
+covers:
+  - What you can test
+  - How you write a test
+  - Where tests run
+  - From a test to a result
+  - Your first test
+sidebar:
+  order: 1
+  label: Overview
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+Testsigma automates tests you describe rather than code. A test step reads `Click on Login Button`, and a whole test case can come from a Jira ticket or a Figma frame, so the people who know the application are the ones who automate it.
+
+This page covers the decisions that shape everything else: what you are testing, how you write the test, where it runs, and how a test becomes a result. Then the quickest route to a first passing test.
+
+## What you can test
+
+The application type is chosen when you create the application, and it cannot be changed afterwards. Pick it against what you are testing, not what you plan to test later.
+
+| Application type | Covers |
+|---|---|
+| Web | Any browser-based application |
+| Mobile web | A web application at a device's dimensions |
+| Android | Native and hybrid Android apps, from an `.apk` |
+| iOS | Native and hybrid iOS apps, from an `.ipa` |
+| Unified | One test case running on both Android and iOS |
+| Salesforce | A Salesforce org, through its metadata |
+| Windows | Desktop applications, including SAP |
+| Rest API | APIs, with no UI involved |
+
+The execution engine is the second fixed choice. A web application can run on Classic or Modern, and every other type runs on the engine Testsigma assigns. Modern waits for elements and page state before interacting, which reduces timing failures, and it handles Shadow DOM more natively. See [Projects and applications](/get-started/projects-and-applications/).
+
+<Aside type="note">
+A project holds one application by default. Turn on **Allow adding multiple applications** to hold more.
+</Aside>
+
+## How you write a test
+
+Four routes produce the same thing, a test case made of steps. They differ in how much you supply.
+
+| Route | Start from | Reach for it when |
+|---|---|---|
+| Atto | A Jira ticket, a Figma frame, a document, or a prompt | You are covering a feature rather than one flow |
+| Copilot | A live session on the application | You want to author, run, and debug in one place |
+| Recorder | The application in front of you | The flow is quicker to perform than to describe |
+| NLPs | Nothing | You know the flow and want exact control |
+
+The routes mix inside a single test case, so a generated step sits beside a recorded one and a hand-written one.
+
+### What the agents do
+
+Atto's agents cover the work either side of authoring, not just the writing.
+
+| Agent | What it does |
+|---|---|
+| Generator | Turns requirements, designs, and prompts into test cases, then automates them against your live application |
+| Test Data Generator | Builds a test data profile for a data-driven test case |
+| Analyzer | Explains why a step failed and proposes fixes you apply in a click |
+| Bug Reporter | Files the failure as a bug, carrying the analysis and screenshots into the ticket |
+
+Two more run without being asked. **Agentic Learning** drives your application to discover the steps a generated test case is missing. **Auto-healing** repairs a locator mid-run when the UI has moved, and reports what it changed.
+
+<Aside type="note">
+The agents propose, and you decide. A generated test case is a draft until you accept it, a suggested fix is applied by you, and every heal is listed in the run result.
+</Aside>
+
+See [AI agents](/atto/ai-agents/) and [Agentic execution](/atto/agentic-execution/).
+
+## Where tests run
+
+Two things decide this: where your application is reachable from, and whether you need a specific machine.
+
+**Testsigma's cloud** runs tests on hosted browsers and devices, and needs nothing installed beyond the recorder extension for authoring. It reaches an application that is reachable from the internet.
+
+**Your own machines** run tests through the Testsigma Agent, for an application inside your network, a specific device, or a Windows desktop application.
+
+**Testsigma Tunnel** is the third option, and the one people miss. It keeps the test on a cloud machine and routes its traffic through your network, so a firewalled application can still be tested on the full browser and device matrix. IP whitelisting cannot do this.
+
+## From a test to a result
+
+Four things, in this order:
+
+1. A **test case** holds the steps that test one flow
+2. A **test suite** groups the test cases you want to run together
+3. A **test plan** decides which suites run, on which machines, with which settings
+4. A **run result** reports what happened, with screenshots, logs, and video
+
+An **ad-hoc run** skips the middle two. It executes one test case immediately, which is how you check a test case works before it joins a suite.
+
+## Your first test
+
+On a web application reachable from the internet:
+
+<Steps>
+
+1. Install the recorder extension. See [Recorder extensions](/get-started/installation/recorder-extensions/).
+
+2. Create a project and a web application. See [Projects and applications](/get-started/projects-and-applications/).
+
+3. Create a test case and enter the URL as the first step. See [Test cases](/create-and-manage/create-test-cases/).
+
+4. Click **Record**, perform the flow, and click **Stop**.
+
+5. Click **Run**, pick a browser, and click **Run Now**.
+
+6. Read the result. See [Results](/run-tests/results/).
+
+</Steps>
+
+Nothing in that path needs an agent, a plan, or a suite.
+
+To start from a requirement instead, connect Jira under **Settings > Integrations**, go to **Atto's Home**, and generate. That route needs Testsigma Terminal, because automating the generated steps drives a real browser. See [AI agents](/atto/ai-agents/).
+
+## Where to go next
+
+- **Generating tests from requirements or designs**: [AI agents](/atto/ai-agents/), then [Agentic execution](/atto/agentic-execution/)
+- **Automating your first real feature by hand**: [Test cases](/create-and-manage/create-test-cases/), then [Step types](/create-and-manage/step-types/) and [Elements](/create-and-manage/elements/)
+- **Testing an app behind a firewall, or on your own devices**: [Installation overview](/get-started/installation/)
+- **Running on a schedule or in CI**: [Test suites](/run-tests/test-suite/), then [Test plans](/run-tests/test-plan/)
+- **Extending Testsigma with your own actions**: [Addons overview](/addons/)
+
+<Aside type="tip">
+Press **Cmd + K** on macOS or **Ctrl + K** on Windows anywhere in Testsigma to open the command center, which navigates and runs common actions from the keyboard.
+</Aside>
+
+![The command center open over the dashboard, searching for Test Suites](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/Command_Center_2.png)

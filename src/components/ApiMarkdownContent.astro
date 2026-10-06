@@ -26,7 +26,7 @@ import { withBase } from '../lib/base';
 
 const { entry } = Astro.locals.starlightRoute;
 
-const authHref = withBase('/suite/api/overview/#authentication');
+const authHref = withBase('/api/overview/#authentication');
 const api = (entry.data as any).api as
 	| {
 			method: string;

@@ -1,5 +1,5 @@
 /**
- * Raster favicons, generated from public/testsigma-mark.svg.
+ * Raster favicons, generated from public/v2/testsigma-mark.svg.
  *
  * The SVG is the primary icon and stays crisp at any size, but browsers still
  * request /favicon.ico blind, and iOS ignores SVG icons entirely -- so the mark
@@ -8,12 +8,12 @@
 import sharp from 'sharp';
 import { readFileSync, writeFileSync } from 'fs';
 
-const SRC = 'public/testsigma-mark.svg';
+const SRC = 'public/v2/testsigma-mark.svg';
 const svg = readFileSync(SRC);
 
 // 32px tab icon, and the ICO body (ICO may embed a PNG verbatim).
 const png32 = await sharp(svg, { density: 384 }).resize(32, 32).png().toBuffer();
-writeFileSync('public/favicon-32.png', png32);
+writeFileSync('public/v2/favicon-32.png', png32);
 
 // Apple composites touch icons on BLACK, so transparency has to go: white
 // plate, mark inset to 80% the way iOS expects.
@@ -23,7 +23,7 @@ await sharp({
 })
 	.composite([{ input: inner, top: 18, left: 18 }])
 	.png()
-	.toFile('public/apple-touch-icon.png');
+	.toFile('public/v2/apple-touch-icon.png');
 
 // Minimal single-image ICO: 6-byte header, one 16-byte directory entry, then
 // the PNG itself. No dependency needed for a container this small.
@@ -40,7 +40,7 @@ ico.writeUInt16LE(32, 12); // bits per pixel
 ico.writeUInt32LE(png32.length, 14);
 ico.writeUInt32LE(22, 18); // offset of the image data
 png32.copy(ico, 22);
-writeFileSync('public/favicon.ico', ico);
+writeFileSync('public/v2/favicon.ico', ico);
 
 // 1200x630 link-preview card (og:image): the on-light logo lock-up at its
 // native width, centred on white over a "Documentation" line. Built from the
@@ -51,8 +51,8 @@ const card = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" h
 		font-size="44" font-weight="500" fill="#4b4b52">Documentation</text>
 </svg>`);
 await sharp(card)
-	.composite([{ input: 'public/testsigma-logo.png', top: 175, left: Math.round((1200 - 865) / 2) }])
+	.composite([{ input: 'public/v2/testsigma-logo.png', top: 175, left: Math.round((1200 - 865) / 2) }])
 	.png()
-	.toFile('public/og-card.png');
+	.toFile('public/v2/og-card.png');
 
 console.log('favicon-32.png', png32.length, 'B  ico', ico.length, 'B');

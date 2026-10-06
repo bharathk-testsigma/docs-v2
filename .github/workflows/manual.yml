@@ -3,8 +3,8 @@ run-name: 'Docs - ${{ inputs.Environment }} (${{ github.ref_name }})'
 
 # Same shape as the website repo's website-cd-eks-nextjs-manual.yml, because the
 # deployment target is the same: an httpd image in ECR, rolled out to EKS by
-# ArgoCD watching the devops-helm repo. The website's Apache proxies /docs/v2
-# to this service.
+# ArgoCD watching the devops-helm repo. The website ingress routes /docs/v2
+# (Testsigma + shared assets) and /docs/arcus/v2 (Arcus) to this service.
 #
 # Flow:  build static site -> bake into httpd image -> push to ECR
 #        -> bump the image tag in devops-helm -> ArgoCD syncs -> invalidate CDN
@@ -159,13 +159,13 @@ jobs:
           # ArgoCD, not by this workflow, so there is nothing here to usefully wait
           # on. It exists so that a human CAN tell which build is live, with one
           # curl, instead of guessing from how the page looks. See deploy/README.md.
-          git rev-parse --short HEAD > dist/build-id.txt
+          git rev-parse --short HEAD > dist/v2/build-id.txt
 
       # scripts/verify-dist.mjs, not inline greps. The checks used to live here,
       # and one of them named a content path:
       #
       #   grep -q '"/docs-new/' dist/index.html \
-      #                         dist/suite/get-started/introduction/index.html
+      #                         dist/get-started/introduction/index.html
       #
       # The v7 IA rewrite renamed that page to get-started/overview, so the second
       # file stopped existing -- and the check went on PASSING, because GNU grep
@@ -238,7 +238,7 @@ jobs:
         if: ${{ env.CLOUD_FRONT_DISTRIBUTION_ID != '' }}
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id "$CLOUD_FRONT_DISTRIBUTION_ID" --paths '/docs/v2/*'
+            --distribution-id "$CLOUD_FRONT_DISTRIBUTION_ID" --paths '/docs/v2/*' '/docs/arcus/v2/*'
 
       - name: Summary
         if: always()

@@ -173,15 +173,22 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 
 <script>
 	import { pagefindUserConfig } from 'virtual:starlight/pagefind-config';
-	import { streamAsk, askProduct, sendFeedback, renderMarkdown, escapeHtml, bindCopyHandlers, IC_COPY, IC_CHECK } from '../scripts/ask-shared';
-	// Retrieval-index URLs are stored base-free ('/suite/...'), so each source
+	import { streamAsk, askProduct, isDocsRoot, sendFeedback, renderMarkdown, escapeHtml, bindCopyHandlers, IC_COPY, IC_CHECK } from '../scripts/ask-shared';
+	// Retrieval-index URLs are stored base-free ('/...'), so each source
 	// link needs prefixing before it goes into the DOM or it 404s under the base.
 	import { withBase } from '../lib/base';
 
 	// Suggested questions for the empty state (first 4 are shown), per product:
 	// answers are retrieved from the reader's product only, so a Suite question
 	// asked from the Arcus docs would come back empty.
-	const SUGGESTIONS: string[] = askProduct() === 'arcus'
+	const SUGGESTIONS: string[] = isDocsRoot()
+		? [
+			'How do I create my first test case?',
+			'How do I trigger a Test Plan via API?',
+			'How do I generate test cases from a Jira story?',
+			'How do I import test cases from TestRail?',
+		]
+		: askProduct() === 'arcus'
 		? [
 			'How do I generate test cases from a Jira story?',
 			'How do I review and accept generated test cases?',
@@ -577,9 +584,12 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 						// the Arcus docs searches Arcus pages only, and vice versa. The UI
 						// has no option to pin a filter on a shared index, so the scope is
 						// the bundle it loads.
-						bundlePath:
-							import.meta.env.BASE_URL.replace(/\/$/, '') +
-							(/(^|\/)arcus(\/|$)/.test(location.pathname) ? '/pagefind-arcus/' : '/pagefind/'),
+						// Both bundles are shared files, so withBase() puts them under /docs/v2/.
+						bundlePath: withBase(/(^|\/)arcus(\/|$)/.test(location.pathname) ? '/pagefind-arcus/' : '/pagefind/'),
+						// The docs root belongs to neither product, so it searches both.
+						...(isDocsRoot() && {
+							mergeIndex: [{ bundlePath: withBase('/pagefind-arcus/') }],
+						}),
 						showImages: false,
 						translations,
 						showSubResults: true,

@@ -8,7 +8,7 @@ import { extractHowTos } from './lib/howto.mjs';
  * Two left navs out of one sidebar config.
  *
  * The API reference is its own destination, reached from the top-of-rail
- * "API Reference" row. On /suite/api/ pages the left nav shows ONLY the
+ * "API Reference" row. On /api/ pages the left nav shows ONLY the
  * endpoint groups, and on every other page it shows everything EXCEPT them.
  * The alternative -- separate `sidebar` arrays -- is impossible (Starlight
  * takes exactly one) and would duplicate entries that already exist in the
@@ -29,13 +29,13 @@ import { extractHowTos } from './lib/howto.mjs';
  * same treatment; only these strings differ.
  */
 const API_SECTIONS = [
-	{ path: '/suite/api/', group: 'REST APIs' },
+	{ path: '/api/', group: 'REST APIs' },
 	{ path: '/arcus/api-reference/', group: 'API Reference' },
 ] as const;
 
 /** Each product's changelog page, and the release feed it draws from. */
 const CHANGELOGS = [
-	{ path: '/suite/changelog', product: 'suite' },
+	{ path: '/changelog', product: 'suite' },
 	{ path: '/arcus/changelog', product: 'arcus' },
 ] as const;
 
@@ -48,14 +48,14 @@ export const isArcusPath = (pathname: string) =>
 	stripBase(pathname).startsWith(ARCUS_SECTION.path);
 
 /** Pages served by the API-only nav, in EITHER product. Sidebar.astro keys the
- *  API-nav treatment off this too, so a Suite-only test here would have left
+ *  API-nav treatment off this too, so a Testsigma-only test here would have left
  *  Arcus endpoint pages rendering as ordinary rows.
  *  stripBase: pathnames carry the /docs-new base in every environment that sets one. */
 export const isApiReferencePath = (pathname: string) =>
 	API_SECTIONS.some((s) => stripBase(pathname).startsWith(s.path));
 
 /** The group label of the API reference serving this path ("REST APIs" for
- *  Suite, "API Reference" for Arcus). Breadcrumbs.astro puts it back as the
+ *  Testsigma, "API Reference" for Arcus). Breadcrumbs.astro puts it back as the
  *  root crumb, which a hardcoded label got wrong on the other product. */
 export const apiSectionLabel = (pathname: string) =>
 	API_SECTIONS.find((s) => stripBase(pathname).startsWith(s.path))?.group;
@@ -99,8 +99,8 @@ export const onRequest = defineRouteMiddleware(async (context) => {
 
 	// ── 0. pick the product tree ──
 	// Each product carries its OWN utility rows, so this runs before they are
-	// read below: borrowing Suite's would point Arcus's rail at Suite's API
-	// reference and Suite's changelog.
+	// read below: borrowing Testsigma's would point Arcus's rail at Testsigma's API
+	// reference and Testsigma's changelog.
 	const arcusGroup = starlightRoute.sidebar.find(
 		(e): e is Group => isGroup(e) && e.label === ARCUS_SECTION.group
 	);
@@ -198,16 +198,20 @@ export const onRequest = defineRouteMiddleware(async (context) => {
 	const { entry, lastUpdated, headings } = starlightRoute;
 	if (entry.id !== '404') {
 		// ── 4a. product in the <title> ──
-		// Suite and Arcus share page names ("Overview", "Azure DevOps"), and the
+		// Testsigma and Arcus share page names ("Overview", "Azure DevOps"), and the
 		// default "<page> | Testsigma" made 16 titles collide across products. A
 		// page that already names its product (the homes) keeps the short form.
 		const product = isArcusPath(context.url.pathname)
 			? { word: 'Arcus', suffix: 'Arcus by Testsigma' }
-			: { word: 'Suite', suffix: 'Testsigma Suite' };
+			: { word: 'Testsigma', suffix: 'Testsigma' };
 		const titleTag = starlightRoute.head.find((t) => t.tag === 'title');
 		if (titleTag) {
 			const suffix = entry.data.title.includes(product.word) ? 'Testsigma' : product.suffix;
-			titleTag.content = `${entry.data.title} | ${suffix}`;
+			// A title that already says Testsigma ("Testsigma Docs", "Testsigma
+			// REST API") needs no suffix at all.
+			titleTag.content = entry.data.title.includes('Testsigma')
+				? entry.data.title
+				: `${entry.data.title} | ${suffix}`;
 		}
 
 		const pageUrl = new URL(context.url.pathname, context.site).href;

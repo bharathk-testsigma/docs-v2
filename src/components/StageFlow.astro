@@ -17,6 +17,7 @@
  *
  * Stage words live in src/data/flow-stages.mjs.
  */
+import { withBase } from '../lib/base';
 interface Stage {
 	label: string;
 	tone: string;
@@ -83,7 +84,7 @@ const cx = (i: number) => x(i) + 100;
 
 			{
 				stages.map((s, i) => (
-					<a class={`fl-z fl-t-${s.tone}`} id={`fl-z${i + 1}`} href={s.href}>
+					<a class={`fl-z fl-t-${s.tone}`} id={`fl-z${i + 1}`} href={withBase(s.href)}>
 						<text x={cx(i)} y="56" text-anchor="middle" class="fl-label">
 							{s.label}
 						</text>

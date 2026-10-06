@@ -8,6 +8,7 @@
  * actions.
  */
 import CopyPage from './CopyPage.astro';
+import { toDocId } from '../lib/site-config.mjs';
 import Breadcrumbs from './Breadcrumbs.astro';
 
 const { entry } = Astro.locals.starlightRoute;
@@ -18,7 +19,9 @@ const { entry } = Astro.locals.starlightRoute;
 // title, and "Copy page" makes no sense on a feed -- as on the changelog,
 // which is a regular doc page (it needs the rail) whose feed owns the h1.
 const isApiPage = !!entry.data.api;
-const isSplash = entry.data.template === 'splash' || entry.id === 'suite/changelog';
+// Both products' changelogs, so Arcus renders exactly like Testsigma.
+const CHANGELOG_IDS = ['changelog', 'arcus/changelog'].map(toDocId);
+const isSplash = entry.data.template === 'splash' || CHANGELOG_IDS.includes(entry.id);
 ---
 
 {

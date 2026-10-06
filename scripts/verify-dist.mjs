@@ -5,7 +5,7 @@
  * WHY THIS EXISTS AS A SCRIPT: the workflow used to inline the checks, and one of
  * them named a content path --
  *
- *     grep -q '"/docs-new/' dist/index.html dist/suite/get-started/introduction/index.html
+ *     grep -q '"/docs-new/' dist/index.html dist/get-started/introduction/index.html
  *
  * -- so when the v7 IA rewrite renamed that page to get-started/overview, grep
  * exited 2 on the missing file and every deploy failed at the verify step. A
@@ -13,12 +13,12 @@
  * the one thing this repo does constantly.
  *
  * So nothing below names a page. The checks are derived from the build output
- * itself: the root redirect says where home is, and every redirect stub in dist/
+ * itself: the docs root (or the page it redirects to) is home, and every redirect stub in dist/
  * is followed to whatever it points at. Reorganise freely; this keeps working.
  */
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { DOCS_BASE } from '../src/lib/site-config.mjs';
+import { DOCS_BASE, DOCS_VERSION, PRODUCTS, withDocsBase } from '../src/lib/site-config.mjs';
 
 const DIST = 'dist';
 const errors = [];
@@ -28,10 +28,10 @@ const fail = (msg) => errors.push(msg);
 const redirectTarget = (html) =>
 	html.match(/http-equiv="refresh" content="0;url=([^"]+)"/)?.[1] ?? null;
 
-/** '/docs-new/home/' -> 'dist/home/index.html' (fragments and query dropped). */
+/** '/docs/v2/home/' -> 'dist/v2/home/index.html' (fragments and query dropped). */
 function distFileFor(urlPath) {
 	const path = urlPath.split('#')[0].split('?')[0];
-	if (!path.startsWith(DOCS_BASE)) return null;
+	if (!path.startsWith(DOCS_BASE + '/')) return null;
 	const rest = path.slice(DOCS_BASE.length).replace(/^\/|\/$/g, '');
 	return join(DIST, rest, 'index.html');
 }
@@ -46,24 +46,31 @@ function walk(dir, out = []) {
 }
 
 // ── 1. the build produced something at all ───────────────────────────────────
-if (!existsSync(join(DIST, 'index.html'))) fail('dist/index.html missing — did the build run?');
+// The served roots: /docs/v2/ (Testsigma + shared files) and /docs/<product>/v2/.
+// Every page and every redirect must live under one of them, because the
+// ingress routes nothing else under /docs/ to this service.
+const SHARED = join(DIST, DOCS_VERSION);
+const landing = join(SHARED, 'index.html');
+const routePrefixes = [withDocsBase('/'), ...PRODUCTS.map((p) => withDocsBase(`/${p}/`))].map((p) => `"${p}`);
+const hasRouteLinks = (html) => routePrefixes.some((p) => html.includes(p));
+if (!existsSync(landing)) fail(`${landing} missing — did the build run?`);
 if (!existsSync(join(DIST, '404.html'))) fail('dist/404.html missing — Apache ErrorDocument would 404 into nothing');
 // Search is a headline feature; an empty index ships a dead search box.
-const pagefind = join(DIST, 'pagefind');
-if (!existsSync(pagefind)) fail('dist/pagefind missing — search would break');
+const pagefind = join(SHARED, 'pagefind');
+if (!existsSync(pagefind)) fail(`${pagefind} missing — search would break`);
 // Arcus searches its own bundle (scripts/build-pagefind.mjs); without it the
 // dialog loads nothing on every /arcus/ page and reports no results.
-const pagefindArcus = join(DIST, 'pagefind-arcus');
+const pagefindArcus = join(SHARED, 'pagefind-arcus');
 if (!existsSync(join(pagefindArcus, 'pagefind-entry.json')))
-	fail('dist/pagefind-arcus/pagefind-entry.json missing — Arcus search would find nothing');
+	fail(`${pagefindArcus}/pagefind-entry.json missing — Arcus search would find nothing`);
 else {
 	// Pagefind nests its shards: pagefind/index/*.pf_index and
 	// pagefind/fragment/*.pf_fragment, with pagefind-entry.json naming them. A
 	// flat readdir of pagefind/ sees only the runtime JS and finds nothing.
-	if (!existsSync(join(pagefind, 'pagefind-entry.json'))) fail('dist/pagefind/pagefind-entry.json missing — the search runtime has no index to load');
+	if (!existsSync(join(pagefind, 'pagefind-entry.json'))) fail(`${pagefind}/pagefind-entry.json missing — the search runtime has no index to load`);
 	const shards = join(pagefind, 'index');
 	if (!existsSync(shards) || !readdirSync(shards).some((f) => f.endsWith('.pf_index')))
-		fail('dist/pagefind/index/ has no .pf_index shards — search index is empty');
+		fail(`${shards}/ has no .pf_index shards — search index is empty`);
 }
 
 if (errors.length) {
@@ -72,6 +79,11 @@ if (errors.length) {
 }
 
 const pages = walk(DIST);
+
+// A page outside the served roots builds fine and is unreachable in production.
+const servedDirs = [SHARED, ...PRODUCTS.map((p) => join(DIST, p, DOCS_VERSION))];
+const stray = pages.filter((f) => !servedDirs.some((d) => f.startsWith(d + '/')));
+if (stray.length) fail(`${stray.length} page(s) outside ${servedDirs.join(', ')}, e.g. ${relative(DIST, stray[0])} — the ingress never routes them here`);
 
 // ── 2. every redirect resolves to a page that exists ─────────────────────────
 // This is the check that would have caught the introduction/overview rename at
@@ -84,26 +96,28 @@ for (const file of pages) {
 	redirects++;
 	const dest = distFileFor(target);
 	if (!dest) fail(`${relative(DIST, file)} redirects to ${target}, which is outside ${DOCS_BASE}/ — it would land on the website's own 404`);
+	else if (!routePrefixes.some((p) => `"${target}`.startsWith(p))) fail(`${relative(DIST, file)} redirects to ${target}, which is outside the served roots — the old docs own the rest of ${DOCS_BASE}/`);
 	else if (!existsSync(dest)) fail(`${relative(DIST, file)} redirects to ${target}, but ${dest} was not built — dangling redirect`);
 }
 
 // ── 3. links carry the base prefix ───────────────────────────────────────────
 // Without `base` in astro.config.mjs the emitted links come out root-relative
-// and every one of them 404s behind the website ingress. Checked on the page the
-// root redirect points at, so no slug is named here.
-const home = distFileFor(redirectTarget(readFileSync(join(DIST, 'index.html'), 'utf8')) ?? '');
+// and every one of them 404s behind the website ingress. Checked on the docs
+// root itself, or on the page it redirects to, so no slug is named here.
+const rootTarget = redirectTarget(readFileSync(landing, 'utf8'));
+const home = rootTarget === null ? landing : distFileFor(rootTarget);
 if (!home || !existsSync(home)) {
-	fail('dist/index.html is not a redirect to a page that exists — the docs root would be a dead end');
-} else if (!readFileSync(home, 'utf8').includes(`"${DOCS_BASE}/`)) {
-	fail(`${relative(DIST, home)} has no "${DOCS_BASE}/-prefixed links — check \`base\` in astro.config.mjs`);
+	fail(`${relative(DIST, landing)} redirects to a page that does not exist — the docs root would be a dead end`);
+} else if (!hasRouteLinks(readFileSync(home, 'utf8'))) {
+	fail(`${relative(DIST, home)} has no ${routePrefixes.join(' / ')} links — check \`base\` and toRoute() in site-config.mjs`);
 }
 
 // A single page could pass by luck; the whole build must be prefixed.
 const unprefixed = pages.filter((f) => {
 	const html = readFileSync(f, 'utf8');
-	return !redirectTarget(html) && !html.includes(`"${DOCS_BASE}/`);
+	return !redirectTarget(html) && !hasRouteLinks(html);
 });
-if (unprefixed.length) fail(`${unprefixed.length} page(s) emit no ${DOCS_BASE}/ links, e.g. ${relative(DIST, unprefixed[0])}`);
+if (unprefixed.length) fail(`${unprefixed.length} page(s) emit no ${routePrefixes.join(' / ')} links, e.g. ${relative(DIST, unprefixed[0])}`);
 
 // ── 4. the Ask API origin reached the browser bundle ─────────────────────────
 // PUBLIC_ASK_API_ORIGIN is inlined at build time, so a missing or misspelled
@@ -113,13 +127,13 @@ if (unprefixed.length) fail(`${unprefixed.length} page(s) emit no ${DOCS_BASE}/ 
 // -- the origin alone is what to look for.
 const askOrigin = (process.env.PUBLIC_ASK_API_ORIGIN ?? '').replace(/\/+$/, '');
 if (askOrigin) {
-	const assets = join(DIST, '_astro');
+	const assets = join(SHARED, '_astro');
 	const inlined =
 		existsSync(assets) &&
 		readdirSync(assets)
 			.filter((f) => f.endsWith('.js'))
 			.some((f) => readFileSync(join(assets, f), 'utf8').includes(askOrigin));
-	if (!inlined) fail(`PUBLIC_ASK_API_ORIGIN (${askOrigin}) is not in dist/_astro — Ask AI would POST to this image, which has no /api/ask`);
+	if (!inlined) fail(`PUBLIC_ASK_API_ORIGIN (${askOrigin}) is not in ${assets} — Ask AI would POST to this image, which has no /api/ask`);
 }
 
 // ── report ───────────────────────────────────────────────────────────────────
@@ -127,4 +141,4 @@ if (errors.length) {
 	for (const e of errors) console.error(`✗ ${e}`);
 	process.exit(1);
 }
-console.log(`✓ dist/ verified — ${pages.length - redirects} pages, ${redirects} redirects, base ${DOCS_BASE}`);
+console.log(`✓ dist/ verified — ${pages.length - redirects} pages, ${redirects} redirects, routes ${routePrefixes.map((p) => p.slice(1)).join(', ')}`);

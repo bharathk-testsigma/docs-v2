@@ -12,7 +12,7 @@ test('one HowTo per <Steps> block, first paragraph of each item as plain text', 
 
 <Steps>
 
-1. Apply the **filters** on the [Audit Logs](/suite/settings/audit-logs/)
+1. Apply the **filters** on the [Audit Logs](/settings/audit-logs/)
    page.
 
    ![screenshot](x.png)

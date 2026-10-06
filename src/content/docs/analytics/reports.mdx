@@ -1,0 +1,185 @@
+---
+title: Reports
+description: Take a run result out of Testsigma, by exporting a PDF, Excel, or JUnit file from the application, or generating Allure, JUnit, and custom PDF reports from a JAR.
+pageType: guide
+covers:
+  - Export from the application
+  - Generate reports outside the application
+sidebar:
+  order: 70
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+A run result leaves Testsigma 2 ways. Exporting produces a PDF, an Excel sheet, or a JUnit XML file from the application itself. Generating runs a JAR outside the application and produces Allure, JUnit XML, or a PDF built from your own template.
+
+<Aside type="note">
+JUnit XML is available both ways. The export downloads a fixed file in one click. The generator takes a template of your own and runs from a command line or a CI pipeline, which is what you want when the report feeds a build.
+</Aside>
+
+## Export from the application
+
+Click the **Export** icon on a run result and select the format.
+
+| Format | How it arrives | Notes |
+|---|---|---|
+| PDF | Generated and downloaded, with an email when it completes | Named `(Test Plan Name with build run YYYYMMDD).pdf`. Choose **Failed Step Screenshots [Recommended]**, **All Screenshots**, or **No Screenshots** in the **Export PDF** dialog |
+| MS Excel Sheet | A download link sent to your account email | Named `(Test Plan Name).xlsx` |
+| JUnit Report | Downloaded immediately as XML | No dialog |
+
+![The export menu on a run result, offering PDF, MS Excel Sheet, and Junit report](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_ms_excel_3.png)
+
+An exported report carries the names things had when the run executed, so exporting the same run again reproduces the same document. See [Results](/run-tests/results/).
+
+To put your logo on a PDF, go to **Settings > Customize Reports** and turn on the **Customer Report** toggle.
+
+<Aside type="note">
+Exporting reports is a Testsigma Enterprise feature. Contact support@testsigma.com or use instant chat to have it enabled.
+</Aside>
+
+<Aside type="tip">
+Lower-resolution screenshots make a PDF faster to prepare and deliver.
+</Aside>
+
+For a data-driven test case, both the PDF and the Excel report carry the **Test Data Profile** and the **Test Data Set** used for each iteration, at test case level. Test cases that use no profile omit those fields.
+
+<Aside type="note">
+Rerun results are consolidated into the exported report.
+</Aside>
+
+## Generate reports outside the application
+
+Allure and custom PDF reports are produced by a JAR you run yourself. All formats need a Testsigma API key, Java 21 or later, and the JAR from customer support.
+
+### Retrieve the run ID
+
+For a plan-level report, copy the run ID from the **Execution ID** field on the Run Result page, or from the page URL.
+
+For a machine, suite, or case-level report, right-click the page and select **Inspect**, go to the **Network** tab, select the test case, suite, or machine in the Run Result details page, then find the response under **Name**, click **Preview**, expand **Content**, and copy the ID.
+
+### Choose a format
+
+<Tabs>
+
+<TabItem label="Allure HTML">
+
+A self-contained report you open in a browser, for sharing with a team. It carries execution summaries with pass and fail metrics, suite-level grouping and timing, individual step details, failure screenshots and categorization, and visual charts and timelines.
+
+```bash
+java -jar custom-report-0.0.6.jar \
+  --config.plan.runId=YOUR-RUN-ID \
+  --config.apiKey=YOUR-API-KEY \
+  --config.report.type=ALLURE_HTML \
+  --config.report.output.directory=/path/to/output/
+```
+
+</TabItem>
+
+<TabItem label="Allure JSON">
+
+Raw data files, for CI/CD pipelines or further processing.
+
+The command is the Allure HTML one with `--config.report.type=ALLURE_JSON` in place of `ALLURE_HTML`. Everything else, including the output directory, stays the same.
+
+</TabItem>
+
+<TabItem label="JUnit XML">
+
+Standardized XML that Jenkins, GitHub Actions, and GitLab CI publish natively. It carries suites with an execution summary, individual test results with status and execution time, error details for failures, and properties such as linked external IDs.
+
+JUnit needs a template and an output file rather than an output directory.
+
+```bash
+java -jar custom-report-0.0.6.jar \
+  --config.plan.runId=YOUR-RUN-ID \
+  --config.apiKey=YOUR-API-KEY \
+  --config.report.type=JUNIT \
+  --config.template.location=/path/to/junit-template.html \
+  --config.report.output.file=/path/to/report.xml
+```
+
+In a GitHub Actions workflow the same command runs as a step:
+
+```yaml
+- name: Generate JUnit Report
+  run: |
+    java -jar custom-report-0.0.6.jar \
+      --config.plan.runId=${{ env.RUN_ID }} \
+      --config.apiKey=${{ secrets.TESTSIGMA_API_KEY }} \
+      --config.report.type=JUNIT \
+      --config.template.location=${{ github.workspace }}/junit-template.html \
+      --config.report.output.file=${{ github.workspace }}/test-results/report.xml
+```
+
+</TabItem>
+
+<TabItem label="Custom PDF">
+
+A PDF built from an HTML template of your own, using a separate JAR.
+
+```bash
+java -jar custom_pdf_generator-0.0.1-SNAPSHOT.jar \
+  --config.apiKey=YOUR-API-KEY \
+  --config.plan.runId=YOUR-PLAN-RUN-ID \
+  --config.template.location=/path/to/your/template.html \
+  --config.pdf.directory=/path/to/save/report.pdf
+```
+
+For a report at machine, suite, or case level, add the ID of that item and the level it belongs to:
+
+```bash
+java -jar custom_pdf_generator-0.0.1-SNAPSHOT.jar \
+  --config.apiKey=YOUR-API-KEY \
+  --config.plan.runId=YOUR-PLAN-RUN-ID \
+  --config.id=YOUR-ID \
+  --config.preference.resultLevel=CASE \
+  --config.template.location=/path/to/your/template.html \
+  --config.pdf.directory=/path/to/save/report.pdf
+```
+
+Preferences tailor what the PDF contains:
+
+| Preference | Allowed values | Input |
+|---|---|---|
+| `config.preference.resultLevel` | `PLAN`, `MACHINE`, `SUITE`, `CASE` | Single value |
+| `config.preference.step` | `PASSED`, `FAILED`, `EXECUTED`, `NOT_EXECUTED`, `ALL`, `NONE` | Single value |
+| `config.preference.screenshot` | `PASSED`, `FAILED`, `ALL`, `NONE` | Single value |
+| `config.preference.visualDifference` | `PASSED`, `FAILED`, `ALL`, `NONE` | Single value |
+| `config.preference.summaryFields` | `name`, `executedBy`, `environment`, `testPlanName`, `testDeviceName`, `testSuiteName`, `result`, `buildNo`, `runId`, `screenshotCapturedFor`, `screenshotMode` | Comma-separated |
+| `config.preference.caseListColumns` | `ETF`, `testSuite`, `testMachine`, `assignee`, `reviewer` | Comma-separated |
+
+</TabItem>
+
+</Tabs>
+
+<Aside type="note">
+On Windows, pass the same arguments on one line rather than with backslashes.
+</Aside>
+
+### Parameter reference
+
+Every parameter the 2 JARs accept:
+
+| Parameter | Required | What it is |
+|---|---|---|
+| `config.plan.runId` | Yes | The run ID of the test plan execution |
+| `config.apiKey` | Yes | Your Testsigma API key |
+| `config.report.type` | Yes | The output format |
+| `config.template.location` | For JUnit and PDF | Path to the template file |
+| `config.report.output.file` | For JUnit | Output path for the report |
+| `config.report.output.directory` | For Allure | Output directory for the report files |
+| `config.baseURL` | No | Your Testsigma instance URL. Defaults to `https://app.testsigma.com/` |
+| `config.id` | For a custom PDF below plan level | The ID of the test case, suite, or machine |
+| `config.pdf.directory` | For a custom PDF | Where the PDF is saved |
+
+## Frequently asked questions
+
+### Why does my exported Excel file open in the browser instead of downloading?
+
+Microsoft Edge redirects the emailed link to `https://view.officeapps.live.com`, which opens the file rather than saving it. In Edge, go to **Settings > Downloads** and turn off **Open Office files in the browser**.
+
+### Why do I get errors downloading large files from the Exports page?
+
+A slow or unstable connection can load a file partially, and a cached incomplete version can fail on the next attempt. Set the browser to download PDFs instead of opening them, then retry the download.
+
+In Chrome, go to **Settings**, search for **PDF**, open **Site Settings > Additional content settings > PDF documents**, and select **Download PDFs**. In Edge, go to **Settings**, search for **PDF**, open **All Permissions > PDF documents**, and turn on **Always download PDF files**.

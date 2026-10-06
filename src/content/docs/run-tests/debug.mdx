@@ -1,0 +1,154 @@
+---
+title: Debug
+description: Work out why a step failed, from its error and screenshots to its logs, the runs before it, and what else the element affects.
+pageType: guide
+verified: 2026-09
+covers:
+  - Open the failing step
+  - Read the analysis
+  - Explain the failure
+  - Check the logs
+  - Check whether the step was healed
+  - Compare against an earlier run
+  - Check what else the element affects
+  - Act on the failure
+  - Common causes of failure
+sidebar:
+  order: 50
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+When a step fails, the results page carries everything needed to work out why: the error, the screenshots either side of the failure, the logs, and what else depends on the element. This is the order to work through it in.
+
+## Open the failing step
+
+<Steps>
+
+1. Go to **Run Results** and click the test plan.
+
+2. Click the test case you want to investigate.
+
+3. Select the failed step from the step list on the left.
+
+</Steps>
+
+The list is headed by the step count and the number of failed steps, and each step carries an icon showing whether it passed, failed, or was not executed. Drag the divider between the list and the details pane to resize either side.
+
+The step header shows the step number, duration, status, and error message, with **Read more** for the full message. The details pane carries the **Analysis**, **Locators**, **Logs**, **Step Settings**, and **Metadata** tabs.
+
+<Aside type="note">
+The step that reports a failure is not always the step that caused it. Check the steps immediately before it as well.
+</Aside>
+
+## Read the analysis
+
+The **Analysis** tab opens with the error code, such as `#NO_SUCH_ELEMENT`. **Visual Evidence** then places the screenshot captured at authoring time next to the one captured in this run.
+
+Below the panels, the tab lists the element, element name, run type, action, start time, duration, step level timeout, plan level timeout, error code, error message, test data type, and test data for each side. The icons on a screenshot expand or download it.
+
+**Page source** at the bottom holds the captured HTML for each side. Click the file name to open it, or the download icon to save it.
+
+<Aside type="note">
+The authoring panel is marked **Recorded**. Where no screenshot exists for a side, the panel reads **No screenshot captured**. Where a step targets no element, it reads **This step targets no element, so nothing was captured when it was authored**.
+</Aside>
+
+## Explain the failure
+
+Testsigma can read the step's error, screenshot, page source, and heal attempts, and explain what broke.
+
+<Steps>
+
+1. Find the **Root cause** card on the **Analysis** tab.
+
+2. Click **Explain this failure**.
+
+</Steps>
+
+![The Root cause card on the Analysis tab, with Explain this failure](https://s3.amazonaws.com/static-docs.testsigma.com/new/projects/applications/Explain_Failure_in_Results.png)
+
+The explanation opens with a one-line summary of what failed, such as **Step failed: no Shop Back to School link on Google homepage**, followed by the reasoning and a recommended change. **Read less** collapses it.
+
+<Aside type="note">
+The **Root cause** card needs Analyzer V2. Without it, everything else on the page works as described, and failure analysis is available through **Analyze with Agent** in the action bar instead.
+</Aside>
+
+## Check the logs
+
+<Steps>
+
+1. Open the **Logs** tab.
+
+2. Select **Selenium**, **Console**, or **Network**.
+
+3. Use the scope list to switch between **This step** and the whole run.
+
+4. Click **Jump to error** to move to the first error in the log.
+
+5. Click the download icon to save it.
+
+</Steps>
+
+<Aside type="note">
+Some logs have no step markers. The log then shows every entry for the run, with the message **Not scoped to this step: this log has no step markers, so the whole run is shown**.
+</Aside>
+
+Network logs are captured only when they are switched on for the test machine, and they arrive once the lab finishes uploading them. Until then the **Network** tab reads **No network log was recorded for this run**.
+
+## Check whether the step was healed
+
+When auto-healing resolves a locator mid-run, a banner above the step list reports how many steps were healed, and the **Analysis** tab shows a **Healed this step** card with **Approve as Primary** and **Ignore**.
+
+A healed step reports **Passed**, because the step completed. See [Healer](/atto/ai-agents/#healer).
+
+## Compare against an earlier run
+
+Comparing a failing step against a run that worked shows what changed. Two entry points:
+
+- **Compare Runs** in the page header compares the whole test case across 2 runs, step by step
+- **Compare Steps** in **Visual Evidence** compares the current step alone, with the screenshot and element source modes
+
+Comparison spans the steps either side of the failure as well. See [Results](/run-tests/results/).
+
+## Check what else the element affects
+
+When an element causes a failure, check which other tests depend on it before you fix it.
+
+<Steps>
+
+1. Click **Affected tests** in the step header.
+
+2. Review each tab in the **Affected Instances** panel: **Test Cases**, **Step Groups**, **Test Suites**, and **Test Plans**, each with a count.
+
+</Steps>
+
+![The Affected Instances panel, with counts for test cases, step groups, suites, and plans](https://s3.amazonaws.com/static-docs.testsigma.com/new/projects/applications/Affected_Artifacts.png)
+
+Where nothing else uses the element, the panel reads **There are no Test Cases associated with the element**.
+
+<Aside type="tip">
+The same view is available from **Elements**, through **View Affected Test Cases** on the element.
+</Aside>
+
+## Act on the failure
+
+Four routes, all from the results page:
+
+- **Analyze with Agent** in the action bar returns the error type, the root cause, and suggestions you can apply as a step update
+- **Run using Copilot** in the action bar reruns the test case interactively
+- **Update element** corrects a locator yourself, through the edit icon on the **Element** field in **Visual Evidence**
+- **Relearn step** re-captures the step
+
+Where auto-healing fired, approve or reject the healed element directly on the first screen.
+
+## Common causes of failure
+
+- The element or UI identifier changed in the application
+- The application does not load
+- The local internet connection fails
+- The element is unchanged, but navigation to it changed
+- Addon code does not perform as expected
+- The application under test contains a defect
+- The result is a false positive or false negative
+- An API is down
+- The element locator is incorrect

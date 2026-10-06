@@ -1,0 +1,56 @@
+---
+title: GitHub Actions
+description: Trigger Testsigma test plans from a GitHub Actions workflow that runs on every commit to the repository.
+pageType: task
+verified: 2026-08
+sidebar:
+  order: 103
+  label: GitHub Actions
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+GitHub Actions runs workflows from your repository's `.github/workflows/` directory. One workflow step calls the Testsigma [shell script](/integrations/ci-cd/shell-script/), so every commit triggers the test plan and waits on the result.
+
+<Prerequisites>
+
+- An API key, the test plan ID, and the script (`run_smoke_tests.sh`) committed to the repository.
+
+</Prerequisites>
+
+## Set up the workflow
+
+Create a `.github/workflows` directory in your GitHub repository if it does not already exist. Each YML file in it defines one pipeline, so add as many as your build processes need. This example uses `testsigma-cicd.yml`, which runs on every commit and invokes the script:
+
+```yaml title=".github/workflows/testsigma-cicd.yml"
+name: Testsigma tests
+on: [push]
+jobs:
+  run-test-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trigger Testsigma test plan
+        env:
+          TESTSIGMA_API_KEY: ${{ secrets.TESTSIGMA_API_KEY }}
+        run: |
+          chmod +x ./run_smoke_tests.sh
+          ./run_smoke_tests.sh
+```
+
+## Set the script inputs
+
+The [shell script](/integrations/ci-cd/shell-script/) targets a specific test plan through two keys, set along with any other parameters it accepts:
+
+- `TESTSIGMA_API_KEY`: an API key from [Settings > API Keys](/settings/developers/).
+- `TESTSIGMA_TEST_PLAN_ID`: the plan's ID, from **Test Plans > CI/CD Integrations**.
+
+<Aside type="note">
+A ready-made copy of `run_smoke_tests.sh`, and the repository this example was built from, are at [testsigmahq/Github-actions](https://github.com/testsigmahq/Github-actions).
+</Aside>
+
+<Aside type="tip">
+Inject the API key from a repository secret instead of pasting it in. A committed key lands in the repository history and every build log.
+</Aside>
+

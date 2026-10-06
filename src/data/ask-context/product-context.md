@@ -17,10 +17,10 @@ source_date: 2026-07-01
 compiled: 2026-07-30
 revised: 2026-09-02
 revision_note: >
-  Scope narrowed to navigation and context for Suite. Reference-grade content
+  Scope narrowed to navigation and context for Testsigma. Reference-grade content
   (per-widget, per-endpoint, per-function detail) intentionally removed and
   left to the product documentation. Classic/Modern lifecycle claim corrected.
-products_covered: Suite, Atto
+products_covered: Testsigma, Atto
 status: Verified content only. Unverified claims are marked inline. Gaps are recorded in §29, never guessed.
 confidence: "Internal consistency is verified. Product facts rest on UI captures and documentation of varying age; markers [unverified], [confirmed], [corrected], and [source] carry that per claim and must survive into answers."
 staleness_warning: "Source is dated 2026-07-01. Anything marked Beta, In-Progress, or `volatility: high` is two months past verification and should be re-checked before it is stated as current."
@@ -58,7 +58,7 @@ feature.
 4. **Unverified markers travel with the claim.** Where a fact is marked
    `[unverified]` inline, that marker must survive into the answer. Do not
    promote an unverified claim to a stated fact.
-5. **API answers come from §31 only.** The Suite REST API surface is
+5. **API answers come from §31 only.** The Testsigma REST API surface is
    enumerated in §31. Answer from that list verbatim. If an operation is not
    on it, say so — do not infer an endpoint from REST convention or from the
    existence of a sibling operation. Creating test cases and creating projects
@@ -67,7 +67,7 @@ feature.
    Retrieving §29 and saying "not covered here" is a correct answer, and is
    always better than assembling a plausible one.
 
-**Scope of this document: navigation and context for Suite.** It answers
+**Scope of this document: navigation and context for Testsigma.** It answers
 *what a thing is*, *where it lives*, and *what it relates to* — plus the
 terminology and state/label vocabulary needed to talk about it. It is
 deliberately **not**:
@@ -75,7 +75,7 @@ deliberately **not**:
 - a procedure manual — no "click X, then Y" walkthroughs
 - an installation, deployment, or toolchain reference
 - a commercial reference — no pricing, plans, or licensing
-- a guide to any product other than Suite (and Atto within it)
+- a guide to any product other than Testsigma (and Atto within it)
 
 When a question asks how to perform a task, answer with the concept and the
 location, then point to the product documentation for the steps. Absent
@@ -91,24 +91,24 @@ applicability. `volatility: high` means the fact has a short shelf life.
 
 ## §1 Product architecture and URL map
 
-`product: all` `keywords: architecture, Suite, Atto, URLs, login, org selector`
+`product: all` `keywords: architecture, Testsigma, Atto, URLs, login, org selector`
 
 This document covers two layers. Testsigma ships other products; they are out
 of scope (§0).
 
 | Layer | What it is | URL |
 |---|---|---|
-| **Suite** | Test automation product | `app.testsigma.com` |
-| **Atto** | AI coworker layer inside Suite | no standalone URL |
+| **Testsigma** | Test automation product | `app.testsigma.com` |
+| **Atto** | AI coworker layer inside Testsigma | no standalone URL |
 
 **Product selector:** `id.testsigma.com` — shows all organizations after
 login.
 
-**Project Switcher**, top left of the Suite nav, switches across **Projects,
+**Project Switcher**, top left of the Testsigma nav, switches across **Projects,
 Applications, and Versions** — the three-level scope that also appears in
 Reuse Step Group (§34) and Figma visual testing device config (§36).
 
-#### URL reference table (Suite)
+#### URL reference table (Testsigma)
 
 | Area | Path |
 |---|---|
@@ -137,7 +137,7 @@ These are application UI paths, not API endpoints.
 
 ---
 
-## §2 Suite — left navigation tree
+## §2 Testsigma — left navigation tree
 
 `product: suite` `keywords: navigation, left nav, menu, sidebar, Command Center`
 
@@ -174,7 +174,7 @@ Dashboard is documented in §32, Save Points in §33, and Step Groups in §34.
 
 ---
 
-## §3 Application types within a Suite project
+## §3 Application types within a Testsigma project
 
 `product: suite` `keywords: application type, project type, Web, Android, iOS, Salesforce, Desktop, Windows, Unified`
 
@@ -207,7 +207,7 @@ API, or Mobile web.]`
 
 `product: all` `keywords: Atto, AI agents, Generator, Runner, Healer, Analyzer, Bug Reporter, Coverage Planner, Optimizer`
 
-Atto is the AI coworker layer inside Suite.
+Atto is the AI coworker layer inside Testsigma.
 
 #### Atto agents
 
@@ -343,7 +343,7 @@ badge | "Move with ↑ ↓" | ✕
 
 #### Save to Library behavior
 
-Saves into Suite under the **"AI Generated Feature"** top-level folder.
+Saves into Testsigma under the **"AI Generated Feature"** top-level folder.
 Scenario folders are auto-named `AI Generated Scenario_[date]_[time]`. Status
 is set to **Draft**.
 
@@ -388,7 +388,7 @@ drive the application directly to guide it further. This is the purpose of the
 - Stop/abort controls
 - Bottom text field states: "Learning..." / "Generating..."
 
-**After save:** the test case appears in Suite as **Draft** under the AI
+**After save:** the test case appears in Testsigma as **Draft** under the AI
 Generated Feature folder.
 
 ---
@@ -425,7 +425,7 @@ create a test case from scratch — see §27.
 
 ---
 
-## §11 Test Cases (Suite)
+## §11 Test Cases (Testsigma)
 
 `product: suite` `keywords: test case editor, step types, slash commands, right rail, step settings, NLP`
 
@@ -492,7 +492,7 @@ not a Testsigma API for creating test cases — see §27 and §29.
 
 ---
 
-## §12 The Recorder (Suite)
+## §12 The Recorder (Testsigma)
 
 `product: suite` `keywords: recorder, record steps, element inspector, locator precedence, Ctrl+Shift+F, test lab`
 
@@ -644,7 +644,7 @@ enabled for this Step."
 
 ---
 
-## §16 Elements — object repository (Suite)
+## §16 Elements — object repository (Testsigma)
 
 `product: suite` `keywords: elements, object repository, locators, XPATH, Accessibility ID, Copilot Placeholder Screen`
 
@@ -667,7 +667,7 @@ dropdown, **Show Filters** button.
 
 ---
 
-## §17 Test Data (Suite)
+## §17 Test Data (Testsigma)
 
 `product: suite` `keywords: test data profiles, ETF, sensitive data, environments, environment variables, uploads, mock server`
 
@@ -716,13 +716,13 @@ covered by the source material — see **§29**.
 
 ---
 
-## §18 Test Suites (Suite)
+## §18 Test Suites (Testsigma)
 
 `product: suite` `keywords: test suite, static, dynamic, AfterTest Suite, prerequisite`
 
 **URL:** `/ui/td/{projectId}/suites`
 
-**Suite list columns:** Title, Type (Static / Dynamic), Created, Created by,
+**Test suite list columns:** Title, Type (Static / Dynamic), Created, Created by,
 Status (No Runs / Passed / Failed, with a donut icon).
 
 #### Create Test Suite — full-page form at `/ui/td/{projectId}/suites/new`
@@ -739,7 +739,7 @@ Static vs Dynamic membership and the AfterTest Suite options are covered in
 
 ---
 
-## §19 Test Plans (Suite)
+## §19 Test Plans (Testsigma)
 
 `product: suite` `keywords: test plan, machine profile, recovery actions, accessibility testing, WCAG, CI/CD, schedules, post plan hook`
 
@@ -788,7 +788,7 @@ Three tabs:
    management tools and are also listed under Test Management in §21; their
    appearance in this tab was not separately confirmed.]` Includes a REST API
    section with a `curl POST` example to start a plan and a `curl GET` example
-   to check status. These are the in-product surfacing of the Suite REST API —
+   to check status. These are the in-product surfacing of the Testsigma REST API —
    see **§31** for the full endpoint inventory.
 3. **Schedules**
 
@@ -796,13 +796,13 @@ Three tabs:
 
 ---
 
-## §20 Run Results — test plan runs (Suite)
+## §20 Run Results — test plan runs (Testsigma)
 
 `product: suite` `keywords: run results, plan run, run overview, donut chart, addon details, consolidated duration`
 
 **URL:** `/ui/td/results/{planId}/runs/{runId}`
 
-Run Results is where reporting lives in Suite. There is no separate Reports
+Run Results is where reporting lives in Testsigma. There is no separate Reports
 nav item; run reports are exported from here.
 
 #### Header
@@ -821,7 +821,7 @@ formats:
 | Excel | **MS Excel Sheet** |
 | JUnit | **Junit report** |
 
-The JUnit export is the UI equivalent of `GET Get JUnit report` in the Suite
+The JUnit export is the UI equivalent of `GET Get JUnit report` in the Testsigma
 REST API (§31).
 
 **Left panel:** Test Runs list — run numbers with status icons, plus search
@@ -850,7 +850,7 @@ settings.
 
 ---
 
-## §21 Settings — Integrations (Suite)
+## §21 Settings — Integrations (Testsigma)
 
 `product: suite` `keywords: integrations, Jira, Slack, BrowserStack, CI/CD, bug reporting, test management, settings`
 
@@ -872,7 +872,7 @@ covered — see §29.
 
 ---
 
-## §22 Gen AI Keys — BYOK (Suite)
+## §22 Gen AI Keys — BYOK (Testsigma)
 
 `product: suite` `keywords: BYOK, Gen AI Keys, OpenAI, Azure OpenAI, LLM keys, admin settings`
 
@@ -890,7 +890,7 @@ per-feature list. Whether they support customer keys is unresolved — see §29.
 
 ---
 
-## §23 Settings — Preferences (Suite)
+## §23 Settings — Preferences (Testsigma)
 
 `product: suite` `keywords: preferences, auto healing toggle, review management, onboarding tutorials, generative AI`
 
@@ -1023,11 +1023,11 @@ Mobile.
 
 ---
 
-## §27 All the ways to create a test case in Suite
+## §27 All the ways to create a test case in Testsigma
 
 `product: suite` `keywords: create test case, ways to create, author test case, write tests, NLP, Recorder, Copilot, Atto, generate tests`
 
-Suite has four routes to create a test case, freely mixable in one test:
+Testsigma has four routes to create a test case, freely mixable in one test:
 
 1. **Generate with Atto** — the playground creates test cases from Jira,
    Confluence, Figma, files, videos, or a prompt; saved to the library as
@@ -1044,7 +1044,7 @@ Suite has four routes to create a test case, freely mixable in one test:
 4. **Type NLP steps** in the test case editor (Create Tests → Test Cases);
    pressing the / key opens the step type menu.
 
-There is **no API route for creating a test case.** The Suite REST API (§31)
+There is **no API route for creating a test case.** The Testsigma REST API (§31)
 exposes test case reads, rerun, and result updates, but no create operation —
 and no project create either. It does expose **Create a test step** and
 **Create multiple test steps**, which write into a test case that already
@@ -1061,8 +1061,8 @@ Atto generation is not yet available for the Unified Mobile application type.
 
 | Term | Definition |
 |---|---|
-| Suite | Test automation product (`app.testsigma.com`) |
-| Atto | AI coworker layer inside Suite |
+| Testsigma | Test automation product (`app.testsigma.com`) |
+| Atto | AI coworker layer inside Testsigma |
 | Copilot | AI assistant for step generation — in the recorder, editor, or Atto playground |
 | Agentic Learning | Beta Atto capability: an agent explores the live app to complete an Atto-generated test case, producing automated steps from what it observes. Not a standalone authoring route. |
 | Run with Copilot | Executes an Atto-generated test case via Copilot; updates locators during the session |
@@ -1088,11 +1088,11 @@ Atto generation is not yet available for the Unified Mobile application type.
 | Unified Mobile | Application type where one test case runs on both Android and iOS |
 | Sprint Planner | Atto feature for test planning from sprint or work item data |
 | Addon | Package of additional actions usable in test steps; stack-specific, installed from the Addons marketplace (§35) |
-| AI Generated Feature | Top-level folder in Suite where all Atto-generated test cases are saved |
+| AI Generated Feature | Top-level folder in Testsigma where all Atto-generated test cases are saved |
 | New badge | Badge on a generated test case: freshly AI-generated |
 | Update badge | Badge on a generated test case: modifying an existing library test case |
 | Pending badge | Badge on a generated test case: not yet accepted or rejected |
-| Save to Library | Moves an Atto-generated test case to Suite as Draft |
+| Save to Library | Moves an Atto-generated test case to Testsigma as Draft |
 | Save Point | A checkpoint of a project's state, created manually or during import, that the project can be restored to (§33) |
 | Chrome for Testing | Dedicated Chrome build used exclusively for Copilot and Agentic sessions |
 | Generate Steps button | Appears in the Copilot panel header during Run with Copilot — regenerates automation steps mid-session |
@@ -1130,12 +1130,12 @@ correct. Do not fill these gaps from general knowledge.
 
 #### Unresolved questions
 
-- **Suite REST API request/response detail.** §31 records what the API can and
+- **Testsigma REST API request/response detail.** §31 records what the API can and
   cannot do, by resource. Request bodies, query parameters, response schemas,
   and per-endpoint paths are deliberately in the API documentation instead.
   Answer with the capability and the path prefix; never construct a path or
   payload.
-- **Documentation defect at source.** The Suite REST API overview page states
+- **Documentation defect at source.** The Testsigma REST API overview page states
   that the API "creates and updates projects, test cases, test steps, and test
   data." Its own endpoint list contains no create operation for projects or
   test cases (§31). Until the source page is corrected, that sentence must not
@@ -1193,7 +1193,7 @@ Schema to apply when indexing:
 |---|---|---|---|---|
 | 0 | How to use this document as retrieval context | all | — | — |
 | 1 | Product architecture and URL map | all | — | — |
-| 2 | Suite — left navigation tree | suite | — | — |
+| 2 | Testsigma — left navigation tree | suite | — | — |
 | 3 | Application types | suite | — | — |
 | 4 | Atto — the AI layer | all | — | — |
 | 5 | Auto-Healing | suite | — | — |
@@ -1222,7 +1222,7 @@ Schema to apply when indexing:
 | 28 | Terminology reference | all | — | — |
 | 29 | Known gaps | all | — | — |
 | 30 | Chunk metadata manifest | all | — | — |
-| 31 | Suite REST API | suite | — | high |
+| 31 | Testsigma REST API | suite | — | high |
 | 32 | Dashboard | suite | — | high |
 | 33 | Save Points | suite | — | — |
 | 34 | Step Groups | suite | — | — |
@@ -1238,11 +1238,11 @@ Schema to apply when indexing:
 
 ---
 
-## §31 Suite REST API
+## §31 Testsigma REST API
 
 `product: suite` `keywords: API, REST API, endpoints, API key, base URL, regional host, JUnit, trigger test plan, integration` `volatility: high`
 
-Suite exposes a REST API for triggering test plan runs and reading results.
+Testsigma exposes a REST API for triggering test plan runs and reading results.
 It also creates and updates test steps, test data, environments, elements, and
 uploads. All endpoints authenticate with an API key and return JSON.
 
@@ -1305,7 +1305,7 @@ path from a UI label; if a path is needed and not recorded here, say so.
 
 #### The absence of test-case creation is corroborated
 
-Two independent API references — the current Suite REST API navigation and the
+Two independent API references — the current Testsigma REST API navigation and the
 legacy API documentation — contain no test-case resource. The legacy
 `/api/v1/` surface consists of projects, applications, environments,
 test_plans, test_suites, uploads, ui_identifiers, requirements, tags,
@@ -1319,7 +1319,7 @@ saved_execution_configs. There is no `test_cases`.
 - The `curl POST` to start a plan and `curl GET` to check status in the Test
   Plan CI/CD tab (§19) are this same API, surfaced in-product.
 
-`[source: Suite REST API reference, captured 2026-09-02 from an unpublished
+`[source: Testsigma REST API reference, captured 2026-09-02 from an unpublished
 local build of the docs site. Endpoint set may change before publication.]`
 
 ---
@@ -1328,7 +1328,7 @@ local build of the docs site. Endpoint set may change before publication.]`
 
 `product: suite` `keywords: dashboard, Standard, Advanced, widgets, execution trend, latest runs, custom dashboard, accessibility widgets` `volatility: high`
 
-First item in the Suite left nav. Two modes, switched by a **Standard** |
+First item in the Testsigma left nav. Two modes, switched by a **Standard** |
 **Advanced** toggle beside the "Dashboard" page title.
 
 There is no "Legacy" dashboard. If a question uses that word, the mode being
@@ -1396,7 +1396,7 @@ newer than the rest of this document.]`
 
 **URL:** `/ui/save_points` (underscore, not hyphen)
 
-Top-level item in the Suite left nav. A save point is a checkpoint of a
+Top-level item in the Testsigma left nav. A save point is a checkpoint of a
 project's state that the project can later be restored to — restoring returns
 the project to the exact state it was in when the save point was created.
 
@@ -1536,7 +1536,7 @@ This is why **add-on support is not yet available for Unified Mobile** (§25):
 Unified Mobile is Modern-stack only, and the addon ecosystem is
 predominantly Classic.
 
-#### How addons appear elsewhere in Suite
+#### How addons appear elsewhere in Testsigma
 
 | Reference | Meaning |
 |---|---|

@@ -1,0 +1,418 @@
+---
+title: Copilot
+description: Author and debug a test case in a live Copilot session — record steps, generate steps in the recorder, set debug points, execute from any step, and fix failures without leaving the run.
+pageType: guide
+verified: 2026-08
+covers:
+  - Capabilities
+  - Launch a session on web
+  - Launch a session on Android or iOS
+  - Record test steps
+  - Generate test steps in the recorder
+  - Add, edit, reorder, and delete steps
+  - Set up a browser profile for recording
+  - Debug points and the debug toolbar
+  - Diagnose a failed step
+searchTerms:
+  - copilot
+  - debug test case
+  - debug points
+  - record steps
+  - generate test steps
+  - execute from step
+  - browser profile
+  - element not found
+  - path tokens
+sidebar:
+  order: 40
+---
+
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Copilot is an AI-powered authoring and debugging tool that runs a test case in a live session, so you generate, execute, and fix steps without leaving it. As you work, Copilot reads the application screen and generates steps from the actions you perform. You can execute each step as soon as it appears, so you know it works before you write the next one.
+
+<Aside type="note">
+Copilot sessions run on a local device. Testsigma Terminal must be installed, configured, and running before you launch one.
+</Aside>
+
+## Capabilities
+
+| Capability | What it does | Why it helps |
+|---|---|---|
+| Record steps | Captures interactions from a live browser and converts them into executable test steps | Executes and validates each recorded step during the session, so creation and verification happen together |
+| Debug points | Pause the test at a chosen step, added or removed before or during a run. While paused, you can inspect the application and adjust upcoming steps | Halts execution exactly where a problem is, without restarting the test |
+| Debug toolbar | A global toolbar with Pause, Resume, Step Over, Skip Over, and Restart | Keeps every execution control in one place during a session |
+| Execute from step | Runs the test from a chosen step instead of from the start. All prior steps are marked **Skipped** | Saves time on long tests, on validating a fix, or on one section of a flow |
+| In-session step management | Add, edit, delete, reorder, or bulk-update steps inside the session | Keeps authoring and debugging in one loop, with no session restart to adjust a test |
+
+When you change the steps, Copilot recalculates the execution flow so the run stays continuous.
+
+## Launch a session on web
+
+<Steps>
+
+1. Go to **Create Tests > Test Cases** and open a test case.
+
+2. Click **Copilot** in the action panel.
+
+3. (Optional) In the **Set Initial Debug Point** field, select the step where execution should pause.
+
+4. (Optional) In the **Execute from Step** field, select the step where execution should begin. All prior steps are marked **Skipped**. Put the application under test on the screen that matches that step first.
+
+5. (Optional) Turn on **Run till failed step** to stop at the first failure. With it off, the test case runs from start to end.
+
+6. (Optional) Configure **Environment**, **Additional Settings**, and **Desired Capabilities**.
+
+7. Click **Launch** and wait for the session to start.
+
+</Steps>
+
+![The Copilot launch panel, with the initial debug point, execute-from step, environment, and Launch](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/launch_copilot_5.png)
+
+Copilot opens a browser window on the test case's URL, and the steps panel and the application sit side by side.
+
+<Aside type="note">
+When a test case uses a test data profile, a session can debug only one profile at a time.
+</Aside>
+
+## Launch a session on Android or iOS
+
+Connect the Android or iOS device to Testsigma before you start.
+
+<Steps>
+
+1. Open the test case and click **Copilot**.
+
+2. In the **Run in Debug Mode** overlay, select the device from the **Device** dropdown under **Test Machine**.
+
+3. (Optional) Turn on **Run till failed step** and select the step to pause at.
+
+4. Supply the application: select **External link** for a publicly accessible URL, **Uploaded apps** for an app already in Testsigma, or **Use details** to enter the **App Package** and **App Activity**.
+
+5. Click **Launch**.
+
+</Steps>
+
+The debugger opens with the test steps, the related information, and the device screen.
+
+## Launch in the same window
+
+Copilot opens in a new window or in the same window. A new window uses a new profile and needs no preparation. To use the same window, start Chrome in remote debugging mode first, in a new profile.
+
+On Windows, open the command prompt and run:
+
+```bash
+start chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\selenum\ChromeProfile"
+```
+
+On macOS, open Terminal and run:
+
+```bash
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir="~/ChromeProfile"
+```
+
+Chrome then exposes the remote DevTools protocol on that port, with the profile set by `--user-data-dir`, which is what lets ChromeDriver drive it.
+
+## Record test steps
+
+Recording captures your own actions as steps, adds them to the running session, and executes them there. To have Copilot draft the steps instead, see [Generate test steps in the recorder](#generate-test-steps-in-the-recorder).
+
+<Aside type="note">
+**Rec** is enabled only when execution is paused at a debug point, when execution has failed, or when execution is complete.
+</Aside>
+
+### Record below a specific step
+
+<Steps>
+
+1. Hover over the step and click **Step Below**, then click **Rec**.
+
+2. Perform the actions in your application. Copilot records each one as a step in real time.
+
+3. Click **Stop Recording**.
+
+4. Review the steps in the steps panel.
+
+5. Click **Add Steps** to insert them below the selected step, or **Discard** to drop them.
+
+</Steps>
+
+![The Copilot steps panel with 2 recorded steps pending, and Add Steps or Discard](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/record_copilot_7.png)
+
+Steps inserted below the last executed step run automatically once added. Steps inserted above it need **Resume**.
+
+### Record at the end
+
+<Steps>
+
+1. Click **Rec**. Steps record at the end of the test case by default.
+
+2. Perform the actions in your application.
+
+3. Click **Stop Recording**.
+
+4. Review the steps in the steps panel.
+
+5. Click **Add Steps** to append them, or **Discard** to drop them.
+
+6. Click **Resume**.
+
+</Steps>
+
+<Aside type="note">
+When execution was already complete, the recorded steps run automatically after you click **Add Steps**.
+</Aside>
+
+### Handle the Browser State Changed dialog
+
+This dialog appears when you resume a paused run after adding recorded steps. Click **Restart Execution** to run from the beginning, or **Dismiss** to continue from where execution stopped. After dismissing, set the application state manually so it matches the step about to run.
+
+![The Browser state changed dialog, with Restart Execution and Dismiss](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/record_copilot_15.png)
+
+## Generate test steps in the recorder
+
+Copilot reads the page or screen in front of you and drafts test scenarios from it, so a test case starts from what the application actually shows rather than from a blank step.
+
+<Aside type="note">
+Generating steps needs **Generative AI features** turned on under **Settings > Preferences**.
+</Aside>
+
+<Tabs>
+
+<TabItem label="Web">
+
+1. Go to **Create Tests > Test Cases** and create a test case.
+2. Click **Record** on the Test Case Details page. A new window opens.
+3. Enter the URL of the page to generate from. The Testsigma Recorder activates.
+4. Click **Testsigma Copilot**.
+5. Click **Generate Test Cases** in the **Testsigma Copilot** overlay. Copilot generates scenarios from the current page content.
+6. Open a generated test case to see its steps.
+7. Select the steps you want, then click **Add to test case** to import them into the recorder.
+
+![The Testsigma Copilot overlay beside the steps panel, with Generate Test Cases and the prompt box](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/LE_copilot_3.png)
+
+To ask for something specific instead, enter a prompt in the **Testsigma Copilot** overlay at step 5 and press **Enter**. Copilot generates steps for what you described, and **Add to test case** imports them the same way.
+
+</TabItem>
+
+<TabItem label="Android">
+
+1. Go to **Create Tests > Test Cases** and create a test case.
+2. Click **Record**.
+3. In the **Record Test Steps** overlay, select the **Test Lab** and **Machine**, upload the APK or IPA, and click **Record**.
+4. Wait for the application to load.
+5. Click **Testsigma Copilot** on the Test Recorder.
+6. Click **Generate Test Cases** in the **Testsigma Copilot** overlay, and wait for generation to finish.
+7. Open a generated test case to see its steps.
+8. Select the steps you want, then click **Add to test case** to import them into the recorder.
+
+<Aside type="note">
+Generation in the mobile recorder is documented for Android. iOS support is announced but not yet available.
+</Aside>
+
+</TabItem>
+
+</Tabs>
+
+Imported steps are editable. Adjust them for the behavior you want, then click **Stop** to return to the Test Case Details page.
+
+## Add a step by describing it
+
+Click **+ Add new step** to add at the end, or hover over a step and click **Step Below** to insert at a position. Type the step to see matching NLPs, select one and configure it, add the elements and test data it needs, then click **Create Step**.
+
+A step added above the execution point does not run in the current run, and runs on the next one. A step added below the execution point runs in the same run, as long as execution has not already passed it. The execution point is the step where the test is paused or running.
+
+## Edit a step
+
+To replace what a step does, click the step, type to select a new NLP, configure it, then click **Update** to save or **Dismiss** to restore the original step.
+
+To work on the step's element, hover over the step and click the element name:
+
+- **Rename**: change the element's display name, leaving its locator and configuration alone
+- **Learn**: re-record the element during the live session so Copilot can find it on screen
+- **Change**: replace it with another element from the repository, then click **Update Step**
+- **Create**: create a new element with its name, screen name, type, and value, then click **Update Step** to attach it
+- **Edit**: open **Update Element** to change the name, screen name, type, and value
+
+The ellipsis icon `⋮` on a step carries the rest of the options:
+
+- **Execute from Here**: starts execution at this step and skips all prior steps
+- **Disable Step**: skips the step during execution without removing it
+- **Ignore Step Result**: keeps the step's pass or fail status out of the test result
+- **Enable Visual Testing**: captures and compares screenshots when the step runs
+- **Step Settings**: opens the Step Details panel for step timeout, screenshot behavior, and other options
+- **Clone Step**: copies the step directly below itself
+- **Step Above** and **Step Below**: insert an empty step and open the inline editor
+- **Delete Step**: removes the step
+
+![The step ellipsis menu open in a Copilot session, over the application under test](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/edit_copilot_6.png)
+
+<Aside type="note">
+**Execute from Here** does not run the earlier steps, so the browser may not be in the state this step expects. Set the application to the right state before you use it.
+</Aside>
+
+<Aside type="note">
+**Delete Step** cannot be undone.
+</Aside>
+
+## Reorder steps
+
+Click the step you want to move, drag it to its new position, which highlights as you drag, then click **Save Changes** to keep the order or **Discard** to revert it. Click **Resume** to continue execution.
+
+<Aside type="note">
+Reordering is disabled while recording, while executing, and while a step is being edited.
+</Aside>
+
+## Delete steps
+
+To delete one step, hover over it, click the ellipsis icon `⋮`, click **Delete Step**, then click **Delete** in the **Delete step?** dialog.
+
+To delete several, hover over a step and click the checkbox in place of its number, select the rest, or click **Select All**, then click the **Delete** icon in the floating action bar and confirm.
+
+<Aside type="note">
+A deleted step is removed from the test case permanently.
+</Aside>
+
+## Change several steps at once
+
+Hover over a step and click the checkbox that appears in place of the step number, which opens the floating action bar. Select the other steps, or click **Select All**, then click an icon in the bar:
+
+- **Step Settings**: applies shared settings, such as timeouts and screenshot behavior, to every selected step
+- **Create Step Block**: groups the selected steps into a block
+- **Create Step Group**: combines them into a step group
+- **Delete**: removes them permanently
+
+![The floating action bar in a Copilot session, with every step selected](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/bulk_copilot_2.png)
+
+## Set up a browser profile for recording
+
+Copilot loads the Testsigma recorder extension into the browser it opens. The profile mode controls how. Go to **Settings > Preferences**, scroll to **Copilot & Recorder Extension**, and select one of 3 options.
+
+| Mode | Who owns the profile | Where the extension comes from | Choose it when |
+|---|---|---|---|
+| Automatic | Testsigma, fresh each session | Testsigma's bundled extension, loaded every session | You do not need a profile that lasts, or your own extensions. This is the default, and needs no setup |
+| Managed profile | Testsigma, reused across sessions | The Chrome Web Store, installed once | You want the extension already there and your browser settings kept, without maintaining a profile |
+| Your own browser profile | Your team | You install it in your own profile | Your security policies require you to control every profile |
+
+![The Copilot & Recorder Extension setting on the Preferences page, with the 3 profile modes](https://s3.amazonaws.com/static-docs.testsigma.com/new/projects/applications/Recorder_Setup.png)
+
+With **Managed profile**, Testsigma creates a user-data directory inside the Testsigma data directory on the first session and reuses it afterwards, along with any browser settings you apply. Install the recorder extension from the Chrome Web Store once.
+
+<Aside type="note">
+Testsigma needs permission to create directories inside its data directory. Without it, the profile directory is never created and the session fails to start.
+</Aside>
+
+### Use your own browser profile
+
+<Aside type="note">
+Agent cleanup can delete profile data stored inside the Testsigma data directory. Keep a profile you manage outside that directory.
+</Aside>
+
+<Steps>
+
+1. Create the profile folder outside the Testsigma data directory and outside the browser's default user-data folders.
+
+2. Grant Testsigma read and write access to that folder.
+
+3. In the test configuration settings, add the **Desired Capabilities** for your browser, from the table below.
+
+4. Install the recorder extension in that profile, from the Chrome Web Store or through your IT extension policy.
+
+</Steps>
+
+| Browser | Key | Data type | Value |
+|---|---|---|---|
+| Chrome | `goog:chromeOptions` | String | `{"args":["--user-data-dir=<Profile Path>"]}` |
+| Microsoft Edge | `MsOptions` | String | `{"args":["--user-data-dir=<Profile Path>"]}` |
+
+Replace `<Profile Path>` with the folder you created. To use a named profile inside that folder rather than the default one, pass `--profile-directory=<folder name>` alongside `--user-data-dir`, such as `Profile 1`. The default profile needs only `--user-data-dir`.
+
+<Aside type="note">
+Close the browser fully before you launch the session, including background and tray processes with no visible window. Two browser instances cannot share a profile, and the session fails with a "user data directory is already in use" error.
+</Aside>
+
+### Default user-data folders
+
+An automation profile cannot live inside the browser's default user-data folder. The restriction comes from Chrome and Edge, not from Testsigma: anything inside these directories is not accessible to automation, and Testsigma cannot launch it.
+
+| Browser | Windows | macOS | Linux |
+|---|---|---|---|
+| Chrome | `%LOCALAPPDATA%\Google\Chrome\User Data` | `~/Library/Application Support/Google/Chrome` | `~/.config/google-chrome` |
+| Microsoft Edge | `%LOCALAPPDATA%\Microsoft\Edge\User Data` | `~/Library/Application Support/Microsoft Edge` | `~/.config/microsoft-edge` |
+
+### Path tokens in desired capabilities
+
+A literal path such as `--user-data-dir=C:\Users\username\AppData\Roaming\...` bakes in one machine's username, so the capability works only on the agent it was written for. Path tokens let the agent fill in the machine-specific part, so one configuration works everywhere:
+
+```text
+--user-data-dir=${TS_DATA_DIR}/browser-profiles/custom/testprofile
+```
+
+| Token | Resolves to |
+|---|---|
+| `${TS_DATA_DIR}` | The Testsigma agent's data directory, honoring a custom `ENV_TS_DATA_DIR` if IT set one at install |
+| `${TS_USER_HOME}` | The home directory of the OS account running the agent |
+
+These 2 tokens are portable and behave the same on Windows, macOS, and Linux. Native OS aliases such as `%APPDATA%`, `$HOME`, and `~/` also work, but only on their own platform.
+
+<Aside type="note">
+Tokens resolve inside any string value, including args, prefs, extensions, and binary, for Chrome, Edge, and Firefox capabilities, but only when the browser runs locally on an agent host through Hybrid, a local machine, or Docker. They do not resolve on Testsigma Lab, TSLab, Apex, third-party cloud labs such as BrowserStack, Sauce Labs, LambdaTest, and Kobiton, a Private Grid, or a Hybrid agent pointed at an external Selenium grid. Use a literal path for those execution types.
+</Aside>
+
+<Aside type="note">
+An unresolvable token is left exactly as written and never blanked out, and Testsigma logs a warning. A visibly wrong path is safer than a silent fall back to the real desktop profile.
+</Aside>
+
+## Set debug points
+
+A debug point is a checkpoint on a step that pauses a run there, so you can inspect the application state and decide what to do next. Add them before a session from **Set Initial Debug Point**, or during a run.
+
+Hover over a step that has not executed yet and click the **Place Debug Point** icon. Repeat on any other steps you want to pause at. To clear a debug point, click its red dot again, and execution continues past that step.
+
+The step widget marks both the debug point and the execution point.
+
+![A Copilot session paused, with a debug point on one step and the execution point marker beside it](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/debug_copilot_3.png)
+
+## Use the debug toolbar
+
+The toolbar is global, and its controls are enabled when a run is paused at a debug point or on a failure.
+
+- **Resume**: continues from the next step, without restarting. Use it after you have inspected the state and changed the test case, to validate the change
+- **Pause**: stops the run after the current step finishes. Use it when something looks wrong and you want to review the state before deciding
+- **Step Over**: runs the paused step, then pauses on the next one. Use it to move through a test one step at a time
+- **Skip Over**: skips the paused step without running it, and pauses on the next one. Use it to get past a failing step instead of fixing it now
+- **Restart Execution**: clears the session and starts fresh from the first step. Use it after larger changes, when you want a clean run rather than the paused session's state. It is available only while execution is paused
+
+## Debug steps inside a loop
+
+Inspect or change loop behavior once execution has paused, failed, or finished.
+
+To see how many times a loop has run, select the **Iteration** dropdown next to the step and review the execution count.
+
+Inside a loop, added steps follow the same rule as anywhere else. A step added below the execution point runs in the current iteration. A step added above it runs from the next iteration onward.
+
+While execution is paused, you can add steps to the loop sequence, drag steps into a different order, create elements on a step in the iteration, and delete steps you do not need. Click **Resume** afterwards to continue from the next step that has not run.
+
+## Diagnose a failed step
+
+Copilot pauses and highlights the step when a run fails or reaches a debug point.
+
+Click **Step Options** on the step, then **View Result**, and review the diagnostic data: **Error Message**, **Element**, **Test Data**, **Step Settings**, **Metadata**, and **Step Details**. Mobile sessions also carry screenshots.
+
+### Fix an "Element Not Found" error
+
+The element is on the page, but Testsigma cannot identify it from the properties stored against it.
+
+Click **Step Options**, then **View Result**, and click the element name to see its identification properties. Compare those properties against the current application UI to find why the match failed. Update the element, click **Update Step**, and restart the execution.
+
+## Frequently asked questions
+
+### What does Copilot need before it can start?
+
+Testsigma Terminal, installed and running, for a session on a local device. It manages the agent, and one agent serves Copilot, remote executions, and ad-hoc runs. See [Testsigma Terminal](/get-started/installation/testsigma-terminal/) for the requirements, the agent relationship, and the setup failures.
+
+### Where are the Terminal and agent logs?
+
+Click **Logs** on the Testsigma Terminal home screen, which carries Terminal, agent, and execution logs separately. See [Testsigma Terminal](/get-started/installation/testsigma-terminal/#the-terminal-interface).
+
+For anything not covered here, contact Testsigma support at support@testsigma.com.

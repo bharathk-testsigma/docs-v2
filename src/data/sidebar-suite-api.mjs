@@ -9,7 +9,7 @@
 //  9 pages that v1 covers were missing from this list until 2026-10-01 (list
 //  projects/applications/environments, stop a run, the 5 report exports).
 //  The route middleware (starlightRouteData.ts) strips this group off every
-//  regular page and unwraps it on /suite/api/ pages — see sidebar-suite.mjs.
+//  regular page and unwraps it on /api/ pages — see sidebar-suite.mjs.
 // ────────────────────────────────────────────────────────────────────────────
 
 export const restApis = {
@@ -17,23 +17,23 @@ export const restApis = {
 	"collapsed": true,
 	"items": [
 		{
-			"slug": "suite/api/overview"
+			"slug": "api/overview"
 		},
 		{
 			"label": "Projects",
 			"collapsed": true,
 			"items": [
 				{
-					"slug": "suite/api/projects/get-projects"
+					"slug": "api/projects/get-projects"
 				},
 				{
-					"slug": "suite/api/projects/get-applications"
+					"slug": "api/projects/get-applications"
 				},
 				{
-					"slug": "suite/api/projects/get-users"
+					"slug": "api/projects/get-users"
 				},
 				{
-					"slug": "suite/api/projects/list-uploads"
+					"slug": "api/projects/list-uploads"
 				}
 			]
 		},
@@ -42,22 +42,22 @@ export const restApis = {
 			"collapsed": true,
 			"items": [
 				{
-					"slug": "suite/api/test-cases/get-test-case-execution-details"
+					"slug": "api/test-cases/get-test-case-execution-details"
 				},
 				{
-					"slug": "suite/api/test-cases/get-labels"
+					"slug": "api/test-cases/get-labels"
 				},
 				{
-					"slug": "suite/api/test-cases/get-priorities"
+					"slug": "api/test-cases/get-priorities"
 				},
 				{
-					"slug": "suite/api/test-cases/get-requirements"
+					"slug": "api/test-cases/get-requirements"
 				},
 				{
-					"slug": "suite/api/test-cases/trigger-rerun"
+					"slug": "api/test-cases/trigger-rerun"
 				},
 				{
-					"slug": "suite/api/test-cases/update-results"
+					"slug": "api/test-cases/update-results"
 				}
 			]
 		},
@@ -66,25 +66,25 @@ export const restApis = {
 			"collapsed": true,
 			"items": [
 				{
-					"slug": "suite/api/test-steps/list-test-case-steps"
+					"slug": "api/test-steps/list-test-case-steps"
 				},
 				{
-					"slug": "suite/api/test-steps/retrieve-test-step"
+					"slug": "api/test-steps/retrieve-test-step"
 				},
 				{
-					"slug": "suite/api/test-steps/create-test-step"
+					"slug": "api/test-steps/create-test-step"
 				},
 				{
-					"slug": "suite/api/test-steps/create-multiple-test-steps"
+					"slug": "api/test-steps/create-multiple-test-steps"
 				},
 				{
-					"slug": "suite/api/test-steps/update-test-step"
+					"slug": "api/test-steps/update-test-step"
 				},
 				{
-					"slug": "suite/api/test-steps/delete-test-step"
+					"slug": "api/test-steps/delete-test-step"
 				},
 				{
-					"slug": "suite/api/test-steps/search-nlp-templates"
+					"slug": "api/test-steps/search-nlp-templates"
 				}
 			]
 		},
@@ -93,7 +93,7 @@ export const restApis = {
 			"collapsed": true,
 			"items": [
 				{
-					"slug": "suite/api/test-suites/get-test-suites"
+					"slug": "api/test-suites/get-test-suites"
 				}
 			]
 		},
@@ -102,31 +102,31 @@ export const restApis = {
 			"collapsed": true,
 			"items": [
 				{
-					"slug": "suite/api/test-plans/list-test-plans"
+					"slug": "api/test-plans/list-test-plans"
 				},
 				{
-					"slug": "suite/api/test-plans/get-test-plan-configs"
+					"slug": "api/test-plans/get-test-plan-configs"
 				},
 				{
-					"slug": "suite/api/test-plans/trigger-test-plan"
+					"slug": "api/test-plans/trigger-test-plan"
 				},
 				{
-					"slug": "suite/api/test-plans/stop-test-plan"
+					"slug": "api/test-plans/stop-test-plan"
 				},
 				{
-					"slug": "suite/api/test-plans/get-test-plan-result"
+					"slug": "api/test-plans/get-test-plan-result"
 				},
 				{
-					"slug": "suite/api/test-plans/get-test-case-results"
+					"slug": "api/test-plans/get-test-case-results"
 				},
 				{
-					"slug": "suite/api/test-plans/schedule-test-plan"
+					"slug": "api/test-plans/schedule-test-plan"
 				},
 				{
-					"slug": "suite/api/test-plans/update-schedule"
+					"slug": "api/test-plans/update-schedule"
 				},
 				{
-					"slug": "suite/api/test-plans/delete-schedule"
+					"slug": "api/test-plans/delete-schedule"
 				}
 			]
 		},
@@ -135,13 +135,13 @@ export const restApis = {
 			"collapsed": true,
 			"items": [
 				{
-					"slug": "suite/api/test-data/upload-test-data-profile"
+					"slug": "api/test-data/upload-test-data-profile"
 				},
 				{
-					"slug": "suite/api/test-data/create-profile-value"
+					"slug": "api/test-data/create-profile-value"
 				},
 				{
-					"slug": "suite/api/test-data/update-profile-value"
+					"slug": "api/test-data/update-profile-value"
 				}
 			]
 		},
@@ -150,16 +150,16 @@ export const restApis = {
 			"collapsed": true,
 			"items": [
 				{
-					"slug": "suite/api/environments/list-environments"
+					"slug": "api/environments/list-environments"
 				},
 				{
-					"slug": "suite/api/environments/get-an-environment"
+					"slug": "api/environments/get-an-environment"
 				},
 				{
-					"slug": "suite/api/environments/create-an-environment"
+					"slug": "api/environments/create-an-environment"
 				},
 				{
-					"slug": "suite/api/environments/update-an-environment"
+					"slug": "api/environments/update-an-environment"
 				}
 			]
 		},
@@ -168,16 +168,16 @@ export const restApis = {
 			"collapsed": true,
 			"items": [
 				{
-					"slug": "suite/api/elements/get-elements"
+					"slug": "api/elements/get-elements"
 				},
 				{
-					"slug": "suite/api/elements/get-an-element"
+					"slug": "api/elements/get-an-element"
 				},
 				{
-					"slug": "suite/api/elements/create-an-element"
+					"slug": "api/elements/create-an-element"
 				},
 				{
-					"slug": "suite/api/elements/update-an-element"
+					"slug": "api/elements/update-an-element"
 				}
 			]
 		},
@@ -186,16 +186,16 @@ export const restApis = {
 			"collapsed": true,
 			"items": [
 				{
-					"slug": "suite/api/uploads/upload-file"
+					"slug": "api/uploads/upload-file"
 				},
 				{
-					"slug": "suite/api/uploads/get-upload"
+					"slug": "api/uploads/get-upload"
 				},
 				{
-					"slug": "suite/api/uploads/get-upload-versions"
+					"slug": "api/uploads/get-upload-versions"
 				},
 				{
-					"slug": "suite/api/uploads/update-file"
+					"slug": "api/uploads/update-file"
 				}
 			]
 		},
@@ -204,37 +204,37 @@ export const restApis = {
 			"collapsed": true,
 			"items": [
 				{
-					"slug": "suite/api/results/fetch-test-plan-results"
+					"slug": "api/results/fetch-test-plan-results"
 				},
 				{
-					"slug": "suite/api/results/fetch-test-suite-results"
+					"slug": "api/results/fetch-test-suite-results"
 				},
 				{
-					"slug": "suite/api/results/fetch-test-case-results"
+					"slug": "api/results/fetch-test-case-results"
 				},
 				{
-					"slug": "suite/api/results/fetch-test-step-results"
+					"slug": "api/results/fetch-test-step-results"
 				},
 				{
-					"slug": "suite/api/results/fetch-test-machine-results"
+					"slug": "api/results/fetch-test-machine-results"
 				},
 				{
-					"slug": "suite/api/results/export-run-report"
+					"slug": "api/results/export-run-report"
 				},
 				{
-					"slug": "suite/api/results/export-suite-report"
+					"slug": "api/results/export-suite-report"
 				},
 				{
-					"slug": "suite/api/results/export-machine-report"
+					"slug": "api/results/export-machine-report"
 				},
 				{
-					"slug": "suite/api/results/export-case-report"
+					"slug": "api/results/export-case-report"
 				},
 				{
-					"slug": "suite/api/results/download-report"
+					"slug": "api/results/download-report"
 				},
 				{
-					"slug": "suite/api/results/get-junit-report"
+					"slug": "api/results/get-junit-report"
 				}
 			]
 		},
@@ -243,10 +243,10 @@ export const restApis = {
 			"collapsed": true,
 			"items": [
 				{
-					"slug": "suite/api/integrations/refresh-salesforce-metadata"
+					"slug": "api/integrations/refresh-salesforce-metadata"
 				},
 				{
-					"slug": "suite/api/integrations/get-refresh-status"
+					"slug": "api/integrations/get-refresh-status"
 				}
 			]
 		}

@@ -363,6 +363,7 @@ async function main() {
     const { title, description, body, data } = parseFrontmatter(raw);
     if (data.draft === true) continue;   // drafts are excluded from the site too
     const url     = fileToUrl(file);
+    if (url === '/home/') continue;     // docs landing page: links only, nothing to answer from
     // The two products are separate folders under content/docs, so the URL
     // is the product. api/ask.ts re-derives this rather than trusting the
     // field (see productOf there) -- the field is only as fresh as the last

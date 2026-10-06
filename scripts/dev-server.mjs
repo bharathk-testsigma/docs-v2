@@ -69,12 +69,12 @@ function enhance(res) {
 async function serveStatic(req, res) {
   const { pathname } = new URL(req.url, 'http://localhost');
 
-  // The build carries base=/docs/v2 (site-config.mjs), so every URL in the
+  // The build carries base=/docs (site-config.mjs), so every URL in the
   // output starts with it. Serve dist/ under that prefix, exactly like the
-  // production httpd does, and bounce the two roots a person actually types.
+  // production httpd does, and bounce the bare roots to the docs home.
   if (pathname === '/' || pathname === DOCS_BASE || pathname === DOCS_BASE + '/') {
     res.statusCode = 302;
-    res.setHeader('Location', withDocsBase('/suite/home/'));
+    res.setHeader('Location', withDocsBase('/home/'));
     res.end();
     return;
   }
@@ -121,7 +121,7 @@ createServer(async (req, res) => {
   }
 }).listen(PORT, () => {
   console.log(`\n  Ask dev server running`);
-  console.log(`  Site : http://localhost:${PORT}/suite/`);
+  console.log(`  Site : http://localhost:${PORT}${withDocsBase('/home/')}`);
   console.log(`  API  : http://localhost:${PORT}/api/ask  (POST)\n`);
   if (!process.env.VOYAGE_API_KEY)    console.warn('  ⚠  VOYAGE_API_KEY not set — did you run with --env-file=.env?');
   if (!process.env.ANTHROPIC_API_KEY) console.warn('  ⚠  ANTHROPIC_API_KEY not set — did you run with --env-file=.env?');

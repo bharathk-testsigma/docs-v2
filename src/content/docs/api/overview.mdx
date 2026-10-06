@@ -1,0 +1,79 @@
+---
+title: Testsigma REST API
+description: Base URLs, authentication, and resource IDs for the Testsigma REST API endpoints in this reference.
+pageType: reference
+verified: 2026-07
+sidebar:
+  label: Overview
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Testsigma exposes a REST API for triggering test plan runs and reading results. The same API creates and
+updates projects, test cases, test steps, and test data. All endpoints authenticate with an API key
+and return JSON.
+
+## Base URLs
+
+Testsigma serves each account from a regional host, so the host your requests go to depends on where
+your account lives. **To find your region, read the host in your browser's address bar while signed
+in to Testsigma** — that host is the one your API calls use.
+
+| Region | Host |
+| --- | --- |
+| US | `https://app.testsigma.com` |
+| EU | `https://app-eu.testsigma.com` |
+| India | `https://app-in.testsigma.com` |
+
+Requests to the wrong regional host fail authentication: an API key is issued by one account, on one
+host, and is not valid on the others. If you run Testsigma on-premise, your base URL is your own
+deployment's host instead of any of the above.
+
+Three path prefixes then serve the endpoints in this reference. Every endpoint page names the one
+that endpoint uses, and carries a region selector that rewrites the samples on that page.
+
+| Path prefix | Endpoints |
+| --- | --- |
+| `/api/v1` | Projects, test cases, test suites, test plans, test data, environments, elements, uploads |
+| `/api/v2` | Results and test steps |
+| `/api_private/v1` | Salesforce metadata refresh |
+
+Endpoint pages in this reference show the US host by default.
+
+<Aside type="note">
+Testsigma serves the Salesforce metadata endpoints from `api_private`, not `api`. They are supported
+for external use, with the same bearer-key authentication as the rest of this reference.
+</Aside>
+
+## Authentication
+
+Every request carries an API key in the `Authorization` header as a bearer token. Generate and revoke
+keys under **Settings > API Keys**.
+
+```http
+Authorization: Bearer <API_KEY>
+Content-Type: application/json
+```
+
+File uploads send `multipart/form-data` instead of a JSON body. Each endpoint page carries a
+ready-to-run sample in cURL, JavaScript, and Python.
+
+## Resource IDs
+
+Most endpoints take a project, application, or upload ID in the path or the request body. Upload IDs
+are returned by the endpoint below.
+
+| ID | Request | Endpoint |
+| --- | --- | --- |
+| Upload | `GET /uploads` | [List uploads](/api/projects/list-uploads/) |
+
+## Response codes
+
+Endpoints in this reference return one of three success codes. Each endpoint page shows that
+endpoint's own example response.
+
+| Code | Meaning | Endpoints |
+| --- | --- | --- |
+| `200 OK` | The request succeeded and the body carries the result. | All except the two below |
+| `202 Accepted` | Testsigma accepted the request and processes it asynchronously. | [Delete a scheduled test plan](/api/test-plans/delete-schedule/) |
+| `204 No Content` | The request succeeded and the body is empty. | [Delete a test step](/api/test-steps/delete-test-step/) |

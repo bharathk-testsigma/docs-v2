@@ -1,0 +1,205 @@
+---
+title: Test suites
+description: Group test cases into static or dynamic suites, configure AfterTest Suite, and manage the suites inside test plans and scheduled runs.
+pageType: task
+covers:
+  - Create a static test suite
+  - Create a dynamic test suite
+  - AfterTest Suite
+  - Edit a test suite
+  - Delete a test suite
+  - Add a test suite to a test plan
+  - Change the suites in a test plan
+  - Add a test suite to a scheduled run
+  - Find a test suite
+sidebar:
+  order: 10
+  label: Test Suites
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+A test suite is a group of test cases collected around a shared function or scenario, and it is what a test plan runs. One test case can belong to several suites.
+
+Testsigma has 2 kinds. A static suite holds the test cases you pick, and stays as you left it. A dynamic suite holds a filter, so it picks up every test case matching that filter, including ones created later.
+
+| | Static suite | Dynamic suite |
+|---|---|---|
+| Test cases come from | The ones you select | A filter you define |
+| When a new test case matches | Nothing happens | It joins the suite |
+| Inside a test plan | The test cases can be edited | The test cases cannot be edited |
+
+## Create a static test suite
+
+<Steps>
+
+1. Go to **Test Suites** and click **Create Test Suite**.
+
+2. Enter a **Name**.
+
+3. (Optional) Turn on the **Description** toggle and describe what the suite covers.
+
+4. (Optional) Set a **Pre-Requisite**, such as the test data, system configuration, or environment the suite needs.
+
+5. (Optional) Assign a **Label**, for filtering and grouping later.
+
+6. Click **Add/Remove Test Cases**.
+
+7. Select the test cases in the **Available Test Case** list, or click the **+** icon beside each one, to move them to **Selected for Test Suite**. Drag them to set the run order.
+
+8. Click **Add to Suite**.
+
+9. (Optional) Turn on **AfterTest Suite** under **Test Suite settings** and add the test cases to run afterwards.
+
+10. Click **Create**.
+
+</Steps>
+
+![Add/Remove Test Cases, with the available list on the left and the suite's selection on the right](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_suites_6.png)
+
+<Aside type="tip">
+To take a test case out, select it under **Selected Test Cases** and click the **-** icon.
+</Aside>
+
+## Create a dynamic test suite
+
+<Steps>
+
+1. Go to **Test Suites**, expand **Create Test Suite**, and click **Create Dynamic Test Suite**.
+
+2. Enter a **Name** in the **Basic Details** section.
+
+3. Click **Add filters to select test cases** in the **Filtered Testcases** section.
+
+4. Expand **Add Filters** on the **Add/Remove filters to select test cases** screen and select the filters you want. Testsigma selects the matching test cases as you go.
+
+5. (Optional) Expand **Sort by** to order the matched test cases.
+
+6. (Optional) Expand **Save Filter**, select **As New**, name the filter in the **Save filter config as** dialog, select **Mark as Public** to share it, and click **Save**.
+
+7. Click **Add to Suite**.
+
+8. Click **Create**.
+
+</Steps>
+
+<Aside type="tip">
+Click **Reset** to clear every applied filter, or **Modify Filters** to change them before you continue.
+</Aside>
+
+![Create Dynamic Test Suite, with Add filters to select test cases in place of a fixed list](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_dynamic_suites_4.png)
+
+## AfterTest Suite
+
+**AfterTest Suite** holds the test cases that run once the suite's own test cases finish, for clean-up or other post-test work. Turn on the **AfterTest Suite** toggle under **Test Suite settings** while creating or editing a suite, then set both dropdowns:
+
+- **When to Execute AfterTest Suite**: **Once After All Test Cases** runs the block once at the end. **For Every Test Case** runs it after each test case in the suite.
+- **If AfterTest Suite fails**: **Fail the test suite** marks the suite failed when any after-test action fails. **Show the test suite result** reports the suite's own result regardless.
+
+![Test Suite settings with AfterTest Suite on and the when-to-execute options open](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_suites_7.png)
+
+Then click **Add After Suite Test Cases**, select the test cases in the prompt, and click **Add to Suite**.
+
+<Aside type="note">
+A test case has to carry **Mark testcase for After Test Suite** in its own [Test Case Settings](/create-and-manage/advanced-settings/test-case/) before it can be used here. A data-driven test case, or one with prerequisites, cannot be marked at all.
+</Aside>
+
+Two NLPs let an after-test case branch on what already happened. Both work only inside an **IF** condition:
+
+- `Test Case Result is Passed/Failed/Not Executed` branches on how a test case finished.
+- `Test Suite Result is Passed/Failed/Not Executed` branches on how the suite finished, and works correctly only with **Once After All Test Cases** selected.
+
+<Aside type="note">
+Order and dependency matter here. An after-test case that changes state can affect the test cases that follow it, or leave the environment wrong for the next run.
+</Aside>
+
+## Edit a test suite
+
+Open a suite from the **Test Suites** list, or click the ellipsis icon (⋮) beside it and select **Edit**. The Test Suite Details page shows the test cases and the test plans linked to the suite.
+
+From there:
+
+- **Add/Remove Test Cases** changes which test cases the suite holds.
+- **Test Suite Settings**, in the right navigation bar, holds **Pre-Requisite** and **AfterTest Suite**.
+- **Test Suite Info** holds the **Name**, **Type**, and **Description**, with the created and updated details.
+- **Activity** holds the history and the comments.
+
+To edit a dynamic suite, click the ellipsis icon (⋮), select **Edit**, then click **Edit Test Suite** and change the filters. Expanding **Save Filter** then offers **As New**, which opens **Save filter config as**, or **Replace Existing**, which opens **Update filter config**. Click **Add to Suite** when the filters are right.
+
+## Delete a test suite
+
+<Aside type="note">
+A suite linked to a test plan cannot be deleted. Testsigma warns you and stops. Remove the suite from those test plans first. Deleting a test suite destroys every run report and run configuration associated with it.
+</Aside>
+
+Click the ellipsis icon (⋮) beside the suite and select **Delete**, or open the suite and click **Delete**. Enter `DELETE` in the confirmation dialog and click **I understand, delete this Test Suite**.
+
+## Add a test suite to a test plan
+
+<Steps>
+
+1. Go to **Test Plans** and click **Create Test Plan**.
+
+2. Enter the name in the **Basic Details** tab and click **Continue**.
+
+3. Click **+ Add Test Suites** in the **Add Test Suites & Link Machine Profiles** tab.
+
+4. Click the **+** icon beside each suite you want.
+
+5. Click **Add to Plan**.
+
+6. Click **+ Link Test Machine**.
+
+7. Select the machines in the **Select test machine profiles** overlay and click **Save selections**.
+
+8. Click **Continue**.
+
+9. Configure the **Test Plan Settings** tab and click **Create**.
+
+</Steps>
+
+<Aside type="note">
+A dynamic suite's test cases cannot be edited from inside the test plan. A static suite's can.
+</Aside>
+
+## Change the suites in a test plan
+
+A plan needs at least one test suite, and the suites can be changed 2 ways after the plan exists.
+
+From the plan itself, click **Edit**, open the **Add Test Suites & Link Machine Profiles** section, and add or remove suites there.
+
+From the test plan details page, hover over the test machine whose suites you want to change, click the kebab menu, and click **Edit**. In the **Edit test machine/device profile** overlay, click **Add/Remove Test Suites**. In the **Add test suites to plan** overlay, click **+** on a suite under **Available Test Suites** to add it, or **-** on one under **Selected for Test Plan** to remove it. Click **Update Machine** when you are done.
+
+<Aside type="note">
+Suites are attached per test machine, which is why the second route runs through the machine's own overlay.
+</Aside>
+
+## Add a test suite to a scheduled run
+
+<Steps>
+
+1. Go to **Test Plans**.
+
+2. Expand **Schedule** for the suite and click **Schedule Partial Run**.
+
+3. Enter a **Name** in the **Schedule Partial Test Plan** overlay.
+
+4. Click the calendar icon in the **Date** field and select the date.
+
+5. Click the clock icon in the **Time** field and select the time.
+
+6. Expand **Repeat** and select how often the run repeats.
+
+7. Select the suites under **Test Suites to Include**.
+
+8. Click **Schedule**.
+
+</Steps>
+
+<Aside type="note">
+Test cases inside a dynamic suite cannot be filtered from **Test Suites to Include**.
+</Aside>
+
+## Find a test suite
+
+The **Test Suites** list shows each suite's title, type, creation date, creator, and status. Sort, filter, or search from the same page.

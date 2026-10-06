@@ -1,0 +1,134 @@
+---
+title: Import via CSV
+description: Bring test cases into Arcus in bulk from a CSV file, including files exported from TestRail, Zephyr, or BrowserStack.
+pageType: task
+verified: 2026-10
+covers:
+  - Get a CSV file
+  - Upload the file
+  - Map columns to Arcus fields
+  - Review the import results
+sidebar:
+  order: 1
+  label: Import via CSV
+---
+
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Import via CSV adds test cases to the current project in bulk, from your own spreadsheet or from another tool's export.
+
+<Prerequisites>
+- An Arcus project with [folders](/arcus/create-and-manage/test-cases/#folders) for the test cases.
+- A `.csv` file. Convert `.xlsx` files first.
+</Prerequisites>
+
+{/* CONFIRM: no Arcus page covers creating a project (the old projects/manage-projects page was not migrated), so the project prerequisite has no link. */}
+
+## Get a CSV file
+
+<Tabs syncKey="csv-source">
+<TabItem label="Your own file">
+
+Any `.csv` file with one test case per row works. Arcus maps its columns to test case fields during the import, so the column names don't need to match.
+
+</TabItem>
+<TabItem label="TestRail">
+
+<Steps>
+
+1. In TestRail, go to **Projects > Test Cases**.
+
+2. Select the test cases, click the **Export** icon, and select **Export to CSV**.
+
+3. In **Export to CSV**, select the **Sections** (folders) and **Columns** (properties and values) to export.
+
+</Steps>
+
+TestRail downloads the test cases as a `.csv` file.
+
+</TabItem>
+<TabItem label="Zephyr">
+
+<Steps>
+
+1. In Jira, go to **Projects**, then select the **Zephyr** tab.
+
+2. Select the folder that holds the test cases.
+
+3. Select the test cases, click **More**, and select **Export to Excel**.
+
+4. Convert the downloaded `.xlsx` file to `.csv`.
+
+</Steps>
+
+<Aside type="note">
+Only test cases created with Zephyr's **Plain Text** template can be imported.
+</Aside>
+
+</TabItem>
+<TabItem label="BrowserStack">
+
+<Steps>
+
+1. In BrowserStack Test Management, go to **Projects > Test Cases**, then select the folder that holds the test cases.
+
+2. Select the test cases, click **Export**, and select **Export as CSV**.
+
+</Steps>
+
+BrowserStack downloads the test cases as a `.csv` file.
+
+<Aside type="note">
+Only test cases created with the **Plain Text** template can be imported.
+</Aside>
+
+</TabItem>
+</Tabs>
+
+To copy a whole project with its runs and history instead, use [Quick import](/arcus/settings/import/quick-import/), which connects to TestRail, Zephyr Scale, BrowserStack, and six other tools directly.
+
+## Upload the file
+
+<Steps>
+
+1. In the left navigation, go to **Settings**, then select **Import**.
+
+2. Click **Import via CSV**, then choose the template that matches your test cases:
+   - **Steps** for test cases written as steps.
+   - **Document** for test cases written as a single description.
+
+3. Click **Upload File** and select the `.csv` file. **Uploaded File Preview** opens.
+
+4. Check the file content, then click **Next**.
+
+</Steps>
+
+{/* CONFIRM: other ways in. The old page also opened Import from the Dashboard's quick actions and from Test Cases > Import. */}
+
+## Map columns to Arcus fields
+
+**Map Properties and Values** has two panels: **Map Properties**, where each CSV column is matched to an Arcus field, and **Test Case Preview**, which shows a test case as it will be imported. Arcus maps the columns automatically.
+
+<Steps>
+
+1. Review the mapped fields. Change any column that is missing or mapped to the wrong field.
+
+2. Check the result in **Test Case Preview**.
+
+3. Click **Begin Import**.
+
+</Steps>
+
+Arcus creates an import log on the **Import** page to track progress and results.
+
+## Review the import results
+
+When the import finishes, open its log from the **Import** page. **Import Results** shows:
+
+- Totals for all, imported, skipped, and failed test cases.
+- **Failed to import**: each test case's error type and the reason it failed, for example a duplicate title.
+- Skipped test cases, for example ones that already exist in the project.
+- The imported test cases, with their details.
+
+To bring in the failed test cases, fix them in your `.csv` file and import it again.

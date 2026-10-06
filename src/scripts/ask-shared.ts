@@ -24,8 +24,20 @@ export const ASK_API_URL = `${API_ORIGIN}/api/ask`;
  * Read from the path rather than passed down: every caller is on a docs page,
  * and the base prefix (/docs-new/) sits before the product segment.
  */
-export const askProduct = (): 'suite' | 'arcus' =>
-  typeof location !== 'undefined' && /(^|\/)arcus(\/|$)/.test(location.pathname) ? 'arcus' : 'suite';
+export const askProduct = (): 'suite' | 'arcus' | undefined => {
+  if (typeof location === 'undefined') return 'suite';
+  // The docs root (the product picker) belongs to neither product, so its
+  // questions go unscoped and retrieval spans both.
+  if (isDocsRoot()) return undefined;
+  return /(^|\/)arcus(\/|$)/.test(location.pathname) ? 'arcus' : 'suite';
+};
+
+/** True on the docs home ('/docs/v2/home/'), or the bare root that redirects to it. */
+export const isDocsRoot = (): boolean => {
+  if (typeof location === 'undefined') return false;
+  const path = stripBase(location.pathname).replace(/\/+$/, '');
+  return path === '' || path === '/home';
+};
 
 export const IC_COPY =
   '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';

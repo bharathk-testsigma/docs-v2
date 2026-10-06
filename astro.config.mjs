@@ -3,14 +3,30 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { suite } from './src/data/sidebar-suite.mjs';
 import { arcus } from './src/data/sidebar-arcus.mjs';
-import { DOCS_BASE, withDocsBase } from './src/lib/site-config.mjs';
+import { DOCS_BASE, toDocId, toRoute, withDocsBase } from './src/lib/site-config.mjs';
 import { rehypeBaseLinks } from './src/lib/rehype-base-links.mjs';
+
+// Sidebar data is written version-free ('get-started', 'arcus/qi-home'); the
+// collection ids carry the version (content.config.ts), so slugs are mapped
+// onto them, and absolute links get toRoute() because Starlight only prepends
+// `base`. Autogenerate directories are left alone: Starlight matches them
+// against the FILE path, which has no version.
+/** @param {any[]} entries @returns {any[]} */
+const versionSidebar = (entries) =>
+	entries.map((entry) => ({
+		...entry,
+		...(entry.slug && { slug: toDocId(entry.slug) }),
+		...(typeof entry.link === 'string' && entry.link.startsWith('/') && { link: toRoute(entry.link) }),
+		...(entry.items && { items: versionSidebar(entry.items) }),
+	}));
 
 // https://astro.build/config
 export default defineConfig({
 	// The site is served under a sub-path, not the domain root:
-	//   production  https://testsigma.com/docs-new/
-	//   staging     https://website.testsigma.com/docs-new/
+	//   production  https://testsigma.com/docs/v2/ and /docs/arcus/v2/
+	//   staging     https://website.testsigma.com/docs/v2/ and /docs/arcus/v2/
+	// `base` is just /docs; toRoute() in site-config.mjs adds the product and
+	// version segments.
 	//
 	// This cannot be done at the Apache layer instead: a proxy can rewrite the
 	// REQUEST path, but the built HTML and JS carry absolute URLs, and some are
@@ -20,58 +36,17 @@ export default defineConfig({
 	// Astro re-prefixes the links it generates; hand-written paths go through
 	// withBase()/stripBase() in src/lib/base.ts.
 	base: DOCS_BASE,
+	// Shared build assets live with the other shared files, under /docs/v2/.
+	build: { assets: toRoute('/_astro').slice(1) },
 	// Production origin. Gives absolute URLs to the canonical link and the
 	// schema.org JSON-LD (src/starlightRouteData.ts).
 	site: 'https://testsigma.com',
-	// Redirects for the root and the home/overview slugs that moved during
-	// development.
-	//
-	// NOTE the asymmetry: Astro applies `base` to the KEYS (the route each
-	// redirect is emitted at) but NOT to the VALUES. Without withDocsBase() here
-	// every redirect would land outside the docs, on the website's own 404.
-	redirects: {
-		// Docs home lives at the site root (of the docs base).
-		'/': withDocsBase('/suite/home/'),
-		// The Suite home moved under /suite/ (2026-09-10) to mirror Arcus, so the
-		// old root-level path redirects INTO the product instead of out of it.
-		'/home/': withDocsBase('/suite/home/'),
-		'/suite/get-started/home/': withDocsBase('/suite/home/'),
-		'/suite/get-started/': withDocsBase('/suite/get-started/overview/'),
-		// Overview moved into get-started/ when the sidebar became folder-driven
-		// (2026-08-17) and each rail section became one content folder.
-		'/suite/overview/': withDocsBase('/suite/get-started/overview/'),
-		// URLs that were LIVE on staging before the v7 IA rewrite. The rewrite
-		// dropped both the Introduction page and the redirects that pointed at it,
-		// so every one of these went from a 200 to a 404 -- including the target of
-		// the old root redirect, which is where anyone's bookmark of /docs-new/
-		// leads. Kept here rather than deleted: a redirect stub is ~400 bytes and
-		// the alternative is silently breaking links that already exist.
-		'/suite/get-started/introduction/': withDocsBase('/suite/get-started/overview/'),
-		'/suite/get-started/what-is-testsigma/': withDocsBase('/suite/get-started/overview/'),
-		// Terminology and Execution stacks were sections of Introduction; that
-		// material is now Concepts.
-		'/suite/get-started/terminology/': withDocsBase('/suite/get-started/concepts/'),
-		'/suite/get-started/execution-stacks/': withDocsBase('/suite/get-started/concepts/#where-tests-run'),
-
-		// Arcus QI Home restructure (2026-09-09). The rail moved these pages twice
-		// in one sitting, and a dev tab left open on an old path renders a
-		// content-collection crash rather than a 404, so the dead ids get kept.
-		'/arcus/qi-home/learn-and-execute/': withDocsBase('/arcus/automation/explore-and-automate/'),
-		'/arcus/qi-home/explore-and-automate/': withDocsBase('/arcus/automation/explore-and-automate/'),
-		'/arcus/qi-home/copilot/': withDocsBase('/arcus/automation/copilot/'),
-		'/arcus/qi-home/cli/': withDocsBase('/arcus/qi-home/developer-tools/cli/'),
-		'/arcus/qi-home/mcp/': withDocsBase('/arcus/qi-home/developer-tools/mcp/'),
-		'/arcus/qi-home/plugins/': withDocsBase('/arcus/qi-home/developer-tools/plugins/'),
-		'/arcus/get-started/installation/cli/': withDocsBase('/arcus/qi-home/developer-tools/cli/'),
-		'/arcus/get-started/installation/plugins/': withDocsBase('/arcus/qi-home/developer-tools/plugins/'),
-
-		// Pages deleted 2026-09-09. AI agents folded into QI Home overview's
-		// "The agents" section; Settings' own landing page went away and the
-		// section now opens on its first real row.
-		'/arcus/qi-home/ai-agents/': withDocsBase('/arcus/qi-home/overview/#the-agents'),
-		'/arcus/settings/settings/': withDocsBase('/arcus/settings/test-properties/'),
-	},
-	// Authors write in-site links as '/suite/...'; this re-prefixes them with
+	// The docs home lives at /docs/v2/home/ (src/content/docs/home.mdx); the bare
+	// /docs/v2/ forwards there. scripts/verify-dist.mjs follows this redirect.
+	// Astro adds `base` to the key only, so the key goes through toRoute() and
+	// the destination through withDocsBase().
+	redirects: { [toRoute('/')]: withDocsBase('/home/') },
+	// Authors write in-site links as '/...'; this re-prefixes them with
 	// `base` at build time. See the plugin for why it is not done in content.
 	markdown: {
 		rehypePlugins: [rehypeBaseLinks(DOCS_BASE)],
@@ -86,9 +61,9 @@ export default defineConfig({
 			// Search is indexed per product by scripts/build-pagefind.mjs (run from
 			// `postbuild`), which writes dist/pagefind and dist/pagefind-arcus.
 			// Starlight's own integration indexes the whole site into one bundle,
-			// which would put Arcus pages in Suite's results and vice versa.
+			// which would put Arcus pages in Testsigma's results and vice versa.
 			pagefind: false,
-			favicon: '/testsigma-mark.svg',
+			favicon: toRoute('/testsigma-mark.svg'),
 			// The SVG above is the primary icon and stays crisp at any size, but it
 			// is not enough on its own: iOS ignores SVG icons, and every browser
 			// still probes /favicon.ico blind (a 404 until now). Both files are
@@ -141,7 +116,7 @@ document.addEventListener('testsigma:page-feedback',function(e){(window.dataLaye
 			// The wordmark and the "Docs" chip are rendered by the SiteTitle
 			// override, so no `logo` config here.
 			description:
-				'Documentation for Testsigma Suite: test automation for web, mobile, desktop, Salesforce, and APIs.',
+				'Documentation for Testsigma: test automation for web, mobile, desktop, Salesforce, and APIs.',
 			// Inter is the design's typeface (it ships the @font-face in the design
 			// system's colors_and_type.css, pointing at .ttf files in that project).
 			// Self-hosted via fontsource here rather than copying the TTFs, which
@@ -186,7 +161,7 @@ document.addEventListener('testsigma:page-feedback',function(e){(window.dataLaye
 			// Two products in one array (Starlight takes exactly one sidebar):
 			// Arcus rides along as a wrapper group that the route middleware
 			// unwraps on /arcus/ pages and strips everywhere else.
-			sidebar: [...suite, arcus],
+			sidebar: versionSidebar([...suite, arcus]),
 			// Splits the API reference out of the tree: endpoint pages show only
 			// the endpoint groups, every other page shows everything else.
 			routeMiddleware: './src/starlightRouteData.ts',

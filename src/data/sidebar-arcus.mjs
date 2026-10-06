@@ -22,7 +22,8 @@ export const arcus = {
 		// Arcus's own top-of-rail utility rows, mirroring Suite's. They live in
 		// this product's tree rather than being borrowed from Suite's, so each
 		// row points at that product's own destination.
-		{ label: 'Home', slug: 'arcus/home', attrs: { 'data-nav-utility': 'true' } },
+		// The shared docs home (index.mdx), scrolled to the Arcus section.
+		{ label: 'Home', link: '/home/#arcus', attrs: { 'data-nav-utility': 'true' } },
 		{
 			label: 'API Reference',
 			slug: 'arcus/api-reference/overview',

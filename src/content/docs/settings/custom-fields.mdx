@@ -1,0 +1,67 @@
+---
+title: Custom fields
+description: Define your own fields on test cases, fill them in from Manage Test Case, and filter the library by their values.
+pageType: task
+verified: 2026-08
+covers:
+  - Create a custom field
+  - Fill it in on a test case
+  - Filter by it
+sidebar:
+  order: 50
+  label: Custom Fields
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+A custom field adds information Testsigma does not hold by default, and it becomes a filter on the test case library. A team tracking which sprint a test case belongs to, or which module it covers, defines that as a custom field rather than encoding it in the name.
+
+## Create a custom field
+
+<Steps>
+
+1. Go to **Settings > Admin Settings > Custom Fields**.
+
+2. Click **Add new field**. The **Add new field** overlay opens under **Test Case**.
+
+3. Enter a **Field Name** and a **Description**.
+
+4. Choose the **Field Type** from the dropdown.
+
+5. Configure the type's options and click **Add**.
+
+</Steps>
+
+The description is what a test case author reads when filling the field in, so it is worth writing.
+
+![Add new field in Test Case, with the field name, description, and field type](https://s3.amazonaws.com/website-static-docs.testsigma.com/new_images/projects/Updated_Doc_Images/update_custom_field_4.1.png)
+
+## Fill it in on a test case
+
+<Steps>
+
+1. Go to **Create Tests > Test Cases** and open the test case.
+
+2. Click **Manage Test Case** in the utility panel and scroll to **Custom Fields**.
+
+3. Enter the values and click **Close**.
+
+</Steps>
+
+## Filter by it
+
+<Steps>
+
+1. Go to **Create Tests > Test Cases** and click **List View**.
+
+2. Click **Show Filters**.
+
+3. Expand **Add Filter** and select the custom field.
+
+</Steps>
+
+Custom fields sit alongside the built-in filters, so a filter can combine a custom field with status, priority, and labels. Saving that combination as a filter makes it reusable, and a public saved filter shares it with the team. See [Test cases](/create-and-manage/create-test-cases/).
+
+<Aside type="note">
+The **Add new field** overlay is scoped to **Test Case**, so a custom field applies to test cases.
+</Aside>

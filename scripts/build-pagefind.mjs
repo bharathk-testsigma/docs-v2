@@ -18,22 +18,25 @@
 import * as pagefind from 'pagefind';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { DOCS_VERSION } from '../src/lib/site-config.mjs';
 
 const DIST = 'dist';
+// Shared files live under dist/v2/ (site-config.mjs), and so do Testsigma's
+// pages, since Testsigma has no product prefix; Arcus is dist/arcus/v2/.
+const SHARED = join(DIST, DOCS_VERSION);
 
-// Arcus lives under one top-level folder; Suite's index is everything else that
-// holds pages. Derived, not hard-coded, so a new product folder is a one-line
-// change here instead of a silent omission: `_astro` and `pagefind*` are build
-// output, and the root index.html/404.html are redirect stubs with no content.
-const SKIP = new Set(['_astro', 'arcus']);
-const suiteDirs = readdirSync(DIST, { withFileTypes: true })
-	.filter((e) => e.isDirectory() && !SKIP.has(e.name) && !e.name.startsWith('pagefind'))
+// Testsigma's index is every page folder under dist/v2/. Derived, not
+// hard-coded, so a new section is picked up automatically: `_astro` and
+// `pagefind*` are build output, and the docs home (`home`) is indexed with
+// Testsigma as before.
+const testsigmaDirs = readdirSync(SHARED, { withFileTypes: true })
+	.filter((e) => e.isDirectory() && e.name !== '_astro' && !e.name.startsWith('pagefind'))
 	.map((e) => e.name);
 
 const BUNDLES = [
-	// [output directory, glob over dist/]
-	['pagefind', `{${suiteDirs.join(',')}}/**/*.html`],
-	['pagefind-arcus', 'arcus/**/*.html'],
+	// [output directory under dist/v2/, glob over dist/]
+	['pagefind', `${DOCS_VERSION}/{${testsigmaDirs.join(',')}}/**/*.html`],
+	['pagefind-arcus', `arcus/${DOCS_VERSION}/**/*.html`],
 ];
 
 for (const [out, glob] of BUNDLES) {
@@ -45,10 +48,10 @@ for (const [out, glob] of BUNDLES) {
 	// then silently returns no results for that product on every query.
 	if (!page_count) throw new Error(`Pagefind indexed 0 pages for ${out} (glob: ${glob})`);
 
-	await index.writeFiles({ outputPath: join(DIST, out) });
+	await index.writeFiles({ outputPath: join(SHARED, out) });
 	console.log(`  ${out.padEnd(15)} ${String(page_count).padStart(4)} pages  (${glob})`);
 }
 
-if (!existsSync(join(DIST, 'pagefind', 'pagefind-entry.json'))) {
-	throw new Error('dist/pagefind/pagefind-entry.json missing after build');
+if (!existsSync(join(SHARED, 'pagefind', 'pagefind-entry.json'))) {
+	throw new Error(`${SHARED}/pagefind/pagefind-entry.json missing after build`);
 }

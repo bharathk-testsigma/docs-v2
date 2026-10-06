@@ -1,0 +1,53 @@
+---
+title: AWS Lambda
+description: Trigger a Testsigma test plan from an AWS Lambda function, fired by CodeCommit or any Lambda trigger.
+pageType: task
+verified: 2026-08
+sidebar:
+  order: 111
+  label: AWS Lambda
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+AWS Lambda triggers Testsigma test plans from a function, with CodeCommit as the typical event source. The handler runs a script holding the test plan details, so any Lambda trigger can start testing.
+
+<Prerequisites>
+
+- The trigger script (`aws-testsigma.sh`) packaged with the function.
+
+</Prerequisites>
+
+## Configure the function
+
+<Steps>
+
+1. **Create the function**: under **AWS Lambda > Functions**, click **Create Function**. Fill in the basic information and click **Create Function**.
+
+2. **Check the handler**: scroll down to **Basic Settings** for the handler file and timeout details. In the example, `hello.handler` is the handler file, and it contains the `aws-testsigma.sh` file.
+
+3. **Set the script inputs**: `aws-testsigma.sh` carries the test plan information the trigger needs:
+
+    ```shell title="aws-testsigma.sh inputs"
+    #********START USER_INPUTS ********
+
+    TESTSIGMA_USER_NAME=<Username>
+    TESTSIGMA_PASSWORD=<Password>
+    TESTSIGMA_TEST_PLAN_RUN_URL=<Test Plan URL containing the unique Test Plan id>
+    MAX_WAIT_TIME_FOR_SCRIPT_TO_EXIT=180
+    JSON_OUTPUT_REPORTS_DIR=.
+
+    #********END USER_INPUTS***********
+    ```
+
+    The test plan URL comes from the **REST API call to start Test Plan** section in Testsigma.
+
+4. **Trigger the run**: click **TEST** at the top right corner. The function fires and the test plan starts.
+
+</Steps>
+
+<Aside type="note">
+This legacy script authenticates with a username and password. Current API calls use a bearer [API key](/settings/developers/) instead, as in the [shell script](/integrations/ci-cd/shell-script/); prefer its inputs.
+</Aside>
+

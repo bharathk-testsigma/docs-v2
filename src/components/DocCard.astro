@@ -48,7 +48,7 @@ import { withBase } from '../lib/base';
 const { title, href, description, icon = 'page' } = Astro.props;
 const local = icon in ICONS ? ICONS[icon as keyof typeof ICONS] : undefined;
 
-// `href` arrives as a JSX prop from MDX (<DocCard href="/suite/..."/>), which
+// `href` arrives as a JSX prop from MDX (<DocCard href="/..."/>), which
 // the rehype link plugin cannot reach -- it only sees real HTML elements, and
 // JSX props never become hast nodes. Prefixing here covers every card on every
 // overview page in one place.

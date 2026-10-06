@@ -1,0 +1,53 @@
+---
+title: Bamboo
+description: Trigger Testsigma test plans from a Bamboo build plan with the Testsigma Test Plan Run plugin.
+pageType: task
+verified: 2026-08
+sidebar:
+  order: 108
+  label: Bamboo
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Bamboo integrates through a dedicated plugin rather than a script. The **Testsigma Test Plan Run** task triggers a test plan and waits for the result. It writes the JUnit report to the path set in the task form.
+
+<Prerequisites>
+
+- The plugin, from the [Atlassian Marketplace](https://marketplace.atlassian.com/apps/1223253/testsigma-test-plan-runner?hosting=server&tab=installation).
+
+</Prerequisites>
+
+## Configure the plan
+
+Install the plugin from **Bamboo administration settings > Manage apps > Find new apps** by searching for **Testsigma Test Plan Runner**, or upload it from the Marketplace listing.
+
+<Steps>
+
+1. **Create a plan**: from the **Build Dashboard** in your Bamboo instance, click **Create > Create Plan** on the top menu.
+
+2. **Configure it**: enter a **Project name** and **Plan name**, configure your repository, and click **Configure Plan**.
+
+3. **Add the task**: click the **Add Task** tab, search for **Testsigma Test Plan Run**, and select it.
+
+4. **Fill in the details**:
+
+    - **Task description**: a name for the task.
+    - **Testsigma API Key**: generate one under [Settings > API Keys](/settings/developers/).
+    - **Testsigma Test Plan ID**: from the test plan details page in Testsigma.
+    - **Maximum wait time for Task completion**: the maximum time in minutes the plugin waits before timing out.
+    - **Report File Path**: the file path where the JUnit report XML file is stored.
+
+5. **Save the plan**: click **Save** to save the task details, then **Save and Create** to create the plan.
+
+</Steps>
+
+<Aside type="note">
+After the maximum wait time, the task times out in Bamboo but the execution continues in Testsigma. Log in to Testsigma later to check the test plan status.
+</Aside>
+
+## Try a sample build
+
+Click **Run Now** to trigger the pipeline manually. When the pipeline reaches the Testsigma task, the test plan starts. Confirm it under **Dashboard > Test Plans** in Testsigma, and check the results there.
+

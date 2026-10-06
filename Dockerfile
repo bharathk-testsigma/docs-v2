@@ -23,10 +23,11 @@ RUN sed -i \
 
 COPY apache2/docs-v2.conf conf/extra/docs-v2.conf
 
-# The site is served from /docs/v2/, so it lives in a matching subdirectory of
-# the document root — the request path and the filesystem path line up, and no
-# alias or prefix rewriting is needed.
-COPY dist/ htdocs/docs/v2/
+# The site is served from /docs/v2/ (Testsigma + shared assets) and
+# /docs/arcus/v2/ (Arcus), and dist/ already mirrors that under /docs — the
+# request path and the filesystem path line up, and no alias or prefix
+# rewriting is needed.
+COPY dist/ htdocs/docs/
 
 # The ALB health check has no healthcheck-path annotation on the website ingress,
 # so it defaults to "/" — which this service does not otherwise serve. The base
@@ -40,18 +41,23 @@ RUN printf '%s' 'ok' > htdocs/index.html
 # by api/ask.ts on Vercel — vercel.json bundles it into the function. Nothing in
 # the browser ever fetches it. Astro copies it out of public/ into dist/ all the
 # same, so without this it rides along in the image and is publicly downloadable
-# at /docs/v2/ask-index.bin. Removed rather than blocked in httpd config: the
+# at /docs/ask-index.bin. Removed rather than blocked in httpd config: the
 # bytes should not be in the layer at all.
 #
 # If /api/ask is ever served from this pod (see deploy/README.md), the index has
 # to come back — but as a file the API reads, not as a document-root asset.
-RUN rm -f htdocs/docs/v2/ask-index.bin htdocs/docs/v2/ask-index.meta.json
+RUN rm -f htdocs/docs/ask-index.bin htdocs/docs/ask-index.meta.json
 
 # Fail the build rather than ship an image that 404s everywhere: an empty or
 # stale dist/ is otherwise indistinguishable from a good one until it is live.
 RUN test -f htdocs/docs/v2/index.html \
+ && test -f htdocs/docs/v2/home/index.html \
+ && test -d htdocs/docs/arcus/v2 \
+ && test -f htdocs/docs/404.html \
  && test -d htdocs/docs/v2/pagefind \
- && grep -q '"/docs/v2/' htdocs/docs/v2/index.html \
- || (echo "dist/ is missing, empty, or was not built with base=/docs/v2" && exit 1)
+ && test -d htdocs/docs/v2/pagefind-arcus \
+ && grep -q '"/docs/v2/' htdocs/docs/v2/home/index.html \
+ && grep -q '"/docs/arcus/v2/' htdocs/docs/v2/home/index.html \
+ || (echo "dist/ is missing, empty, or was not built for /docs/v2 + /docs/arcus/v2" && exit 1)
 
 EXPOSE 80

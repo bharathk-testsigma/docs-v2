@@ -13,15 +13,15 @@
  */
 
 export const SUITE_FLOW = {
-	aria: 'How a test case moves through Testsigma Suite: write tests, generate tests, execution, fix, ship',
-	rest: 'Five stages, one test case. Hover a stage to see what Suite does there.',
+	aria: 'How a test case moves through Testsigma: write tests, generate tests, execution, fix, ship',
+	rest: 'Five stages, one test case. Hover a stage to see what Testsigma does there.',
 	// Fixing is the one stage that feeds back rather than forward.
 	loop: { from: 3, to: 2, label: 'Fixes feed back into the case' },
 	stages: [
 		{
 			label: 'Write tests',
 			tone: 'neutral',
-			href: '/suite/create-and-manage/create-test-cases/',
+			href: '/create-and-manage/create-test-cases/',
 			rows: ['Copilot', 'Recorder', 'NLP steps'],
 			foot: 'Plain English, no code',
 			cap: 'Build the steps yourself: prompt Copilot, record the flow in the browser, or pick NLP steps from the library.',
@@ -29,7 +29,7 @@ export const SUITE_FLOW = {
 		{
 			label: 'Generate tests',
 			tone: 'pink',
-			href: '/suite/atto/ai-agents/',
+			href: '/atto/ai-agents/',
 			rows: ['Requirements', 'Designs', 'Files'],
 			foot: 'Cases from what you have',
 			cap: 'Point Atto at a requirement, a design, or a file, and it writes whole test cases for you to review.',
@@ -37,7 +37,7 @@ export const SUITE_FLOW = {
 		{
 			label: 'Execution',
 			tone: 'teal',
-			href: '/suite/run-tests/test-plan/',
+			href: '/run-tests/test-plan/',
 			rows: ['Agentic', 'Cloud', 'Local'],
 			foot: 'Parallel, wherever you run',
 			cap: 'Run a plan agentically, on the parallel cloud grid, or on your own machines, with no grid to maintain.',
@@ -45,7 +45,7 @@ export const SUITE_FLOW = {
 		{
 			label: 'Fix',
 			tone: 'purple',
-			href: '/suite/run-tests/debug/',
+			href: '/run-tests/debug/',
 			rows: ['Heal locators', 'Analyze failures', 'Report bugs'],
 			foot: 'Fewer red builds',
 			cap: 'Auto-healing repairs a moved locator mid-run, the Analyzer says why a step failed, and Bug Reporter files it.',
@@ -53,7 +53,7 @@ export const SUITE_FLOW = {
 		{
 			label: 'Ship',
 			tone: 'green',
-			href: '/suite/analytics/reports/',
+			href: '/analytics/reports/',
 			rows: ['Run test plans', 'Analyze results', 'Share reports'],
 			foot: 'Results your team can read',
 			cap: 'Run the plan on every build, read the result, and share the report with the people waiting on it.',

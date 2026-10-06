@@ -1,5 +1,5 @@
 /**
- * Dark-theme variant of public/testsigma-logo.png.
+ * Dark-theme variant of public/v2/testsigma-logo.png.
  *
  * The brand PNG is the "on light" lock-up: teal gear + near-black wordmark. On
  * the dark theme that wordmark disappears into the page, and the usual CSS
@@ -15,8 +15,8 @@
  */
 import sharp from 'sharp';
 
-const SRC = 'public/testsigma-logo.png';
-const OUT = 'public/testsigma-logo-dark.png';
+const SRC = 'public/v2/testsigma-logo.png';
+const OUT = 'public/v2/testsigma-logo-dark.png';
 
 const { data, info } = await sharp(SRC).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
 

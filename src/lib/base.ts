@@ -1,18 +1,18 @@
 /**
  * Base-path helpers.
  *
- * The site is not served from the domain root: it lives under `/docs-new/`
+ * The site is not served from the domain root: it lives under `/docs/v2/` (Testsigma) and `/docs/arcus/v2/` (Arcus), see toRoute() in site-config.mjs
  * (see `base` in astro.config.mjs), behind the website's Apache. Astro rewrites
  * the links IT generates — markdown links, sidebar entries, pagination, asset
  * URLs — but not two things:
  *
- *   1. path literals we hand-write in components (`href="/suite/..."`)
+ *   1. path literals we hand-write in components (`href="/..."`)
  *   2. `Astro.url.pathname` / `location.pathname`, which always CARRY the base
  *
  * So every hand-written path needs one of these:
  *
- *   withBase()  — building an href/src   ('/suite/…'  → '/docs-new/suite/…')
- *   stripBase() — testing a pathname     ('/docs-new/arcus/…' → '/arcus/…')
+ *   withBase()  — building an href/src   ('/x/' → '/docs/v2/x/', '/arcus/x/' → '/docs/arcus/v2/x/')
+ *   stripBase() — testing a pathname     ('/docs/arcus/v2/…' → '/arcus/…')
  *
  * Route predicates (isArcusPath, isApiReferencePath) call stripBase themselves,
  * so callers keep passing `Astro.url.pathname` unchanged.
@@ -22,7 +22,9 @@
  * into the bundle.
  */
 
-/** Configured base, normalised to '' (root) or '/docs-new' — never a trailing slash. */
+import { fromRoute, toRoute } from './site-config.mjs';
+
+/** Configured base, normalised to '' (root) or '/docs' — never a trailing slash. */
 export const BASE = import.meta.env.BASE_URL.replace(/\/+$/, '');
 
 /**
@@ -36,7 +38,7 @@ export const BASE = import.meta.env.BASE_URL.replace(/\/+$/, '');
 export const withBase = (path: string): string => {
 	if (!path.startsWith('/') || path.startsWith('//')) return path; // relative or protocol-relative
 	if (BASE && (path === BASE || path.startsWith(BASE + '/'))) return path; // already prefixed
-	return BASE + path;
+	return BASE + toRoute(path);
 };
 
 /**
@@ -44,6 +46,6 @@ export const withBase = (path: string): string => {
  * prefixes used throughout the app. Returns '/' for the site root.
  */
 export const stripBase = (pathname: string): string => {
-	if (!BASE || !pathname.startsWith(BASE)) return pathname;
-	return pathname.slice(BASE.length) || '/';
+	if (!BASE || (pathname !== BASE && !pathname.startsWith(BASE + '/'))) return pathname;
+	return fromRoute(pathname.slice(BASE.length) || '/');
 };

@@ -23,7 +23,7 @@ import {
 const SECTIONS = [
 	// 55 endpoints + the overview: the legacy-documented set (the generated
 	// rest were deleted 2026-08-11; see sidebar-suite-api.mjs).
-	{ product: 'suite', content: 'suite/api/', dist: 'suite/api/', pages: 56, endpoints: 55 },
+	{ product: 'suite', content: 'api/', dist: 'v2/api/', pages: 56, endpoints: 55 },
 ];
 const srcDir = (rel) => new URL(`../src/content/docs/${rel}`, import.meta.url).pathname;
 const distDir = (rel) => new URL(`../dist/${rel}`, import.meta.url).pathname;
@@ -116,7 +116,7 @@ test('an endpoint page links to its OWN product for authentication', () => {
 	for (const { slug, html, product } of endpoints) {
 		// Base-prefixed like every other in-site link: the site is served from a
 		// sub-path, so asserting the bare path would only pass if base were dropped.
-		const expected = withDocsBase('/suite/api/overview/#authentication');
+		const expected = withDocsBase('/api/overview/#authentication');
 		assert.ok(
 			html().includes(`href="${expected}"`),
 			`${product}/${slug}: auth link should point at ${expected}`
@@ -171,7 +171,7 @@ test('the host in a rendered sample is swappable by the region picker', () => {
 });
 
 test('the Suite overview lists exactly the regions in regions.ts', () => {
-	const overview = readFileSync(join(srcDir('suite/api/'), 'overview.mdx'), 'utf8');
+	const overview = readFileSync(join(srcDir('api/'), 'overview.mdx'), 'utf8');
 	for (const r of SUITE_REGIONS) {
 		assert.ok(
 			overview.includes(`https://${r.host}`),

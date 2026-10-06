@@ -1,0 +1,89 @@
+---
+title: Google Cloud Build
+description: Connect a repository to Google Cloud Build and run the Testsigma trigger script from cloudbuild.yaml.
+pageType: task
+verified: 2026-08
+sidebar:
+  order: 112
+  label: Google Cloud Build
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+Google Cloud Build watches a connected repository and runs a `cloudbuild.yaml` build on changes. One build step calls the Testsigma [shell script](/integrations/ci-cd/shell-script/), so every push triggers the test plan automatically.
+
+<Prerequisites>
+
+- A GitHub repository, a Google Cloud project with billing enabled, and admin in both.
+
+</Prerequisites>
+
+## Open Cloud Build
+
+<Steps>
+
+1. **Pick a project**: In the [Google Cloud Console](https://console.cloud.google.com/), click **Select a Project**. Select an existing project from the list, or click **New Project** in the **Select a project** dialog.
+
+2. **Find Cloud Build**: Open the navigation menu and click **View all products**.
+
+3. **Open it**: In the left panel, under **Categories**, click **CI/CD**, then click **Cloud Build**.
+
+</Steps>
+
+## Connect the repository
+
+<Steps>
+
+1. **Start the connection**: In the **Cloud Build** navigation pane, click **Repositories**, then click **Connect repository**.
+
+2. **Pick the provider**: On the **Connect repository** overlay, select your source code management provider (GitHub in this example) and click **Continue**. Cloud Build redirects you to GitHub to authorize.
+
+3. **Select the repository**: Return to Cloud Build, which authenticates automatically. In the **Select repository** step, expand the dropdown and select the repository.
+
+</Steps>
+
+<Aside type="note">
+Ensure the [shell script](/integrations/ci-cd/shell-script/) (`tstrigger.sh` here) is in the same repository and marked executable, with an API key ([Settings > API Keys](/settings/developers/)) and a test plan ID set in it.
+</Aside>
+
+## Create a trigger
+
+<Steps>
+
+1. **Add the trigger**: Go to **Triggers** in the **Cloud Build** menu and click **+ Create trigger**.
+
+2. **Name it**: Enter a name in the **Name** field.
+
+3. **Pick the source**: Under **Source**, select the repository and branch from the **Repository** and **Branch** dropdowns.
+
+4. **Pick the configuration type**: Under **Configuration**, select the **Cloud Build configuration file (yaml or json)** radio button.
+
+5. **Pick the file location**: Under **Location**, select the **Repository** radio button to fetch the pipeline file from your GitHub repository. Alternatively, select **Inline** and click **Open editor** to add the YAML manually.
+
+6. **Add the build config**: For inline configuration, paste the following in the **Edit Inline Configuration** overlay and click **Done**:
+
+   ```yaml title="cloudbuild.yaml"
+   steps:
+     - name: 'ubuntu:20.04'
+       args:
+         - '-c'
+         - |
+           apt-get update && apt-get install -y curl bash coreutils
+           chmod +x tstrigger.sh
+           ./tstrigger.sh
+       entrypoint: bash
+   options:
+     logging: CLOUD_LOGGING_ONLY
+   ```
+
+7. **Set the service account**: Under **Advanced**, select the required account in the **Service account** dropdown and click **Create**.
+
+</Steps>
+
+## Run and check the build
+
+Click **Run** on the newly created trigger. Build results, including the Testsigma run the script starts, appear under **History** in the **Cloud Build** menu.
+
+{/* SCREENSHOT NEEDED: Cloud Build trigger configuration page with the inline cloudbuild.yaml editor open */}
+
