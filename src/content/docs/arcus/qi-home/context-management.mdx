@@ -45,7 +45,7 @@ Attach as many sources as apply.
 | **Files and Documents** | `.jpeg`, `.png`, `.docx`, `.pdf`, `.xls` files | The files to upload |
 | **Video Recording** | `.mp4`, `.mov`, `.webm`, `.avi`, `.mkv` recordings | The videos to upload |
 
-Uploads are capped at 500 MB per file. A source whose integration isn't connected yet shows an **Integrate** button in the dialog. Connect [Confluence](/arcus/integrations/project-management/confluence/) and [Figma](/arcus/integrations/plugins/figma/) from there, and trackers under **Settings > Integrations**.
+Uploads are capped at 500 MB per file. A source whose integration isn't connected yet shows an **Integrate** button in the dialog. Connect [Confluence](/arcus/integrations/project-management/confluence/) and [Figma](/arcus/integrations/project-management/figma/) from there, and trackers under **Settings > Integrations**.
 
 ## Read the Context drawer
 
@@ -72,6 +72,8 @@ Expand a category to see its items. A Jira story, for example, shows its source,
 
 </Steps>
 
+Until a source is connected, Context Management opens on **Bring in your dev context**. It offers **Connect GitHub** for pull requests, an **Install plugin** link for each coding tool (Claude Code, GitHub Copilot, Codex, and Cursor), and the [CLI](/arcus/qi-home/developer-tools/cli/) for pushing test cases you already wrote in code.
+
 Four tabs split the queue:
 
 - **Unlinked Contexts**: pull requests and coding sessions not mapped yet
@@ -81,7 +83,11 @@ Four tabs split the queue:
 
 ## Map a context
 
-**Unlinked Contexts** summarizes what's waiting: the source split across GitHub pull requests, Claude Code sessions, and GitHub Copilot sessions, the pending and mapped counts, and the age of the oldest pull request. Filter the list by source with **All**, **GitHub**, **Claude**, and **Copilot**.
+{/* CONFIRM: GitLab and Bitbucket integrations exist only as draft pages (not built yet). When they ship, add their source filter chips, sources-table rows, and Manage integrations toggles here. */}
+
+{/* CONFIRM: the source filter was documented as All / GitHub / Claude / Copilot. Codex and Cursor sessions also arrive here (setup screen, 2026-10); check whether they have filter chips too. */}
+
+**Unlinked Contexts** summarizes what's waiting: where it came from (GitHub pull requests, or sessions from Claude Code, GitHub Copilot, Codex, and Cursor), the pending and mapped counts, and the age of the oldest pull request. Filter the list by source with **All**, **GitHub**, **Claude**, and **Copilot**.
 
 What an entry shows depends on its source. A coding session shows its title, taken from the prompt, with the author, the repository, when it was pushed, and an AI suggestion for the module and sprint. A pull request shows its title or branch, the repository, the author, and when it was opened or last updated.
 

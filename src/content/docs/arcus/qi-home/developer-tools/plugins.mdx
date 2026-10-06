@@ -2,10 +2,10 @@
 title: Plugins
 description: Install an Arcus plugin in your coding tool or connect the GitHub App, so developer activity reaches Context Management and generates test cases.
 pageType: guide
-verified: 2026-09
+verified: 2026-10
 covers:
   - Connect a coding tool
-  - Connect the Arcus GitHub App
+  - Connect your repositories
   - Use the commands
   - Map what arrives
   - Control what is captured
@@ -16,7 +16,6 @@ sidebar:
 
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
-import PlatformTabs from '~/components/PlatformTabs.astro';
 
 A plugin captures what your developers do in their own tools and sends it to QI Home, where Arcus generates test cases from it.
 
@@ -37,142 +36,31 @@ Inside Arcus, every connection is visible in one place: on **QI Home**, click th
 
 Each coding tool follows the same 3 steps: install the plugin, sign in, and set the active project. The plugin sends nothing until you sign in.
 
-<PlatformTabs tabs={['Claude Code', 'GitHub Copilot', 'Codex', 'Cursor']} sync="codingtool" label="Choose your coding tool">
-<Fragment slot="tab-0">
+| Tool | Setup |
+|---|---|
+| Claude Code | [Claude](/arcus/integrations/plugins/claude/) |
+| GitHub Copilot CLI | [GitHub Copilot](/arcus/integrations/plugins/copilot/) |
+| Codex CLI | [Codex](/arcus/integrations/plugins/codex/) |
+| Cursor or VS Code | [Cursor](/arcus/integrations/plugins/cursor/) |
 
-Claude Code also needs Python 3.9 or later on your PATH as `python3`, since the plugin's lifecycle hooks are Python scripts. macOS and Linux ship with it. Configure Git locally before you start.
-
-<Steps>
-
-1. Add the marketplace and install the plugin.
-
-   ```bash
-   claude plugin marketplace add testsigmahq/arcus-claude-plugin
-   claude plugin install arcus@testsigma
-   ```
-
-2. Run `/arcus:login` and complete the SSO flow in the browser. You log in once per machine.
-
-3. Run `/arcus:project list`, then `/arcus:project use <project_id>` to pin the project your sessions are sent to.
-
-</Steps>
-
-</Fragment>
-<Fragment slot="tab-1">
-
-<Steps>
-
-1. Add the marketplace and install the plugin.
-
-   ```bash
-   copilot plugin marketplace add testsigmahq/arcus-copilot-plugin
-   copilot plugin install arcus@testsigma
-   ```
-
-2. Start a new GitHub Copilot CLI session.
-
-3. Run `/arcus:login`.
-
-4. Run `/arcus:project list`, then `/arcus:project use <project_id>`.
-
-</Steps>
-
-</Fragment>
-<Fragment slot="tab-2">
-
-Requires Codex CLI with plugin support and Python 3.11 or later.
-
-<Steps>
-
-1. Add the marketplace and install the plugin.
-
-   ```bash
-   codex plugin marketplace add testsigmahq/arcus-codex-plugin
-   codex plugin add arcus@testsigma
-   ```
-
-2. When Codex prompts you to trust the plugin's hooks, accept. Capture stays off until you do.
-
-3. Run `/arcus:login`, then `/arcus:project use <project_id>`.
-
-</Steps>
-
-</Fragment>
-<Fragment slot="tab-3">
-
-<Steps>
-
-1. Install the **Arcus** extension from the VS Code Marketplace. Requires Cursor or VS Code 1.85 or later, with `node` on the integrated-terminal PATH.
-
-2. Press `Cmd+Shift+P`.
-
-3. Select **Arcus: Sign In** and complete the browser SSO.
-
-4. Run `/arcus-project use <project_id>`.
-
-</Steps>
-
-Cursor commands use a hyphen (`/arcus-login`, `/arcus-project`, `/arcus-map`) where the other plugins use a colon.
-
-</Fragment>
-</PlatformTabs>
-
-Context and test cases are pushed to the active project, so set it before you push.
+Context and test cases go to the active project, so set it before you push.
 
 <Aside type="note">
 `/arcus:test` and `/arcus:push` also require the external [CLI](/arcus/qi-home/developer-tools/cli/) on your PATH. `testsigma login` authenticates the CLI so it can run test cases and report results; `/arcus:login` authenticates the plugin so Arcus can capture context. They are separate logins.
 </Aside>
 
-## Connect the Arcus GitHub App
+## Connect your repositories
 
-You need admin access to the GitHub organization.
-
-<Steps>
-
-1. Go to the [Arcus GitHub App](https://github.com/apps/arcus-by-testsigma) and click **Install**.
-
-2. Select the GitHub organization you want to connect.
-
-3. Select **All repositories** under **Repository access**, or select specific repositories.
-
-4. Click **Install & Authorize**.
-
-5. Select the **Workspace** and **Project** in the **Connect GitHub** dialog that opens in Arcus.
-
-6. Click **Connect**.
-
-</Steps>
-
-Every pull request raised in the connected repositories then flows into QI Home.
-
-To check it worked:
-
-<Steps>
-
-1. Confirm the organization name and repository list show a **Connected** status under **Settings > Integrations > GitHub**.
-
-2. Raise a test pull request.
-
-3. Open **QI Home > Context Management**. The pull request appears on the **Unlinked Contexts** tab within a few seconds.
-
-</Steps>
-
-### Skip manual mapping with a tracker
-
-Connect [Jira](/arcus/integrations/project-management/jira/) under **Settings > Integrations**, and any pull request whose title or description contains a ticket ID such as `PROJ-123` is mapped straight to the sprint holding that story. A pull request with a ticket ID does not appear in **Unlinked Contexts**, and you do not map it by hand.
-
-<Aside type="note">
-A pull request without a ticket ID lands in Unlinked Contexts whether the tracker is connected or not.
-</Aside>
+The [Arcus GitHub App](/arcus/integrations/plugins/github/) connects your GitHub repositories and sends every pull request your team raises to **Unlinked Contexts**. A pull request whose title or description carries a ticket ID from your connected tracker is mapped to that sprint automatically.
 
 ## Use the commands
 
-The commands below are the Claude Code, GitHub Copilot, and Codex forms. Cursor uses hyphens instead of colons.
+The commands below are the Claude Code and GitHub Copilot forms. Cursor uses a hyphen instead of the colon (`/arcus-login`). Codex uses the sign-in, project, and map commands, and writes and pushes test cases when you ask it to.
 
 | Command | What it does |
 |---|---|
 | `/arcus:help` | Lists every Arcus command with a short explanation |
-| `/arcus:login` | Signs you in to Arcus so it can capture your sessions |
+| `/arcus:login` | Signs you in to Arcus so it can capture your sessions. Claude Code first asks for your region |
 | `/arcus:logout` | Signs you out and deletes the Arcus credentials stored on your machine |
 | `/arcus:project list [search]` | Lists the Arcus projects you can access |
 | `/arcus:project use <project_id>` | Sets the active project. Later events are attributed to it |
@@ -192,6 +80,6 @@ The mapping and linking flows are in [Context Management](/arcus/qi-home/context
 
 ## Control what is captured
 
-A plugin transmits nothing until `/arcus:login` runs. After login it sends the session's prompts, tool calls, and captured file contents to Arcus. Sensitive credential files are always blocked (`.env*`, private keys, and anything under `~/.ssh`, `~/.gnupg`, or cloud credential stores), and dependency, build, and VCS directories are never captured. Your login tokens are stored in the OS keychain, not in plaintext on disk.
+A plugin transmits nothing until `/arcus:login` runs. After login it sends the session's prompts, tool calls, and captured file contents to Arcus. Sensitive credential files are always blocked (`.env*`, private keys, and anything under `~/.ssh`, `~/.gnupg`, or cloud credential stores), and dependency, build, and VCS directories are never captured. Claude Code, GitHub Copilot, and Cursor store your login token in the OS keychain. Codex stores it in a file only you can read, `~/.arcus/refresh.token`, and also in the keychain if the optional `keyring` Python package is installed.
 
 Each plugin's repository lists its full capture scope and its environment-variable controls.

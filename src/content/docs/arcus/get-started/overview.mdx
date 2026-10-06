@@ -60,7 +60,7 @@ Generation is the default route. There are 2 ways to start it, and everything af
 | Context comes from | Sources you attach yourself | The stories linked to the sprint |
 | Reach for it when | You are covering a feature outside a sprint cycle, or want to control exactly what the Generator reads | Your team works in sprints and you want coverage to start with the sprint |
 
-Context sources are [Jira](/arcus/integrations/project-management/jira/), [Azure DevOps](/arcus/integrations/project-management/azure-devops/), [Linear](/arcus/integrations/project-management/linear/), or [ClickUp](/arcus/integrations/project-management/clickup/) for stories, [Confluence](/arcus/integrations/project-management/confluence/) for PRDs and specifications, [Figma](/arcus/integrations/plugins/figma/) for designs, files such as PDFs and Word documents, and video recordings. Each needs its integration connected.
+Context sources are [Jira](/arcus/integrations/project-management/jira/), [Azure DevOps](/arcus/integrations/project-management/azure-devops/), [Linear](/arcus/integrations/project-management/linear/), or [ClickUp](/arcus/integrations/project-management/clickup/) for stories, [Confluence](/arcus/integrations/project-management/confluence/) for PRDs and specifications, [Figma](/arcus/integrations/project-management/figma/) for designs, files such as PDFs and Word documents, and video recordings. Each needs its integration connected.
 
 Creating a [test case](/arcus/create-and-manage/test-cases/) manually is the third route, for a flow you already know and want exact control over.
 
@@ -87,7 +87,7 @@ Copilot also runs a test case without Agentic Learning, which suits a quick sani
 
 ## Keep coverage current
 
-When developers work in [Claude Code](/arcus/integrations/plugins/claude/), [Cursor](/arcus/integrations/plugins/cursor/), [GitHub Copilot](/arcus/integrations/plugins/copilot/), or [Codex](/arcus/integrations/plugins/codex/), or open pull requests in [GitHub](/arcus/integrations/plugins/github/), that context is detected and surfaced in the **Unmapped Context** view. Each entry arrives with a suggestion for the module and sprint it belongs to. You review the suggestion and map it, and the Generator writes new test cases or updates existing ones from the changes captured. That is what keeps coverage aligned with what the team is building.
+When developers work in [Claude Code](/arcus/integrations/plugins/claude/), [Cursor](/arcus/integrations/plugins/cursor/), [GitHub Copilot](/arcus/integrations/plugins/copilot/), or [Codex](/arcus/integrations/plugins/codex/), or open pull requests in [GitHub](/arcus/integrations/plugins/github/), that context is detected and surfaced on the **Unlinked Contexts** tab of [Context Management](/arcus/qi-home/context-management/). Each entry arrives with a suggestion for the module and sprint it belongs to. You review the suggestion and map it, and the Generator writes new test cases or updates existing ones from the changes captured. That is what keeps coverage aligned with what the team is building.
 
 ## Your first generated test case
 

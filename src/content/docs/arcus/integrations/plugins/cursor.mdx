@@ -1,14 +1,14 @@
 ---
 title: Cursor
-description: Install the Arcus plugin for Cursor, map your session to a sprint, and push the captured context to QI Home for test generation.
+description: Install the Arcus extension for Cursor, sign in, pick a project, and link sessions to tickets for test generation.
 pageType: task
-verified: 2026-09
+verified: 2026-10
 covers:
-  - Install the plugin
-  - Log in and connect your project
-  - Map your context to a sprint
-  - Push your context
-  - Command reference
+  - Install the extension
+  - Sign in and pick a project
+  - Link your work to a ticket
+  - Write and push test cases
+  - Where your work lands
   - Pull requests for the same work
 sidebar:
   order: 330
@@ -18,73 +18,70 @@ sidebar:
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-The Arcus plugin for Cursor captures your prompts, tool calls, and file changes as you work. You push the captured context to [QI Home](/arcus/qi-home/overview/) with a single command, and Arcus generates test cases from it.
+The Arcus extension for Cursor captures your coding sessions and sends them to [QI Home](/arcus/qi-home/overview/), where Arcus generates test cases from them.
 
 <Prerequisites>
-- Cursor installed.
-- An active project in Arcus by Testsigma.
+- Cursor, or VS Code 1.85 or later.
+- `node` on the integrated terminal's `PATH`.
+- An active Arcus project.
 </Prerequisites>
 
-## Install the plugin
+## Install the extension
 
-Install the Arcus plugin from the Cursor marketplace.
+The extension captures file saves and the editor's hook events, and also works in VS Code. Its project and map commands run a bundled Node script, which is why it needs `node`.
 
-## Log in and connect your project
+Install **Arcus** from the VS Code Marketplace. Cursor reads the same marketplace.
 
-{/* CONFIRM: the project ID path. No Settings navigation seen so far includes a Project page. */}
+Cursor commands use a hyphen where the other Arcus plugins use a colon: `/arcus-login`, not `/arcus:login`.
+
+## Sign in and pick a project
 
 <Steps>
 
-1. In Cursor, run `/arcus:login`.
+1. Press `Cmd+Shift+P`, select **Arcus: Sign In**, and complete the sign-in in the browser.
 
-2. Complete the login flow in the browser, then return to Cursor when prompted.
+2. Run `/arcus-project list` to see your projects, then `/arcus-project use <project_id>` to pin the one your sessions go to.
 
-3. Run `/arcus:project <project-id>`, using your project ID from **Settings > Project**.
+</Steps>
 
-4. Start coding. The plugin captures your context in the background.
+Capture starts after you sign in. To sign out, select **Arcus: Sign Out** from the command palette, which clears your local credentials.
+
+## Link your work to a ticket
+
+Run `/arcus-map ticket <KEY>` with the ticket for the work you're doing:
+
+```bash
+/arcus-map ticket PROJ-123
+```
+
+Your session then arrives in QI Home already mapped to the sprint holding that ticket, so nobody maps it manually.
+
+## Write and push test cases
+
+<Steps>
+
+1. Run `/arcus-test`, optionally followed by the feature you want covered. Cursor writes end-to-end test cases for the current repository, validates them, and offers to run them.
+
+2. Run `/arcus-push` to send the test cases from this session to Arcus.
 
 </Steps>
 
 <Aside type="note">
-Nothing is sent to Arcus until you run `/arcus:push`. Logging in and setting your project upload nothing.
+`/arcus-test` and `/arcus-push` also need the [Arcus CLI](/arcus/qi-home/developer-tools/cli/) on your `PATH`. The CLI has its own login, `testsigma login`, separate from **Arcus: Sign In**.
 </Aside>
 
-## Map your context to a sprint
+For every command, see [Plugins](/arcus/qi-home/developer-tools/plugins/#use-the-commands). Swap the colon for a hyphen in each one.
 
-Run `/arcus:map <ticket-key>` at any point before pushing, using the Jira ticket ID for the work you're doing:
+## Where your work lands
 
-```bash
-/arcus:map PROJ-123
-```
+- **Sessions** arrive on the **Unlinked Contexts** tab of Context Management, unless you linked a ticket. Mapping a session to a sprint or an Adhoc session triggers test generation from it.
+- **Pushed test cases** arrive on the **Unlinked Test Cases** tab, unless you picked a sprint when you pushed.
 
-Your context then arrives in QI Home already mapped to the right sprint, so nobody has to route it from **Unmapped Context**.
-
-<Aside type="note">
-You can push without mapping. The context lands in **Unmapped Context** and is mapped from there.
-</Aside>
-
-## Push your context
-
-When you're done, run `/arcus:push` to upload the captured context to QI Home.
-
-The context appears under **Unmapped Context** if you didn't run `/arcus:map`, or under the mapped sprint if you did.
-
-## Command reference
-
-- `/arcus:help`: lists every Arcus command with a short explanation of what it does and how to use it.
-- `/arcus:login`: signs you in to Arcus so it can capture your sessions and use them for test generation.
-- `/arcus:logout`: signs you out and deletes the Arcus credentials stored on your machine.
-- `/arcus:project <project-id>`: shows your Arcus projects and sets one as the active project.
-- `/arcus:map <ticket-key>`: links a ticket key to the current context so it routes to the right sprint.
-- `/arcus:test`: generates end-to-end tests for the current repository, validates them, and offers to run them.
-- `/arcus:testsigma-tests`: authors new end-to-end tests, saves them under `tests/`, validates them offline, and offers to run them.
-- `/arcus:push`: uploads the test cases captured in this session to Arcus, assigned to a sprint or left unmapped.
-
-{/* CONFIRM: the Push your context section above says the command uploads context, not test cases. */}
+The mapping and linking steps are in [Context Management](/arcus/qi-home/context-management/).
 
 ## Pull requests for the same work
 
-With the [Arcus GitHub App](/arcus/integrations/plugins/github/) installed, raising a pull request for work you captured here joins them automatically:
+With the [Arcus GitHub App](/arcus/integrations/plugins/github/) installed, a pull request for work you captured here joins your session automatically:
 
-- **Context still unmapped**: Arcus converts it into a GitHub context, and the Cursor context and the pull request become a single entry in **Unmapped Context**.
-- **Context already mapped**: the pull request is auto-mapped to the same sprint or Ad-Hoc session, and there's nothing more to do.
+- **Session not mapped yet**: the session and the pull request become a single entry in **Unlinked Contexts**.
+- **Session already mapped**: the pull request is mapped to the same sprint or Adhoc session, and there's nothing more to do.

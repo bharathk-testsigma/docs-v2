@@ -1,0 +1,80 @@
+---
+title: GitLab
+description: Connect GitLab so every merge request your team raises reaches Context Management, ready to map to a sprint for test generation.
+pageType: task
+verified: 2026-10
+covers:
+  - Connect GitLab
+  - Map merge requests automatically
+  - Verify the connection
+  - Map a merge request
+sidebar:
+  order: 301
+  label: GitLab
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import Prerequisites from '~/components/Prerequisites.astro';
+
+The Arcus GitLab integration sends every merge request your team raises to [QI Home](/arcus/qi-home/overview/), where Arcus generates test cases from its code changes.
+
+<Prerequisites>
+- An active Arcus project.
+- Admin access to the GitLab group.
+</Prerequisites>
+
+## Connect GitLab
+
+Developers don't change how they work. Once GitLab is connected, every merge request reaches Arcus on its own.
+
+{/* CONFIRM: steps mirror the GitHub App flow (Bharath, 2026-10-07: "the process is same as GitHub"). Check the button and dialog names once against the live screen. */}
+
+<Steps>
+
+1. In the left navigation, go to **Settings > Integrations**, and click **Connect** next to **GitLab**.
+
+2. Sign in to GitLab if prompted, and select the GitLab group to connect.
+
+3. Select all projects, or choose specific projects.
+
+4. Click **Authorize**. GitLab redirects you to Arcus.
+
+5. In the **Connect GitLab** dialog, select the **Workspace** and **Project** to link this connection to.
+
+6. Click **Connect**.
+
+</Steps>
+
+Merge requests raised in the connected projects now arrive on the **Unlinked Contexts** tab of Context Management.
+
+## Map merge requests automatically
+
+With a tracker such as [Jira](/arcus/integrations/project-management/jira/) connected, a merge request whose title or description contains a ticket ID such as `PROJ-123` goes straight to the sprint holding that story. It never reaches **Unlinked Contexts**, and nobody maps it manually.
+
+<Aside type="note">
+A merge request with no ticket ID lands in **Unlinked Contexts** whether or not a tracker is connected. Map it manually from there.
+</Aside>
+
+## Verify the connection
+
+<Steps>
+
+1. In the left navigation, go to **Settings > Integrations**.
+
+2. Under **GitLab**, confirm the group name and project list appear with a **Connected** status.
+
+3. Raise a test merge request in one of the connected projects.
+
+4. Open **QI Home > Context Management**. The merge request appears on the **Unlinked Contexts** tab within a few seconds.
+
+</Steps>
+
+## Map a merge request
+
+On **Unlinked Contexts**, click **Map to Module** on the merge request, then pick a sprint and its stories, or an Adhoc session. Arcus generates test cases from the merge request's changes, and the entry moves to **Linked Contexts**.
+
+The full steps, including mapping several entries at once and discarding one that isn't relevant, are in [Context Management](/arcus/qi-home/context-management/#map-a-context).
+
+<Aside type="note">
+If the same work was captured by a coding tool plugin, Arcus joins the merge request with that session. Mapping one maps both.
+</Aside>

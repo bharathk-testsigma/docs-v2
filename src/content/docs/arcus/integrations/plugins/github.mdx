@@ -1,17 +1,13 @@
 ---
 title: GitHub App
-description: Install the Arcus GitHub App so pull requests surface in QI Home, then map them to a sprint or Ad-Hoc session for test generation.
+description: Install the Arcus GitHub App so every pull request your team raises reaches Context Management, ready to map to a sprint for test generation.
 pageType: task
-verified: 2026-09
+verified: 2026-10
 covers:
   - Install the Arcus GitHub App
-  - Auto-map pull requests with Jira
+  - Map pull requests automatically
   - Verify the connection
-  - View unmapped pull requests
   - Map a pull request
-  - Map several pull requests at once
-  - Dismiss a pull request
-  - View mapped context
 sidebar:
   order: 300
   label: GitHub
@@ -20,14 +16,16 @@ sidebar:
 import { Aside, Steps } from '@astrojs/starlight/components';
 import Prerequisites from '~/components/Prerequisites.astro';
 
-Connecting GitHub to Arcus by Testsigma surfaces in [QI Home](/arcus/qi-home/overview/) every pull request your team raises, where you map it to a sprint or an Ad-Hoc session. Arcus then generates or updates test cases from the code changes in that pull request. Developers don't change how they work.
+The Arcus GitHub App sends every pull request your team raises to [QI Home](/arcus/qi-home/overview/), where Arcus generates test cases from its code changes.
 
 <Prerequisites>
-- An active project in Arcus by Testsigma.
-- Admin access to the GitHub organization you want to connect.
+- An active Arcus project.
+- Admin access to the GitHub organization.
 </Prerequisites>
 
 ## Install the Arcus GitHub App
+
+Developers don't change how they work. Once the app is installed, every pull request reaches Arcus on its own.
 
 <Steps>
 
@@ -45,11 +43,11 @@ Connecting GitHub to Arcus by Testsigma surfaces in [QI Home](/arcus/qi-home/ove
 
 </Steps>
 
-Pull requests raised in the connected repositories now appear in the **Unmapped Context** view in QI Home.
+Pull requests raised in the connected repositories now arrive on the **Unlinked Contexts** tab of Context Management.
 
-## Auto-map pull requests with Jira
+## Map pull requests automatically
 
-With [Jira](/arcus/integrations/project-management/jira/) connected, a pull request whose title or description contains a Jira ticket ID such as `PROJ-123` is routed straight to the sprint holding that story. It never reaches **Unmapped Context**, and nobody maps it by hand.
+With a tracker such as [Jira](/arcus/integrations/project-management/jira/) connected, a pull request whose title or description contains a ticket ID such as `PROJ-123` goes straight to the sprint holding that story. It never reaches **Unlinked Contexts**, and nobody maps it manually.
 
 <Steps>
 
@@ -60,7 +58,7 @@ With [Jira](/arcus/integrations/project-management/jira/) connected, a pull requ
 </Steps>
 
 <Aside type="note">
-A pull request with no Jira ticket ID lands in **Unmapped Context** whether or not Jira is connected. Map it by hand from there.
+A pull request with no ticket ID lands in **Unlinked Contexts** whether or not a tracker is connected. Map it manually from there.
 </Aside>
 
 ## Verify the connection
@@ -73,95 +71,16 @@ A pull request with no Jira ticket ID lands in **Unmapped Context** whether or n
 
 3. Raise a test pull request in one of the connected repositories.
 
-4. Open **QI Home** and click **View** next to **Unmapped Context**. The pull request appears within a few seconds.
+4. Open **QI Home > Context Management**. The pull request appears on the **Unlinked Contexts** tab within a few seconds.
 
 </Steps>
-
-## View unmapped pull requests
-
-<Steps>
-
-1. In the left navigation, open **QI Home**.
-
-2. In the QI Home sidebar, click **View** next to **Unmapped Context**. The **Unmapped Context** tab opens, with GitHub pull requests marked by the GitHub PR badge.
-
-</Steps>
-
-Each entry shows:
-
-- **PR title**: the title of the pull request.
-- **Repository**: the repository and branch the pull request is from.
-- **Author**: the developer who opened it.
-- **Lines changed**: lines added and removed.
-- **Time**: when it was opened or last updated.
-- **AI Suggestion**: the module Arcus recommends mapping it to.
 
 ## Map a pull request
 
-<Steps>
+On **Unlinked Contexts**, click **Map to Module** on the pull request, then pick a sprint and its stories, or an Adhoc session. Arcus generates test cases from the pull request's changes, and the entry moves to **Linked Contexts**.
 
-1. On the pull request, click **Map to Module**.
-
-2. In the **Map to Module** dialog, select the **Project**.
-
-</Steps>
-
-Then follow the path you need.
-
-### Map to a sprint
-
-<Steps>
-
-1. Under **Map to**, select **Sprint**.
-
-2. Select the **Sprint**.
-
-3. Select the **Stories** within that sprint the pull request relates to.
-
-4. Click **Map**.
-
-</Steps>
-
-The dialog's **What happens next** message reads "This PR will be mapped to the selected stories in the sprint and test cases will be auto-generated by Atto." Arcus triggers generation for that sprint, creating new test cases or updating existing ones from the pull request's changes.
-
-### Map to an Ad-Hoc session
-
-<Steps>
-
-1. Under **Map to**, select **Adhoc**.
-
-2. Under **Existing Adhoc Session**, select a session, or select **+ Create New Adhoc Session**.
-
-3. Click **Map**.
-
-</Steps>
-
-## Map several pull requests at once
-
-<Steps>
-
-1. Select the checkboxes next to the pull requests you want to map. An action bar appears at the bottom, showing how many are selected.
-
-2. Click **Map to Module**. The selected pull requests are listed at the top of the dialog.
-
-3. Configure the mapping, then click **Map**.
-
-</Steps>
-
-## Dismiss a pull request
-
-On a pull request that isn't relevant to your test coverage, click **Dismiss**. It is removed from the **Unmapped Context** list.
+The full steps, including mapping several pull requests at once and discarding one that isn't relevant, are in [Context Management](/arcus/qi-home/context-management/#map-a-context).
 
 <Aside type="note">
-Dismissed context doesn't contribute to coverage, and you can't recover it from this view.
+If the same work was captured by a coding tool plugin, Arcus joins the pull request with that session. Mapping one maps both.
 </Aside>
-
-## View mapped context
-
-In the **Unmapped Context** view, click the **Mapped Context** tab. It shows:
-
-- **Total Mapped**: how many context entries were mapped.
-- **Tests Generated**: how many test cases came from mapped context.
-- **Sprints Covered**: how many sprints received test updates from mapped context.
-
-Each entry shows the sprint and story it was mapped to, and how many test cases were generated.
