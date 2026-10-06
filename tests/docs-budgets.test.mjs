@@ -20,7 +20,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { stripMdx } from '../src/lib/strip-mdx.mjs';
+import { stripMdx, absolutizeLinks } from '../src/lib/strip-mdx.mjs';
 
 const ROOT = new URL('../src/content/docs/', import.meta.url).pathname;
 
@@ -265,9 +265,11 @@ const slug = (text) =>
 test('in-page card anchors resolve to a heading on the same page', () => {
 	const bad = walk(ROOT).flatMap((file) => {
 		const src = readFileSync(file, 'utf8');
-		const headings = new Set(
-			(src.match(/^#{2,6} .+$/gm) ?? []).map((h) => slug(h.replace(/^#+\s*/, '')))
-		);
+		const headings = new Set([
+			...(src.match(/^#{2,6} .+$/gm) ?? []).map((h) => slug(h.replace(/^#+\s*/, ''))),
+			// Splash pages write headings as HTML (<h2 id="arcus">); their id is the anchor.
+			...[...src.matchAll(/<h[2-6]\b[^>]*\sid="([^"]+)"/g)].map((m) => m[1]),
+		]);
 		return [...src.matchAll(/href="#([^"]+)"/g)]
 			.map((m) => m[1])
 			.filter((anchor) => !headings.has(anchor))
@@ -374,4 +376,20 @@ test('B4: <Prerequisites> exports as a heading', () => {
 		return stripMdx(src).includes('## Prerequisites') ? [] : [relative(ROOT, file)];
 	});
 	assert.deepEqual(bad, []);
+});
+
+test('.md export: site links become full URLs, everything else is untouched', () => {
+	const withBase = (p) => '/docs' + (p.startsWith('/arcus') ? p.replace(/^\/arcus/, '/arcus/v2') : '/v2' + p);
+	const md = [
+		'See [AI agents](/atto/ai-agents/) and [QI Home](/arcus/qi-home/overview/#start).',
+		'[ref]: /get-started/overview/',
+		'Keep [ext](https://example.com/x), [anchor](#here), [proto](//cdn.example.com/a).',
+		'```md\n[sample](/stays/as-is/)\n```',
+	].join('\n');
+	const out = absolutizeLinks(md, 'https://testsigma.com', withBase);
+	assert.match(out, /\]\(https:\/\/testsigma\.com\/docs\/v2\/atto\/ai-agents\/\)/);
+	assert.match(out, /\]\(https:\/\/testsigma\.com\/docs\/arcus\/v2\/qi-home\/overview\/#start\)/);
+	assert.match(out, /^\[ref\]: https:\/\/testsigma\.com\/docs\/v2\/get-started\/overview\/$/m);
+	assert.match(out, /\(https:\/\/example\.com\/x\).*\(#here\).*\(\/\/cdn\.example\.com\/a\)/);
+	assert.match(out, /\[sample\]\(\/stays\/as-is\/\)/);
 });

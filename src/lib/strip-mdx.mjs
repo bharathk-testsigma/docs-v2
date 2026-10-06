@@ -51,3 +51,33 @@ export function stripMdx(source) {
 		.trim()
 		.replace(/\u0000(\d+)\u0000/g, (_, i) => fences[Number(i)]);
 }
+
+/**
+ * Turn the site-absolute links authors write (`](/atto/ai-agents/)`) into full
+ * URLs (`](https://testsigma.com/docs/v2/atto/ai-agents/)`). The HTML pages get
+ * their base added by rehypeBaseLinks at build time; the `.md` export is raw
+ * text and never passes through it, so without this every link in a copied
+ * page lands on the website's 404. Full URLs, not just the base, because the
+ * copy is pasted elsewhere (an LLM, an issue) where a relative path means
+ * nothing. Covers inline `](/x)` and reference `[id]: /x` links; leaves
+ * `//host`, `#anchor`, external URLs and fenced code alone.
+ *
+ * @param {string} markdown
+ * @param {string} site     e.g. 'https://testsigma.com'
+ * @param {(path: string) => string} withBase  site path → based path (withDocsBase)
+ * @returns {string}
+ */
+export function absolutizeLinks(markdown, site, withBase) {
+	const full = (path) => site.replace(/\/+$/, '') + withBase(path);
+	// Odd segments are fenced code blocks: a sample's link syntax stays as written.
+	return markdown
+		.split(/(```[\s\S]*?```)/)
+		.map((part, i) =>
+			i % 2
+				? part
+				: part
+						.replace(/\]\((\/(?!\/)[^)\s]*)/g, (_, path) => `](${full(path)}`)
+						.replace(/^(\s*\[[^\]]+\]:\s*)(\/(?!\/)\S*)/gm, (_, lead, path) => lead + full(path))
+		)
+		.join('');
+}
